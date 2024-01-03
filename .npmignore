@@ -1,0 +1,8 @@
+src
+node_modules
+
+.env
+.gitignore
+/build.config.ts
+
+package-lock.json

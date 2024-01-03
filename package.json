@@ -1,0 +1,21 @@
+{
+  "name": "constatic",
+  "version": "0.0.1",
+  "description": "Constatic cli",
+  
+  "main": "dist/index.mjs",
+  "bin": "dist/index.mjs",
+  "type": "module",
+  "scripts": {
+    "link": "npm unlink useconst && npm link",
+    "build": "unbuild",
+    "test": "npm run build && npm run link"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "unbuild": "^2.0.0"
+  }
+}
