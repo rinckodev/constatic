@@ -1,0 +1,52 @@
+{
+    "type": "object",
+    "properties": {
+      "label":{
+        "type": "string"
+      },
+      "emoji": {
+        "anyOf": [
+          { "type": "string" },
+          {
+            "type": "object",
+            "properties": {
+              "nome": { "type": "string" },
+              "id": { "type": "string" },
+              "animated": { "type": "boolean" }
+            },
+            "required": ["id"]
+          }
+        ]
+      },
+      "disabled":{
+        "type": "boolean"
+      },
+      "style":{
+        "type": "number",
+        "enum": [1,2,3,4,5]
+      }
+    },
+    "if": {
+      "properties": {
+        "style": { "const": 5 }
+      }
+    },
+    "then": {
+      "properties": {
+        "url":{
+          "type": "string"
+        }
+      },
+      "required": ["url"]
+    },
+    "else": {
+      "properties": {
+        "customId":{
+          "type": "string"
+        }
+      },
+      "required": ["customId"]
+    },
+    "required": ["style"]
+  }
+  

@@ -1,0 +1,55 @@
+{
+    "type": "object",
+    "properties": {
+      "customId":{
+        "type": "string"
+      },
+      "placeholder":{
+        "type": "string"
+      },
+      "maxValues": {
+        "type":"number",
+        "maxLength": 25
+      },
+      "minValues":{
+        "type":"number",
+        "maxLength": 25
+      },
+      "options":{
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "value": {
+              "type":"string"
+            },
+            "description":{
+              "type":"string"
+            },
+            "default": {
+              "type":"boolean"
+            },
+            "emoji": {
+              "anyOf": [
+                { "type": "string" },
+                {
+                  "type": "object",
+                  "properties": {
+                    "nome": { "type": "string" },
+                    "id": { "type": "string" },
+                    "animated": { "type": "boolean" }
+                  },
+                  "required": ["id"]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "required": ["customId", "options"]
+  }
+  

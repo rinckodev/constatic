@@ -1,0 +1,51 @@
+{
+  "name": "awesome-bot-base",
+  "version": "1.0.0",
+  "description": "Discord Bot",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx ./src/index.ts",
+    "build": "tsc",
+    "start": "node --no-warnings ."
+  },
+  "dependencies": {
+    "@magicyan/discord": "^1.0.14",
+    "chalk": "^5.3.0",
+    "consola": "^3.2.3",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "fast-glob": "^3.3.2",
+    "tsx": "^4.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  },
+  "imports": {
+    "#base": [
+      "./dist/discord/base/index.js"
+    ],
+    "#settings": [
+      "./dist/settings/index.js"
+    ],
+    "#database": [
+      "./dist/database/index.js"
+    ],
+    "#functions": [
+      "./dist/functions/index.js"
+    ],
+    "#classes": [
+      "./dist/classes/index.js"
+    ],
+    "#tools": [
+      "./dist/tools/index.js"
+    ],
+    "#menus": [
+      "./dist/menus/index.js"
+    ]
+  }
+}

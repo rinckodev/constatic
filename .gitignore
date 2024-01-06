@@ -1,7 +1,8 @@
 dist
 node_modules
 
-.env
+/.env
+.env.development
 package-lock.json
 
 /playground

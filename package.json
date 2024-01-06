@@ -9,7 +9,8 @@
     "link": "npm unlink constatic && npm link",
     "build": "unbuild",
     "test": "npm run build && npm run link",
-    "dev": "npm run build && cd playground && constatic"
+    "dev": "rm -rf playground && mkdir playground && npm run build && cd playground && constatic",
+    "tsx": "tsx"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +24,7 @@
   "dependencies": {
     "@clack/prompts": "^0.7.0",
     "chalk": "^5.3.0",
-    "commander": "^11.1.0",
+    "citty": "^0.1.5",
     "fs-extra": "^11.2.0"
   }
 }

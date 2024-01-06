@@ -1,0 +1,128 @@
+{
+    "type": "object",
+    "properties": {
+        "title":{
+            "type": "string",
+            "maxLength": 256,
+            "description": "Title of embed"
+        },
+        "description":{
+            "type": "string",
+            "maxLength": 4096,
+            "description": "Description of embed"
+        },
+        "url":{
+            "type": "string",
+            "description": "URL of embed"
+        },
+        "color": {
+            "type": "number",
+            "description": "Color code of the embed"
+        },
+        "author": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type":"string",
+                    "description": "Name of author"
+                },
+                "iconURL": {
+                    "type":"string",
+                    "description": "A url of author icon"
+                },
+                "url": {
+                    "type":"string",
+                    "description": "URL of author"
+                }
+            },
+            "required": ["name"],
+            "description": "Author of embed"
+        },
+        "footer": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string",
+                    "description": "Footer text"
+                },
+                "iconURL": {
+                    "type": "string",
+                    "description": "URL of footer icon (only supports http(s) and attachments)"
+                }
+            },
+            "required": ["text"],
+            "description": "Footer of embed"
+        },
+        "fields": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "maxItems": 25,
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 256,
+                        "description": "Name of the field"
+                    },
+                    "value":{
+                        "type": "string",
+                        "maxLength": 1024,
+                        "description": "Value of the field"
+                    },
+                    "inline":{
+                        "type": "boolean",
+                        "description": "Whether or not this field should display inline"
+                    }
+                },
+                "required": ["name", "value"],
+                "description": "Fields of embed"
+            }
+        },
+        "thumbnail":{
+            "type": "object",
+            "properties": {
+                "url":{
+                    "type": "string",
+                    "description": ""
+                },
+                "proxyURL":{
+                    "type": "string",
+                    "description": ""
+                },
+                "width":{
+                    "type": "number",
+                    "description": ""
+                },
+                "height":{
+                    "type": "number",
+                    "description": ""
+                }
+            },
+            "required": ["url"],
+            "description": "Thumbnail of embed"
+        },
+        "image":{
+            "type": "object",
+            "properties": {
+                "url":{
+                    "type": "string",
+                    "description": ""
+                },
+                "proxyURL":{
+                    "type": "string",
+                    "description": ""
+                },
+                "width":{
+                    "type": "number",
+                    "description": ""
+                },
+                "height":{
+                    "type": "number",
+                    "description": ""
+                }
+            },
+            "required": ["url"],
+            "description": "Image of embed"
+        }
+    }
+}

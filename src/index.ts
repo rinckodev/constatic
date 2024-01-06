@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-import { Command } from "commander";
+import { intro, log } from "@clack/prompts";
+import chalk from "chalk";
+import { runMain } from "citty";
+import path from "node:path";
+import { importMeta } from "./helpers/meta";
 import { Package } from "./helpers/package";
 import { MainMenu } from "./menus/main";
-import { intro, log } from "@clack/prompts";
-import { importMeta } from "./helpers/meta";
-import chalk from "chalk";
-import path from "node:path";
 
 const { __dirname } = importMeta(import.meta);
 
@@ -21,10 +21,15 @@ if (process.versions.node < programNodeVersion){
     process.exit(0);
 }
 
-const program = new Command()
-.name(Package.json.name)
-.description(Package.json.description)
-.version(Package.json.version)
-const rootname = path.join(__dirname, "..")
+const rootname = path.join(__dirname, "..");
 
-MainMenu({ rootname })
+runMain({
+    meta: {
+        name: Package.json.name,
+        description: Package.json.description,
+        version: Package.json.version
+    },
+    run() {
+        MainMenu({ rootname });
+    },
+});
