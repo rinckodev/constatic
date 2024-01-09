@@ -1,0 +1,22 @@
+{
+    "databases":[
+        {
+            "name": "Firestore",
+            "paths":{
+                "default": "firestore/default"
+            },
+            "dependencies":{
+                "typesaurus": "^7.2.0"
+            }
+        },
+        {
+            "name": "Quick Db",
+            "paths":{
+                "default": "quickdb/default"
+            },
+            "dependencies":{
+                "quick.db": "^9.1.7"
+            }
+        }
+    ]
+}

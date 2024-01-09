@@ -14,15 +14,17 @@ export function listDirectoryItems(path: string){
 }
 
 interface CopyDirOptions {
-    ignoreItems?: string[],
-    ignoreExt?: string[]
+    ignore?: {
+        items?: string[];
+        extensions?: string[];
+    }
 }
 export async function copyDir(src: string, dest: string, options: CopyDirOptions = {}){
-    const { ignoreItems, ignoreExt } = options;
+    const { items, extensions } = options.ignore ?? {};
     return fs.copy(src, dest, {
         filter(item){
-            if (ignoreItems?.includes(path.basename(item))) return false;
-            if (ignoreExt?.some(ext => path.basename(item).endsWith(ext))) return false;
+            if (items?.includes(path.basename(item))) return false;
+            if (extensions?.some(ext => path.basename(item).endsWith(ext))) return false;
             return true;
         }
     })

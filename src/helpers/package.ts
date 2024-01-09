@@ -4,10 +4,10 @@ type PackageJson = typeof packageJson;
 const Package = {
     json: packageJson,
     managers: {
-        npm: { name: "npm", command: "npm install" },
-        yarn: { name: "yarn", command: "yarn add" },
-        pnpm: { name: "pnpm", command: "pnpm install" },
-        bun: { name: "bun", command: "bun install" },
+        npm: { name: "npm", args: ["install"] },
+        yarn: { name: "yarn", args: ["add"] },
+        pnpm: { name: "pnpm", args: ["install"] },
+        bun: { name: "bun", args: ["install"] },
     }
 }
 
