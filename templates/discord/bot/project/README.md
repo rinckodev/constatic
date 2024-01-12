@@ -298,11 +298,10 @@ interaction.deferReply({ ephemeral }); // ephemeral is true by default;
 ```
 
 ```ts
-// src/settings/constants/index.ts
+// src/settings/global.ts
 global.ephemeral = true; // Interaction reply/followUp property
 
-// src/settings/@types/constants.d.ts
-export declare global {
+declare global {
     var ephemeral: true;
 }
 ```

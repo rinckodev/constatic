@@ -1,26 +1,31 @@
 {
-    "compilerOptions": {
-        "lib": ["ESNext"],
-        "module": "NodeNext",
-        "target": "ESNext",
-        "moduleResolution": "NodeNext",
-        "outDir": "./dist",
-        "rootDir": "./src",
-        "resolveJsonModule": true,
-        "baseUrl": ".",
-        "paths": {
-            "#base": ["./src/discord/base/index.ts"],
-            "#settings": ["./src/settings/index.ts"],
-            "#database": ["./src/database/index.ts"],
-            "#functions": ["./src/functions/index.ts"],
-            "#tools": ["./src/tools/index.ts"],
-            "#classes": ["./src/classes/index.ts"],
-            "#menus": ["./src/menus/index.ts"],
-        },
-        
-        "strict": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noImplicitReturns": true,
-    }
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": true,
+
+		"lib": ["ESNext"],
+		"target": "ESNext",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"resolveJsonModule": true,
+		"baseUrl": ".",
+		"paths": {
+			"#base": ["./src/discord/base/index.ts"],
+			"#settings": ["./src/settings/index.ts"],
+			"#database": ["./src/database/index.ts"],
+			"#functions": ["./src/functions/index.ts"],
+			"#tools": ["./src/tools/index.ts"],
+			"#classes": ["./src/classes/index.ts"],
+			"#menus": ["./src/menus/index.ts"]
+		},
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true
+	},
+	"include": ["src"],
+	"exclude": ["node_modules"]
 }

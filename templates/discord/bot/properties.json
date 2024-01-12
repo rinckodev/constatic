@@ -6,6 +6,7 @@
                 "default": "firestore/default"
             },
             "dependencies":{
+                "firebase-admin": "^12.0.0",
                 "typesaurus": "^7.2.0"
             }
         },

@@ -5,9 +5,10 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "tsx ./src/index.ts",
+    "dev": "tsx --no-warnings --no-deprecation ./src/index.ts",
     "build": "tsc",
-    "start": "node --no-warnings ."
+    "start": "node --no-warnings --no-deprecation .",
+    "biome": "biome"
   },
   "dependencies": {
     "@magicyan/discord": "^1.0.14",
@@ -15,14 +16,14 @@
     "consola": "^3.2.3",
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
-    "fast-glob": "^3.3.2",
-    "tsx": "^4.7.0"
+    "fast-glob": "^3.3.2"
   },
   "devDependencies": {
     "@types/node": "^20.10.6",
-    "@typescript-eslint/eslint-plugin": "^6.17.0",
-    "@typescript-eslint/parser": "^6.17.0",
+    "@typescript-eslint/eslint-plugin": "^6.18.1",
+    "@typescript-eslint/parser": "^6.18.1",
     "eslint": "^8.56.0",
+    "tsx": "^4.7.0",
     "typescript": "^5.3.3"
   },
   "imports": {

@@ -9,3 +9,4 @@ dotenv.config({ path: fs.existsSync(devEnvPath) ? devEnvPath : undefined });
 
 export { consola as log } from "consola";
 export { settings };
+export * from "./firebase.js"
