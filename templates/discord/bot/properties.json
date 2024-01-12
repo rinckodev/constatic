@@ -16,6 +16,7 @@
                 "default": "quickdb/default"
             },
             "dependencies":{
+                "better-sqlite3": "^9.2.2",
                 "quick.db": "^9.1.7"
             }
         }
