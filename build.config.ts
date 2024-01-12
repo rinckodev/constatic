@@ -5,7 +5,9 @@ export default defineBuildConfig({
 	rollup: {
 		inlineDependencies: true,
         output: {
-            format: "esm"
+            format: "esm",
+            preserveModules: true,
+            preserveModulesRoot: "./src",
         }
 	},
 	entries: ["src/index"],

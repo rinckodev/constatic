@@ -1,7 +1,7 @@
-import { log, note, text, select, spinner as createSpinner } from "@clack/prompts";
+import { log, note, text, select, spinner as createSpinner, outro } from "@clack/prompts";
 import chalk from "chalk";
 import path from "node:path";
-import { checkCancel } from "../helpers/clack";
+import { checkCancel, messages } from "../helpers/clack";
 import { copyDir, isEmptyDir, listDirectoryItems } from "../helpers/files";
 import { toNpmName } from "../helpers/project";
 import { json } from "../helpers/json";
@@ -9,8 +9,6 @@ import { Package, PackageJson } from "../helpers/package";
 import { DiscordBotTemplateProperties } from "../types/discordbot";
 import spawn from "cross-spawn";
 import { existsSync } from "node:fs";
-
-
 
 export async function DiscordBotMenu(props: ProgramProps){
     const cwd = process.cwd();
@@ -25,10 +23,9 @@ export async function DiscordBotMenu(props: ProgramProps){
         properties: path.join(basePath, "properties.json"),
     }
 
-    const templateProperties = await json.read<DiscordBotTemplateProperties>(paths.properties);
-
     if (!isEmpty){
-        log.error("The current directory is not empty!")
+        log.error("The current directory is not empty!");
+        outro();
         return;
     }
 
@@ -44,6 +41,8 @@ export async function DiscordBotMenu(props: ProgramProps){
 
     const npmName = toNpmName(String(projectName));
     log.info(chalk.bgBlue(` ${npmName} `));
+
+    const templateProperties = await json.read<DiscordBotTemplateProperties>(paths.properties);
     
     const database = await select({
         message: "Select database",
@@ -69,7 +68,7 @@ export async function DiscordBotMenu(props: ProgramProps){
 
     checkCancel(install);
 
-    // Gen
+    // Process
 
     await copyDir(paths.project, cwd, { ignore: getCopyIgnore() });
 
@@ -93,7 +92,7 @@ export async function DiscordBotMenu(props: ProgramProps){
             ...scripts
         }
 
-        // todo add prisma suport
+        // todo add variant suport
         const projectPath = path.join(paths.databases, databasePaths.default);
         if (existsSync(projectPath)){
             await copyDir(projectPath, cwd, { ignore: getCopyIgnore() });
@@ -111,6 +110,7 @@ export async function DiscordBotMenu(props: ProgramProps){
     const done = (message: string[]) => {
         message.push("run dev script")
         note(message.join("\n"), "Done");
+        outro(messages().bye())
     }
 
     if (install !== "no"){
