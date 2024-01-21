@@ -5,11 +5,7 @@ import chalk from "chalk";
 import { ServiceAccount } from "firebase-admin";
 import { log } from "#settings";
 
-const devEnvPath = rootTo(".env.development");
-
-const firebaseAccountPath = fs.existsSync(devEnvPath)
-? rootTo("firebase.development.json")
-: rootTo("firebase.json");
+const firebaseAccountPath = rootTo(process.env.FIREBASE_PATH)
 
 if (!fs.existsSync(firebaseAccountPath)){
     const filename = chalk.yellow(`"${path.basename(firebaseAccountPath)}"`);

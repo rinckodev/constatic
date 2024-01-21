@@ -32,14 +32,18 @@ export async function DiscordBotMenu(props: ProgramProps){
     const projectName = await text({ 
         message: `Project name ${chalk.dim.underline(`${path.basename(cwd)}/`)}`,
         validate(value) {
-            if (value.includes(".")) return "Name can not contain \".\"!";
             if (!value) return "You must specify a name for the project!"
         },
-    });
+    }) as string;
 
     checkCancel(projectName);
 
-    const npmName = toNpmName(String(projectName));
+    const destinationPath = path.resolve(projectName);
+
+    const npmName = destinationPath === cwd
+    ? toNpmName(path.basename(destinationPath))
+    : toNpmName(projectName);
+
     log.info(chalk.bgBlue(` ${npmName} `));
 
     const templateProperties = await json.read<DiscordBotTemplateProperties>(paths.properties);
@@ -70,14 +74,14 @@ export async function DiscordBotMenu(props: ProgramProps){
 
     // Process
 
-    await copyDir(paths.project, cwd, { ignore: getCopyIgnore() });
+    await copyDir(paths.project, destinationPath, { ignore: getCopyIgnore() });
 
     await copyDir(
         path.join(paths.tools, "gitignore.txt"), 
-        path.join(cwd, ".gitignore")
+        path.join(destinationPath, ".gitignore")
     );
 
-    const newProjectPackageJson = await json.read<PackageJson>(path.join(cwd, "package.json"));
+    const newProjectPackageJson = await json.read<PackageJson>(path.join(destinationPath, "package.json"));
     newProjectPackageJson.name = npmName;
 
     if (database !== "none"){
@@ -95,13 +99,13 @@ export async function DiscordBotMenu(props: ProgramProps){
         // todo add variant suport
         const projectPath = path.join(paths.databases, databasePaths.default);
         if (existsSync(projectPath)){
-            await copyDir(projectPath, cwd, { ignore: getCopyIgnore() });
+            await copyDir(projectPath, destinationPath, { ignore: getCopyIgnore() });
         }
     }
 
-    await json.write(path.join(cwd, "package.json"), newProjectPackageJson);
+    await json.write(path.join(destinationPath, "package.json"), newProjectPackageJson);
 
-    const items = listDirectoryItems(cwd);
+    const items = listDirectoryItems(destinationPath);
 
     const message = items.map(
         (item) => `${chalk.green("+")} ${(item.isDirectory() ? "/" : "") + item.name}`
@@ -118,7 +122,7 @@ export async function DiscordBotMenu(props: ProgramProps){
         spinner.start("Installing dependencies");
 
         const { name, args } = Package.managers[install as keyof typeof Package.managers]
-        const child = spawn(name, args, { stdio: "ignore", cwd });
+        const child = spawn(name, args, { stdio: "ignore", cwd: destinationPath });
         
         child.on("exit", (code) => {
             spinner.stop(code === 0 

@@ -1,6 +1,3 @@
-import { basename, join } from "node:path";
-import { CustomItents, CustomPartials } from "@magicyan/discord";
-import ck from "chalk";
 import {
 	ApplicationCommandType,
 	AutocompleteInteraction,
@@ -13,9 +10,12 @@ import {
 	Partials,
 	version as discordjsVersion
 } from "discord.js";
+import { basename, join } from "node:path";
+import { CustomItents, CustomPartials } from "@magicyan/discord";
+import ck from "chalk";
 import glob from "fast-glob";
 import { log } from "#settings";
-import { Command, Component, Modal } from "./index.js";
+import { Command, Component, Modal, Event } from "./index.js";
 
 const { __dirname } = importMeta(import.meta);
 
@@ -29,6 +29,7 @@ export function createClient(options: CreateClientOptions = {}) {
 	const client = new Client({
 		intents: options.intents ?? CustomItents.All,
 		partials: options.partials ?? CustomPartials.All,
+		failIfNotExists: false,
 		closeTimeout: 0,
 	});
 
@@ -46,6 +47,9 @@ export function createClient(options: CreateClientOptions = {}) {
 		);
 
 		for (const path of paths) await import(`file://${path}`);
+		
+		registerEvents(this);
+
 		this.login(process.env.BOT_TOKEN);
 	};
 	client.on("interactionCreate", (interaction) => {
@@ -96,4 +100,11 @@ function onComponent(interaction: MessageComponentInteraction) {
 function onModal(interaction: ModalSubmitInteraction) {
 	const modal = Modal.get(interaction.customId);
 	if (modal) modal.run(interaction);
+}
+function registerEvents(client: Client){
+	for(const event of Event.all){ 
+		event.once 
+		? client.once(event.name, event.run) 
+		: client.on(event.name, event.run);
+	}
 }

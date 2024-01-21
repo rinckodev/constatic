@@ -22,5 +22,5 @@ export { db };
 export * from "./documents/GuildDocument.js";
 export * from "./documents/MemberDocument.js";
 
-export * from "./functions/guilds.js"
-export * from "./functions/members.js"
+export * from "./functions/guilds.js";
+export * from "./functions/members.js";
