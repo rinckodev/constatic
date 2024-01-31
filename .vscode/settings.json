@@ -1,6 +1,7 @@
 {
     "material-icon-theme.folders.associations": {
         "menus": "layout",
-        "playground": "typescript"
+        "playground": "typescript",
+        "discord": "client"
     }
 }

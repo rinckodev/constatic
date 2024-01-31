@@ -2,7 +2,7 @@ import { log, note, text, select, spinner as createSpinner, outro } from "@clack
 import chalk from "chalk";
 import path from "node:path";
 import { checkCancel, messages } from "../helpers/clack";
-import { copyDir, isEmptyDir, listDirectoryItems } from "../helpers/files";
+import { copyDir, listDirectoryItems } from "../helpers/files";
 import { toNpmName } from "../helpers/project";
 import { json } from "../helpers/json";
 import { Package, PackageJson } from "../helpers/package";
@@ -12,7 +12,6 @@ import { existsSync } from "node:fs";
 
 export async function DiscordBotMenu(props: ProgramProps){
     const cwd = process.cwd();
-    const isEmpty = await isEmptyDir(cwd);
 
     const basePath = path.join(props.rootname, "/templates/discord/bot");
     const paths = {
@@ -21,12 +20,6 @@ export async function DiscordBotMenu(props: ProgramProps){
         databases: path.join(basePath, "databases"),
         tools: path.join(basePath, "tools"),
         properties: path.join(basePath, "properties.json"),
-    }
-
-    if (!isEmpty){
-        log.error("The current directory is not empty!");
-        outro();
-        return;
     }
 
     const projectName = await text({ 
