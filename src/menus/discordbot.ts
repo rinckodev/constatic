@@ -1,14 +1,11 @@
-import { log, note, text, select, spinner as createSpinner, outro } from "@clack/prompts";
+import { spinner as createSpinner, log, note, outro, select, text } from "@clack/prompts";
 import chalk from "chalk";
-import path from "node:path";
-import { checkCancel, messages } from "../helpers/clack";
-import { copyDir, listDirectoryItems } from "../helpers/files";
-import { toNpmName } from "../helpers/project";
-import { json } from "../helpers/json";
-import { Package, PackageJson } from "../helpers/package";
-import { DiscordBotTemplateProperties } from "../types/discordbot";
 import spawn from "cross-spawn";
 import { existsSync } from "node:fs";
+import path from "node:path";
+import { PackageJson } from "pkg-types";
+import { Package, checkCancel, copyDir, getCdProjectPath, json, listDirectoryItems, mergeObject, messages, toNpmName } from "../helpers";
+import { DiscordBotTemplateProperties } from "../types/discordbot";
 
 export async function DiscordBotMenu(props: ProgramProps){
     const cwd = process.cwd();
@@ -33,7 +30,9 @@ export async function DiscordBotMenu(props: ProgramProps){
 
     const destinationPath = path.resolve(projectName);
 
-    const npmName = destinationPath === cwd
+    const destinationIsCwd = destinationPath === cwd;
+
+    const npmName = destinationIsCwd
     ? toNpmName(path.basename(destinationPath))
     : toNpmName(projectName);
 
@@ -75,19 +74,12 @@ export async function DiscordBotMenu(props: ProgramProps){
     );
 
     const newProjectPackageJson = await json.read<PackageJson>(path.join(destinationPath, "package.json"));
-    newProjectPackageJson.name = npmName;
+    mergeObject(newProjectPackageJson, { name: npmName });
 
     if (database !== "none"){
         const { paths: databasePaths, dependencies, scripts } = templateProperties.databases[Number(database)];
-        
-        newProjectPackageJson.dependencies = {
-            ...newProjectPackageJson.dependencies,
-            ...dependencies
-        }
-        newProjectPackageJson.scripts = {
-            ...newProjectPackageJson.scripts,
-            ...scripts
-        }
+
+        mergeObject(newProjectPackageJson, { dependencies, scripts });
 
         // todo add variant suport
         const projectPath = path.join(paths.databases, databasePaths.default);
@@ -104,8 +96,12 @@ export async function DiscordBotMenu(props: ProgramProps){
         (item) => `${chalk.green("+")} ${(item.isDirectory() ? "/" : "") + item.name}`
     );
 
-    const done = (message: string[]) => {
-        message.push("run dev script")
+    message.push("");
+    
+    if (!destinationIsCwd) message.push(`${chalk.green("➞")} use: ${getCdProjectPath(destinationPath)}`)
+
+    const done = () => {
+        message.push(`${chalk.green("➞")} run dev script`);
         note(message.join("\n"), "Done");
         outro(messages().bye())
     }
@@ -123,13 +119,12 @@ export async function DiscordBotMenu(props: ProgramProps){
                 : "Unable to install dependencies!",
                 code ?? undefined
             )
-            message.push("");
-            done(message);
+            done();
         });
         return;
     }
-    message.push("", "install the dependencies")
-    done(message);
+    message.push(`${chalk.green("➞")} install the dependencies`)
+    done();
 }
 
 function getCopyIgnore(){

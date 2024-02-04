@@ -9,17 +9,22 @@ import { MainMenu } from "./menus/main";
 
 const { __dirname } = importMeta(import.meta);
 
-intro(`💫 ${chalk.blue("Constatic CLI")} 📦 ${chalk.gray.underline(Package.json.version)}`)
+async function program() {
+    const packageJson = await Package.json();
 
-const rootname = path.join(__dirname, "..");
+    intro(`💫 ${chalk.blue("Constatic CLI")} 📦 ${chalk.gray.underline(packageJson.version)}`)
 
-citty.runMain({
-    meta: {
-        name: Package.json.name,
-        description: Package.json.description,
-        version: Package.json.version
-    },
-    run() {
-        MainMenu({ rootname });
-    },
-});
+    const rootname = path.join(__dirname, "..");
+
+    citty.runMain({
+        meta: {
+            name: packageJson.name,
+            description: packageJson.description,
+            version: packageJson.version
+        },
+        run() {
+            MainMenu({ rootname });
+        },
+    });
+}
+program();

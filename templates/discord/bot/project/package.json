@@ -6,12 +6,12 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "tsx --env-file .env --no-warnings --no-deprecation ./src/index.ts",
-    "dev:dev": "tsx --env-file .env.development --no-warnings --no-deprecation ./src/index.ts",
-    "watch": "tsx --env-file .env --no-warnings --no-deprecation --watch ./src/index.ts",
-    "watch:dev": "tsx --env-file .env.development --no-warnings --no-deprecation --watch ./src/index.ts",
-    "start": "node --env-file .env --no-warnings --no-deprecation .",
-    "start:dev": "node --env-file .env.development --no-warnings --no-deprecation ."
+    "dev": "tsx --env-file .env ./src/index.ts",
+    "dev:dev": "tsx --env-file .env.development ./src/index.ts",
+    "watch": "tsx --env-file .env --watch ./src/index.ts",
+    "watch:dev": "tsx --env-file .env.development --watch ./src/index.ts",
+    "start": "node --env-file .env .",
+    "start:dev": "node --env-file .env.development ."
   },
   "dependencies": {
     "@magicyan/discord": "^1.0.14",

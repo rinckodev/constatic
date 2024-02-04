@@ -7,9 +7,10 @@ This is the most complete bot base you've ever seen created by [@rinckodev](http
 
 ## Scripts
 
-- `npm run dev`: running bot in development
-- `npm run build`: build the project
-- `npm run start`: running the builded bot
+- `dev`: running bot in development
+- `build`: build the project
+- `watch`: running in watch mode
+- `start`: running the builded bot
 
 ## Structures
 

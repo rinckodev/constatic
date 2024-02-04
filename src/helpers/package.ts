@@ -1,8 +1,8 @@
-import packageJson from "../../package.json";
-type PackageJson = typeof packageJson;
+import { readPackageJSON } from "pkg-types";
+
 
 const Package = {
-    json: packageJson,
+    json: readPackageJSON,
     managers: {
         npm: { name: "npm", args: ["install"] },
         yarn: { name: "yarn", args: ["add"] },
@@ -11,4 +11,4 @@ const Package = {
     }
 }
 
-export { Package, PackageJson }
+export { Package }

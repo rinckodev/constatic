@@ -1,3 +1,5 @@
+import path from "node:path";
+
 export function toNpmName(name: string){
     return name
     .toLowerCase()
@@ -5,4 +7,9 @@ export function toNpmName(name: string){
     .replaceAll(".", "")
     .replaceAll("/", "")
     .replace(/[^\w\s-]/gi, "");
+}
+
+export function getCdProjectPath(filepath: string){
+    const basename = path.basename(filepath);
+    return basename.trim().includes(" ") ? `cd ./"${basename}"` : `cd ./${basename}`
 }

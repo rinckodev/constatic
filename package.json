@@ -27,6 +27,7 @@
     "chalk": "^5.3.0",
     "citty": "^0.1.5",
     "cross-spawn": "^7.0.3",
-    "fs-extra": "^11.2.0"
+    "fs-extra": "^11.2.0",
+    "pkg-types": "^1.0.3"
   }
 }
