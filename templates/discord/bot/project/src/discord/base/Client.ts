@@ -1,25 +1,12 @@
-import {
-	ApplicationCommandType,
-	AutocompleteInteraction,
-	BitFieldResolvable,
-	Client,
-	CommandInteraction,
-	GatewayIntentsString,
-	MessageComponentInteraction,
-	ModalSubmitInteraction,
-	Partials,
-	version as discordjsVersion
-} from "discord.js";
-import { basename, join } from "node:path";
+import { BitFieldResolvable, Client, GatewayIntentsString, Partials, version as discordjsVersion} from "discord.js";
 import { CustomItents, CustomPartials } from "@magicyan/discord";
-import ck from "chalk";
-import glob from "fast-glob";
+import { Command, Component, Event, Modal } from "./index.js";
+import { basename, join } from "node:path";
 import { log } from "#settings";
-import { Command, Component, Modal, Event } from "./index.js";
+import glob from "fast-glob";
+import ck from "chalk";
 
-const { __dirname } = importMeta(import.meta);
-
-const foldername = basename(join(__dirname, "../../"));
+const foldername = basename(join(getDirname(import.meta), "../../"));
 
 interface CreateClientOptions {
 	intents?: BitFieldResolvable<GatewayIntentsString, number>;
@@ -34,9 +21,19 @@ export function createClient(options: CreateClientOptions = {}) {
 	});
 
 	client.start = async function (options) {
-		this.once("ready", (readyClient) => {
-			whenReady(readyClient);
-			options?.whenReady?.(readyClient);
+		this.once("ready", async (readyClient) => {
+			console.log();
+			log.success(
+				`${ck.green("Bot online")} ${ck.blue.underline("discord.js")} 📦 ${ck.yellow(discordjsVersion)} \n`,
+				`${ck.greenBright(`➝ Connected as ${ck.underline(readyClient.user.username)}`)}`
+			);
+			console.log();
+
+			await readyClient.application.commands.set(Array.from(Command.commands.values()))
+			.then(() => log.success(ck.green("Commands registered successfully!")))
+			.catch(log.error);
+
+			if (options?.whenReady) options.whenReady(readyClient);
 		});
 		const paths = await glob(
 			[
@@ -46,65 +43,16 @@ export function createClient(options: CreateClientOptions = {}) {
 			{ absolute: true }
 		);
 
-		for (const path of paths) await import(`file://${path}`);
-		
-		registerEvents(this);
-
+		await Promise.all(paths.map(async path => import(`file://${path}`)));
+	
+		Event.register(this);
 		this.login(process.env.BOT_TOKEN);
 	};
 	client.on("interactionCreate", (interaction) => {
-		if (interaction.isCommand()) onCommand(interaction);
-		if (interaction.isAutocomplete()) onAutoComplete(interaction);
-		if (interaction.isMessageComponent()) onComponent(interaction);
-		if (interaction.isModalSubmit()) onModal(interaction);
+		if (interaction.isCommand()) Command.onCommand(interaction);
+		if (interaction.isAutocomplete()) Command.onAutocomplete(interaction);
+		if (interaction.isMessageComponent()) Component.onComponent(interaction);
+		if (interaction.isModalSubmit()) Modal.onModal(interaction);
 	});
 	return client;
-}
-
-async function whenReady(client: Client<true>) {
-	console.log();
-	log.success(
-		`${ck.green("Bot online")} ${ck.blue.underline("discord.js")} 📦 ${ck.yellow(discordjsVersion)} \n`,
-		`${ck.greenBright(`➝ Connected as ${ck.underline(client.user.username)}`)}`
-	);
-	console.log();
-
-	await client.application.commands.set(Array.from(Command.commands.values()))
-	.then(() => log.success(ck.green("Commands registered successfully!")))
-	.catch(log.error);
-}
-function onCommand(commandInteraction: CommandInteraction) {
-	const command = Command.commands.get(commandInteraction.commandName);
-	if (command) {
-		command.run(commandInteraction as never, command.store ?? {});
-		return;
-	}
-	log.warn(`Missing function to ${commandInteraction.commandName} command`);
-}
-function onAutoComplete(interaction: AutocompleteInteraction) {
-	const command = Command.commands.get(interaction.commandName);
-	if (
-		command?.type !== ApplicationCommandType.ChatInput ||
-		!command.autoComplete
-	)
-		return;
-	command.autoComplete(interaction as never, command.store ?? {});
-}
-function onComponent(interaction: MessageComponentInteraction) {
-	const component = Component.get(
-		interaction.customId,
-		interaction.componentType
-	);
-	if (component) component.run(interaction as never);
-}
-function onModal(interaction: ModalSubmitInteraction) {
-	const modal = Modal.get(interaction.customId);
-	if (modal) modal.run(interaction);
-}
-function registerEvents(client: Client){
-	for(const event of Event.all){ 
-		event.once 
-		? client.once(event.name, event.run) 
-		: client.on(event.name, event.run);
-	}
 }

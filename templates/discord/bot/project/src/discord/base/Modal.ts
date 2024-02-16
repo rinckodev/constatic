@@ -6,59 +6,33 @@ import {
 	ModalSubmitInteraction
 } from "discord.js";
 import { log } from "#settings";
+import { Params, getCustomIdParams } from "./utils.js";
 
-type GetInteraction<
-	C extends CacheType = CacheType,
-	M extends boolean = boolean
-> = M extends true
-	? ModalMessageModalSubmitInteraction<C>
-	: ModalSubmitInteraction<C>;
+type GetInteraction<C extends CacheType = CacheType, M extends boolean = boolean> = 
+	M extends true ? ModalMessageModalSubmitInteraction<C> : ModalSubmitInteraction<C>;
 
-type CustomIdFunction = (customId: string) => boolean;
+type ModalData<I, C extends CacheType = CacheType, M extends boolean = boolean> = {
+	customId: I; cache?: C; isFromMessage?: M;
+	run(interaction: GetInteraction<C, M>, params: Params<I>): void;
+}
 
-type ComponentStringIdentifier = {
-	customId: string;
-};
-type ComponentFunctionIdentifier = {
-	name: string;
-	customId: CustomIdFunction;
-};
-
-type ComponentIdentifier =
-	| ComponentStringIdentifier
-	| ComponentFunctionIdentifier;
-
-type ModalData<C extends CacheType = CacheType, M extends boolean = boolean> = {
-	cache?: C;
-	isFromMessage?: M;
-	run(interaction: GetInteraction<C, M>): void;
-} & ComponentIdentifier;
-
-export class Modal<
-	C extends CacheType = CacheType,
-	M extends boolean = boolean
-> {
-	private static all: Collection<string, ModalData> = new Collection();
-	public static get(customId: string) {
-		return (
-			Modal.all.get(customId) || Modal.logical.find((m) => m.customId(customId))
-		);
+export class Modal<I extends string, C extends CacheType = CacheType, M extends boolean = boolean> {
+	private static modals = new Collection<string, ModalData<any, any, any>>();
+	constructor(data: ModalData<I, C, M>) {
+		Modal.modals.set(data.customId, data);
+		log.success(ck.green(`${ck.cyan.underline(data.customId)} modal registered successfully!`));
 	}
-	public static logical: Array<ModalData & { customId: CustomIdFunction }> = [];
-	constructor(data: ModalData<C, M>) {
-		if (typeof data.customId === "string") {
-			Modal.all.set(data.customId, data);
-			log.success(
-				ck.green(
-					`${ck.cyan.underline(data.customId)} modal registered successfully!`
-				)
-			);
-		} else {
-			Modal.logical.push(data as any);
-			const name = (data as { name: string }).name;
-			log.success(
-				ck.green(`${ck.cyan.underline(name)} modal registered successfully!`)
-			);
+	public static onModal(interaction: ModalSubmitInteraction){
+		const { customId } = interaction;
+		if (Modal.modals.has(customId)){
+			const modal = Modal.modals.get(customId)!;
+			modal.run(interaction, null);
+			return;
 		}
+
+		const modal = Modal.modals.find(data => !!getCustomIdParams(data.customId, customId));
+        if (!modal) return;
+		const params = getCustomIdParams(modal.customId, customId);
+        modal.run(interaction, params);
 	}
 }

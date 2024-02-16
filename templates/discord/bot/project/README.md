@@ -1,7 +1,7 @@
 # Awesome Bot Base
 * [This project was generated using Constatic CLI](https://github.com/rinckodev/constatic)
 
-This is the most complete bot base you've ever seen created by [@rinckodev](https://github.com/rinckodev). This project uses typescript to its advantage, using features to create complete structures that facilitate the construction of commands and systems
+This is the most complete bot base you've ever seen! Created by [@rinckodev](https://github.com/rinckodev). This project uses typescript to its advantage, using features to create complete structures that facilitate the construction of commands and systems
 
 ! Node version required: 21.5 or higher 
 
@@ -27,13 +27,15 @@ See how to use:
 
 To create a new command, import the Command class from the `src/discord/base` folder. All commands must be created in the `src/discord/commands` folder or subfolders of the commands folder
 
+- Use import alias `#base` 
+
 You can create slash **commands**, **user** and **message** context menus
 
 The run method interaction typing is defined according to the command type
 
 ```ts
 import { ApplicationCommandType } from "discord.js";
-import { Command } from "@/discord/base";
+import { Command } from "#base";
 
 new Command({
     name: "ping",
@@ -87,7 +89,7 @@ new Command({
 
 ```ts
 new Command({
-    name: "Reply",
+    name: "Say hello",
     dmPermission: false,
     type: ApplicationCommandType.Message, // <= Message context menu command type
     async run(interaction){ // MessageContextMenuCommandInteraction
@@ -106,7 +108,7 @@ new Command({
 To create a listener for a discord.js event, use the Event class from the `src/discord/base` folder
 
 ```ts
-import { Event } from "@discord/base";
+import { Event } from "#base";
 
 new Event({
     name: "messageUpdate",
@@ -138,8 +140,8 @@ Import the class from the `src/discord/base` folder, then set the custom id and 
 The components that can be defined in the type property are buttons and any type of select menu
 
 ```ts
-import { Component } from "@/discord/base";
 import { ComponentType } from "discord.js";
+import { Component } from "#base";
 
 new Component({
     customId: "example-component-button",
@@ -151,7 +153,7 @@ new Component({
 ```
 
 ```ts
-// Commnad code block ===
+// Command code block 
 const channel = interaction.channel as TextChannel;
 
 const embed = new EmbedBuilder({ description: "Welcome to the store" });
@@ -179,37 +181,47 @@ new Component({
 });
 ```
 
-It is possible to reply multiple components passing a function instead of a string in the customId property
+You can use a feature from this base named "Custom Id Params" to respond to components dynamically, see:
 ```ts
 // User context menu command
 new Command({
     name: "Manage user",
-    dmPermission,
+    dmPermission: false,
     type: ApplicationCommandType.User,
     async run(interaction){
         const { targetUser } = interaction;
 
         const embed = new EmbedBuilder({ description: `Manage ${targetUser}` });
         const row = createRow(
-            new ButtonBuilder({ customId: "manage-user-kick", label: "Kick", style: ButtonStyle.Secondary }),
-            new ButtonBuilder({ customId: "manage-user-ban", label: "Ban", style: ButtonStyle.Danger }),
-            new ButtonBuilder({ customId: "manage-user-timeout", label: "Timeout", style: ButtonStyle.Danger }),
-            new ButtonBuilder({ customId: "manage-user-alert", label: "Alert", style: ButtonStyle.Primary })
+            new ButtonBuilder({ 
+                customId: `manage/user/${targetUser.id}/kick`, 
+                label: "Kick", style: ButtonStyle.Secondary 
+            }),
+            new ButtonBuilder({ 
+                customId: `manage/user/${targetUser.id}/ban`, 
+                label: "Ban", style: ButtonStyle.Danger 
+            }),
+            new ButtonBuilder({ 
+                customId: `manage/user/${targetUser.id}/timeout`, 
+                label: "Timeout", style: ButtonStyle.Danger 
+            }),
+            new ButtonBuilder({ 
+                customId: `manage/user/${targetUser.id}/alert`, 
+                label: "Alert", style: ButtonStyle.Primary 
+            })
         );
 
         interaction.reply({ ephemeral, embeds: [embed], components: [row] });
     }
 });
-// ===
 
+// Dynamic button component function
 new Component({
-    name: "Manage user buttons",
-    customId: id => id.startsWith("manage-user-"),
+    customId: "manage/user/:userId/:action",
     type: ComponentType.Button, cache: "cached",
-    async run(interaction) {
-        const { customId, message, guild } = interaction;
-        const action = customId.replace("manage-user-", "");
-        const targetMember = await guild.members.fetch(message.embeds[0].footer?.text!);
+    async run(interaction, params) {
+        const { action, userId } = params;
+        const targetMember = await interaction.guild.members.fetch(userId);
 
         switch(action){
             case "kick": {
@@ -244,7 +256,7 @@ new Component({
 You can create functionality for modals in the same way as [components](#how-to-use-components);
 
 ```ts
-import { Modal } from "@/discord/base";
+import { Modal } from "#base";
 
 new Modal({
     customId: "announcement-modal",
@@ -273,16 +285,7 @@ new Modal({
     },
 });
 ```
-
-[Back to the top ↑](#structures)
-
-# Dotenv
-
-You must set your bot's token and other sensitive information in the `.env` file in the project root
-
-_However you may want to use a different env file in development._
-
-If the `.env.development` file exists, **dotenv** will use it to load environment variables. You can use these variables in a development-only environment and when building the project, send the .env file with production variables
+- You can also use "Custom Id Params" with modals
 
 [Back to the top ↑](#structures)
 

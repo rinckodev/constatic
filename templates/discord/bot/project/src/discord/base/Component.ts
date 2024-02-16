@@ -1,93 +1,46 @@
-import ck from "chalk";
-import {
-	ButtonInteraction,
-	CacheType,
-	ChannelSelectMenuInteraction,
-	Collection,
-	ComponentType,
-	MentionableSelectMenuInteraction,
-	RoleSelectMenuInteraction,
-	StringSelectMenuInteraction,
-	UserSelectMenuInteraction
-} from "discord.js";
 import { log } from "#settings";
+import chalk from "chalk";
+import { CacheType, Collection, ComponentType, Interaction, MessageComponentInteraction } from "discord.js";
+import { getCustomIdParams, Params } from "./utils.js";
 
-type ComponentProps<C extends CacheType = CacheType> =
-	| {
-			type: ComponentType.Button;
-			run(interaction: ButtonInteraction<C>): void;
-	  }
-	| {
-			type: ComponentType.StringSelect;
-			run(interaction: StringSelectMenuInteraction<C>): void;
-	  }
-	| {
-			type: ComponentType.RoleSelect;
-			run(interaction: RoleSelectMenuInteraction<C>): void;
-	  }
-	| {
-			type: ComponentType.ChannelSelect;
-			run(interaction: ChannelSelectMenuInteraction<C>): void;
-	  }
-	| {
-			type: ComponentType.UserSelect;
-			run(interaction: UserSelectMenuInteraction<C>): void;
-	  }
-	| {
-			type: ComponentType.MentionableSelect;
-			run(interaction: MentionableSelectMenuInteraction<C>): void;
-	  };
+type MessageComponentType = Exclude<ComponentType, ComponentType.ActionRow | ComponentType.TextInput>
 
-type CustomIdFunction = (customId: string) => boolean;
+type GetComponentInteraction<T, C extends CacheType> = 
+	Extract<Interaction<C>, { componentType: T }>
 
-type ComponentStringIdentifier = {
-	customId: string;
-};
-type ComponentFunctionIdentifier = {
-	name: string;
-	customId: CustomIdFunction;
-};
+type ComponentInteraction<T, C extends CacheType> = {
+	interaction: GetComponentInteraction<T, C>
+} & GetComponentInteraction<T, C>
 
-type ComponentIdentifier =
-	| ComponentStringIdentifier
-	| ComponentFunctionIdentifier;
+type ComponentData<I extends string, T, C extends CacheType = CacheType> = {
+    customId: I; type: T; cache?: C;
+	run(interaction: ComponentInteraction<T, C>, params: Params<I>): void
+}
 
-type ComponentData<C extends CacheType = CacheType> = ComponentProps<C> &
-	ComponentIdentifier & {
-		cache?: C;
-	};
-
-export class Component<C extends CacheType = CacheType> {
-	private static components: Collection<string, ComponentData> =
-		new Collection();
-	public static get<T extends ComponentType>(customId: string, type: T) {
-		return (
-			Component.components.find(
-				(c) => c.customId === customId && c.type === type
-			) ||
-			Component.logical.find((c) => c.customId(customId) && c.type === type)
-		);
+export class Component<I extends string, T extends MessageComponentType, C extends CacheType> {
+	private static components = new Collection<ComponentType, Collection<string, ComponentData<any, any, any>>>(); 
+    constructor(data: ComponentData<I, T, C>){
+        const components = Component.components.get(data.type) ?? new Collection();
+        components.set(data.customId, data);
+        Component.components.set(data.type, components);
+		log.success(chalk.green(`${chalk.cyan.underline(data.customId)} component registered successfully!`));
 	}
-	public static logical: Array<ComponentData & { customId: CustomIdFunction }> =
-		[];
-	constructor(data: ComponentData<C>) {
-		if (typeof data.customId === "string") {
-			Component.components.set(data.customId, data);
-			log.success(
-				ck.green(
-					`${ck.cyan.underline(
-						data.customId
-					)} component registered successfully!`
-				)
-			);
-		} else {
-			Component.logical.push(data as any);
-			const name = (data as { name: string }).name;
-			log.success(
-				ck.green(
-					`${ck.cyan.underline(name)} component registered successfully!`
-				)
-			);
-		}
-	}
+    public static onComponent(interaction: MessageComponentInteraction){
+        const { customId, componentType } = interaction;
+        
+        const components = Component.components.get(componentType);
+        if (!components) return;
+
+        if (components.has(customId)){
+            const component = components.get(customId)!;
+            component.run(interaction as any, null);
+            return;
+        }
+        
+        const component = components.find((data) => !!getCustomIdParams(data.customId, customId));
+        if (!component) return;
+        const params = getCustomIdParams(component.customId, customId);
+        component.run(interaction as any, params);
+
+    }
 }
