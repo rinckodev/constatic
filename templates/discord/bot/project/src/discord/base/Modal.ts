@@ -1,12 +1,7 @@
-import ck from "chalk";
-import {
-	CacheType,
-	Collection,
-	ModalMessageModalSubmitInteraction,
-	ModalSubmitInteraction
-} from "discord.js";
-import { log } from "#settings";
+import { CacheType, Collection, ModalMessageModalSubmitInteraction, ModalSubmitInteraction } from "discord.js";
 import { Params, getCustomIdParams } from "./utils.js";
+import { log } from "#settings";
+import ck from "chalk";
 
 type GetInteraction<C extends CacheType = CacheType, M extends boolean = boolean> = 
 	M extends true ? ModalMessageModalSubmitInteraction<C> : ModalSubmitInteraction<C>;

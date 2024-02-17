@@ -1,0 +1,114 @@
+{
+	"Slash Command": {
+		"prefix": "new.command",
+		"scope":"typescript",
+		"body": [
+			"new Command({",
+			"    name: \"$1\",",
+			"    description: \"$2\",",
+			"    dmPermission: false,",
+			"    type: ApplicationCommandType.ChatInput,",
+			"    async run(interaction){",
+			"        $3",
+			"    }",
+			"});"
+		],
+		"description": "Create a new Slash Command"
+	},
+	"Slash Command with options": {
+		"prefix": "new.command.options",
+		"scope":"typescript",
+		"body": [
+			"new Command({",
+			"    name: \"$1\",",
+			"    description: \"$2\",",
+			"    dmPermission: false,",
+			"    type: ApplicationCommandType.ChatInput,",
+			"    options: [",
+			"        {",
+			"            name: \"$3\",",
+			"            description: \"$4\",",
+			"            type: ApplicationCommandOptionType.$5",
+			"        }",
+			"    ],",
+			"    async run(interaction){",
+			"        const { options } = interaction;",
+			"        ",
+			"    }",
+			"});"
+		],
+		"description": "Create a new Slash Command with options"
+	},
+	"User Context Command": {
+		"prefix": "new.command.user",
+		"scope":"typescript",
+		"body": [
+			"new Command({",
+			"    name: \"$1\",",
+			"    dmPermission,",
+			"    type: ApplicationCommandType.User,",
+			"    async run(interaction){",
+			"        ",
+			"    }",
+			"});"
+		],
+		"description": "Create a new User Context Command"
+	},
+	"Message Context Command": {
+		"prefix": "new.command.message",
+		"scope":"typescript",
+		"body": [
+			"new Command({",
+			"    name: \"$1\",",
+			"    dmPermission,",
+			"    type: ApplicationCommandType.Message,",
+			"    async run(interaction){",
+			"        ",
+			"    }",
+			"});"
+		],
+		"description": "Create a new Message Context Command"
+	},
+	"Component": {
+		"prefix": "new.component",
+		"scope":"typescript",
+		"body": [
+			"new Component({",
+			"    customId: \"example-component-button\",",
+			"    type: ComponentType.$1, cache: \"cached\",",
+			"    async run(interaction) {",
+			"        ",
+			"    },",
+			"});"
+		],
+		"description": "Create a new component"
+	},
+	"Modal": {
+		"prefix": "new.modal",
+		"scope":"typescript",
+		"body": [
+			"new Modal({",
+			"    customId: \"example-modal\",",
+			"    cache: \"cached\", isFromMessage: true,",
+			"    async run(interaction) {",
+			"        ",
+			"    },",
+			"});"
+		],
+		"description": "Create a new modal"
+	},
+	"Event": {
+		"prefix": "new.event",
+		"scope":"typescript",
+		"body": [
+			"import { Event } from \"#base\";",
+			"",
+			"new Event({",
+			"   name: \"$1\",",
+			"   event: \"$2\",",
+			"   $3",
+			"});"
+		],
+		"description": "Create a new modal"
+	}
+}

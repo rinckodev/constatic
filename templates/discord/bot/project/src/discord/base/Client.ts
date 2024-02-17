@@ -1,6 +1,6 @@
 import { BitFieldResolvable, Client, GatewayIntentsString, Partials, version as discordjsVersion} from "discord.js";
 import { CustomItents, CustomPartials } from "@magicyan/discord";
-import { Command, Component, Event, Modal } from "./index.js";
+import { Command, Component, Event, Listener, Modal } from "./index.js";
 import { basename, join } from "node:path";
 import { log } from "#settings";
 import glob from "fast-glob";
@@ -46,6 +46,7 @@ export function createClient(options: CreateClientOptions = {}) {
 		await Promise.all(paths.map(async path => import(`file://${path}`)));
 	
 		Event.register(this);
+		Listener.register(this);
 		this.login(process.env.BOT_TOKEN);
 	};
 	client.on("interactionCreate", (interaction) => {
