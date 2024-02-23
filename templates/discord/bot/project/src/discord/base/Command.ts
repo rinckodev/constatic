@@ -27,6 +27,15 @@ type CommandData<N extends string, D extends boolean, T extends ApplicationComma
 
 export class Command<N extends string, D extends boolean, T extends ApplicationCommandType, S extends CommandStore> {
 	public static commands = new Collection<string, CommandData<any, any, any, any>>();
+	constructor(private readonly data: CommandData<N, D, T, S>){
+		Command.commands.set(data.name, data);
+	}
+	public get store(){
+		return this.data.store ?? {} as S;
+	}
+	public getApplicationCommand(client: Client<true>) {
+		return findCommand(client).byName(this.data.name)!;
+	}
 	public static onCommand(interaction: CommandInteraction){
 		const command = Command.commands.get(interaction.commandName);
 		if (command) {
@@ -41,14 +50,9 @@ export class Command<N extends string, D extends boolean, T extends ApplicationC
 			command.autocomplete(interaction, command.store);
 		}
 	}
-	public get store(){
-		return this.data.store ?? {} as S;
-	}
-	constructor(private readonly data: CommandData<N, D, T, S>){
-		Command.commands.set(data.name, data);
-		log.success(chalk.green(`${chalk.blue.underline(data.name)} command registered successfully!`));
-	}
-	public getApplicationCommand(client: Client<true>) {
-		return findCommand(client).byName(this.data.name)!;
+	public static logs(){
+		Command.commands.forEach(({ name }) => {
+			log.success(chalk.green(`${chalk.blue.underline(name)} command registered successfully!`));
+		});
 	}
 }

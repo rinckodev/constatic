@@ -1,5 +1,6 @@
 import { Command } from "#base";
-import { ApplicationCommandType } from "discord.js";
+import { createRow } from "@magicyan/discord";
+import { ApplicationCommandType, ButtonBuilder, ButtonStyle } from "discord.js";
 
 new Command({
 	name: "ping",
@@ -7,7 +8,15 @@ new Command({
 	dmPermission: false,
 	type: ApplicationCommandType.ChatInput,
 	async run(interaction){
+		
+		const row = createRow(
+			new ButtonBuilder({
+				customId: `remind/${new Date().toISOString()}`,
+				label: "Ping",
+				style: ButtonStyle.Success
+			})
+		);
 
-		interaction.reply({ ephemeral, content: "pong" });
+		interaction.reply({ ephemeral, content: "pong", components: [row] });
 	}
 });

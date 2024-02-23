@@ -15,7 +15,6 @@ export class Modal<I extends string, C extends CacheType = CacheType, M extends 
 	private static modals = new Collection<string, ModalData<any, any, any>>();
 	constructor(data: ModalData<I, C, M>) {
 		Modal.modals.set(data.customId, data);
-		log.success(ck.green(`${ck.cyan.underline(data.customId)} modal registered successfully!`));
 	}
 	public static onModal(interaction: ModalSubmitInteraction){
 		const { customId } = interaction;
@@ -29,5 +28,11 @@ export class Modal<I extends string, C extends CacheType = CacheType, M extends 
         if (!modal) return;
 		const params = getCustomIdParams(modal.customId, customId);
         modal.run(interaction, params);
+	}
+
+	public static logs(){
+		Modal.modals.forEach(({ customId }) => {
+			log.success(ck.green(`${ck.cyan.underline(customId)} modal registered successfully!`));
+		});
 	}
 }

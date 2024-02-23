@@ -23,7 +23,7 @@ export class Component<I extends string, T extends MessageComponentType, C exten
         const components = Component.components.get(data.type) ?? new Collection();
         components.set(data.customId, data);
         Component.components.set(data.type, components);
-		log.success(chalk.green(`${chalk.cyan.underline(data.customId)} component registered successfully!`));
+		// log.success(chalk.green(`${chalk.cyan.underline(data.customId)} component registered successfully!`));
 	}
     public static onComponent(interaction: MessageComponentInteraction){
         const { customId, componentType } = interaction;
@@ -41,6 +41,13 @@ export class Component<I extends string, T extends MessageComponentType, C exten
         if (!component) return;
         const params = getCustomIdParams(component.customId, customId);
         component.run(interaction as any, params);
-
     }
+    public static logs(){
+        for(const components of Component.components.values()){
+
+            components.forEach(({ customId }) => {
+                log.success(chalk.green(`${chalk.blue.underline(customId)} component registered successfully!`));
+            });
+        }
+	}
 }

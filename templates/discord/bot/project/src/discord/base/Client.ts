@@ -1,6 +1,6 @@
-import { BitFieldResolvable, Client, GatewayIntentsString, Partials, version as discordjsVersion} from "discord.js";
-import { CustomItents, CustomPartials } from "@magicyan/discord";
 import { Command, Component, Event, Listener, Modal } from "./index.js";
+import { CustomItents, CustomPartials } from "@magicyan/discord";
+import { Client, ClientOptions, version } from "discord.js";
 import { basename, join } from "node:path";
 import { log } from "#settings";
 import glob from "fast-glob";
@@ -8,23 +8,21 @@ import ck from "chalk";
 
 const foldername = basename(join(getDirname(import.meta), "../../"));
 
-interface CreateClientOptions {
-	intents?: BitFieldResolvable<GatewayIntentsString, number>;
-	partials?: Partials[]
-}
-export function createClient(options: CreateClientOptions = {}) {
+export function createClient(options: Partial<ClientOptions> = {}) {
+	const { intents, partials, ...otherOptions } = options;
+
 	const client = new Client({
-		intents: options.intents ?? CustomItents.All,
-		partials: options.partials ?? CustomPartials.All,
-		failIfNotExists: false,
-		closeTimeout: 0,
+		intents: intents ?? CustomItents.All,
+		partials: partials ?? CustomPartials.All,
+		failIfNotExists: false, closeTimeout: 0,
+		...otherOptions
 	});
 
-	client.start = async function (options) {
+	client.start = async function(options) {
 		this.once("ready", async (readyClient) => {
 			console.log();
 			log.success(
-				`${ck.green("Bot online")} ${ck.blue.underline("discord.js")} 📦 ${ck.yellow(discordjsVersion)} \n`,
+				`${ck.green("Bot online")} ${ck.blue.underline("discord.js")} 📦 ${ck.yellow(version)} \n`,
 				`${ck.greenBright(`➝ Connected as ${ck.underline(readyClient.user.username)}`)}`
 			);
 			console.log();
@@ -44,9 +42,10 @@ export function createClient(options: CreateClientOptions = {}) {
 		);
 
 		await Promise.all(paths.map(async path => import(`file://${path}`)));
+		Event.register(this); Listener.register(this);
 	
-		Event.register(this);
-		Listener.register(this);
+		Command.logs(); Component.logs(); Listener.logs(); Modal.logs(); Event.logs();
+
 		this.login(process.env.BOT_TOKEN);
 	};
 	client.on("interactionCreate", (interaction) => {

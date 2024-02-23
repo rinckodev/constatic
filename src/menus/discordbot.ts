@@ -6,6 +6,7 @@ import path from "node:path";
 import { PackageJson } from "pkg-types";
 import { Package, checkCancel, copyDir, getCdProjectPath, json, listDirectoryItems, mergeObject, messages, toNpmName } from "../helpers";
 import { DiscordBotTemplateProperties } from "../types/discordbot";
+import { setTimeout } from "node:timers/promises";
 
 export async function DiscordBotMenu(props: ProgramProps){
     const cwd = process.cwd();
@@ -52,18 +53,33 @@ export async function DiscordBotMenu(props: ProgramProps){
 
     checkCancel(database);
 
-    const install = await select({
-        message: "Install dependencies?",
-        options: [
-            ...Object.values(Package.managers).map(({ name }) => 
-                ({ label: `${chalk.green("Yes")} (${name})`, value: name })
-            ),
-            { label: chalk.red("No"), value: "no" }
-        ]
-    });
+    async function installPrompt(){
+        const selected = await select({
+            message: "Install dependencies?",
+            options: [
+                ...Object.values(Package.managers).map(({ name }) => 
+                    ({ label: `${chalk.green("Yes")} (${name})`, value: name })
+                ),
+                { label: chalk.red("No"), value: "no" }
+            ]
+        }) as string;
 
-    checkCancel(install);
+        checkCancel(selected);
 
+        if (selected === "no") return selected;
+        const { name } = Package.managers[selected as keyof typeof Package.managers]
+        return new Promise<string>(resolve => {
+            const child = spawn(name, ["--version"], { stdio: "ignore", cwd: destinationPath });
+            child.on("exit", (code) => (code === 0) ? resolve(selected) : resolve(installPrompt()));
+            child.on("error", async () => {
+                log.error("The selected package manager was not found on your system!");
+                await setTimeout(1000);
+                resolve(installPrompt())
+            })
+        })
+    }
+
+    const install = await installPrompt();
     // Process
 
     await copyDir(paths.project, destinationPath, { ignore: getCopyIgnore() });
@@ -121,10 +137,10 @@ export async function DiscordBotMenu(props: ProgramProps){
             )
             done();
         });
-        return;
+    } else {
+        message.push(`${chalk.green("➞")} install the dependencies`)
+        done();
     }
-    message.push(`${chalk.green("➞")} install the dependencies`)
-    done();
 }
 
 function getCopyIgnore(){

@@ -10,11 +10,11 @@ import { MainMenu } from "./menus/main";
 const { __dirname } = importMeta(import.meta);
 
 async function program() {
-    const packageJson = await Package.json();
+    const rootname = path.join(__dirname, "..");
+    const packageJson = await Package.json(path.join(rootname, "package.json"));
 
     intro(`💫 ${chalk.blue("Constatic CLI")} 📦 ${chalk.gray.underline(packageJson.version)}`)
 
-    const rootname = path.join(__dirname, "..");
 
     citty.runMain({
         meta: {

@@ -1,6 +1,5 @@
 import { readPackageJSON } from "pkg-types";
 
-
 const Package = {
     json: readPackageJSON,
     managers: {

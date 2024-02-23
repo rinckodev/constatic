@@ -15,8 +15,6 @@ export class Event<EventName extends keyof ClientEvents> {
     constructor(data: EventData<EventName>){
         const events = Event.Events.get(data.event) ?? new Collection();
         events.set(data.name, data);
-		log.success(chalk.green(`${chalk.yellow.underline(data.name)} event registered successfully!`));
-
         Event.Events.set(data.event, events);
     }
     public static register(client: Client){
@@ -33,6 +31,14 @@ export class Event<EventName extends keyof ClientEvents> {
             });
             client.on(event, (...args) => {
                 handlers.forEach(({ run, once }) => once && run(...args));
+            });
+        }
+    }
+    public static logs(){
+        for(const events of Event.Events.values()){
+
+            events.forEach(({ name }) => {
+                log.success(chalk.green(`${chalk.yellow.underline(name)} event registered successfully!`));
             });
         }
     }
