@@ -33,14 +33,14 @@ export class Component<I extends string, T extends MessageComponentType, C exten
 
         if (components.has(customId)){
             const component = components.get(customId)!;
-            component.run(interaction as any, null);
+            component.run(interaction as never, null);
             return;
         }
         
         const component = components.find((data) => !!getCustomIdParams(data.customId, customId));
         if (!component) return;
         const params = getCustomIdParams(component.customId, customId);
-        component.run(interaction as any, params);
+        component.run(interaction as any, params as never);
     }
     public static logs(){
         for(const components of Component.components.values()){

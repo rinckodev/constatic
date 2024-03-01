@@ -1,17 +1,13 @@
 {
-    "env": {
-        "es2021": true,
-        "node": true
-    },
+    "ignorePatterns":["dist", "node_modules"],
+    "env": { "node": true },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "project": true,
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "plugins": [
-        "@typescript-eslint"
-    ],
+    "plugins": ["@typescript-eslint"],
     "rules": {
         "no-duplicate-imports": "error",
         "camelcase": "warn",
@@ -23,6 +19,7 @@
             "warn",
             "always"
         ],
+        "prefer-const":"error",
         "no-var":"off",
         "@typescript-eslint/promise-function-async": "warn",
         "@typescript-eslint/no-require-imports": "error",

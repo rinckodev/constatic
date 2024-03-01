@@ -1,12 +1,12 @@
-import { spinner as createSpinner, log, note, outro, select, text } from "@clack/prompts";
-import chalk from "chalk";
-import spawn from "cross-spawn";
-import { existsSync } from "node:fs";
-import path from "node:path";
-import { PackageJson } from "pkg-types";
 import { Package, checkCancel, copyDir, getCdProjectPath, json, listDirectoryItems, mergeObject, messages, toNpmName } from "../helpers";
+import { spinner as createSpinner, log, note, outro, select, text } from "@clack/prompts";
 import { DiscordBotTemplateProperties } from "../types/discordbot";
 import { setTimeout } from "node:timers/promises";
+import { PackageJson } from "pkg-types";
+import { existsSync } from "node:fs";
+import spawn from "cross-spawn";
+import path from "node:path";
+import chalk from "chalk";
 
 export async function DiscordBotMenu(props: ProgramProps){
     const cwd = process.cwd();
@@ -57,7 +57,7 @@ export async function DiscordBotMenu(props: ProgramProps){
         const selected = await select({
             message: "Install dependencies?",
             options: [
-                ...Object.values(Package.managers).map(({ name }) => 
+                ...Package.managerList.map(name => 
                     ({ label: `${chalk.green("Yes")} (${name})`, value: name })
                 ),
                 { label: chalk.red("No"), value: "no" }

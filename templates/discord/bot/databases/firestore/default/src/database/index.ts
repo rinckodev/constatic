@@ -1,10 +1,27 @@
-import firebase from "firebase-admin";
-import { firebaseAccount } from "#settings";
-import { schema, Typesaurus } from "typesaurus";
-import { GuildDocument } from "./documents/GuildDocument.js";
+import { ServiceAccount, initializeApp, credential } from "firebase-admin";
 import { MemberDocument } from "./documents/MemberDocument.js";
+import { GuildDocument } from "./documents/GuildDocument.js";
+import { schema, Typesaurus } from "typesaurus";
+import { log } from "#settings";
+import path from "node:path";
+import chalk from "chalk";
+import fs from "node:fs";
 
-firebase.initializeApp({ credential: firebase.credential.cert(firebaseAccount) });
+const firebaseAccountPath = rootTo(process.env.FIREBASE_PATH);
+
+if (!fs.existsSync(firebaseAccountPath)){
+    const filename = chalk.yellow(`"${path.basename(firebaseAccountPath)}"`);
+    const text = chalk.red(`The ${filename} file was not found in ${__rootname}`);
+    log.error(text);
+    process.exit(0);
+}
+
+const firebaseAccount: ServiceAccount = JSON.parse(
+    fs.readFileSync(firebaseAccountPath, { encoding: "utf-8" })
+);
+
+
+initializeApp({ credential: credential.cert(firebaseAccount) });
 
 export const db = schema(({ collection }) => ({
     guilds: collection<GuildDocument>().sub({

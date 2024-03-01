@@ -6,7 +6,7 @@ import ck from "chalk";
 type GetInteraction<C extends CacheType = CacheType, M extends boolean = boolean> = 
 	M extends true ? ModalMessageModalSubmitInteraction<C> : ModalSubmitInteraction<C>;
 
-type ModalData<I, C extends CacheType = CacheType, M extends boolean = boolean> = {
+type ModalData<I extends string, C extends CacheType = CacheType, M extends boolean = boolean> = {
 	customId: I; cache?: C; isFromMessage?: M;
 	run(interaction: GetInteraction<C, M>, params: Params<I>): void;
 }
@@ -27,7 +27,7 @@ export class Modal<I extends string, C extends CacheType = CacheType, M extends 
 		const modal = Modal.modals.find(data => !!getCustomIdParams(data.customId, customId));
         if (!modal) return;
 		const params = getCustomIdParams(modal.customId, customId);
-        modal.run(interaction, params);
+        modal.run(interaction, params as never);
 	}
 
 	public static logs(){

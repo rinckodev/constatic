@@ -111,7 +111,8 @@ To create a listener for a discord.js event, use the Event class from the `src/d
 import { Event } from "#base";
 
 new Event({
-    name: "messageUpdate",
+    name: "Message edit logs",
+    event: "messageUpdate",
     run(oldMessage, newMessage) {
         console.log("Message edited at:", newMessage.editedAt?.toDateString());
         console.log("Author", newMessage.author?.displayName);

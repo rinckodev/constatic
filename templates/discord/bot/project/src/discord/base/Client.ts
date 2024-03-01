@@ -2,7 +2,7 @@ import { Command, Component, Event, Listener, Modal } from "./index.js";
 import { CustomItents, CustomPartials } from "@magicyan/discord";
 import { Client, ClientOptions, version } from "discord.js";
 import { basename, join } from "node:path";
-import { log } from "#settings";
+import { log, onError } from "#settings";
 import glob from "fast-glob";
 import ck from "chalk";
 
@@ -20,6 +20,8 @@ export function createClient(options: Partial<ClientOptions> = {}) {
 
 	client.start = async function(options) {
 		this.once("ready", async (readyClient) => {
+			process.on("uncaughtException", async (err) => onError(err, readyClient));
+			process.on("unhandledRejection", async (err) => onError(err, readyClient));
 			console.log();
 			log.success(
 				`${ck.green("Bot online")} ${ck.blue.underline("discord.js")} 📦 ${ck.yellow(version)} \n`,

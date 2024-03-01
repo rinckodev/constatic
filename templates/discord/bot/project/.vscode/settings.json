@@ -22,12 +22,15 @@
     "quickdb": "Json"
   },
   "material-icon-theme.files.associations": {
-    "config.json": "Raml",
-    "settings.json": "Raml",
-    "firebase.example.json": "Firebase",
     "firebase.development.json": "Firebase",
-    "gitignore": "Git",
+    "firebase.example.json": "Firebase",
+    "settings.json": "Raml",
+    "config.json": "Raml",
     "*.lang.json": "i18n",
-    "lang.json": "i18n"
-  }
+    "lang.json": "i18n",
+    "gitignore": "Git"
+  },
+  "explorer.fileNesting.enabled": true,
+  "typescript.suggest.autoImports": true,
+  "window.title": "${rootName}",
 }
