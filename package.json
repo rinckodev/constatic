@@ -19,7 +19,9 @@
     "command handler", "event handler", "boilerplate", "bot boilerplate",
     "CLI", "cli", "prompts", "prompt"
   ],
+  "homepage": "https://github.com/rinckodev/constatic#readme",
   "repository": {
+    "type": "git",
     "url": "https://github.com/rinckodev/constatic"
   },
   "author": {
