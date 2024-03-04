@@ -18,21 +18,6 @@ async function program() {
     citty.runMain({
         async setup() {
             intro(`💫 ${chalk.blue("Constatic CLI")} 📦 ${chalk.gray.underline(packageJson.version)}`)
-        
-            if (!packageJson.version) return;
-
-            const response = await fetch("https://registry.npmjs.org/constatic");
-            const data = await response.json();
-            const latest = data["dist-tags"].latest;
-            
-            if (packageJson.version < latest){
-                log.warn([
-                    "A newer version of the CLI is available!",
-                    "Use npx constatic@latest"
-                ].join("\n"));
-            }
-
-            await setTimeout(1200);
         },
         subCommands: {
             discordbot: {

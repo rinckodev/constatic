@@ -48,8 +48,8 @@ export async function DiscordBotMenu(props: ProgramProps & DiscordBotMenuProps){
         message: "💾 Select database",
         options: [
             { label: "None", value: "none" },
-            ...templateProperties.databases.map(({ name }, index) => ({
-                label: name, value: index.toString(),
+            ...templateProperties.databases.map(({ name, hint }, index) => ({
+                label: name, value: index.toString(), hint,
             }))
         ]
     });

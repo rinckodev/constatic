@@ -12,8 +12,20 @@
     "dev": "rm -rf playground && mkdir playground && npm run build && cd playground && constatic",
     "tsx": "tsx"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "discord", "discord bot", "bots", "bot", "typescript",
+    "components", "commands", "events", "discord.js", "discordjs",
+    "buttons", "modals", "select menus", "dropdown", "handler",
+    "command handler", "event handler", "boilerplate", "bot boilerplate",
+    "CLI", "cli", "prompts", "prompt"
+  ],
+  "repository": {
+    "url": "https://github.com/rinckodev/constatic"
+  },
+  "author": {
+    "name": "Rincko Dev",
+    "url": "https://github.com/rinckodev"
+  },
   "license": "ISC",
   "devDependencies": {
     "@types/cross-spawn": "^6.0.6",

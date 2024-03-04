@@ -1,18 +1,32 @@
 {
     "databases":[
         {
-            "name": "Firestore",
-            "hint": "typesaurus",
-            "path": "firestore/default",
+            "name": "🔥 Firestore (firelord)",
+            "path": "firelord",
+            "dependencies":{
+                "firebase-admin": "^11.11.1",
+                "firelord": "^2.7.1"
+            }
+        },
+        {
+            "name": "🦕 Firestore (typesaurus)",
+            "path": "typesaurus",
             "dependencies":{
                 "firebase-admin": "^12.0.0",
                 "typesaurus": "^10.1.0"
             }
         },
         {
-            "name": "QuickDB",
-            "hint": "better-sqlite3",
-            "path": "quickdb/default",
+            "name": "🍃 MongoDb (mongoose)",
+            "path": "mongoose",
+            "dependencies":{
+                "better-sqlite3": "^9.2.2",
+                "quick.db": "^9.1.7"
+            }
+        },
+        {
+            "name": "🧊 QuickDB (better-sqlite3)",
+            "path": "quickdb",
             "dependencies":{
                 "better-sqlite3": "^9.2.2",
                 "quick.db": "^9.1.7"
