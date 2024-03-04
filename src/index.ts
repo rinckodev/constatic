@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { intro } from "@clack/prompts";
+import { intro, log } from "@clack/prompts";
 import * as citty from "citty";
 import chalk from "chalk";
 import path from "node:path";
@@ -7,6 +7,7 @@ import { importMeta } from "./helpers/meta";
 import { Package } from "./helpers/package";
 import { MainMenu } from "./menus/main";
 import { DiscordBotMenu } from "./menus/discordbot";
+import { setTimeout } from "node:timers/promises";
 
 const { __dirname } = importMeta(import.meta);
 
@@ -15,13 +16,28 @@ async function program() {
     const packageJson = await Package.json(path.join(rootname, "package.json"));
 
     citty.runMain({
-        setup() {
+        async setup() {
             intro(`💫 ${chalk.blue("Constatic CLI")} 📦 ${chalk.gray.underline(packageJson.version)}`)
+        
+            if (!packageJson.version) return;
+
+            const response = await fetch("https://registry.npmjs.org/constatic");
+            const data = await response.json();
+            const latest = data["dist-tags"].latest;
+            
+            if (packageJson.version < latest){
+                log.warn([
+                    "A newer version of the CLI is available!",
+                    "Use npx constatic@latest"
+                ].join("\n"));
+            }
+
+            await setTimeout(1200);
         },
         subCommands: {
             discordbot: {
                 meta: {
-                    name: "discordbot",
+                    name: "Discord Bot",
                     description: "Init a discord bot project",
                 },
                 args: {
