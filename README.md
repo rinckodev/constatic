@@ -15,30 +15,10 @@ Usage:
 npx constatic@latest
 ```
 
-
 ## Discord bot
 - Choose the **Init discord bot project** option
 
-**Project name**
-
-_Use . to create in current directory_
-
-**Select a database**
-
-- None
-- Firestore (firelord)
-- Firestore (typesaurus)
-- MongoDb (mongoose)
-- Quick Db (better-sqlite3)
-
-**Extra features**
-
-- [ ] Discloud config 
-
-**Install dependencies?**
-
-- Yes (npm)
-- Yes (yarn)
-- Yes (pnpm)
-- Yeah (bun)
-- No
+- **Project name**: Project name or directory path
+- **Select a database**: Select database templates or none
+- **Extra features**: Check extra features for your project
+- **Install dependencies?**: Select your package manager
