@@ -1,5 +1,5 @@
 import { Package, checkCancel, copyDir, getCdProjectPath, json, listDirectoryItems, mergeObject, messages, toNpmName } from "../helpers";
-import { spinner as createSpinner, log, note, outro, select, text } from "@clack/prompts";
+import { spinner as createSpinner, log, multiselect, note, outro, select, text } from "@clack/prompts";
 import { DiscordBotTemplateProperties } from "../types/discordbot";
 import { setTimeout } from "node:timers/promises";
 import { PackageJson } from "pkg-types";
@@ -8,7 +8,10 @@ import spawn from "cross-spawn";
 import path from "node:path";
 import chalk from "chalk";
 
-export async function DiscordBotMenu(props: ProgramProps){
+interface DiscordBotMenuProps {
+    projectName?: string
+}
+export async function DiscordBotMenu(props: ProgramProps & DiscordBotMenuProps){
     const cwd = process.cwd();
 
     const basePath = path.join(props.rootname, "/templates/discord/bot");
@@ -16,12 +19,13 @@ export async function DiscordBotMenu(props: ProgramProps){
         templates: basePath,
         project: path.join(basePath, "project"),
         databases: path.join(basePath, "databases"),
-        tools: path.join(basePath, "tools"),
+        extras: path.join(basePath, "extras"),
         properties: path.join(basePath, "properties.json"),
     }
 
-    const projectName = await text({ 
+    const projectName = props.projectName ?? await text({ 
         message: `Project name ${chalk.dim.underline(`${path.basename(cwd)}/`)}`,
+        placeholder: "Use . to create in this directory",
         validate(value) {
             if (!value) return "You must specify a name for the project!"
         },
@@ -30,7 +34,6 @@ export async function DiscordBotMenu(props: ProgramProps){
     checkCancel(projectName);
 
     const destinationPath = path.resolve(projectName);
-
     const destinationIsCwd = destinationPath === cwd;
 
     const npmName = destinationIsCwd
@@ -42,7 +45,7 @@ export async function DiscordBotMenu(props: ProgramProps){
     const templateProperties = await json.read<DiscordBotTemplateProperties>(paths.properties);
     
     const database = await select({
-        message: "Select database",
+        message: "💾 Select database",
         options: [
             { label: "None", value: "none" },
             ...templateProperties.databases.map(({ name }, index) => ({
@@ -53,55 +56,64 @@ export async function DiscordBotMenu(props: ProgramProps){
 
     checkCancel(database);
 
-    async function installPrompt(){
-        const selected = await select({
-            message: "Install dependencies?",
-            options: [
-                ...Package.managerList.map(name => 
-                    ({ label: `${chalk.green("Yes")} (${name})`, value: name })
-                ),
-                { label: chalk.red("No"), value: "no" }
-            ]
-        }) as string;
+    const extras = await multiselect({
+        message: "✨ Extra features",
+        cursorAt: "discloud",
+        required: false,
+        options: [
+            { label: "📄 Discloud config", value: "discloud" }
+        ]
+    }) as string[];
 
-        checkCancel(selected);
+    checkCancel(extras);
 
-        if (selected === "no") return selected;
-        const { name } = Package.managers[selected as keyof typeof Package.managers]
-        return new Promise<string>(resolve => {
-            const child = spawn(name, ["--version"], { stdio: "ignore", cwd: destinationPath });
-            child.on("exit", (code) => (code === 0) ? resolve(selected) : resolve(installPrompt()));
-            child.on("error", async () => {
-                log.error("The selected package manager was not found on your system!");
-                await setTimeout(1000);
-                resolve(installPrompt())
-            })
-        })
-    }
+    const install = await select({
+        message: "📥 Install dependencies?",
+        options: [
+            ...Package.managerList.map(name => 
+                ({ label: `${chalk.green("Yes")} (${name})`, value: name })
+            ),
+            { label: chalk.red("No"), value: "no" }
+        ]
+    }) as string;
 
-    const install = await installPrompt();
+    checkCancel(install);
     // Process
 
     await copyDir(paths.project, destinationPath, { ignore: getCopyIgnore() });
-
-    await copyDir(
-        path.join(paths.tools, "gitignore.txt"), 
-        path.join(destinationPath, ".gitignore")
-    );
 
     const newProjectPackageJson = await json.read<PackageJson>(path.join(destinationPath, "package.json"));
     mergeObject(newProjectPackageJson, { name: npmName });
 
     if (database !== "none"){
-        const { paths: databasePaths, dependencies, scripts } = templateProperties.databases[Number(database)];
+        const { path: databasePath, dependencies={}, scripts={} } = templateProperties.databases[Number(database)];
 
         mergeObject(newProjectPackageJson, { dependencies, scripts });
 
-        // todo add variant suport
-        const projectPath = path.join(paths.databases, databasePaths.default);
+        const projectPath = path.join(paths.databases, databasePath);
         if (existsSync(projectPath)){
             await copyDir(projectPath, destinationPath, { ignore: getCopyIgnore() });
         }
+    }
+
+    // Extras
+
+    await copyDir(
+        path.join(paths.extras, "gitignore.txt"), 
+        path.join(destinationPath, ".gitignore")
+    );
+
+    if (extras.includes("discloud")){
+        await Promise.all([
+            copyDir(
+                path.join(paths.extras, "discloud/discloud.txt"), 
+                path.join(destinationPath, "discloud.config")
+            ),
+            copyDir(
+                path.join(paths.extras, "discloud/discloudignore.txt"), 
+                path.join(destinationPath, ".discloudignore")
+            )
+        ]);
     }
 
     await json.write(path.join(destinationPath, "package.json"), newProjectPackageJson);
@@ -129,14 +141,21 @@ export async function DiscordBotMenu(props: ProgramProps){
         const { name, args } = Package.managers[install as keyof typeof Package.managers]
         const child = spawn(name, args, { stdio: "ignore", cwd: destinationPath });
         
-        child.on("exit", (code) => {
+        child.on("exit", async (code) => {
             spinner.stop(code === 0 
                 ? "Dependencies installed successfully!"
                 : "Unable to install dependencies!",
                 code ?? undefined
             )
+            await setTimeout(1200);
             done();
         });
+        child.on("error", async () => {
+            spinner.stop("Unable to install dependencies!", 1),
+            log.warn("Use your package manager's dependency install command")
+            await setTimeout(1200);
+            done();
+        })
     } else {
         message.push(`${chalk.green("➞")} install the dependencies`)
         done();

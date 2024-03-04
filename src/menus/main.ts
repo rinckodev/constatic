@@ -7,7 +7,7 @@ export async function MainMenu(props: ProgramProps){
     const selected = await select({
         message: "Select action",
         options: [
-            { label: chalk.hex("#4cc58c")("Init discord bot"), value: "discordbot" },  
+            { label: chalk.hex("#4cc58c")("Init discord bot project"), value: "discordbot" },  
             { label: chalk.hex("#ce5353")("Quit"), value: "quit" },  
         ],
     })

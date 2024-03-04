@@ -29,7 +29,7 @@ export class Event<EventName extends keyof ClientEvents> {
             client.on(event, (...args) => {
                 handlers.forEach(({ run, once }) => !once && run(...args));
             });
-            client.on(event, (...args) => {
+            client.once(event, (...args) => {
                 handlers.forEach(({ run, once }) => once && run(...args));
             });
         }

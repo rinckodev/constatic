@@ -15,6 +15,25 @@
 		],
 		"description": "Create a new Slash Command"
 	},
+	"Slash Command With Store": {
+		"prefix": "new.command.store",
+		"scope":"typescript",
+		"body": [
+			"new Command({",
+			"    name: \"$1\",",
+			"    description: \"$2\",",
+			"    dmPermission: false,",
+			"    type: ApplicationCommandType.ChatInput,",
+			"    store: {",
+			"        cooldowns: new Store<Date>()",
+			"    },",
+			"    async run(interaction, { cooldowns }){",
+			"        $3",
+			"    }",
+			"});"
+		],
+		"description": "Create a new Slash Command"
+	},
 	"Slash Command with options": {
 		"prefix": "new.command.options",
 		"scope":"typescript",
@@ -36,6 +55,18 @@
 			"        ",
 			"    }",
 			"});"
+		],
+		"description": "Create a new Slash Command with options"
+	},
+	"Slash Command option": {
+		"prefix": "new.option",
+		"scope":"typescript",
+		"body": [
+			"{",
+			"    name: \"$1\",",
+			"    description: \"$2\",",
+			"    type: ApplicationCommandOptionType.$3,",
+			"}",
 		],
 		"description": "Create a new Slash Command with options"
 	},
@@ -74,7 +105,7 @@
 		"scope":"typescript",
 		"body": [
 			"new Component({",
-			"    customId: \"example-component-button\",",
+			"    customId: \"example/component/button\",",
 			"    type: ComponentType.$1, cache: \"cached\",",
 			"    async run(interaction) {",
 			"        ",
@@ -83,12 +114,26 @@
 		],
 		"description": "Create a new component"
 	},
+	"Component Params": {
+		"prefix": "new.component.params",
+		"scope":"typescript",
+		"body": [
+			"new Component({",
+			"    customId: \"users/:userId/:action\",",
+			"    type: ComponentType.ActionRow, cache: \"cached\",",
+			"    async run(interaction, { userId, action }) {",
+			"        ",
+			"    },",
+			"});"
+		],
+		"description": "Create a new component with params"
+	},
 	"Modal": {
 		"prefix": "new.modal",
 		"scope":"typescript",
 		"body": [
 			"new Modal({",
-			"    customId: \"example-modal\",",
+			"    customId: \"example/modal\",",
 			"    cache: \"cached\", isFromMessage: true,",
 			"    async run(interaction) {",
 			"        ",
@@ -104,11 +149,67 @@
 			"import { Event } from \"#base\";",
 			"",
 			"new Event({",
-			"   name: \"$1\",",
-			"   event: \"$2\",",
-			"   $3",
+			"    name: \"$1\",",
+			"    event: \"$2\",",
+			"    $3",
 			"});"
 		],
-		"description": "Create a new modal"
+		"description": "Create a new event"
+	},
+	"Create Row With Buttons": {
+		"prefix": "new.createrow.buttons",
+		"scope":"typescript",
+		"body": [
+			"createRow(",
+			"    new ButtonBuilder({",
+			"        customId: \"$1\"," ,
+			"        label: \"$2\", ",
+			"        style: ButtonStyle.Success",
+			"    })",
+			");"
+		],
+		"description": "Create a new row with buttons"
+	},
+	"Create Row With String Select": {
+		"prefix": "new.createrow.stringselect",
+		"scope":"typescript",
+		"body": [
+			"createRow(",
+			"    new StringSelectMenuBuilder({",
+			"        customId: \"$1\",",
+			"        placeholder: \"$2\",",
+			"        options: [",
+			"            { label: \"\", value: \"\", description: \"\" },",
+			"            { label: \"\", value: \"\", description: \"\" },",
+			"            { label: \"\", value: \"\", description: \"\" }",
+			"        ]",
+			"    })",
+			");"
+		],
+		"description": "Create a new row with string select"
+	},
+	"Extract slash interaction props": {
+		"prefix": "const.interaction.slash",
+		"scope":"typescript",
+		"body": [
+			"const { options, member, guild } = interaction;"
+		],
+		"description": "Extract interaction properties"
+	},
+	"Extract button interaction props": {
+		"prefix": "const.interaction.button",
+		"scope":"typescript",
+		"body": [
+			"const { member, guild } = interaction;"
+		],
+		"description": "Extract interaction properties"
+	},
+	"Extract select interaction props": {
+		"prefix": "const.interaction.select",
+		"scope":"typescript",
+		"body": [
+			"const { values, member, guild } = interaction;"
+		],
+		"description": "Extract interaction properties"
 	}
 }

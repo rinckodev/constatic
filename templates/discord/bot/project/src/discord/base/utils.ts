@@ -44,24 +44,3 @@ export function getCustomIdParams(definition: string, customId: string){
 
     return params;
 }
-
-// export type Params<T extends string, P extends boolean = false> = 
-//     P extends false 
-//         ? T extends `/${string}` ? never 
-//         : T extends `${string}/` ? never
-//             : T extends `${string}/:${infer ParamName}/${infer Rest}`
-//             ? { [K in ParamName | keyof Params<Rest, true>]: string }
-//             : T extends `${string}/:${infer ParamName}`
-//             ? { [K in ParamName]: string }
-//             : null
-//         : T extends `:${infer ParamName}/${infer Rest}` 
-//             ? { [K in ParamName | keyof Params<Rest, true>]: string } 
-//             : T extends `:${infer ParamName}` 
-//             ? { [K in ParamName]: string } 
-//             : T extends `${string}/:${infer ParamName}/${infer Rest}` 
-//             ? { [K in ParamName | keyof Params<Rest, true>]: string }
-//             : T extends `${string}/:${infer ParamName}` 
-//             ? { [K in ParamName]: string }
-//             : T extends `/:${infer ParamName}/${infer Rest}` 
-//             ? { [K in ParamName | keyof Params<Rest, true>]: string } 
-//             : null

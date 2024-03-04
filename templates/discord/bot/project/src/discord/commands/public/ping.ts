@@ -17,6 +17,7 @@ new Command({
 			})
 		);
 
-		interaction.reply({ ephemeral, content: "pong", components: [row] });
+		await interaction.reply({ ephemeral, embeds, content: "pong", components: [row] });
+
 	}
 });

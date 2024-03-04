@@ -2,19 +2,17 @@
     "databases":[
         {
             "name": "Firestore",
-            "paths":{
-                "default": "firestore/default"
-            },
+            "hint": "typesaurus",
+            "path": "firestore/default",
             "dependencies":{
                 "firebase-admin": "^12.0.0",
                 "typesaurus": "^10.1.0"
             }
         },
         {
-            "name": "Quick Db",
-            "paths":{
-                "default": "quickdb/default"
-            },
+            "name": "QuickDB",
+            "hint": "better-sqlite3",
+            "path": "quickdb/default",
             "dependencies":{
                 "better-sqlite3": "^9.2.2",
                 "quick.db": "^9.1.7"

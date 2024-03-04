@@ -1,0 +1,8 @@
+/.vscode
+/node_modules
+/dist
+
+/.env.development
+/.env.example
+/.eslintrc.json
+/README.md

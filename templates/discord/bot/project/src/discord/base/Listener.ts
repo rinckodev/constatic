@@ -9,6 +9,9 @@ type ListenerData<EventName extends keyof ClientEvents> = {
 };
 
 export class Listener<Key extends keyof ClientEvents> {
+	constructor(data: ListenerData<Key>) {
+		Listener.listeners.push(data);
+	}
 	private static listeners: ListenerData<keyof ClientEvents>[] = [];
 	public static register(client: Client){
 		for(const listener of Listener.listeners){ 
@@ -16,9 +19,6 @@ export class Listener<Key extends keyof ClientEvents> {
 			? client.once(listener.name, listener.run) 
 			: client.on(listener.name, listener.run);
 		}
-	}
-	constructor(data: ListenerData<Key>) {
-		Listener.listeners.push(data);
 	}
 	public static logs(){
 		Listener.listeners.forEach(({ name }) => {

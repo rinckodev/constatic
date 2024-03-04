@@ -1,0 +1,5 @@
+NAME=Awesome Bot
+TYPE=bot
+MAIN=src/index.ts
+RAM=100
+VERSION=latest

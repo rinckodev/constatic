@@ -1,10 +1,13 @@
 import { brBuilder, createEmbed, createEmbedAuthor, limitText, replaceText } from "@magicyan/discord";
-import { consola as log } from "consola";
+import { consola } from "consola";
 import { Client, WebhookClient, codeBlock } from "discord.js";
 import "./global.js";
-import settings from "./settings.json" with { type: "json" };
+import settingsJson from "./settings.json" with { type: "json" };
 
-async function onError(error: Error | any, client: Client<true>){
+export const log = consola;
+export const settings = settingsJson;
+
+export async function onError(error: Error | any, client: Client<true>){
     log.error(error);
 
     const webhooksLogURL = process.env.WEBHOOK_LOGS_URL;
@@ -21,7 +24,7 @@ async function onError(error: Error | any, client: Client<true>){
     }
     
     const embed = createEmbed({
-        color: settings.colors.danger,
+        color: settingsJson.colors.danger,
         author: createEmbedAuthor({ user }),
         description: codeBlock("ts", brBuilder(...errorMessage)),
     });
@@ -31,5 +34,4 @@ async function onError(error: Error | any, client: Client<true>){
     webhook.send({ embeds: [embed] })
     .catch(log.error);
 }
-export { log, onError, settings };
 

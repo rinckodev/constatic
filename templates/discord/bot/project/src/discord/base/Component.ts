@@ -2,10 +2,12 @@ import { log } from "#settings";
 import chalk from "chalk";
 import { CacheType, Collection, ComponentType, Interaction, MessageComponentInteraction } from "discord.js";
 import { getCustomIdParams, Params } from "./utils.js";
+import { spaceBuilder } from "@magicyan/discord";
 
-type MessageComponentType = Exclude<ComponentType, ComponentType.ActionRow | ComponentType.TextInput>
+type MessageComponentType = Exclude<ComponentType, ComponentType.TextInput>
 
 type GetComponentInteraction<T, C extends CacheType> = 
+    T extends ComponentType.ActionRow ? MessageComponentInteraction<C> :
 	Extract<Interaction<C>, { componentType: T }>
 
 type ComponentInteraction<T, C extends CacheType> = {
@@ -23,31 +25,48 @@ export class Component<I extends string, T extends MessageComponentType, C exten
         const components = Component.components.get(data.type) ?? new Collection();
         components.set(data.customId, data);
         Component.components.set(data.type, components);
-		// log.success(chalk.green(`${chalk.cyan.underline(data.customId)} component registered successfully!`));
 	}
     public static onComponent(interaction: MessageComponentInteraction){
         const { customId, componentType } = interaction;
         
-        const components = Component.components.get(componentType);
-        if (!components) return;
+        const components = Component.components.get(componentType) 
+        ?? Component.components.get(ComponentType.ActionRow);
 
-        if (components.has(customId)){
-            const component = components.get(customId)!;
-            component.run(interaction as never, null);
-            return;
-        }
-        
-        const component = components.find((data) => !!getCustomIdParams(data.customId, customId));
-        if (!component) return;
-        const params = getCustomIdParams(component.customId, customId);
-        component.run(interaction as any, params as never);
+        const find = (components: Collection<string, ComponentData<any, any, any>> | undefined, type: ComponentType) => {
+            if (!components) return;
+
+            if (components.has(customId)){
+                const component = components.get(customId)!;
+                component.run(interaction as never, null);
+                return;
+            }
+            const component = components.find((data) => !!getCustomIdParams(data.customId, customId));
+            if (component){
+                const params = getCustomIdParams(component.customId, customId);
+                component.run(interaction as any, params as never);
+                return;
+            }
+            
+            if (type !== ComponentType.ActionRow){
+                find(Component.components.get(ComponentType.ActionRow), ComponentType.ActionRow);
+            }
+        };
+
+        find(components, componentType);
     }
     public static logs(){
+        const names = new Map(Object.entries(ComponentType).filter(Boolean).map(e => [+e[0], e[1]]));
+
         for(const components of Component.components.values()){
 
-            components.forEach(({ customId }) => {
-                log.success(chalk.green(`${chalk.blue.underline(customId)} component registered successfully!`));
-            });
+            for(const { customId, type } of components.values()){
+                const text = spaceBuilder(
+                    chalk.blue.underline(customId),
+                    chalk.greenBright.underline(names.get(type)),
+                    "component registered successfully!"
+                );
+                log.success(chalk.green(text));
+            }
         }
 	}
 }
