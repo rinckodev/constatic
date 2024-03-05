@@ -5,6 +5,7 @@
     "modals": "Content",
     "menus": "layout",
     
+    "experimental": "Test",
     "deprecated": "Archive",
     "development": "Test",
     "production": "Dist",
@@ -32,5 +33,5 @@
   },
   "explorer.fileNesting.enabled": true,
   "typescript.suggest.autoImports": true,
-  "window.title": "${rootName}",
+  "window.title": "${rootName}${separator}${appName}",
 }

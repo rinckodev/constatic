@@ -18,8 +18,8 @@ See how to use:
 - [Commands](#how-to-use-commands)
 - [Events](#how-to-use-events)
 - [Components](#how-to-use-components)
+- [Custom Id Params](#custom-id-params)
 - [Modals](#how-to-use-modals)
-- [Dotenv](#dotenv)
 - [Constants](#constants)
 
 
@@ -133,7 +133,7 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
 
 [Back to the top ↑](#structures)
 
-# How to use Components
+## How to use Components
 
 About components, the Component class will be used to create the functionality of a fixed component
 
@@ -158,21 +158,23 @@ new Component({
 const channel = interaction.channel as TextChannel;
 
 const embed = new EmbedBuilder({ description: "Welcome to the store" });
-const row = createRow(new StringSelectMenuBuilder({
-    customId: "store-products-select",
-    placeholder: "Select the product",
-    options: [
-        { label: "Apple", value: "apple", emoji: "🍎" },
-        { label: "Melon", value: "melon", emoji: "🍉" },
-        { label: "Banana", value: "banana", emoji: "🍌" }
-    ]
-}));
+const row = createRow(
+    new StringSelectMenuBuilder({
+        customId: "store/products/select",
+        placeholder: "Select the product",
+        options: [
+            { label: "Apple", value: "apple", emoji: "🍎" },
+            { label: "Melon", value: "melon", emoji: "🍉" },
+            { label: "Banana", value: "banana", emoji: "🍌" }
+        ]
+    })
+);
 
 channel.send({ embeds: [embed], components: [row] });
 // ===
 
 new Component({
-    customId: "store-products-select",
+    customId: "store/products/select",
     type: ComponentType.StringSelect, cache: "cached",
     async run(interaction) {
         const { values:[selected] } = interaction;
@@ -181,6 +183,9 @@ new Component({
     },
 });
 ```
+[Back to the top ↑](#structures)
+
+## Custom Id Params
 
 You can use a feature from this base named "Custom Id Params" to respond to components dynamically, see:
 ```ts
@@ -260,7 +265,7 @@ You can create functionality for modals in the same way as [components](#how-to-
 import { Modal } from "#base";
 
 new Modal({
-    customId: "announcement-modal",
+    customId: "announcement/modal",
     cache: "cached",
     run(interaction) {
         const { fields } = interaction;
@@ -275,7 +280,7 @@ If the modal is opened through a message component, you can set the **ModalMessa
 
 ```ts
 new Modal({
-    customId: "announcement-modal",
+    customId: "announcement/modal",
     cache: "cached",
     isFromMessage: true, // Modal opened from button or select menu
     run(interaction) { // ModalMessageModalSubmitInteraction
@@ -296,7 +301,7 @@ There are global constants variables that you can use in method or function opti
 
 These are variables with the same name as very common properties when we are creating commands and systems for our discord bot. And when we use these properties that are normally optional, we define a default value for them
 
-For example the ephemeral property. This property is often used when we want to make the message private only for the user of the interaction, however, all interaction responses are not ephemeral by default, so most of the time we define the response as ephemeral, this property will be true. On this base we have it as a global variable and we can use it as a "shorthande" in the reply method options object
+For example the ephemeral property. This property is often used when we want to make the message private only for the user of the interaction, however, all interaction responses are not ephemeral by default, so most of the time we define the response as ephemeral, this property will be true. On this base we have it as a global variable and we can use it as a "short syntax" in the reply method options object
 
 ```ts
 interaction.deferReply({ ephemeral }); // ephemeral is true by default;
