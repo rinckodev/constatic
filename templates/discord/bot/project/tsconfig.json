@@ -9,8 +9,6 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noImplicitReturns": true,
-		"exactOptionalPropertyTypes": true,
-		"noUncheckedIndexedAccess": true,
 
 		"lib": ["ESNext"],
 		"target": "ESNext",

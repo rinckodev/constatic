@@ -6,13 +6,9 @@ import { spaceBuilder } from "@magicyan/discord";
 
 type MessageComponentType = Exclude<ComponentType, ComponentType.TextInput>
 
-type GetComponentInteraction<T, C extends CacheType> = 
+type ComponentInteraction<T, C extends CacheType> = 
     T extends ComponentType.ActionRow ? MessageComponentInteraction<C> :
 	Extract<Interaction<C>, { componentType: T }>
-
-type ComponentInteraction<T, C extends CacheType> = {
-	interaction: GetComponentInteraction<T, C>
-} & GetComponentInteraction<T, C>
 
 type ComponentData<I extends string, T, C extends CacheType = CacheType> = {
     customId: I; type: T; cache?: C;
@@ -43,7 +39,7 @@ export class Component<I extends string, T extends MessageComponentType, C exten
             const component = components.find((data) => !!getCustomIdParams(data.customId, customId));
             if (component){
                 const params = getCustomIdParams(component.customId, customId);
-                component.run(interaction as any, params as never);
+                component.run(interaction as never, params as never);
                 return;
             }
             

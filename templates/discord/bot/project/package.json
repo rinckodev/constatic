@@ -5,6 +5,7 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
+    "prestart": "npm run build",
     "build": "tsc",
     "dev": "tsx --env-file .env ./src/index.ts",
     "dev:dev": "tsx --env-file .env.development ./src/index.ts",
