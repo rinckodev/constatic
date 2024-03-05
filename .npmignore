@@ -1,12 +1,10 @@
-src
+/src
 node_modules
+*node_modules
+/.vscode
+/playground
 
 /.env
 *.env.development
-.gitignore
+/.gitignore
 /build.config.ts
-
-package-lock.json
-
-/playground
-/.vscode
