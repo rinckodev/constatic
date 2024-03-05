@@ -4,7 +4,6 @@ import { Client, ClientEvents, Collection } from "discord.js";
 
 interface EventData<EventName extends keyof ClientEvents> {
     name: string;
-    description?: string;
     event: EventName;
     once?: boolean;
     run(...args: ClientEvents[EventName]): void

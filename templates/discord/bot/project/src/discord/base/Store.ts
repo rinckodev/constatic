@@ -48,6 +48,7 @@ export class Store<V, K extends string | number = string> {
             for(const [key, value] of this.entries){
                 if (predicate(value, key)) this.delete(key);
             }
+            return;
         }
         this.store.clear();
     }
