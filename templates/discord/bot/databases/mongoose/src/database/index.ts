@@ -14,8 +14,8 @@ mongoose.connect(process.env.MONGO_URI)
 });
 
 export const db = {
-   guilds: model("guilds", guildSchema),
-   members: model("members", memberSchema)
+   guilds: model("guild", guildSchema, "guilds"),
+   members: model("member", memberSchema, "members")
 };
 
 export type GuildSchema = InferSchemaType<typeof guildSchema>;
