@@ -48,10 +48,10 @@ export async function DiscordBotMenu(props: ProgramProps & DiscordBotMenuProps){
         message: "💾 Select database",
         options: [
             { label: "None", value: "none" },
-            ...templateProperties.databases.map(({ name, hint }, index) => ({
+            templateProperties.databases.map(({ name, hint }, index) => ({
                 label: name, value: index.toString(), hint,
             }))
-        ]
+        ].flat()
     });
 
     checkCancel(database);
@@ -61,7 +61,7 @@ export async function DiscordBotMenu(props: ProgramProps & DiscordBotMenuProps){
         cursorAt: "discloud",
         required: false,
         options: [
-            { label: "📄 Discloud config", value: "discloud" }
+            { label: "📄 Discloud config", value: "discloud", hint: "Hosting" }
         ]
     }) as string[];
 
@@ -70,11 +70,11 @@ export async function DiscordBotMenu(props: ProgramProps & DiscordBotMenuProps){
     const install = await select({
         message: "📥 Install dependencies?",
         options: [
-            ...Package.managerList.map(name => 
+            Package.managerList.map(name => 
                 ({ label: `${chalk.green("Yes")} (${name})`, value: name })
             ),
             { label: chalk.red("No"), value: "no" }
-        ]
+        ].flat()
     }) as string;
 
     checkCancel(install);

@@ -22,7 +22,6 @@
         "prefer-const":"error",
         "no-var":"off",
         "@typescript-eslint/no-require-imports": "error",
-        "@typescript-eslint/await-thenable": "error",
-        "@typescript-eslint/no-extra-parens": "warn"
+        "@typescript-eslint/await-thenable": "error"
     }
 }

@@ -1,4 +1,4 @@
-import { ServiceAccount, initializeApp, credential } from "firebase-admin";
+import firebase from "firebase-admin";
 import { MemberDocument } from "./documents/MemberDocument.js";
 import { GuildDocument } from "./documents/GuildDocument.js";
 import { schema, Typesaurus } from "typesaurus";
@@ -16,12 +16,12 @@ if (!fs.existsSync(firebaseAccountPath)){
     process.exit(0);
 }
 
-const firebaseAccount: ServiceAccount = JSON.parse(
+const firebaseAccount: firebase.ServiceAccount = JSON.parse(
     fs.readFileSync(firebaseAccountPath, { encoding: "utf-8" })
 );
 
 
-initializeApp({ credential: credential.cert(firebaseAccount) });
+firebase.initializeApp({ credential: firebase.credential.cert(firebaseAccount) });
 
 export const db = schema(({ collection }) => ({
     guilds: collection<GuildDocument>().sub({
