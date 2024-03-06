@@ -3,7 +3,7 @@
 
 This is the most complete bot base you've ever seen! Created by [@rinckodev](https://github.com/rinckodev). This project uses typescript to its advantage, using features to create complete structures that facilitate the construction of commands and systems
 
-! Node version required: 21.5 or higher 
+> ⚠️ Node version required: 21.5 or higher 
 
 ## Scripts
 
@@ -16,14 +16,18 @@ This is the most complete bot base you've ever seen! Created by [@rinckodev](htt
 
 See how to use:
 - [Commands](#how-to-use-commands)
-- [Events](#how-to-use-events)
+- [Store](#store)
 - [Components](#how-to-use-components)
 - [Custom Id Params](#custom-id-params)
 - [Modals](#how-to-use-modals)
+- [Events](#how-to-use-events)
+
+## Features
+- [ES6 Modules](#es6-modules)
 - [Constants](#constants)
+- [Env file](#env-file)
 
-
-# How to use Commands 
+## How to use Commands 
 
 To create a new command, import the Command class from the `src/discord/base` folder. All commands must be created in the `src/discord/commands` folder or subfolders of the commands folder
 
@@ -103,32 +107,137 @@ new Command({
 ```
 [Back to the top ↑](#structures)
 
-# How to use Events
+## Store
 
-To create a listener for a discord.js event, use the Event class from the `src/discord/base` folder
+You can use the **Store** structure to temporarily store information in a command. When creating a new Store you can set the default time and whether items are deleted by default.
 
 ```ts
-import { Event } from "#base";
+import { Command, Store } from "#base";
+import { ApplicationCommandType, time} from "discord.js";
 
-new Event({
-    name: "Message edit logs",
-    event: "messageUpdate",
-    run(oldMessage, newMessage) {
-        console.log("Message edited at:", newMessage.editedAt?.toDateString());
-        console.log("Author", newMessage.author?.displayName);
-        console.log("Old message content: ", oldMessage.content);
-        console.log("New message content:", newMessage.content);   
+new Command({
+    name: "mine",
+    description: "Mine command",
+    dmPermission: false,
+    type: ApplicationCommandType.ChatInput,
+    store: {
+        cooldowns: new Store<Date>({ clearTime: 60000 })
+    },
+    async run(interaction, store){
+        const now = new Date();
+        const cooldown = store.cooldowns.get(interaction.member.id) ?? now;
+
+        if (cooldown > now){
+            interaction.reply({ ephemeral, 
+                content: `You will be able to mine again ${time(cooldown, "R")}` 
+            });
+            return;
+        }
+
+        interaction.reply({ ephemeral, content: `You mine!` });
+
+        now.setSeconds(now.getSeconds() + 60);
+
+        store.cooldowns.set(interaction.member.id, now);
     }
 });
 ```
+After using the **set** method, the defined value will be deleted after the time defined when creating this **Store**
 
-All discord events are typed in the name property, when choosing an event, the run function will also be typed with the arguments that the chosen event should receive
+This way you don't have to worry about defining a **setTimeout** function. This is supposed to be temporary, do not store information that should be persistent. The Store works like a map, if the bot restarts, everything will be lost
 
-Equivalent code with pure discord.js
+As the third argument of the set method, you can define a time in milliseconds different from the one defined when creating the Store
 ```ts
-client.on("messageUpdate", (oldMessage, newMessage) => {
+async run(interaction, { cooldowns }){
+    const { member } = interaction; 
+    cooldowns.set(member.id, now, 80000);
+}
+```
+Or if you prefer, you can choose not to delete the data stored in this key
+```ts
+cooldowns.set(member.id, now, null);
+```
+As a last argument you can define a callback that will be executed when the value is deleted
+```ts
+cooldowns.set(member.id, now, cooldowns.defaultClearTime, (value) => {
+    console.log("Value deleted", value);
+});
+```
+
+There are many uses for this structure, you can use it anywhere in your code, but it is recommended to use it in this command context. 
+
+You can get the **Store** from a command anywhere
+```ts
+//     \/   Assign the command to a variable
+const command = new Command({
+	name: "apply",
+	description: "Apply form",
+	type: ApplicationCommandType.ChatInput,
+	dmPermission: false,
+	store: {
+		cooldowns: new Store<Date>({ clearTime: 60000 })
+	},
+	run(interaction, { cooldowns }) {
+		const now = new Date();
+        const cooldown = cooldowns.get(interaction.member.id) ?? now;
+
+        if (cooldown > now){
+            interaction.reply({ ephemeral, 
+                content: `You will be able to mine again ${time(cooldown, "R")}` 
+            });
+            return;
+        }
+
+		interaction.showModal({
+			customId: "form/modal",
+			// ...
+		});
+	},
+});
+
+new Modal({
+	customId: "form/modal",
+	cache: "cached",
+	run(interaction) {
+		const { fields, member } = interaction;
+	
+		const name = fields.getTextInputValue("name/input");
+		const age = fields.getTextInputValue("age/input");
+		const bio = fields.getTextInputValue("bio/input");
+		
+		// do things ...
+
+		// end
+		const future = new Date();
+		future.setSeconds(future.getSeconds() + 60);
+
+		command.store.cooldowns.set(member.id, future);
+        // /\ In the same file you can use other structures and access the command store and modify values in it
+	},
+});
+```
+
+If you have separate structures in other files, just export the command
+
+```ts
+export const applyCommand = new Command({
     // ...
 })
+```
+```ts
+import { applyCommand } from "../../commands/public/apply.js"
+
+new Modal({
+	customId: "form/modal",
+	cache: "cached",
+	run(interaction) {]
+        // ...
+		const future = new Date();
+		future.setSeconds(future.getSeconds() + 60);
+
+		applyCommand.store.cooldowns.set(member.id, future);
+	},
+});
 ```
 
 [Back to the top ↑](#structures)
@@ -257,7 +366,7 @@ new Component({
 
 [Back to the top ↑](#structures)
 
-# How to use Modals
+## How to use Modals
 
 You can create functionality for modals in the same way as [components](#how-to-use-components);
 
@@ -276,7 +385,7 @@ new Modal({
 });
 ```
 
-If the modal is opened through a message component, you can set the **ModalMessageModalSubmitInteraction** typing by setting true in the **isFromMessage** property
+If the modal is opened through a message component, you can set the **ModalMessageModalSubmitInteraction** typing by setting true in the **isFromMessage** property. 
 
 ```ts
 new Modal({
@@ -295,7 +404,59 @@ new Modal({
 
 [Back to the top ↑](#structures)
 
-# Constants
+## How to use Events
+
+To create a listener for a discord.js event, use the Event class from the `src/discord/base` folder
+
+```ts
+import { Event } from "#base";
+
+new Event({
+    name: "Message edit logs",
+    event: "messageUpdate",
+    run(oldMessage, newMessage) {
+        console.log("Message edited at:", newMessage.editedAt?.toDateString());
+        console.log("Author", newMessage.author?.displayName);
+        console.log("Old message content: ", oldMessage.content);
+        console.log("New message content:", newMessage.content);   
+    }
+});
+```
+
+All discord events are typed in the name property, when choosing an event, the run function will also be typed with the arguments that the chosen event should receive
+
+Equivalent code with pure discord.js
+```ts
+client.on("messageUpdate", (oldMessage, newMessage) => {
+    // ...
+})
+```
+
+[Back to the top ↑](#structures)
+
+## ES6 Modules
+
+> ⚠️ This base uses the `"type": "module"` in [package.json](./package.json). It is important to remember to use the `.js` extension when importing relative paths (even if they are typescript files).
+
+```ts
+// src/functions/math/mycustumfunc.ts
+export function sum(a: number, b: number){
+    return a + b;
+}
+```
+```ts
+// src/functions/index.ts
+export * from "./math/mycustumfunc.ts"
+```
+Create an index file in the folders that have an alias in the tsconfig file
+
+```ts
+// src/commands/public/ping.ts
+import { sum } from "#functions"
+```
+[Back to the top ↑](#features)
+
+## Constants
 
 There are global constants variables that you can use in method or function options objects, also using the "short syntax".
 
@@ -319,4 +480,31 @@ This way, it is not necessary to import these variables because they are global.
 
 See the constants files in the `src/settings` folder to find out all the constant global variables
 
-[Back to the top ↑](#structures)
+[Back to the top ↑](#features)
+
+## Env file
+
+With the new versions of node we now use the **--env-file** flag to indicate an environment variable file for our project
+
+```bash
+node --env-file .env ./dist/index.js
+```
+
+You can have two env files in your project and choose which one to use using predefined scripts
+```json
+{
+    "dev": "tsx --env-file .env ./src/index.ts",
+    "dev:dev": "tsx --env-file .env.development ./src/index.ts",
+}
+```
+If you have a `.env.development` file you can run the **dev:dev** script
+```bash
+npm run dev:dev
+```
+This is the same for all other scripts
+```bash
+npm run start:dev
+npm run watch:dev
+```
+
+[Back to the top ↑](#features)

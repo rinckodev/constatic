@@ -30,15 +30,15 @@ export class Store<V, K extends string | number = string> {
     public get(key: K){
         return this.store.get(key);
     }
-    public set(key: K, value: V, clearTime?: number | null, onDelete?: () => void){
+    public set(key: K, value: V, clearTime?: number | null, onDelete?: (value: V) => void){
         this.store.set(key, value);
         if (clearTime !== null || clearTime === undefined && this.clearByDefault){
             
             if (!clearTime && !this.clearTime) return this;
 
             setTimeout(() => {
+                if (onDelete) onDelete(value);
                 this.delete(key);
-                if (onDelete) onDelete();
             }, clearTime ?? this.clearTime);
         }
         return this;
