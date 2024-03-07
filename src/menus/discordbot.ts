@@ -7,6 +7,7 @@ import { existsSync } from "node:fs";
 import spawn from "cross-spawn";
 import path from "node:path";
 import chalk from "chalk";
+import { npmInstall } from "../helpers/install";
 
 interface DiscordBotMenuProps {
     projectName?: string
@@ -38,7 +39,7 @@ export async function DiscordBotMenu(props: ProgramProps & DiscordBotMenuProps){
 
     const npmName = destinationIsCwd
     ? toNpmName(path.basename(destinationPath))
-    : toNpmName(projectName);
+    : toNpmName(path.basename(projectName));
 
     log.info(chalk.bgBlue(` ${npmName} `));
 
@@ -78,7 +79,6 @@ export async function DiscordBotMenu(props: ProgramProps & DiscordBotMenuProps){
     }) as string;
 
     checkCancel(install);
-    // Process
 
     await copyDir(paths.project, destinationPath, { ignore: getCopyIgnore() });
 
@@ -128,38 +128,34 @@ export async function DiscordBotMenu(props: ProgramProps & DiscordBotMenuProps){
     
     if (!destinationIsCwd) message.push(`${chalk.green("➞")} use: ${getCdProjectPath(destinationPath)}`)
 
-    const done = () => {
-        message.push(`${chalk.green("➞")} run dev script`);
-        note(message.join("\n"), "Done");
-        outro(messages().bye())
-    }
-
     if (install !== "no"){
         const spinner = createSpinner();
         spinner.start("Installing dependencies");
-
-        const { name, args } = Package.managers[install as keyof typeof Package.managers]
-        const child = spawn(name, args, { stdio: "ignore", cwd: destinationPath });
         
-        child.on("exit", async (code) => {
-            spinner.stop(code === 0 
-                ? "Dependencies installed successfully!"
-                : "Unable to install dependencies!",
-                code ?? undefined
-            )
-            await setTimeout(1200);
-            done();
-        });
-        child.on("error", async () => {
-            spinner.stop("Unable to install dependencies!", 1),
-            log.warn("Use your package manager's dependency install command")
-            await setTimeout(1200);
-            done();
-        })
+        const manager = Package.managers[install as keyof typeof Package.managers];
+        const result = await npmInstall(destinationPath, manager);
+
+        switch(result.status){
+            case "success":{
+                spinner.stop("✅ Dependencies installed successfully!", result.code);
+                break;
+            }
+            case "fail":
+            case "error":{
+                spinner.stop("❌ Unable to install dependencies!", result.code);
+                if (result.status === "error") log.error(result.error.message);
+                break;
+            }
+        }
+
+        await setTimeout(1200);
     } else {
-        message.push(`${chalk.green("➞")} install the dependencies`)
-        done();
+        message.push(`${chalk.green("➞")} install the dependencies`);
     }
+    
+    message.push(`${chalk.green("➞")} run dev script`);
+    note(message.join("\n"), "Done");
+    outro(messages().bye())
 }
 
 function getCopyIgnore(){

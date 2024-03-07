@@ -2,7 +2,7 @@ import { readPackageJSON } from "pkg-types";
 
 const managers = {
     npm: { name: "npm", args: ["install"] },
-    yarn: { name: "yarn", args: ["add"] },
+    yarn: { name: "yarn", args: ["install"] },
     pnpm: { name: "pnpm", args: ["install"] },
     bun: { name: "bun", args: ["install"] },
 }
