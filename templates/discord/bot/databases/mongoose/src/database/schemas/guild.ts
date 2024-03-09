@@ -1,7 +1,7 @@
 import { Schema } from "mongoose";
 import { t } from "../utils.js";
 
-const channelInfo = { id: t.string, url: t.string };
+const channelInfo = new Schema({ id: t.string, url: t.string }, { _id: false });
 
 export const guildSchema = new Schema(
     {

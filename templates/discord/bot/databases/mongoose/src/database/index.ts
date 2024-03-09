@@ -4,7 +4,7 @@ import { memberSchema } from "./schemas/member.js";
 import { log } from "#settings";
 import chalk from "chalk";
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI, { dbName: "database" })
 .then(() => {
    log.success(chalk.green("MongoDB connected"));
 })
