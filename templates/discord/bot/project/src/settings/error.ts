@@ -1,8 +1,7 @@
-import { log } from "@clack/prompts";
 import { replaceText, limitText, createEmbed, createEmbedAuthor, brBuilder } from "@magicyan/discord";
 import { Client, codeBlock, WebhookClient } from "discord.js";
 import settingsJson from "./settings.json" with { type: "json" };
-import consola from "consola";
+import { consola as log } from "consola";
 import chalk from "chalk";
 
 export async function onError(error: Error | any, client: Client<true>){
@@ -34,6 +33,6 @@ export async function onError(error: Error | any, client: Client<true>){
 }
 
 process.on("SIGINT", () => {
-    consola.info(chalk.dim("👋 Exit"));
+    log.info(chalk.dim("👋 Exit"));
     process.exit(0);
 });
