@@ -1,5 +1,5 @@
 import { CacheType, Collection, ModalMessageModalSubmitInteraction, ModalSubmitInteraction } from "discord.js";
-import { Params, getCustomIdParams } from "./utils.js";
+import { Params, Prettify, getCustomIdParams } from "./utils.js";
 import { log } from "#settings";
 import ck from "chalk";
 
@@ -8,7 +8,7 @@ type GetInteraction<C extends CacheType = CacheType, M extends boolean = boolean
 
 type ModalData<I extends string, C extends CacheType = CacheType, M extends boolean = boolean> = {
 	customId: I; cache?: C; isFromMessage?: M;
-	run(interaction: GetInteraction<C, M>, params: Params<I>): void;
+	run(interaction: GetInteraction<C, M>, params: Prettify<Params<I>>): void;
 }
 
 export class Modal<I extends string, C extends CacheType = CacheType, M extends boolean = boolean> {

@@ -1,6 +1,11 @@
+export type Prettify<T> = {
+    [K in keyof T]: T[K];
+} & {};
+
 type Dictionary<R extends string> =
-    R extends `[${infer K}]` ? { [Key in K]: string[] } :
-    { [Key in R]: string }
+    R extends `[${infer K}]` 
+        ? Record<K, string[]> 
+        : Record<R, string>;
 
 export type Params<R extends string, I extends boolean = true, L = {}> = 
     I extends true ?
@@ -20,6 +25,7 @@ export type Params<R extends string, I extends boolean = true, L = {}> =
     R extends `:${infer Seg}` 
         ? L & Dictionary<Seg> : 
     L
+
 
 export function getCustomIdParams(definition: string, customId: string){
     const regex = new RegExp(`^${definition.replace(/:[^\s/]+/g, "([^/]+)")}$`);
@@ -44,3 +50,4 @@ export function getCustomIdParams(definition: string, customId: string){
 
     return params;
 }
+

@@ -7,7 +7,6 @@ import { importMeta } from "./helpers/meta";
 import { Package } from "./helpers/package";
 import { MainMenu } from "./menus/main";
 import { DiscordBotMenu } from "./menus/discordbot";
-import { setTimeout } from "node:timers/promises";
 
 const { __dirname } = importMeta(import.meta);
 

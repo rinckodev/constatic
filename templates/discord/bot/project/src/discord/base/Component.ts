@@ -1,7 +1,7 @@
 import { log } from "#settings";
 import chalk from "chalk";
 import { CacheType, Collection, ComponentType, Interaction, MessageComponentInteraction } from "discord.js";
-import { getCustomIdParams, Params } from "./utils.js";
+import { getCustomIdParams, Params, Prettify } from "./utils.js";
 import { spaceBuilder } from "@magicyan/discord";
 
 type MessageComponentType = Exclude<ComponentType, ComponentType.TextInput>
@@ -12,7 +12,7 @@ type ComponentInteraction<T, C extends CacheType> =
 
 type ComponentData<I extends string, T, C extends CacheType = CacheType> = {
     customId: I; type: T; cache?: C;
-	run(interaction: ComponentInteraction<T, C>, params: Params<I>): void
+	run(interaction: ComponentInteraction<T, C>, params: Prettify<Params<I>>): void
 }
 
 export class Component<I extends string, T extends MessageComponentType, C extends CacheType> {

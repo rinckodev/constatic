@@ -35,13 +35,8 @@ export function createClient(options: Partial<ClientOptions> = {}) {
 
 			if (options?.whenReady) options.whenReady(readyClient);
 		});
-		const paths = await glob(
-			[
-				`./${foldername}/discord/**/*.{ts,js}`,
-				`!./${foldername}/discord/base/*`
-			],
-			{ absolute: true }
-		);
+		const patterns = [`./${foldername}/discord/**/*.{ts,js}`, `!./${foldername}/discord/base/*`];
+		const paths = await glob(patterns, { absolute: true });
 
 		await Promise.all(paths.map(async path => import(`file://${path}`)));
 		Event.register(this); Listener.register(this);

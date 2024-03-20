@@ -34,4 +34,5 @@
   "explorer.fileNesting.enabled": true,
   "typescript.suggest.autoImports": true,
   "window.title": "${rootName}${separator}${appName}",
+  "files.autoSave": "afterDelay",
 }
