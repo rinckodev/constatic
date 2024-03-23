@@ -1,6 +1,6 @@
 {
   "name": "constatic",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Constatic cli",
   "main": "dist/index.mjs",
   "bin": "dist/index.mjs",
@@ -50,14 +50,14 @@
   "devDependencies": {
     "@types/cross-spawn": "^6.0.6",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^20.11.5",
-    "tsx": "^4.7.0",
+    "@types/node": "^20.11.30",
+    "tsx": "^4.7.1",
     "unbuild": "^2.0.0"
   },
   "dependencies": {
     "@clack/prompts": "^0.7.0",
     "chalk": "^5.3.0",
-    "citty": "^0.1.5",
+    "citty": "^0.1.6",
     "cross-spawn": "^7.0.3",
     "fs-extra": "^11.2.0",
     "pkg-types": "^1.0.3"

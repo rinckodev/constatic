@@ -1,5 +1,5 @@
-#!/usr/bin/env node
-import { intro, log } from "@clack/prompts";
+#!/usr/bin/env node  
+import { intro } from "@clack/prompts";
 import * as citty from "citty";
 import chalk from "chalk";
 import path from "node:path";

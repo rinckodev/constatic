@@ -11,7 +11,7 @@ export async function upsetGuildData(guild: Guild, data: UpsetData){
     return await db.guilds.upset(db.guilds.id(guild.id), data);
 }
 
-type UpdateData = DatabaseSchema["guilds"]["UpdateArg"];
+type UpdateData = DatabaseSchema["guilds"]["UpdateData"];
 export async function updateGuildData(guild: Guild, data: UpdateData){
     return await db.guilds.update(db.guilds.id(guild.id), data);
 }
