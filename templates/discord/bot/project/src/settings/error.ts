@@ -28,8 +28,7 @@ export async function onError(error: Error | any, client: Client<true>){
 
     const webhook = new WebhookClient({ url: webhooksLogURL });
 
-    webhook.send({ embeds: [embed] })
-    .catch(log.error);
+    webhook.send({ embeds: [embed] }).catch(log.error);
 }
 
 process.on("SIGINT", () => {

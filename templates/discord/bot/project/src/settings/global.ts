@@ -2,20 +2,18 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 declare global {
-	var animated: true;
-	var fetchReply: true;
-	var ephemeral: true;
-	var required: true;
-	var inline: true;
-	var disabled: true;
+	const animated: true;
+	const fetchReply: true;
+	const ephemeral: true;
+	const required: true;
+	const inline: true;
+	const disabled: true;
 
-	var components: [];
-	var embeds: [];
+	const __rootname: string;
 
-	var __rootname: string;
-	var rootTo: (...path: string[]) => string;
-	var getFilename: (meta: ImportMeta) => string;
-	var getDirname: (meta: ImportMeta) => string;
+	function rootTo(...path: string[]): string;
+	function getFilename(meta: ImportMeta): string;
+	function getDirname(meta: ImportMeta): string;
 
 	function importMeta(meta: ImportMeta): {
 		__filename: string;
@@ -23,22 +21,41 @@ declare global {
 	};
 }
 
-globalThis.animated = true;
-globalThis.fetchReply = true;
-globalThis.ephemeral = true;
-globalThis.required = true;
-globalThis.inline = true;
-globalThis.disabled = true;
+Object.defineProperties(globalThis, {
+	animated:{ value: true },
+	fetchReply:{ value: true },
+	ephemeral:{ value: true },
+	required:{ value: true },
+	inline:{ value: true },
+	disabled:{ value: true },
+	__rootname:{ value: process.cwd() }
+});
 
-globalThis.components = [];
-globalThis.embeds = [];
+Object.defineProperties(globalThis, {
+	getFilename: {
+		value(meta: ImportMeta){
+			return fileURLToPath(meta.url);
+		}
+	},
+	getDirname: {
+		value(meta: ImportMeta){
+			return dirname(getFilename(meta));
+		}
+	},
+	rootTo: {
+		value(...path: string[]){
+			return join(__rootname, ...path);
+		}
+	}
+});
 
-globalThis.__rootname = process.cwd();
-globalThis.getFilename = (meta) => fileURLToPath(meta.url);
-globalThis.getDirname = (meta) => dirname(getFilename(meta));
-globalThis.rootTo = (...path: string[]) => join(__rootname, ...path);
-
-globalThis.importMeta = (meta) => ({
-	__filename: getFilename(meta),
-	__dirname: getDirname(meta)
+Object.defineProperties(globalThis, {
+	importMeta:{
+		value(meta: ImportMeta){
+			return {
+				__filename: getFilename(meta),
+				__dirname: getDirname(meta)
+			};
+		}
+	}
 });

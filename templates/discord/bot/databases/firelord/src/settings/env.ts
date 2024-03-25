@@ -6,12 +6,6 @@ const envSchema = z.object({
     FIREBASE_PATH: z.string({ description: "Firebase account path is required" })
 });
 
-envSchema.parse(process.env);
+type EnvSchema = z.infer<typeof envSchema>;
 
-type EnvVars = Readonly<z.infer<typeof envSchema>>
-
-declare global {
-    namespace NodeJS {
-        interface ProcessEnv extends EnvVars {}
-    }
-}
+export { envSchema, EnvSchema };

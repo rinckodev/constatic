@@ -5,12 +5,6 @@ const envSchema = z.object({
     WEBHOOK_LOGS_URL: z.string().url().optional()
 });
 
-envSchema.parse(process.env);
+type EnvSchema = z.infer<typeof envSchema>;
 
-type EnvVars = Readonly<z.infer<typeof envSchema>>
-
-declare global {
-    namespace NodeJS {
-        interface ProcessEnv extends EnvVars {}
-    }
-}
+export { envSchema, EnvSchema };

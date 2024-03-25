@@ -16,15 +16,15 @@
 		"moduleResolution": "NodeNext",
 		"outDir": "./dist",
 		"rootDir": "./src",
-		"baseUrl": ".",
+		"baseUrl": "./src",
 		"paths": {
-			"#base": ["./src/discord/base/index.ts"],
-			"#settings": ["./src/settings/index.ts"],
-			"#database": ["./src/database/index.ts"],
-			"#functions": ["./src/functions/index.ts"],
-			"#tools": ["./src/tools/index.ts"],
-			"#classes": ["./src/classes/index.ts"],
-			"#menus": ["./src/menus/index.ts"]
+			"#base": ["./discord/base/index.ts"],
+			"#settings": ["./settings/index.ts"],
+			"#database": ["./database/index.ts"],
+			"#functions": ["./functions/index.ts"],
+			"#tools": ["./tools/index.ts"],
+			"#classes": ["./classes/index.ts"],
+			"#menus": ["./menus/index.ts"]
 		},
 	},
 	"include": ["src"],

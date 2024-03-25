@@ -1,4 +1,4 @@
-#!/usr/bin/env node  
+#!/usr/bin/env node
 import { intro } from "@clack/prompts";
 import * as citty from "citty";
 import chalk from "chalk";
