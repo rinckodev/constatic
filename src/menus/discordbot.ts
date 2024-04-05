@@ -62,7 +62,7 @@ export async function DiscordBotMenu(props: ProgramProps & DiscordBotMenuProps){
         cursorAt: "discloud",
         required: false,
         options: [
-            { label: "📄 Discloud config", value: "discloud", hint: "Hosting" }
+            { label: "📄 Squarecloud config", value: "squarecloud", hint: "Hosting" }
         ]
     }) as string[];
 
@@ -103,17 +103,8 @@ export async function DiscordBotMenu(props: ProgramProps & DiscordBotMenuProps){
         path.join(destinationPath, ".gitignore")
     );
 
-    if (extras.includes("discloud")){
-        await Promise.all([
-            copyDir(
-                path.join(paths.extras, "discloud/discloud.txt"), 
-                path.join(destinationPath, "discloud.config")
-            ),
-            copyDir(
-                path.join(paths.extras, "discloud/discloudignore.txt"), 
-                path.join(destinationPath, ".discloudignore")
-            )
-        ]);
+    if (extras.includes("squarecloud")){
+        await copyDir(path.join(paths.extras, "squarecloud"), destinationPath)
     }
 
     await json.write(path.join(destinationPath, "package.json"), newProjectPackageJson);

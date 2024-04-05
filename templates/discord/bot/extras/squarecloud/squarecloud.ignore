@@ -1,8 +1,10 @@
 /.vscode
 /node_modules
-/dist
+/src
 
+/.gitignore
 /.env.development
 /.env.example
 /.eslintrc.json
 /README.md
+/tsconfig.json
