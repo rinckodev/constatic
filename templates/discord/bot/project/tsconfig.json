@@ -24,7 +24,8 @@
 			"#functions": ["./functions/index.ts"],
 			"#tools": ["./tools/index.ts"],
 			"#classes": ["./classes/index.ts"],
-			"#menus": ["./menus/index.ts"]
+			"#menus": ["./menus/index.ts"],
+			"#tasks": ["./tasks/index.ts"],
 		},
 	},
 	"include": ["src"],

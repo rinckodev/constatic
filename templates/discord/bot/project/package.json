@@ -12,7 +12,7 @@
     "start:dev": "node --env-file .env.development ."
   },
   "dependencies": {
-    "@magicyan/discord": "^1.0.22",
+    "@magicyan/discord": "^1.0.28",
     "chalk": "^5.3.0",
     "consola": "^3.2.3",
     "discord.js": "^14.14.1",
@@ -20,12 +20,12 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@types/node": "^20.11.30",
+    "@types/node": "^20.12.6",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.57.0",
-    "tsx": "^4.7.1",
-    "typescript": "^5.4.2"
+    "tsx": "^4.7.2",
+    "typescript": "^5.4.4"
   },
   "imports": {
     "#base": [
@@ -48,6 +48,9 @@
     ],
     "#menus": [
       "./dist/menus/index.js"
+    ],
+    "#tasks": [
+      "./dist/tasks/index.js"
     ]
   }
 }
