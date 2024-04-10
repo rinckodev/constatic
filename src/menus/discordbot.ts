@@ -57,16 +57,15 @@ export async function DiscordBotMenu(props: ProgramProps & DiscordBotMenuProps){
 
     checkCancel(database);
 
-    const extras = await multiselect({
-        message: "✨ Extra features",
-        cursorAt: "discloud",
-        required: false,
-        options: [
-            { label: "📄 Squarecloud config", value: "squarecloud", hint: "Hosting" }
-        ]
-    }) as string[];
+    // const extras = await multiselect({
+    //     message: "✨ Extra features",
+    //     required: false,
+    //     options: [
+    //         // TODO add extra features
+    //     ]
+    // }) as string[];
 
-    checkCancel(extras);
+    // checkCancel(extras);
 
     const install = await select({
         message: "📥 Install dependencies?",
@@ -103,9 +102,10 @@ export async function DiscordBotMenu(props: ProgramProps & DiscordBotMenuProps){
         path.join(destinationPath, ".gitignore")
     );
 
-    if (extras.includes("squarecloud")){
-        await copyDir(path.join(paths.extras, "squarecloud"), destinationPath)
-    }
+    // TODO add extra features
+    // if (extras.includes("squarecloud")){
+    //     await copyDir(path.join(paths.extras, "squarecloud"), destinationPath)
+    // }
 
     await json.write(path.join(destinationPath, "package.json"), newProjectPackageJson);
 
