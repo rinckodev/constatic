@@ -22,7 +22,7 @@ export async function onError(error: Error | any, client: Client<true>){
     
     const embed = createEmbed({
         color: settingsJson.colors.danger,
-        author: createEmbedAuthor({ user }),
+        author: createEmbedAuthor(user),
         description: codeBlock("ts", brBuilder(...errorMessage)),
     });
 

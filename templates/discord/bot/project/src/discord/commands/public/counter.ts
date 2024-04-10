@@ -4,7 +4,7 @@ import { ApplicationCommandType, ButtonBuilder, ButtonStyle, ComponentType, User
 
 function counterMenu(user: User, current: number){
     const embed = createEmbed({
-        author: createEmbedAuthor({ user }),
+        author: createEmbedAuthor(user),
         color: "Random",
         description: `Current value: ${current}`
     });
