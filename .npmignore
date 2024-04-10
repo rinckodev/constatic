@@ -4,6 +4,8 @@ node_modules
 /.vscode
 /playground
 
+templates/*/dist/
+
 /.env
 *.env.development
 /.gitignore
