@@ -1,7 +1,7 @@
 import { outro, select } from "@clack/prompts";
-import { DiscordBotMenu } from "./discordbot";
 import chalk from "chalk";
 import { checkCancel, messages } from "../helpers";
+import { discordBotMainMenu } from "./discordbot/main";
 
 export async function MainMenu(props: ProgramProps){
     const selected = await select({
@@ -16,7 +16,7 @@ export async function MainMenu(props: ProgramProps){
 
     switch(selected){
         case "discordbot":{
-            DiscordBotMenu(props);
+            discordBotMainMenu(props);
             return;
         }
         case "quit":{

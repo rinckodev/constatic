@@ -1,10 +1,21 @@
-dist
-node_modules
+# Folders
+/dist
+/discloud
+/deprecated
+/node_modules
 
-.env
-.env.development
-package-lock.json
+# Files
+/.env
+/.env.development
+/package-lock.json
 
-firebase.json
+# Config files
+/firebase.json
+/discloud.config
 
+# Extensions
+*.zip
+*.sqlite
+*.exe
+*.db
 *.development.json

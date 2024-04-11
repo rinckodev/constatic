@@ -11,29 +11,28 @@ const foldername = basename(join(getDirname(import.meta), "../../"));
 export function createClient(options: Partial<ClientOptions> = {}) {
 	const { intents, partials, ...otherOptions } = options;
 
-	const client = new Client({
+	const client = new Client(Object.assign({
 		intents: intents ?? CustomItents.All,
 		partials: partials ?? CustomPartials.All,
 		failIfNotExists: false, closeTimeout: 0,
-		...otherOptions
-	});
+	}, otherOptions));
 
 	client.start = async function(options) {
-		this.once("ready", async (readyClient) => {
-			process.on("uncaughtException", async (err) => onError(err, readyClient));
-			process.on("unhandledRejection", async (err) => onError(err, readyClient));
+		this.once("ready", async (client) => {
+			process.on("uncaughtException", async (err) => onError(err, client));
+			process.on("unhandledRejection", async (err) => onError(err, client));
 			console.log();
 			log.success(
 				`${ck.green("Bot online")} ${ck.blue.underline("discord.js")} 📦 ${ck.yellow(version)} \n`,
-				`${ck.greenBright(`➝ Connected as ${ck.underline(readyClient.user.username)}`)}`
+				`${ck.greenBright(`➝ Connected as ${ck.underline(client.user.username)}`)}`
 			);
 			console.log();
 
-			await readyClient.application.commands.set(Array.from(Command.commands.values()))
+			await client.application.commands.set(Array.from(Command.commands.values()))
 			.then(() => log.success(ck.green("Commands registered successfully!")))
 			.catch(log.error);
 
-			if (options?.whenReady) options.whenReady(readyClient);
+			if (options?.whenReady) options.whenReady(client);
 		});
 		const patterns = [`./${foldername}/discord/**/*.{ts,js}`, `!./${foldername}/discord/base/*`];
 		const paths = await glob(patterns, { absolute: true });

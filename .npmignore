@@ -10,3 +10,4 @@ templates/*/dist/
 *.env.development
 /.gitignore
 /build.config.ts
+/tsconfig.json

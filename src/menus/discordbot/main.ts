@@ -1,22 +1,28 @@
-import { Package, checkCancel, copyDir, getCdProjectPath, json, listDirectoryItems, mergeObject, messages, toNpmName } from "../helpers";
 import { spinner as createSpinner, log, multiselect, note, outro, select, text } from "@clack/prompts";
-import { DiscordBotTemplateProperties } from "../types/discordbot";
 import { setTimeout } from "node:timers/promises";
 import { PackageJson } from "pkg-types";
 import { existsSync } from "node:fs";
-import spawn from "cross-spawn";
 import path from "node:path";
 import chalk from "chalk";
-import { npmInstall } from "../helpers/install";
+import { DiscordBotTemplateProperties } from "../../types/discordbot";
+import { checkCancel, toNpmName, json, Package, copyDir, mergeObject, listDirectoryItems, getCdProjectPath, messages } from "../../helpers";
+import { npmInstall } from "../../helpers/install";
+import { discordBotExtraFeatures } from "./extra";
+
+
+export type DiscordBotTemplatePaths = Record<
+    | "templates" | "project" | "databases" 
+    | "extras" | "properties"
+, string>
 
 interface DiscordBotMenuProps {
     projectName?: string
 }
-export async function DiscordBotMenu(props: ProgramProps & DiscordBotMenuProps){
+export async function discordBotMainMenu(props: ProgramProps & DiscordBotMenuProps){
     const cwd = process.cwd();
 
     const basePath = path.join(props.rootname, "/templates/discord/bot");
-    const paths = {
+    const paths: DiscordBotTemplatePaths = {
         templates: basePath,
         project: path.join(basePath, "project"),
         databases: path.join(basePath, "databases"),
@@ -57,15 +63,15 @@ export async function DiscordBotMenu(props: ProgramProps & DiscordBotMenuProps){
 
     checkCancel(database);
 
-    // const extras = await multiselect({
-    //     message: "✨ Extra features",
-    //     required: false,
-    //     options: [
-    //         // TODO add extra features
-    //     ]
-    // }) as string[];
+    const extras = await multiselect({
+        message: "✨ Extra features",
+        required: false,
+        options: [
+            { label: "Discloud project", hint: "Host", value: "discloud" }
+        ]
+    }) as string[];
 
-    // checkCancel(extras);
+    checkCancel(extras);
 
     const install = await select({
         message: "📥 Install dependencies?",
@@ -96,16 +102,7 @@ export async function DiscordBotMenu(props: ProgramProps & DiscordBotMenuProps){
     }
 
     // Extras
-
-    await copyDir(
-        path.join(paths.extras, "gitignore.txt"), 
-        path.join(destinationPath, ".gitignore")
-    );
-
-    // TODO add extra features
-    // if (extras.includes("squarecloud")){
-    //     await copyDir(path.join(paths.extras, "squarecloud"), destinationPath)
-    // }
+    await discordBotExtraFeatures(destinationPath, paths, extras);
 
     await json.write(path.join(destinationPath, "package.json"), newProjectPackageJson);
 
@@ -138,7 +135,6 @@ export async function DiscordBotMenu(props: ProgramProps & DiscordBotMenuProps){
                 break;
             }
         }
-
         await setTimeout(1200);
     } else {
         message.push(`${chalk.green("➞")} install the dependencies`);

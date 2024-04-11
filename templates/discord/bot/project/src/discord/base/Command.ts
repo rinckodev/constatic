@@ -1,28 +1,34 @@
-import { ApplicationCommandType, CacheType, ChatInputCommandInteraction, Collection, MessageContextMenuCommandInteraction, UserContextMenuCommandInteraction, ChatInputApplicationCommandData, MessageApplicationCommandData, UserApplicationCommandData, Client, AutocompleteInteraction, CommandInteraction } from "discord.js";
-import { findCommand } from "@magicyan/discord";
-import { Store } from "./Store.js";
 import { log } from "#settings";
+import { findCommand } from "@magicyan/discord";
 import chalk from "chalk";
+import { ApplicationCommandType, AutocompleteInteraction, CacheType, ChatInputApplicationCommandData, ChatInputCommandInteraction, Client, Collection, CommandInteraction, MessageApplicationCommandData, MessageContextMenuCommandInteraction, UserApplicationCommandData, UserContextMenuCommandInteraction } from "discord.js";
+import { Store } from "./utils/Store.js";
 
+type CommandStore = Record<string | number, Store<any, any>>;
 type Cache<D> = D extends false ? "cached" : CacheType;
 
-type CommandProps<N extends string, D extends boolean, T extends ApplicationCommandType, S extends CommandStore> = 
+type CommandName<N extends string> = 
+	N extends "" ? never :
+	N extends `${string} ${string}` ? never :
+	N extends Lowercase<N> ? N : never;
+
+type CommandProps<N extends string, D, T, S> = 
 	T extends ApplicationCommandType.ChatInput ? ChatInputApplicationCommandData & {
-		name: N extends Lowercase<N> ? N : never;
+		name: CommandName<N>;
 		run(interaction: ChatInputCommandInteraction<Cache<D>>, store: S): void;
 		autocomplete?(interaction: AutocompleteInteraction<Cache<D>>, store: S): void;
 	} :
 	T extends ApplicationCommandType.Message ? MessageApplicationCommandData & {
+		name: N extends "" ? never : N;
 		run(interaction: MessageContextMenuCommandInteraction<Cache<D>>, store: S): void;
 	} :
 	T extends ApplicationCommandType.User ? UserApplicationCommandData & {
+		name: N extends "" ? never : N;
 		run(interaction: UserContextMenuCommandInteraction<Cache<D>>, store: S): void;
 	} : never;
 
-type CommandStore = Record<string | number, Store<any, any>>;
-
-type CommandData<N extends string, D extends boolean, T extends ApplicationCommandType, S extends CommandStore> = {
-	name: N; dmPermission: D; type: T; store?: S;  
+type CommandData<N extends string, D, T, S> = {
+	name: N; dmPermission: D; type: T; store?: S;
 } & CommandProps<N, D, T, S>
 
 export class Command<N extends string, D extends boolean, T extends ApplicationCommandType, S extends CommandStore> {

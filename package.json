@@ -1,9 +1,11 @@
 {
   "name": "constatic",
-  "version": "0.1.18",
+  "version": "0.1.19",
   "description": "Constatic cli",
   "main": "dist/index.mjs",
-  "bin": "dist/index.mjs",
+  "bin": {
+    "constatic": "dist/index.mjs"
+  },
   "type": "module",
   "scripts": {
     "link": "npm unlink constatic && npm link",
@@ -40,7 +42,7 @@
   "homepage": "https://github.com/rinckodev/constatic#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rinckodev/constatic"
+    "url": "git+https://github.com/rinckodev/constatic.git"
   },
   "author": {
     "name": "Rincko Dev",

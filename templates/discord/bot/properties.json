@@ -20,7 +20,7 @@
             "name": "🍃 MongoDb (mongoose)",
             "path": "mongoose",
             "dependencies":{
-                "mongoose": "^8.2.0"
+                "mongoose": "^8.3.1"
             }
         },
         {

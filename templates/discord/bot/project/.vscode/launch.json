@@ -1,0 +1,42 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node-terminal",
+            "name": "Run dev",
+            "request": "launch",
+            "command": "npm run dev",
+        },
+        {
+            "type": "node-terminal",
+            "name": "Run dev:dev",
+            "request": "launch",
+            "command": "npm run dev:dev"
+        },
+        {
+            "type": "node-terminal",
+            "name": "Run watch",
+            "request": "launch",
+            "command": "npm run watch"
+        },
+        {
+            "type": "node-terminal",
+            "name": "Run watch:dev",
+            "request": "launch",            
+            "command": "npm run watch:dev"
+
+        },
+        {
+            "type": "node-terminal",
+            "name": "Run start",
+            "request": "launch",
+            "command": "npm start"
+        },
+        {
+            "type": "node-terminal",
+            "name": "Run start:dev",
+            "request": "launch",
+            "command": "npm run start:dev"
+        },
+    ]
+}

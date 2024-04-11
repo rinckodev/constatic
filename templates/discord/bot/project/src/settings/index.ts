@@ -12,12 +12,11 @@ const parseResult = envSchema.safeParse(process.env);
 if (!parseResult.success){
     throw parseResult.error;
 }
-log.success(chalk.hex("#8b51a3")("Env vars loaded successfully!"));
+log.success(chalk.hex(settingsJson.colors.bravery)("Env vars loaded successfully!"));
 
-type EnvVars = Readonly<EnvSchema>
 
 declare global {
     namespace NodeJS {
-        interface ProcessEnv extends EnvVars {}
+        interface ProcessEnv extends Readonly<EnvSchema> {}
     }
 }

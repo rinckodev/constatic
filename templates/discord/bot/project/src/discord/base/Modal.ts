@@ -1,5 +1,5 @@
 import { CacheType, Collection, ModalMessageModalSubmitInteraction, ModalSubmitInteraction } from "discord.js";
-import { Params, Prettify, getCustomIdParams } from "./utils.js";
+import { Params, Prettify, getCustomIdParams } from "./utils/Params.js";
 import { log } from "#settings";
 import ck from "chalk";
 

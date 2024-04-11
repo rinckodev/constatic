@@ -6,7 +6,7 @@ import path from "node:path";
 import { importMeta } from "./helpers/meta";
 import { Package } from "./helpers/package";
 import { MainMenu } from "./menus/main";
-import { DiscordBotMenu } from "./menus/discordbot";
+import { discordBotMainMenu } from "./menus/discordbot/main";
 
 const { __dirname } = importMeta(import.meta);
 
@@ -32,7 +32,7 @@ async function program() {
                     }
                 },
                 run(context) {
-                    DiscordBotMenu({
+                    discordBotMainMenu({
                         rootname,
                         projectName: context.args.projectName
                     })

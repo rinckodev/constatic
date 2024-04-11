@@ -1,7 +1,7 @@
 import { log } from "#settings";
 import chalk from "chalk";
 import { CacheType, Collection, ComponentType, Interaction, MessageComponentInteraction } from "discord.js";
-import { getCustomIdParams, Params, Prettify } from "./utils.js";
+import { getCustomIdParams, Params, Prettify } from "./utils/Params.js";
 import { spaceBuilder } from "@magicyan/discord";
 
 type MessageComponentType = Exclude<ComponentType, ComponentType.TextInput>
