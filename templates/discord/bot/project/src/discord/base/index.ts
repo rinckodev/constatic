@@ -6,3 +6,4 @@ export * from "./Modal.js";
 export * from "./Listener.js";
 
 export * from "./utils/Store.js";
+export * from "./utils/URLStore.js";

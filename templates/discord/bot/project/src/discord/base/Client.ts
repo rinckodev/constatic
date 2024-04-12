@@ -28,7 +28,7 @@ export function createClient(options: Partial<ClientOptions> = {}) {
 			);
 			console.log();
 
-			await client.application.commands.set(Array.from(Command.commands.values()))
+			await Command.registerCommands(client.application.commands)
 			.then(() => log.success(ck.green("Commands registered successfully!")))
 			.catch(log.error);
 
