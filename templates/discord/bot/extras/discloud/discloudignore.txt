@@ -24,8 +24,7 @@
 /README.md
 
 # Extensions
+*.md
 *.zip
-*.sqlite
 *.exe
-*.db
 *.development.json

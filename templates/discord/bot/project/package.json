@@ -3,6 +3,7 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
+    "build:dev": "tsc --noEmit && echo ✔ Ok",
     "build": "tsc",
     "dev": "tsx --env-file .env ./src/index.ts",
     "dev:dev": "tsx --env-file .env.development ./src/index.ts",
