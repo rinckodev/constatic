@@ -6,11 +6,10 @@ import { log, onError } from "#settings";
 import glob from "fast-glob";
 import ck from "chalk";
 
-const foldername = basename(join(getDirname(import.meta), "../../"));
+const foldername = basename(join(import.meta.dirname, "../../"));
 
 export function createClient(options: Partial<ClientOptions> = {}) {
 	const { intents, partials, ...otherOptions } = options;
-
 	const client = new Client(Object.assign({
 		intents: intents ?? CustomItents.All,
 		partials: partials ?? CustomPartials.All,

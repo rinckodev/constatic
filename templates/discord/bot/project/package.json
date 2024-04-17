@@ -52,6 +52,9 @@
     ],
     "#tasks": [
       "./dist/tasks/index.js"
+    ],
+    "#forms": [
+      "./dist/forms/index.js"
     ]
   }
 }

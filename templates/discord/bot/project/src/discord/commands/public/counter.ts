@@ -2,8 +2,8 @@ import { Command, Component } from "#base";
 import { createEmbed, createEmbedAuthor, createRow } from "@magicyan/discord";
 import { ApplicationCommandType, ButtonBuilder, ButtonStyle, ComponentType, User } from "discord.js";
 
-function counterMenu(user: User, current: number){
-    
+function counterMenu(user: User, current: number){    
+
     const embed = createEmbed({
         author: createEmbedAuthor(user),
         color: "Random",

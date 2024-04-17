@@ -4,7 +4,8 @@
     "system": "Ci",
     "modals": "Content",
     "menus": "layout",
-    
+    "forms": "custom",
+
     "experimental": "Test",
     "deprecated": "Archive",
     "development": "Test",

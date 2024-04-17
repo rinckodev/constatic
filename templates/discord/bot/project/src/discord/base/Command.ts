@@ -42,9 +42,11 @@ export class Command<N extends string, D extends boolean, T extends ApplicationC
 	private static Commands = new Collection<string, EssentialCommandData>();
 	constructor(private readonly data: CommandData<N, D, T, S>){
 		Command.SlashCommands.set(data.name, data);
+		const commandData = data as EssentialCommandData;
 		Command.Commands.set(data.name, {
-			run: data.run,
-			store: data.store
+			run: commandData.run,
+			store: commandData.store,
+			autocomplete: commandData.autocomplete
 		});
 	}
 	public get store(){
@@ -55,7 +57,6 @@ export class Command<N extends string, D extends boolean, T extends ApplicationC
 	}
 	public static registerCommands(manager: ApplicationCommandManager){
 		const commands = Array.from(Command.SlashCommands.values());
-		
 		Command.SlashCommands.clear();
 		
 		return manager.set(commands);
