@@ -4,11 +4,9 @@ import { PackageJson } from "pkg-types";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
-import { DiscordBotTemplateProperties } from "../../types/discordbot";
-import { checkCancel, toNpmName, json, Package, copyDir, mergeObject, listDirectoryItems, getCdProjectPath, messages } from "../../helpers";
-import { npmInstall } from "../../helpers/install";
-import { discordBotExtraFeatures } from "./extra";
-
+import { discordBotExtraFeatures } from "./extra.js";
+import { checkCancel, copyDir, getCdProjectPath, json, listDirectoryItems, mergeObject, messages, npmInstall, Package, toNpmName } from "../../helpers/index.js";
+import { readFile, writeFile } from "node:fs/promises";
 
 export type DiscordBotTemplatePaths = Record<
     | "templates" | "project" | "databases" 
@@ -18,7 +16,7 @@ export type DiscordBotTemplatePaths = Record<
 interface DiscordBotMenuProps {
     projectName?: string
 }
-export async function discordBotMainMenu(props: ProgramProps & DiscordBotMenuProps){
+export async function discordBotInitMenu(props: ProgramProps & DiscordBotMenuProps){
     const cwd = process.cwd();
 
     const basePath = path.join(props.rootname, "/templates/discord/bot");
@@ -73,6 +71,16 @@ export async function discordBotMainMenu(props: ProgramProps & DiscordBotMenuPro
 
     checkCancel(extras);
 
+    const tokens = props.conf.get("discord.bot.tokens", []) as DiscordBotToken[];
+
+    const tokenIndex = tokens.length > 0 ? await select({
+        message: "Saved token",
+        options: [
+            { label: "none", value: -1 },
+            tokens.map((t, index) => ({ label: t.name, value: index }))
+        ].flat()
+    }) as number : -1;
+
     const install = await select({
         message: "📥 Install dependencies?",
         options: [
@@ -99,6 +107,14 @@ export async function discordBotMainMenu(props: ProgramProps & DiscordBotMenuPro
         if (existsSync(projectPath)){
             await copyDir(projectPath, destinationPath, { ignore: getCopyIgnore() });
         }
+    }
+
+    if (tokenIndex !== -1){
+        const { token } = tokens[tokenIndex];
+        const envPath = path.join(destinationPath, ".env");
+        const file = await readFile(envPath, "utf-8");
+        const content = file.replace("BOT_TOKEN=", `BOT_TOKEN=${token}`);
+        await writeFile(envPath, content, "utf-8");
     }
 
     // Extras
@@ -142,6 +158,15 @@ export async function discordBotMainMenu(props: ProgramProps & DiscordBotMenuPro
     
     message.push(`${chalk.green("➞")} run dev script`);
     note(message.join("\n"), "Done");
+    
+    
+    if (tokenIndex !== -1){
+        const { invite } = tokens[tokenIndex];
+        outro([
+            "Your bot invite link:",
+            chalk.cyan(invite)
+        ].join("\n"))
+    }
     outro(messages().bye())
 }
 

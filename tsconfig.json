@@ -1,13 +1,13 @@
 {
     "compilerOptions": {
       "noEmit": true,
-      "module": "ESNext",
+      "module": "NodeNext",
       "target": "ESNext",
-      "moduleResolution": "node",
+      "moduleResolution": "NodeNext",
       "resolveJsonModule": true,
       "strict": true,
       "esModuleInterop": true,
       "forceConsistentCasingInFileNames": true,
-      "skipLibCheck": true,
+      "skipLibCheck": true
     },
   }

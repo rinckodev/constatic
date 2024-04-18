@@ -1,3 +1,5 @@
-export type DeepPartial<T> = {
-    [K in keyof T]?: DeepPartial<T[K]>
+declare global {
+    type DeepPartial<T> = {
+        [K in keyof T]?: DeepPartial<T[K]>
+    }
 }

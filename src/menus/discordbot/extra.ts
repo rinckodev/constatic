@@ -1,6 +1,6 @@
 import path from "path";
-import { copyDir } from "../../helpers";
-import { DiscordBotTemplatePaths } from "./main";
+import { copyDir } from "../../helpers/index.js";
+import { DiscordBotTemplatePaths } from "./main.js";
 
 export async function discordBotExtraFeatures(destinationPath: string, paths: DiscordBotTemplatePaths, extras: string[]){
     await copyDir(
