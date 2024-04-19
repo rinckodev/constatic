@@ -8,8 +8,19 @@ import ck from "chalk";
 
 const foldername = basename(join(import.meta.dirname, "../../"));
 
-export function createClient(options: Partial<ClientOptions> = {}) {
-	const { intents, partials, ...otherOptions } = options;
+interface GuildCommandsMethod {
+	type: "guild",
+	guilds: string[]
+}
+interface GlobalCommandsMethod {
+	type: "global",
+}
+type CommandsMethod = GuildCommandsMethod | GlobalCommandsMethod;
+interface CreateClientOptions extends Partial<ClientOptions> {
+	commandsMethod?: CommandsMethod
+}
+export function createClient(options: CreateClientOptions = {}) {
+	const { intents, partials, commandsMethod={ type: "global" }, ...otherOptions } = options;
 	const client = new Client(Object.assign({
 		intents: intents ?? CustomItents.All,
 		partials: partials ?? CustomPartials.All,
@@ -27,9 +38,15 @@ export function createClient(options: Partial<ClientOptions> = {}) {
 			);
 			console.log();
 
-			await Command.registerCommands(client.application.commands)
-			.then(() => log.success(ck.green("Commands registered successfully!")))
-			.catch(log.error);
+			if (commandsMethod.type === "guild"){
+				const guilds = client.guilds.cache.filter(
+					({ id }) => commandsMethod.guilds.includes(id)
+				);
+				await Command.registerGuildCommands(client, guilds);
+			} else {
+				await Command.registerGlobalCommands(client);
+			}
+			
 
 			if (options?.whenReady) options.whenReady(client);
 		});

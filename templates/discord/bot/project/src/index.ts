@@ -1,3 +1,4 @@
 import { createClient } from "#base"; 
 
-createClient().start();
+const client = createClient();
+client.start();

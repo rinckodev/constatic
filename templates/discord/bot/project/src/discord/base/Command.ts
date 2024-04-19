@@ -1,7 +1,7 @@
 import { log } from "#settings";
 import { findCommand } from "@magicyan/discord";
-import chalk from "chalk";
-import { ApplicationCommandManager, ApplicationCommandType, AutocompleteInteraction, CacheType, ChatInputApplicationCommandData, ChatInputCommandInteraction, Client, Collection, CommandInteraction, MessageApplicationCommandData, MessageContextMenuCommandInteraction, UserApplicationCommandData, UserContextMenuCommandInteraction } from "discord.js";
+import ck from "chalk";
+import { ApplicationCommandType, AutocompleteInteraction, CacheType, ChatInputApplicationCommandData, ChatInputCommandInteraction, Client, Collection, CommandInteraction, Guild, MessageApplicationCommandData, MessageContextMenuCommandInteraction, UserApplicationCommandData, UserContextMenuCommandInteraction } from "discord.js";
 import { Store } from "./utils/Store.js";
 
 type CommandStore = Record<string | number, Store<any, any>>;
@@ -28,26 +28,13 @@ type CommandProps<N extends string, D, T, S> =
 	} : never;
 
 type CommandData<N extends string, D, T, S> = {
-	name: N; dmPermission: D; type: T; store?: S;
+	name: N; dmPermission: D; type: T; store?: S; global?: boolean;
 } & CommandProps<N, D, T, S>
 
-type EssentialCommandData = {
-	store: unknown;
-	run(interaction: unknown, store: unknown): void
-	autocomplete?(interaction: unknown, store: unknown): void
-}
-
 export class Command<N extends string, D extends boolean, T extends ApplicationCommandType, S extends CommandStore> {
-	private static SlashCommands = new Collection<string, CommandData<any, any, any, any>>();
-	private static Commands = new Collection<string, EssentialCommandData>();
+	private static Commands = new Collection<string, CommandData<any, any, any, any>>();
 	constructor(private readonly data: CommandData<N, D, T, S>){
-		Command.SlashCommands.set(data.name, data);
-		const commandData = data as EssentialCommandData;
-		Command.Commands.set(data.name, {
-			run: commandData.run,
-			store: commandData.store,
-			autocomplete: commandData.autocomplete
-		});
+		Command.Commands.set(data.name, data);
 	}
 	public get store(){
 		return this.data.store ?? {} as S;
@@ -55,18 +42,43 @@ export class Command<N extends string, D extends boolean, T extends ApplicationC
 	public getApplicationCommand(client: Client<true>) {
 		return findCommand(client).byName(this.data.name)!;
 	}
-	public static registerCommands(manager: ApplicationCommandManager){
-		const commands = Array.from(Command.SlashCommands.values());
-		Command.SlashCommands.clear();
-		
-		return manager.set(commands);
+	private static log(text: string){
+		return log.success(ck.green(text));
+	}
+	private static clearGuildCommands(client: Client<true>){
+		const guilds = client.guilds.cache.filter(g => g.commands.cache.size >= 1);
+		for(const guild of guilds.values()){
+			guild.commands.set([]);
+		}
+	}
+	public static async registerGlobalCommands(client: Client<true>){
+		Command.clearGuildCommands(client);
+
+		client.application.commands.set(Array.from(Command.Commands.values()))
+		.then(({ size }) => 
+			Command.log(`${size} commands successfully registered globally!`)
+		);
+	}
+	public static async registerGuildCommands(client: Client<true>, guilds: Collection<string, Guild>){
+		const [globalCommands, guildCommads] = Command.Commands.partition(c => c.global === true);
+
+		Command.clearGuildCommands(client);
+
+		client.application.commands.set(Array.from(globalCommands.values()))
+		.then(({ size }) => 
+			Command.log(`${size} commands successfully registered globally!`)
+		);
+		for(const guild of guilds.values()){
+			guild.commands.set(Array.from(guildCommads.values()))
+			.then(({ size }) => 
+				Command.log(`${size} commands registered in ${ck.underline(guild.name)} guild successfully!`)
+			);
+		}
 	}
 	public static onCommand(interaction: CommandInteraction){
 		const command = Command.Commands.get(interaction.commandName);
-		if (command) {
-			command.run(interaction as unknown, command.store);
-			return;
-		}
+		if (!command) return;
+		command.run(interaction as never, command.store);
 	}
 	public static onAutocomplete(interaction: AutocompleteInteraction){
 		const command = Command.Commands.get(interaction.commandName);
@@ -77,7 +89,7 @@ export class Command<N extends string, D extends boolean, T extends ApplicationC
 	}
 	public static logs(){
 		Command.Commands.forEach((_, name) => {
-			log.success(chalk.green(`${chalk.blue.underline(name)} command registered successfully!`));
+			log.success(ck.green(`${ck.blue.underline(name)} command loaded successfully!`));
 		});
 	}
 }
