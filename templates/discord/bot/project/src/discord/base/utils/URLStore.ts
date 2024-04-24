@@ -32,10 +32,10 @@ export class URLStore<S extends StringRecord | RecordKeys = StringRecord, K exte
         mock.searchParams.set(key, value);
         return mock.toString().length <= this.lengthLimit;
     }
-    public set(key: K, value: string){
-        const canBeSet = this.canBeSet(key, value);
+    public set(key: K, value: string | number){
+        const canBeSet = this.canBeSet(key, value.toString());
         if (canBeSet){
-            this.url.searchParams.set(key, value);
+            this.url.searchParams.set(key, value.toString());
         }
         return canBeSet;
     }

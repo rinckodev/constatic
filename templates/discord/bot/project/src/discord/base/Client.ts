@@ -1,4 +1,4 @@
-import { Command, Component, Event, Listener, Modal } from "./index.js";
+import { Command, Component, Event, Modal } from "./index.js";
 import { CustomItents, CustomPartials } from "@magicyan/discord";
 import { Client, ClientOptions, version } from "discord.js";
 import { basename, join } from "node:path";
@@ -54,9 +54,9 @@ export function createClient(options: CreateClientOptions = {}) {
 		const paths = await glob(patterns, { absolute: true });
 
 		await Promise.all(paths.map(async path => import(`file://${path}`)));
-		Event.register(this); Listener.register(this);
+		Event.register(this);
 	
-		Command.logs(); Component.logs(); Listener.logs(); Modal.logs(); Event.logs();
+		Command.logs(); Component.logs(); Modal.logs(); Event.logs();
 
 		this.login(process.env.BOT_TOKEN);
 	};

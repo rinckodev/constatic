@@ -3,9 +3,7 @@ import chalk from "chalk";
 import { Client, ClientEvents, Collection } from "discord.js";
 
 interface EventData<EventName extends keyof ClientEvents> {
-    name: string;
-    event: EventName;
-    once?: boolean;
+    name: string; event: EventName; once?: boolean;
     run(...args: ClientEvents[EventName]): void
 }
 

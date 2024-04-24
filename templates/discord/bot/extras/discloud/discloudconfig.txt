@@ -4,3 +4,4 @@ MAIN=src/index.ts
 RAM=100
 VERSION=latest
 AUTORESTART=false
+AVATAR=https://i.imgur.com/vCmpTqL.png

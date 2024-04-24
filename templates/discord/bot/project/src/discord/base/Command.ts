@@ -4,7 +4,7 @@ import ck from "chalk";
 import { ApplicationCommandType, AutocompleteInteraction, CacheType, ChatInputApplicationCommandData, ChatInputCommandInteraction, Client, Collection, CommandInteraction, Guild, MessageApplicationCommandData, MessageContextMenuCommandInteraction, UserApplicationCommandData, UserContextMenuCommandInteraction } from "discord.js";
 import { Store } from "./utils/Store.js";
 
-type CommandStore = Record<string | number, Store<any, any>>;
+interface CommandStore extends Record<string | number, Store<any, any>> {}
 type Cache<D> = D extends false ? "cached" : CacheType;
 
 type CommandName<N extends string> = 
@@ -27,9 +27,9 @@ type CommandProps<N extends string, D, T, S> =
 		run(interaction: UserContextMenuCommandInteraction<Cache<D>>, store: S): void;
 	} : never;
 
-type CommandData<N extends string, D, T, S> = {
+type CommandData<N extends string, D, T, S> = CommandProps<N, D, T, S> & {
 	name: N; dmPermission: D; type: T; store?: S; global?: boolean;
-} & CommandProps<N, D, T, S>
+}
 
 export class Command<N extends string, D extends boolean, T extends ApplicationCommandType, S extends CommandStore> {
 	private static Commands = new Collection<string, CommandData<any, any, any, any>>();

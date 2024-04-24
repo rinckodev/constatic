@@ -6,9 +6,9 @@ import { spaceBuilder } from "@magicyan/discord";
 
 type MessageComponentType = Exclude<ComponentType, ComponentType.TextInput>
 
-type ComponentInteraction<T, C extends CacheType> = 
-    T extends ComponentType.ActionRow ? MessageComponentInteraction<C> :
-	Extract<Interaction<C>, { componentType: T }>
+type ComponentInteraction<T, C extends CacheType> = T extends ComponentType.ActionRow 
+    ? MessageComponentInteraction<C> 
+    : Extract<Interaction<C>, { componentType: T }>
 
 type ComponentData<I extends string, T, C extends CacheType = CacheType> = {
     customId: I; type: T; cache?: C;
