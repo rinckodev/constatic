@@ -24,8 +24,8 @@ export class URLStore<S extends StringRecord | RecordKeys = StringRecord, K exte
             {} as Record<K, string | undefined>
         );
     }
-    public get(key: K): string | null {
-        return this.url.searchParams.get(key);
+    public get(key: K): string | undefined {
+        return this.url.searchParams.get(key) ?? undefined;
     }
     public canBeSet(key: string, value: string){
         const mock = new URL(this.url.toString());

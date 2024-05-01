@@ -9,6 +9,10 @@ import { brBuilder } from "@magicyan/discord";
 
 export { log, settingsJson as settings };
 
+if (!process.execArgv.includes("--env-file")){
+    log.warn(chalk.yellow("The executed script does not contain the --env-file flag"));
+}
+
 const parseResult = envSchema.safeParse(process.env);
 if (!parseResult.success){
     for(const { message, path } of parseResult.error.errors){

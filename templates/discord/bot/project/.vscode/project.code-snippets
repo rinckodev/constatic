@@ -15,25 +15,6 @@
 		],
 		"description": "Create a new Slash Command"
 	},
-	"Slash Command With Store": {
-		"prefix": "new.command.store",
-		"scope":"typescript",
-		"body": [
-			"new Command({",
-			"    name: \"$1\",",
-			"    description: \"$2\",",
-			"    dmPermission: false,",
-			"    type: ApplicationCommandType.ChatInput,",
-			"    store: {",
-			"        cooldowns: new Store<Date>()",
-			"    },",
-			"    async run(interaction, { cooldowns }){",
-			"        $3",
-			"    }",
-			"});"
-		],
-		"description": "Create a new Slash Command"
-	},
 	"Slash Command with options": {
 		"prefix": "new.command.options",
 		"scope":"typescript",
@@ -157,7 +138,7 @@
 		"description": "Create a new event"
 	},
 	"Create Row With Buttons": {
-		"prefix": "new.createrow.buttons",
+		"prefix": "createrow.buttons",
 		"scope":"typescript",
 		"body": [
 			"createRow(",
@@ -171,7 +152,7 @@
 		"description": "Create a new row with buttons"
 	},
 	"Create Row With String Select": {
-		"prefix": "new.createrow.stringselect",
+		"prefix": "createrow.stringselect",
 		"scope":"typescript",
 		"body": [
 			"createRow(",
@@ -194,7 +175,15 @@
 		"body": [
 			"const { options, member, guild } = interaction;"
 		],
-		"description": "Extract interaction properties"
+		"description": "Extract slash interaction properties"
+	},
+	"Extract modal interaction props": {
+		"prefix": "const.interaction.modal",
+		"scope":"typescript",
+		"body": [
+			"const { fields, member, guild } = interaction;"
+		],
+		"description": "Extract modal interaction properties"
 	},
 	"Extract button interaction props": {
 		"prefix": "const.interaction.button",
@@ -202,7 +191,7 @@
 		"body": [
 			"const { member, guild } = interaction;"
 		],
-		"description": "Extract interaction properties"
+		"description": "Extract button interaction properties"
 	},
 	"Extract select interaction props": {
 		"prefix": "const.interaction.select",
@@ -210,6 +199,6 @@
 		"body": [
 			"const { values, member, guild } = interaction;"
 		],
-		"description": "Extract interaction properties"
+		"description": "Extract select interaction properties"
 	}
 }

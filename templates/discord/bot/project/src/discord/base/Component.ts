@@ -57,9 +57,9 @@ export class Component<I extends string, T extends MessageComponentType, C exten
 
             for(const { customId, type } of components.values()){
                 const text = spaceBuilder(
-                    chalk.blue.underline(customId),
                     chalk.greenBright.underline(names.get(type)),
-                    "component registered successfully!"
+                    chalk.blue.underline(customId),
+                    "component loaded successfully!"
                 );
                 log.success(chalk.green(text));
             }

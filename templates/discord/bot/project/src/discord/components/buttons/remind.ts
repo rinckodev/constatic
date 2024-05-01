@@ -1,7 +1,7 @@
 import { Component } from "#base";
 import { ComponentType, time } from "discord.js";
 
-// ../../commands/public/ping.ts
+// commands/public/ping.ts
 new Component({
     customId: "remind/:date",
     type: ComponentType.Button, cache: "cached",

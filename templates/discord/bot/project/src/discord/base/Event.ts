@@ -35,7 +35,7 @@ export class Event<EventName extends keyof ClientEvents> {
         for(const events of Event.Events.values()){
 
             events.forEach(({ name }) => {
-                log.success(chalk.green(`${chalk.yellow.underline(name)} event registered successfully!`));
+                log.success(chalk.green(`${chalk.yellow.underline(name)} event loaded successfully!`));
             });
         }
     }

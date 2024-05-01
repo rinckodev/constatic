@@ -2,9 +2,7 @@ import { log } from "#settings";
 import { findCommand } from "@magicyan/discord";
 import ck from "chalk";
 import { ApplicationCommandType, AutocompleteInteraction, CacheType, ChatInputApplicationCommandData, ChatInputCommandInteraction, Client, Collection, CommandInteraction, Guild, MessageApplicationCommandData, MessageContextMenuCommandInteraction, UserApplicationCommandData, UserContextMenuCommandInteraction } from "discord.js";
-import { Store } from "./utils/Store.js";
 
-interface CommandStore extends Record<string | number, Store<any, any>> {}
 type Cache<D> = D extends false ? "cached" : CacheType;
 
 type CommandName<N extends string> = 
@@ -12,32 +10,29 @@ type CommandName<N extends string> =
 	N extends `${string} ${string}` ? never :
 	N extends Lowercase<N> ? N : never;
 
-type CommandProps<N extends string, D, T, S> = 
+type CommandProps<N extends string, D, T> = 
 	T extends ApplicationCommandType.ChatInput ? ChatInputApplicationCommandData & {
 		name: CommandName<N>;
-		run(interaction: ChatInputCommandInteraction<Cache<D>>, store: S): void;
-		autocomplete?(interaction: AutocompleteInteraction<Cache<D>>, store: S): void;
+		run(interaction: ChatInputCommandInteraction<Cache<D>>): void;
+		autocomplete?(interaction: AutocompleteInteraction<Cache<D>>): void;
 	} :
 	T extends ApplicationCommandType.Message ? MessageApplicationCommandData & {
 		name: N extends "" ? never : N;
-		run(interaction: MessageContextMenuCommandInteraction<Cache<D>>, store: S): void;
+		run(interaction: MessageContextMenuCommandInteraction<Cache<D>>): void;
 	} :
 	T extends ApplicationCommandType.User ? UserApplicationCommandData & {
 		name: N extends "" ? never : N;
-		run(interaction: UserContextMenuCommandInteraction<Cache<D>>, store: S): void;
+		run(interaction: UserContextMenuCommandInteraction<Cache<D>>): void;
 	} : never;
 
-type CommandData<N extends string, D, T, S> = CommandProps<N, D, T, S> & {
-	name: N; dmPermission: D; type: T; store?: S; global?: boolean;
+type CommandData<N extends string, D, T> = CommandProps<N, D, T> & {
+	name: N; dmPermission: D; type: T; global?: boolean;
 }
 
-export class Command<N extends string, D extends boolean, T extends ApplicationCommandType, S extends CommandStore> {
-	private static Commands = new Collection<string, CommandData<any, any, any, any>>();
-	constructor(private readonly data: CommandData<N, D, T, S>){
+export class Command<N extends string, D extends boolean, T extends ApplicationCommandType> {
+	private static Commands = new Collection<string, CommandData<any, any, any>>();
+	constructor(private readonly data: CommandData<N, D, T>){
 		Command.Commands.set(data.name, data);
-	}
-	public get store(){
-		return this.data.store ?? {} as S;
 	}
 	public getApplicationCommand(client: Client<true>) {
 		return findCommand(client).byName(this.data.name)!;
@@ -78,18 +73,18 @@ export class Command<N extends string, D extends boolean, T extends ApplicationC
 	public static onCommand(interaction: CommandInteraction){
 		const command = Command.Commands.get(interaction.commandName);
 		if (!command) return;
-		command.run(interaction as never, command.store);
+		command.run(interaction as never);
 	}
 	public static onAutocomplete(interaction: AutocompleteInteraction){
 		const command = Command.Commands.get(interaction.commandName);
 		if (!command) return;
 		if ("autocomplete" in command && command.autocomplete){
-			command.autocomplete(interaction, command.store);
+			command.autocomplete(interaction);
 		}
 	}
 	public static logs(){
 		Command.Commands.forEach((_, name) => {
-			log.success(ck.green(`${ck.blue.underline(name)} command loaded successfully!`));
+			log.success(ck.green(`{/} ${ck.blue.underline(name)} command loaded successfully!`));
 		});
 	}
 }

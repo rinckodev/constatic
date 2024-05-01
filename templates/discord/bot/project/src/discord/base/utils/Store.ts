@@ -2,7 +2,6 @@ interface StoreOptions {
     readonly clearTime?: number;
     readonly clearByDefault?: boolean;
 }
-
 export class Store<V, K extends string | number = string> {
     private store = new Map<K, V>();
     private clearTime?: number;
