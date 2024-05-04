@@ -16,6 +16,7 @@ new Command({
 				style: ButtonStyle.Success
 			})
 		);
+
 		await interaction.reply({ fetchReply, ephemeral, content: "pong", components: [row] });
 	}
 });

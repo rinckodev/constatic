@@ -13,20 +13,20 @@
     "start:dev": "node --env-file .env.development ."
   },
   "dependencies": {
-    "@magicyan/discord": "^1.0.29",
+    "@magicyan/discord": "^1.0.31",
     "chalk": "^5.3.0",
     "consola": "^3.2.3",
-    "discord.js": "^14.14.1",
+    "discord.js": "^14.15.1",
     "fast-glob": "^3.3.2",
-    "zod": "^3.22.4"
+    "zod": "^3.23.6"
   },
   "devDependencies": {
-    "@types/node": "^20.12.7",
+    "@types/node": "^20.12.8",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.57.0",
-    "tsx": "^4.7.2",
-    "typescript": "^5.4.4"
+    "tsx": "^4.9.1",
+    "typescript": "^5.4.5"
   },
   "imports": {
     "#base": [
