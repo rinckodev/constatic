@@ -1,15 +1,19 @@
 #!/usr/bin/env node
-import { intro } from "@clack/prompts";
+import { intro, log } from "@clack/prompts";
 import * as citty from "citty";
 import chalk from "chalk";
 import path from "node:path";
-import { importMeta } from "./helpers/meta.js";
 import { Package } from "./helpers/package.js";
-import { mainMenu } from "./menus/main.js";
-import { discordBotInitMenu } from "./menus/discordbot/main.js";
 import Conf from "conf";
+import { menus } from "./menus/index.js";
 
-const { __dirname } = importMeta(import.meta);
+if (process.versions.node < "20.11"){
+    log.error("Required node version: 20.11 or higher");
+    console.log(`Your node version: ${process.versions.node}`)
+    process.exit(1);
+}
+
+const __dirname = import.meta.dirname;
 
 async function program() {
     const rootname = path.join(__dirname, "..");
@@ -34,11 +38,8 @@ async function program() {
                     }
                 },
                 run(context) {
-                    discordBotInitMenu({
-                        rootname,
-                        projectName: context.args.projectName,
-                        conf
-                    })
+                    const projectName = context.args.projectName;
+                    menus.discordbot.init({ rootname, projectName, conf })
                 },
             }
         },
@@ -49,7 +50,7 @@ async function program() {
         },
         run(context) {
             if (context.rawArgs.length) return;
-            mainMenu({ rootname, conf });
+            menus.program.main({ rootname, conf });
         },
     });
 }

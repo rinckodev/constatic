@@ -4,9 +4,10 @@ import { PackageJson } from "pkg-types";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
-import { discordBotExtraFeatures } from "./extra.js";
+// import { discordBotExtraFeatures } from "./extra.js";
 import { checkCancel, copyDir, getCdProjectPath, json, listDirectoryItems, mergeObject, messages, npmInstall, Package, toNpmName } from "../../helpers/index.js";
 import { readFile, writeFile } from "node:fs/promises";
+import { menus } from "../index.js";
 
 export type DiscordBotTemplatePaths = Record<
     | "templates" | "project" | "databases" 
@@ -81,6 +82,8 @@ export async function discordBotInitMenu(props: ProgramProps & DiscordBotMenuPro
         ].flat()
     }) as number : -1;
 
+    checkCancel(tokenIndex);
+
     const install = await select({
         message: "📥 Install dependencies?",
         options: [
@@ -118,7 +121,7 @@ export async function discordBotInitMenu(props: ProgramProps & DiscordBotMenuPro
     }
 
     // Extras
-    await discordBotExtraFeatures(destinationPath, paths, extras);
+    await menus.discordbot.extra(destinationPath, paths, extras);
 
     await json.write(path.join(destinationPath, "package.json"), newProjectPackageJson);
 
@@ -167,7 +170,7 @@ export async function discordBotInitMenu(props: ProgramProps & DiscordBotMenuPro
             chalk.cyan(invite)
         ].join("\n"))
     }
-    outro(messages().bye())
+    outro(messages.bye)
 }
 
 function getCopyIgnore(){

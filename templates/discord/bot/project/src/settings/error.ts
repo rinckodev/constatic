@@ -1,6 +1,6 @@
 import { replaceText, limitText, createEmbed, createEmbedAuthor, brBuilder } from "@magicyan/discord";
 import { Client, codeBlock, WebhookClient } from "discord.js";
-import settingsJson from "./settings.json" with { type: "json" };
+import settingsJson from "../../settings.json" with { type: "json" };
 import { consola as log } from "consola";
 import chalk from "chalk";
 

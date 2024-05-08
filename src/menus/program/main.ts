@@ -1,10 +1,10 @@
 import { outro, select } from "@clack/prompts";
 import chalk from "chalk";
-import { checkCancel, messages } from "../helpers/index.js";
-import { discordBotInitMenu } from "./discordbot/main.js";
-import { settingsMainMenu } from "./settings/main.js";
+import { checkCancel, messages } from "../../helpers/clack.js";
+import { discordBotInitMenu } from "../discordbot/main.js";
+import { settingsMainMenu } from "../settings/main.js";
 
-export async function mainMenu(props: ProgramProps){
+export async function programMainMenu(props: ProgramProps){
     const selected = await select({
         message: "Select action",
         options: [
@@ -26,7 +26,7 @@ export async function mainMenu(props: ProgramProps){
             return;
         }
         case "quit":{
-            outro(messages().bye());
+            outro(messages.bye);
             process.exit(0);
         }
     }

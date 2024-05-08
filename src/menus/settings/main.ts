@@ -1,8 +1,7 @@
 import { select } from "@clack/prompts";
 import { checkCancel } from "../../helpers/index.js";
-import { mainMenu } from "../main.js";
 import chalk from "chalk";
-import { settingsDiscordBotTokensMenu } from "./tokens.js";
+import { menus } from "../index.js";
 
 export async function settingsMainMenu(props: ProgramProps){
     const selected = await select({
@@ -17,11 +16,11 @@ export async function settingsMainMenu(props: ProgramProps){
 
     switch(selected){
         case "discordbot-tokens":{
-            settingsDiscordBotTokensMenu(props);
+            menus.settings.tokens(props);
             return;
         }
         default: {
-            mainMenu(props);
+            menus.program.main(props);
         }
     }
 }

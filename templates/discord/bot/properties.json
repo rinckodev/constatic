@@ -1,22 +1,6 @@
 {
     "databases":[
         {
-            "name": "🔥 Firestore (firelord)",
-            "path": "firelord",
-            "dependencies":{
-                "firebase-admin": "^11.11.1",
-                "firelord": "^2.7.1"
-            }
-        },
-        {
-            "name": "🦕 Firestore (typesaurus)",
-            "path": "typesaurus",
-            "dependencies":{
-                "firebase-admin": "^12.0.0",
-                "typesaurus": "^10.1.0"
-            }
-        },
-        {
             "name": "🍃 MongoDb (mongoose)",
             "path": "mongoose",
             "dependencies":{
@@ -29,6 +13,22 @@
             "dependencies":{
                 "better-sqlite3": "^9.2.2",
                 "quick.db": "^9.1.7"
+            }
+        },
+        {
+            "name": "🦕 Firestore (typesaurus)",
+            "path": "typesaurus",
+            "dependencies":{
+                "firebase-admin": "^12.0.0",
+                "typesaurus": "^10.1.0"
+            }
+        },
+        {
+            "name": "🔥 Firestore (firelord)",
+            "path": "firelord",
+            "dependencies":{
+                "firebase-admin": "^11.11.1",
+                "firelord": "^2.7.1"
             }
         }
     ]

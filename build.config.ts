@@ -3,12 +3,12 @@ import { defineBuildConfig } from "unbuild";
 export default defineBuildConfig({
     clean: true,
 	rollup: {
-		inlineDependencies: true,
+		inlineDependencies: false,
         output: {
             format: "esm",
             preserveModules: true,
-            preserveModulesRoot: "./src",
-        }
+            preserveModulesRoot: "./src"
+        },
 	},
 	entries: ["src/index"],
 });

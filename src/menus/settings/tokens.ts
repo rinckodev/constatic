@@ -1,9 +1,9 @@
 import { log, note, password, select, spinner } from "@clack/prompts";
 import chalk from "chalk";
 import { checkCancel } from "../../helpers/index.js";
-import { settingsMainMenu } from "./main.js";
 import { setTimeout } from "node:timers/promises";
 import { getDiscordBotInvite } from "../../helpers/discord.js";
+import { menus } from "../index.js";
 
 export async function settingsDiscordBotTokensMenu(props: ProgramProps){
     const option = await select({
@@ -87,7 +87,7 @@ export async function settingsDiscordBotTokensMenu(props: ProgramProps){
             break;
         }
         default: {
-            settingsMainMenu(props);
+            menus.settings.main(props);
             return;
         }
     }

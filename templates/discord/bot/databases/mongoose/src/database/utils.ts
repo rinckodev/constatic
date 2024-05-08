@@ -8,5 +8,6 @@ export const p = {
 };
 
 export const t = Object.assign(p, {
-   channelInfo: new Schema({ id: p.string, url: p.string }, { _id: false })
+   channelInfo: new Schema({ id: p.string, url: p.string }, { _id: false }),
+   roleInfo: new Schema({ id: p.string }, { _id: false }),
 });

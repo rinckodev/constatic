@@ -1,4 +1,4 @@
-import settingsJson from "./settings.json" with { type: "json" };
+import settingsJson from "../../settings.json" with { type: "json" };
 import { envSchema, type EnvSchema } from "./env.js";
 import { consola as log } from "consola";
 export { onError } from "./error.js";
