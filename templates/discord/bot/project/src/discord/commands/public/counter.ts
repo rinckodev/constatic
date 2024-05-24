@@ -14,7 +14,7 @@ new Command({
 
 new Responder({
     customId: "counter/:action/:current",
-    type: ResponderType.Button,
+    type: ResponderType.Button, cache: "cached",
     async run(interaction, params) {
         const current = Number.parseInt(params.current);
         const updated = params.action === "add" ? current + 1 : current - 1;

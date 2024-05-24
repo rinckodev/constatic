@@ -1,7 +1,7 @@
 import { log } from "#settings";
 import { spaceBuilder } from "@magicyan/discord";
 import ck from "chalk";
-import { AnySelectMenuInteraction, ButtonInteraction, ChannelSelectMenuInteraction, Collection, Interaction, MentionableSelectMenuInteraction, MessageComponentInteraction, ModalMessageModalSubmitInteraction, ModalSubmitInteraction, RoleSelectMenuInteraction, StringSelectMenuInteraction, UserSelectMenuInteraction } from "discord.js";
+import { AnySelectMenuInteraction, ButtonInteraction, CacheType, ChannelSelectMenuInteraction, Collection, Interaction, MentionableSelectMenuInteraction, MessageComponentInteraction, ModalMessageModalSubmitInteraction, ModalSubmitInteraction, RoleSelectMenuInteraction, StringSelectMenuInteraction, UserSelectMenuInteraction } from "discord.js";
 import { getCustomIdParams, Params, Prettify } from "./utils/Params.js";
 
 export enum ResponderType {
@@ -18,26 +18,26 @@ export enum ResponderType {
     All="Component or modal"
 }
 
-type GetInteraction<T> = 
-    T extends ResponderType.Row ? MessageComponentInteraction :
-    T extends ResponderType.Modal ? ModalSubmitInteraction :
-    T extends ResponderType.ModalComponent ? ModalMessageModalSubmitInteraction :
-    T extends ResponderType.Button ? ButtonInteraction :
-    T extends ResponderType.Select ? AnySelectMenuInteraction :
-    T extends ResponderType.StringSelect ? StringSelectMenuInteraction :
-    T extends ResponderType.UserSelect ? UserSelectMenuInteraction :
-    T extends ResponderType.RoleSelect ? RoleSelectMenuInteraction :
-    T extends ResponderType.ChannelSelect ? ChannelSelectMenuInteraction :
-    T extends ResponderType.MentionableSelect ? MentionableSelectMenuInteraction :
-    T extends ResponderType.All ? ButtonInteraction | AnySelectMenuInteraction | ModalSubmitInteraction :
+type GetInteraction<T, C extends CacheType> = 
+    T extends ResponderType.Row ? MessageComponentInteraction<C> :
+    T extends ResponderType.Modal ? ModalSubmitInteraction<C> :
+    T extends ResponderType.ModalComponent ? ModalMessageModalSubmitInteraction<C> :
+    T extends ResponderType.Button ? ButtonInteraction<C> :
+    T extends ResponderType.Select ? AnySelectMenuInteraction<C> :
+    T extends ResponderType.StringSelect ? StringSelectMenuInteraction<C> :
+    T extends ResponderType.UserSelect ? UserSelectMenuInteraction<C> :
+    T extends ResponderType.RoleSelect ? RoleSelectMenuInteraction<C> :
+    T extends ResponderType.ChannelSelect ? ChannelSelectMenuInteraction<C> :
+    T extends ResponderType.MentionableSelect ? MentionableSelectMenuInteraction<C> :
+    T extends ResponderType.All ? ButtonInteraction<C> | AnySelectMenuInteraction<C> | ModalSubmitInteraction<C> :
     never;
 
-type ResponderData<I, T, C> = {
+type ResponderData<I, T, C extends CacheType = CacheType> = {
     customId: I, type: T, cache?: C;
-    run(interaction: GetInteraction<T>, params: Prettify<Params<I>>): void;
+    run(interaction: GetInteraction<T, C>, params: Prettify<Params<I>>): void;
 }
-type SubItems = Collection<string, ResponderData<string, unknown, unknown>>;
-export class Responder<I extends string, T extends ResponderType, C>{
+type SubItems = Collection<string, ResponderData<string, unknown, CacheType>>;
+export class Responder<I extends string, T extends ResponderType, C extends CacheType>{
     private static items: Collection<ResponderType, SubItems> = new Collection();
     constructor(data: ResponderData<I, T, C>){
         const subitems = Responder.items.get(data.type) ?? new Collection();
@@ -59,6 +59,7 @@ export class Responder<I extends string, T extends ResponderType, C>{
     }
     public static onInteraction(interaction: Interaction){
         if (interaction.isCommand() || interaction.isAutocomplete()) return;
+        const { customId } = interaction;
 
         const responderType = 
         interaction.isButton() ? ResponderType.Button : 
@@ -70,48 +71,65 @@ export class Responder<I extends string, T extends ResponderType, C>{
         interaction.isFromMessage() ? ResponderType.ModalComponent : 
         interaction.isModalSubmit() ? ResponderType.ModalComponent : undefined;
 
-        const findSubItem = (type: ResponderType): SubItems | undefined => {
+        if (!responderType) return;
+
+        const findSubItems = (type: ResponderType): SubItems | undefined => {
+            if (type === ResponderType.All) return Responder.items.get(ResponderType.All);
             if (interaction.isAnySelectMenu()){
-                if (type === ResponderType.Select){
-                    return Responder.items.get(ResponderType.Select) ?? findSubItem(ResponderType.Row);
+                if (type !== ResponderType.Select && type !== ResponderType.Row){
+                    return Responder.items.get(ResponderType.Select) ?? findSubItems(ResponderType.Select);
                 }
-                if (type === ResponderType.Row){
-                    return Responder.items.get(ResponderType.Row) ?? findSubItem(ResponderType.All);
+                if (type === ResponderType.Select){
+                    return Responder.items.get(ResponderType.Row) ?? findSubItems(ResponderType.Row);
                 }
             }
             if (interaction.isButton()){
-                if (type !== ResponderType.All){
-                    return Responder.items.get(ResponderType.Row) ?? findSubItem(ResponderType.All);
+                if (type !== ResponderType.Row){
+                    return Responder.items.get(ResponderType.Row) ?? findSubItems(ResponderType.All);
                 }
             }
-            return Responder.items.get(ResponderType.All);
+            return findSubItems(ResponderType.All);
         };
 
+        const findAndRun = (subItems: SubItems | undefined, type: ResponderType) => {
+            if (!subItems) return;
 
-        const find = (subitems: SubItems, type: ResponderType) => {
-            if (subitems.has(interaction.customId)){
-                const component = subitems.get(interaction.customId)!;
-                component.run(interaction as never, {});
-                return;
-            }
-            const component = subitems.find(
-                (data) => !!getCustomIdParams(data.customId, interaction.customId)
+            const responder = subItems.get(customId) ?? subItems.find(data => 
+                !!getCustomIdParams(data.customId, customId)
             );
-            if (component){
-                const params = getCustomIdParams(component.customId, interaction.customId);
-                component.run(interaction as never, params??{});
+
+            if (responder){
+                const params = getCustomIdParams(responder.customId, customId) ?? {};
+                responder.run(interaction as never, params);
                 return;
             }
-            {
-                const subitems = findSubItem(type);
-                if (!subitems) return;
-                find(subitems, type);
+            
+            if (type === ResponderType.All) return;
+            if (interaction.isAnySelectMenu()){
+                if (type !== ResponderType.Select && type !== ResponderType.Row){
+                    findAndRun(findSubItems(type), ResponderType.Select);
+                    return;
+                } 
+                if (type === ResponderType.Select){
+                    findAndRun(findSubItems(ResponderType.Select), ResponderType.Row);
+                    return;
+                }
+                findAndRun(findSubItems(ResponderType.Row), ResponderType.All);
+                return;
             }
+            if (interaction.isButton()){
+                if (type !== ResponderType.Row){
+                    findAndRun(findSubItems(type), ResponderType.Row);
+                    return;
+                }
+                findAndRun(findSubItems(ResponderType.Row), ResponderType.All);
+                return;
+            }
+            findAndRun(findSubItems(ResponderType.All), ResponderType.All);
         };
 
-        if (!responderType) return;
-        const subitems = Responder.items.get(responderType) ?? findSubItem(responderType);
-        if (!subitems) return;
-        find(subitems, responderType);
+        const subItems = Responder.items.get(responderType) ?? findSubItems(responderType);
+        if (!subItems) return;
+        findAndRun(subItems, responderType);
     }
 }

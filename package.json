@@ -1,6 +1,6 @@
 {
   "name": "constatic",
-  "version": "0.2.0",
+  "version": "0.3.0.beta.0",
   "description": "Constatic cli",
   "main": "dist/index.mjs",
   "bin": {
@@ -52,8 +52,8 @@
   "devDependencies": {
     "@types/cross-spawn": "^6.0.6",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^20.12.11",
-    "tsx": "^4.9.3",
+    "@types/node": "^20.12.12",
+    "tsx": "^4.11.0",
     "unbuild": "^2.0.0"
   },
   "dependencies": {
@@ -63,6 +63,6 @@
     "conf": "^12.0.0",
     "cross-spawn": "^7.0.3",
     "fs-extra": "^11.2.0",
-    "pkg-types": "^1.1.0"
+    "pkg-types": "^1.1.1"
   }
 }
