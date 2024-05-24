@@ -16,35 +16,35 @@ type ComponentData<I extends string, T, C extends CacheType = CacheType> = {
 }
 
 export class Component<I extends string, T extends MessageComponentType, C extends CacheType> {
-	private static components = new Collection<ComponentType, Collection<string, ComponentData<any, any, any>>>(); 
+	private static items = new Collection<ComponentType, Collection<string, ComponentData<any, any, any>>>(); 
     constructor(data: ComponentData<I, T, C>){
-        const components = Component.components.get(data.type) ?? new Collection();
+        const components = Component.items.get(data.type) ?? new Collection();
         components.set(data.customId, data);
-        Component.components.set(data.type, components);
+        Component.items.set(data.type, components);
 	}
     public static onComponent(interaction: MessageComponentInteraction){
         const { customId, componentType } = interaction;
         
-        const components = Component.components.get(componentType) 
-        ?? Component.components.get(ComponentType.ActionRow);
+        const components = Component.items.get(componentType) 
+        ?? Component.items.get(ComponentType.ActionRow);
 
         const find = (components: Collection<string, ComponentData<any, any, any>> | undefined, type: ComponentType) => {
             if (!components) return;
 
             if (components.has(customId)){
                 const component = components.get(customId)!;
-                component.run(interaction as never, null);
+                component.run(interaction as never, {});
                 return;
             }
             const component = components.find((data) => !!getCustomIdParams(data.customId, customId));
             if (component){
                 const params = getCustomIdParams(component.customId, customId);
-                component.run(interaction as never, params as never);
+                component.run(interaction as never, params??{});
                 return;
             }
             
             if (type !== ComponentType.ActionRow){
-                find(Component.components.get(ComponentType.ActionRow), ComponentType.ActionRow);
+                find(Component.items.get(ComponentType.ActionRow), ComponentType.ActionRow);
             }
         };
 
@@ -53,7 +53,7 @@ export class Component<I extends string, T extends MessageComponentType, C exten
     public static logs(){
         const names = new Map(Object.entries(ComponentType).filter(Boolean).map(e => [+e[0], e[1]]));
 
-        for(const components of Component.components.values()){
+        for(const components of Component.items.values()){
 
             for(const { customId, type } of components.values()){
                 const text = spaceBuilder(

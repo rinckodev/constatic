@@ -29,35 +29,12 @@
     "typescript": "^5.4.5"
   },
   "imports": {
-    "#base": [
-      "./dist/discord/base/index.js"
-    ],
-    "#settings": [
-      "./dist/settings/index.js"
-    ],
-    "#database": [
-      "./dist/database/index.js"
-    ],
-    "#functions": [
-      "./dist/functions/index.js"
-    ],
-    "#classes": [
-      "./dist/classes/index.js"
-    ],
-    "#tools": [
-      "./dist/tools/index.js"
-    ],
-    "#menus": [
-      "./dist/menus/index.js"
-    ],
-    "#tasks": [
-      "./dist/tasks/index.js"
-    ],
-    "#forms": [
-      "./dist/forms/index.js"
-    ],
-    "#lang/*": [
-      "./lang/*"
-    ]
+    "#database": ["./dist/database/index.js"],
+    "#base": ["./dist/discord/base/index.js"],
+    "#functions": ["./dist/functions/index.js"],
+    "#menus": ["./dist/menus/index.js"],
+    "#settings": ["./dist/settings/index.js"],
+    "#tools": ["./dist/tools/index.js"],
+    "#lang/*": ["./lang/*"]
   }
 }

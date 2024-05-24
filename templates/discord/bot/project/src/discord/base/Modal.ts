@@ -12,26 +12,26 @@ type ModalData<I extends string, C extends CacheType = CacheType, M extends bool
 }
 
 export class Modal<I extends string, C extends CacheType = CacheType, M extends boolean = boolean> {
-	private static modals = new Collection<string, ModalData<any, any, any>>();
+	private static items = new Collection<string, ModalData<any, any, any>>();
 	constructor(data: ModalData<I, C, M>) {
-		Modal.modals.set(data.customId, data);
+		Modal.items.set(data.customId, data);
 	}
 	public static onModal(interaction: ModalSubmitInteraction){
 		const { customId } = interaction;
-		if (Modal.modals.has(customId)){
-			const modal = Modal.modals.get(customId)!;
-			modal.run(interaction, null);
+		if (Modal.items.has(customId)){
+			const modal = Modal.items.get(customId)!;
+			modal.run(interaction, {});
 			return;
 		}
 
-		const modal = Modal.modals.find(data => !!getCustomIdParams(data.customId, customId));
+		const modal = Modal.items.find(data => !!getCustomIdParams(data.customId, customId));
         if (!modal) return;
 		const params = getCustomIdParams(modal.customId, customId);
-        modal.run(interaction, params as never);
+        modal.run(interaction, params??{});
 	}
 
 	public static logs(){
-		Modal.modals.forEach(({ customId }) => {
+		Modal.items.forEach(({ customId }) => {
 			log.success(ck.green(`${ck.cyan.underline(customId)} modal loaded successfully!`));
 		});
 	}

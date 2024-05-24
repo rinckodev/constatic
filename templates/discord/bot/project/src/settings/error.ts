@@ -5,12 +5,13 @@ import { consola as log } from "consola";
 import chalk from "chalk";
 
 export async function onError(error: Error | any, client: Client<true>){
+    log.log(client.user.displayName);
     log.error(error);
 
     const webhooksLogURL = process.env.WEBHOOK_LOGS_URL;
     if (!webhooksLogURL) return;
-
     const { user } = client;
+
     const errorMessage: string[] = [];
     
     if ("message" in error) errorMessage.push(String(error.message)); 

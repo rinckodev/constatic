@@ -1,4 +1,3 @@
-import { createClient } from "#base"; 
+import { bootstrapApp } from "#base";
 
-const client = createClient();
-client.start();
+await bootstrapApp({ workdir: import.meta.dirname });

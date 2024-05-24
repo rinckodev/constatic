@@ -30,61 +30,56 @@ type CommandData<N extends string, D, T> = CommandProps<N, D, T> & {
 }
 
 export class Command<N extends string, D extends boolean, T extends ApplicationCommandType> {
-	private static Commands = new Collection<string, CommandData<any, any, any>>();
+	private static items = new Collection<string, CommandData<any, any, any>>();
 	constructor(private readonly data: CommandData<N, D, T>){
-		Command.Commands.set(data.name, data);
+		Command.items.set(data.name, data);
 	}
-	public getApplicationCommand(client: Client<true>) {
+	public getApplicationCommand(client: Client<true> | Guild) {
 		return findCommand(client).byName(this.data.name)!;
 	}
-	private static log(text: string){
-		return log.success(ck.green(text));
-	}
 	private static clearGuildCommands(client: Client<true>){
-		const guilds = client.guilds.cache.filter(g => g.commands.cache.size >= 1);
+		const guilds = client.guilds.cache;
 		for(const guild of guilds.values()){
 			guild.commands.set([]);
 		}
 	}
-	public static async registerGlobalCommands(client: Client<true>){
+	public static async register(addMessage: Function, client: Client<true>, guilds?: Collection<string, Guild>){
 		Command.clearGuildCommands(client);
 
-		client.application.commands.set(Array.from(Command.Commands.values()))
-		.then(({ size }) => 
-			Command.log(`${size} commands successfully registered globally!`)
-		);
-	}
-	public static async registerGuildCommands(client: Client<true>, guilds: Collection<string, Guild>){
-		const [globalCommands, guildCommads] = Command.Commands.partition(c => c.global === true);
-
-		Command.clearGuildCommands(client);
-
-		client.application.commands.set(Array.from(globalCommands.values()))
-		.then(({ size }) => 
-			Command.log(`${size} commands successfully registered globally!`)
-		);
-		for(const guild of guilds.values()){
-			guild.commands.set(Array.from(guildCommads.values()))
+		if (guilds){
+			const [globalCommands, guildCommads] = Command.items.partition(c => c.global === true);
+			await client.application.commands.set(Array.from(globalCommands.values()))
 			.then(({ size }) => 
-				Command.log(`${size} commands registered in ${ck.underline(guild.name)} guild successfully!`)
+				addMessage(`⤿ ${size} commands successfully registered globally!`)
 			);
+			for (const guild of guilds.values()){
+				await guild.commands.set(Array.from(guildCommads.values()))
+				.then(({ size }) => 
+					addMessage(`⤿ ${size} commands registered in ${ck.underline(guild.name)} guild successfully!`)
+				);
+			}
+			return;
 		}
+		await client.application.commands.set(Array.from(Command.items.values()))
+		.then(({ size }) => 
+			addMessage(`⤿ ${size} commands successfully registered globally!`)
+		);
 	}
 	public static onCommand(interaction: CommandInteraction){
-		const command = Command.Commands.get(interaction.commandName);
+		const command = Command.items.get(interaction.commandName);
 		if (!command) return;
 		command.run(interaction as never);
 	}
 	public static onAutocomplete(interaction: AutocompleteInteraction){
-		const command = Command.Commands.get(interaction.commandName);
+		const command = Command.items.get(interaction.commandName);
 		if (!command) return;
 		if ("autocomplete" in command && command.autocomplete){
 			command.autocomplete(interaction);
 		}
 	}
-	public static logs(){
-		Command.Commands.forEach((_, name) => {
+	public static loadLogs(){
+		for(const [name] of Command.items){
 			log.success(ck.green(`{/} ${ck.blue.underline(name)} command loaded successfully!`));
-		});
+		}
 	}
 }

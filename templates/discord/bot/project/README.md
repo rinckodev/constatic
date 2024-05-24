@@ -8,7 +8,7 @@ This is the most complete bot base you've ever seen! Created by [@rinckodev](htt
 ## Scripts
 
 - `dev`: running bot in development
-- `build`: build the project
+- `build`: build the project,
 - `watch`: running in watch mode
 - `start`: running the builded bot
 
@@ -115,17 +115,18 @@ You can use the **Store** structure to temporarily store information in a comman
 import { Command, Store } from "#base";
 import { ApplicationCommandType, time} from "discord.js";
 
+const cooldowns = new Store<Date>({ clearTime: 60000 })
+
 new Command({
     name: "mine",
     description: "Mine command",
     dmPermission: false,
     type: ApplicationCommandType.ChatInput,
     store: {
-        cooldowns: new Store<Date>({ clearTime: 60000 })
     },
-    async run(interaction, store){
+    async run(interaction){
         const now = new Date();
-        const cooldown = store.cooldowns.get(interaction.member.id) ?? now;
+        const cooldown = cooldowns.get(interaction.member.id) ?? now;
 
         if (cooldown > now){
             interaction.reply({ ephemeral, 
@@ -148,7 +149,7 @@ This way you don't have to worry about defining a **setTimeout** function. This 
 
 As the third argument of the set method, you can define a time in milliseconds different from the one defined when creating the Store
 ```ts
-async run(interaction, { cooldowns }){
+async run(interaction){
     const { member } = interaction; 
     cooldowns.set(member.id, now, 80000);
 }
@@ -161,82 +162,6 @@ As a last argument you can define a callback that will be executed when the valu
 ```ts
 cooldowns.set(member.id, now, cooldowns.defaultClearTime, (value) => {
     console.log("Value deleted", value);
-});
-```
-
-There are many uses for this structure, you can use it anywhere in your code, but it is recommended to use it in this command context. 
-
-You can get the **Store** from a command anywhere
-```ts
-//     \/   Assign the command to a variable
-const command = new Command({
-	name: "apply",
-	description: "Apply form",
-	type: ApplicationCommandType.ChatInput,
-	dmPermission: false,
-	store: {
-		cooldowns: new Store<Date>({ clearTime: 60000 })
-	},
-	run(interaction, { cooldowns }) {
-		const now = new Date();
-        const cooldown = cooldowns.get(interaction.member.id) ?? now;
-
-        if (cooldown > now){
-            interaction.reply({ ephemeral, 
-                content: `You will be able to mine again ${time(cooldown, "R")}` 
-            });
-            return;
-        }
-
-		interaction.showModal({
-			customId: "form/modal",
-			// ...
-		});
-	},
-});
-
-new Modal({
-	customId: "form/modal",
-	cache: "cached",
-	run(interaction) {
-		const { fields, member } = interaction;
-	
-		const name = fields.getTextInputValue("name/input");
-		const age = fields.getTextInputValue("age/input");
-		const bio = fields.getTextInputValue("bio/input");
-		
-		// do things ...
-
-		// end
-		const future = new Date();
-		future.setSeconds(future.getSeconds() + 60);
-
-		command.store.cooldowns.set(member.id, future);
-        // /\ In the same file you can use other structures and access the command store and modify values in it
-	},
-});
-```
-
-If you have separate structures in other files, just export the command
-
-```ts
-export const applyCommand = new Command({
-    // ...
-})
-```
-```ts
-import { applyCommand } from "../../commands/public/apply.js"
-
-new Modal({
-	customId: "form/modal",
-	cache: "cached",
-	run(interaction) {]
-        // ...
-		const future = new Date();
-		future.setSeconds(future.getSeconds() + 60);
-
-		applyCommand.store.cooldowns.set(member.id, future);
-	},
 });
 ```
 
@@ -254,7 +179,7 @@ import { ComponentType } from "discord.js";
 import { Component } from "#base";
 
 new Component({
-    customId: "example-component-button",
+    customId: "example/component/button",
     type: ComponentType.Button, cache: "cached",
     async run(interaction) {
         interaction.reply({ ephemeral, content: "This is a button component!" });

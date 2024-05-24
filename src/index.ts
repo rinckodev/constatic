@@ -9,7 +9,7 @@ import { menus } from "./menus/index.js";
 
 if (process.versions.node < "20.11"){
     log.error("Required node version: 20.11 or higher");
-    console.log(`Your node version: ${process.versions.node}`)
+    console.log(`Your node version: ${process.versions.node}`);
     process.exit(1);
 }
 

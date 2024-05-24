@@ -8,15 +8,15 @@ interface EventData<EventName extends keyof ClientEvents> {
 }
 
 export class Event<EventName extends keyof ClientEvents> {
-    private static Events = new Collection<keyof ClientEvents, Collection<string, EventData<any>>>();
+    private static items = new Collection<keyof ClientEvents, Collection<string, EventData<any>>>();
     constructor(data: EventData<EventName>){
-        const events = Event.Events.get(data.event) ?? new Collection();
+        const events = Event.items.get(data.event) ?? new Collection();
         events.set(data.name, data);
-        Event.Events.set(data.event, events);
+        Event.items.set(data.event, events);
     }
     public static register(client: Client){
 
-        const eventHandlers = Event.Events.map((collection, event) => {
+        const eventHandlers = Event.items.map((collection, event) => {
             const handlers = collection.map(({ run, once }) => ({ run, once }));
             return { event, handlers };
         });
@@ -31,8 +31,8 @@ export class Event<EventName extends keyof ClientEvents> {
             });
         }
     }
-    public static logs(){
-        for(const events of Event.Events.values()){
+    public static loadLogs(){
+        for(const events of Event.items.values()){
 
             events.forEach(({ name }) => {
                 log.success(chalk.green(`${chalk.yellow.underline(name)} event loaded successfully!`));

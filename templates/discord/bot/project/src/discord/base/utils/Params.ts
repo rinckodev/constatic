@@ -7,24 +7,34 @@ type Dictionary<R extends string> =
         ? Record<K, string[]> 
         : Record<R, string>;
 
-export type Params<R extends string, I extends boolean = true, L = {}> = 
-    I extends true ?
-        R extends `/${string}` ? null :
-        R extends `${string}/` ? null :
-        R extends `${string}/:${infer Seg}/${infer Rest}` 
-            ? Params<Rest, false, Dictionary<Seg>> :
-        R extends `${string}/:${infer Seg}`
-            ? Dictionary<Seg> : 
-        null :
-    R extends `:${infer Seg}/${infer Rest}` 
-        ? Params<Rest, false, L & Dictionary<Seg>> : 
-    R extends `${string}/:${infer Seg}/${infer Rest}`
-        ? Params<Rest, false, L & Dictionary<Seg>> :
-    R extends `${string}/:${infer Seg}`
-        ? L & Dictionary<Seg> :
-    R extends `:${infer Seg}` 
-        ? L & Dictionary<Seg> : 
-    L
+export type Params<Path> = 
+Path extends `/${string}` ? never :
+Path extends `${string}/` ? never :
+Path extends `${infer Segment}/${infer Rest}`
+    ? Segment extends `:${infer Param}` 
+        ? Dictionary<Param> & Params<Rest> 
+        : Params<Rest>
+    : Path extends `:${infer Param}` 
+        ? Dictionary<Param> 
+        : {}
+// export type Params<R extends string, I extends boolean = true, L = {}> = 
+//     I extends true ?
+//         R extends `/${string}` ? null :
+//         R extends `${string}/` ? null :
+//         R extends `${string}/:${infer Seg}/${infer Rest}` 
+//             ? Params<Rest, false, Dictionary<Seg>> :
+//         R extends `${string}/:${infer Seg}`
+//             ? Dictionary<Seg> : 
+//         null :
+//     R extends `:${infer Seg}/${infer Rest}` 
+//         ? Params<Rest, false, L & Dictionary<Seg>> : 
+//     R extends `${string}/:${infer Seg}/${infer Rest}`
+//         ? Params<Rest, false, L & Dictionary<Seg>> :
+//     R extends `${string}/:${infer Seg}`
+//         ? L & Dictionary<Seg> :
+//     R extends `:${infer Seg}` 
+//         ? L & Dictionary<Seg> : 
+//     L
 
 
 export function getCustomIdParams(definition: string, customId: string){
@@ -34,7 +44,7 @@ export function getCustomIdParams(definition: string, customId: string){
     
     if (!match) return null;
     
-    const params = {} as { [x: string]: string | string[] };
+    const params = {} as Record<string, string | string[]>; 
     
     const arrayNameRegex = new RegExp(/^\[(.*)\]$/);
 
@@ -50,4 +60,3 @@ export function getCustomIdParams(definition: string, customId: string){
 
     return params;
 }
-
