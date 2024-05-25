@@ -17,24 +17,6 @@ Path extends `${infer Segment}/${infer Rest}`
     : Path extends `:${infer Param}` 
         ? Dictionary<Param> 
         : {}
-// export type Params<R extends string, I extends boolean = true, L = {}> = 
-//     I extends true ?
-//         R extends `/${string}` ? null :
-//         R extends `${string}/` ? null :
-//         R extends `${string}/:${infer Seg}/${infer Rest}` 
-//             ? Params<Rest, false, Dictionary<Seg>> :
-//         R extends `${string}/:${infer Seg}`
-//             ? Dictionary<Seg> : 
-//         null :
-//     R extends `:${infer Seg}/${infer Rest}` 
-//         ? Params<Rest, false, L & Dictionary<Seg>> : 
-//     R extends `${string}/:${infer Seg}/${infer Rest}`
-//         ? Params<Rest, false, L & Dictionary<Seg>> :
-//     R extends `${string}/:${infer Seg}`
-//         ? L & Dictionary<Seg> :
-//     R extends `:${infer Seg}` 
-//         ? L & Dictionary<Seg> : 
-//     L
 
 
 export function getCustomIdParams(definition: string, customId: string){

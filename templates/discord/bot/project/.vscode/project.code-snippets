@@ -81,47 +81,33 @@
 		],
 		"description": "Create a new Message Context Command"
 	},
-	"Component": {
-		"prefix": "new.component",
+	"Responder": {
+		"prefix": "new.responder",
 		"scope":"typescript",
 		"body": [
-			"new Component({",
+			"new Responder({",
 			"    customId: \"example/component/button\",",
-			"    type: ComponentType.$1, cache: \"cached\",",
+			"    type: ResponderType.$1, cache: \"cached\",",
 			"    async run(interaction) {",
 			"        ",
 			"    },",
 			"});"
 		],
-		"description": "Create a new component"
+		"description": "Create a new responder"
 	},
-	"Component Params": {
-		"prefix": "new.component.params",
+	"Responder Params": {
+		"prefix": "new.Responder.params",
 		"scope":"typescript",
 		"body": [
-			"new Component({",
+			"new Responder({",
 			"    customId: \"users/:userId/:action\",",
-			"    type: ComponentType.ActionRow, cache: \"cached\",",
+			"    type: ResponderType.ActionRow, cache: \"cached\",",
 			"    async run(interaction, { userId, action }) {",
 			"        ",
 			"    },",
 			"});"
 		],
-		"description": "Create a new component with params"
-	},
-	"Modal": {
-		"prefix": "new.modal",
-		"scope":"typescript",
-		"body": [
-			"new Modal({",
-			"    customId: \"example/modal\",",
-			"    cache: \"cached\", isFromMessage: true,",
-			"    async run(interaction) {",
-			"        ",
-			"    },",
-			"});"
-		],
-		"description": "Create a new modal"
+		"description": "Create a new responder with params"
 	},
 	"Event": {
 		"prefix": "new.event",

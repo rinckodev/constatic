@@ -5,9 +5,8 @@ import { ApplicationCommandType, ButtonBuilder, ButtonStyle } from "discord.js";
 new Command({
 	name: "ping",
 	description: "Replies with pong 🏓",
-	dmPermission: false,
 	type: ApplicationCommandType.ChatInput,
-	async run(interaction){
+	run(interaction){
 		const row = createRow(
 			// ../../components/buttons/remind.ts
 			new ButtonBuilder({ 
@@ -17,6 +16,6 @@ new Command({
 			})
 		);
 
-		await interaction.reply({ fetchReply, ephemeral, content: "pong", components: [row] });
+		interaction.reply({ fetchReply, ephemeral, content: "pong", components: [row] });
 	}
 });

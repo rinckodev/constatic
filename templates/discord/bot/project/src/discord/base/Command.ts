@@ -25,13 +25,14 @@ type CommandProps<N extends string, D, T> =
 		run(interaction: UserContextMenuCommandInteraction<Cache<D>>): void;
 	} : never;
 
-type CommandData<N extends string, D, T> = CommandProps<N, D, T> & {
-	name: N; dmPermission: D; type: T; global?: boolean;
+type CommandData<N extends string, T, D extends boolean = true> = CommandProps<N, D, T> & {
+	name: N; dmPermission?: D; type: T; global?: boolean;
 }
 
-export class Command<N extends string, D extends boolean, T extends ApplicationCommandType> {
+export class Command<N extends string, T extends ApplicationCommandType, D extends boolean = false> {
 	private static items = new Collection<string, CommandData<any, any, any>>();
-	constructor(private readonly data: CommandData<N, D, T>){
+	constructor(private readonly data: CommandData<N, T, D>){
+		data.dmPermission??=false as D;
 		Command.items.set(data.name, data);
 	}
 	public getApplicationCommand(client: Client<true> | Guild) {

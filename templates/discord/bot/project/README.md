@@ -1,232 +1,367 @@
 # Awesome Bot Base
-* [This project was generated using Constatic CLI](https://github.com/rinckodev/constatic)
 
-This is the most complete bot base you've ever seen! Created by [@rinckodev](https://github.com/rinckodev). This project uses typescript to its advantage, using features to create complete structures that facilitate the construction of commands and systems
+* This project can be generated using the [Constant CLI](https://github.com/rinckodev/constatic)
 
-> ⚠️ Node version required: 21.5 or higher 
+This is the most complete discord bot base you've ever seen! Developed by [@rinckodev](https://github.com/rinckodev), this project uses typescript in an incredible way to provide complete structures and facilitate the development of your discord bot.
+
+> ⚠️ [NodeJs](https://nodejs.org/en) version required: 20.12 or higher 
 
 ## Scripts
 
 - `dev`: running bot in development
 - `build`: build the project,
 - `watch`: running in watch mode
-- `start`: running the builded bot
+- `start`: running the compiled bot
 
 ## Structures
 
-See how to use:
-- [Commands](#how-to-use-commands)
-- [Store](#store)
-- [Components](#how-to-use-components)
-- [Custom Id Params](#custom-id-params)
-- [Modals](#how-to-use-modals)
-- [Events](#how-to-use-events)
+- [Commands](#commands)
+    - [Slash](#slash-commands)
+    - [Context menu](#context-menu)
+    - [Autocomplete](#autocomplete)
+- [Responder](#responder)
+    - [Buttons](#buttons)
+    - [Select menus](#select-menus)
+    - [Modals](#modals)
+- [Events](#events)
 
 ## Features
+- [Custom Id Params](#custom-id-params)
+- [Store](#store)
+- [Cooldown](#cooldown)
+- [URLStore](#urlstore)
 - [ES6 Modules](#es6-modules)
+- [Path alias](#path-alias)
 - [Constants](#constants)
 - [Env file](#env-file)
 
-## How to use Commands 
+# Commands
 
-To create a new command, import the Command class from the `src/discord/base` folder. All commands must be created in the `src/discord/commands` folder or subfolders of the commands folder
+To create a command, you need to import the `Command` class from the base and `ApplicationCommandType` enum from discord.js
+```ts
+import { Command } from "#base";
+import { ApplicationCommandType } from "discord.js";
+```
 
-- Use import alias `#base` 
+You can create `slash`, `message context`, and `user context` commands.
 
-You can create slash **commands**, **user** and **message** context menus
+The typing of the `run method` is defined according to the type of command.
 
-The run method interaction typing is defined according to the command type
+[Back to the top ↑](#structures)
+
+## Slash commands
+To create a slash command, you need to set name, description and type.
 
 ```ts
-import { ApplicationCommandType } from "discord.js";
+new Command({
+    name: "hello",
+    description: "Hello world command",
+    type: ApplicationCommandType.ChatInput,
+    async run(interaction) {
+        interaction.reply({ ephemeral, content: "Hello world!" });
+    },
+});
+```
+You can set options, subcommands and groups too
+```ts
 import { Command } from "#base";
+import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
+
+new Command({
+    name: "manage",
+    description: "Manage command",
+    type: ApplicationCommandType.ChatInput,
+    options: [
+        {
+            name: "users",
+            description: "Manage users command",
+            type: ApplicationCommandOptionType.Subcommand
+            options: [
+                {
+                    name: "user",
+                    description: "user",
+                    type: ApplicationCommandOptionType.User
+                    required
+                }       
+            ],
+        }
+    ],
+    async run(interaction) {
+        const { options } = interaction;
+
+        switch(options.getSubcommand(true)){
+            case "users":{
+                const user = options.getUser("user", true);
+                interaction.reply({ ephemeral, content: `${user} managed` })
+                return;
+            }
+        }
+    },
+});
+```
+
+[Back to the top ↑](#structures)
+
+## Context menu
+
+To create a user context menu command, you need to set name and type.
+
+```ts
+new Command({
+    name: "profile",
+    type: ApplicationCommandType.User,
+    async run(interaction) {
+        const { targetUser } = interaction;
+        interaction.reply({ ephemeral, content: `${targetUser}'s profile` });
+    },
+});
+```
+
+To create a message context menu command, you need to set name and type.
+
+```ts
+new Command({
+    name: "reply",
+    type: ApplicationCommandType.Message,
+    async run(interaction) {
+        const { targetMessage } = interaction;
+        interaction.deferReply({ ephemeral });
+        targetMessage.reply("Hi!");
+    },
+});
+```
+
+[Back to the top ↑](#structures)
+
+## Autocomplete
+
+You can create an autocomplete option in your command and respond to it using the autocomplete method above run
+
+```ts
+new Command({
+	name: "search",
+	description: "Search command",
+	type: ApplicationCommandType.ChatInput,
+	options: [
+		{
+			name: "query",
+			description: "Query",
+			type: ApplicationCommandOptionType.String,
+			autocomplete: true,
+			required,
+		}
+	],
+	async autocomplete(interaction) {
+		const focused = interaction.options.getFocused();
+		const results = await searchData(focused);
+		if (results.length < 1) return;
+		const choices = results.map(data => ({
+			name: data.title, value: data.url
+		}));
+		interaction.respond(choices.slice(0, 25));
+	},
+	async run(interaction){
+		const { options } = interaction;
+
+		const query = options.getString("query", true);
+		
+		interaction.reply({ ephemeral, content: query });
+	}
+});
+```
+
+If you have a large number of items, use autocomplete to try to find it
+
+```ts
+new Command({
+    // ...
+    async autocomplete(interaction) {
+		const { options, guild } = interaction;
+
+        const focused = options.getFocused();
+        const documents = await db.get(guild.id);
+
+        const filtered = documents.filter(
+            data => data.address.toLowercase().includes(focused.toLowercase())
+        )
+        if (filtered.length < 1) return;
+        const choices = filtered.map(data => ({
+			name: data.title, value: data.url
+		}));
+		interaction.respond(choices.slice(0, 25));
+	},
+    // ...
+})
+```
+
+[Back to the top ↑](#structures)
+
+# Responder
+
+Responder is a powerful class to deal with different types of interactions, with it we can respond to buttons, select menus and modals or all at the same time
+
+See the simple example below, let's send a button through a command and reply to it using the "Responder" class
+
+```ts
+import { Command, Responder, ResponderType } from "#base";
+import { createRow } from "@magicyan/discord";
+import { ApplicationCommandType, ButtonBuilder, ButtonStyle } from "discord.js";
 
 new Command({
     name: "ping",
     description: "Ping command",
     dmPermission: false,
     type: ApplicationCommandType.ChatInput,
-    async run(interaction){ // ChatInputCommandInteraction
-
-        interaction.reply({ content: "pong" });
-    }
-});
-```
-
-Equivalent code with pure discord.js
-```ts
-client.on("ready", async (readyClient) => {
-    readyClient.application.commands.set([
-        {
-            name: "ping",
-            description: "Ping command",
-            dmPermission: false,
-            type: ApplicationCommandType.ChatInput,
-        }
-    ]);
-});
-
-client.on("interactionCreate", async (interaction) => {
-    if (interaction.isChatInputCommand()){
-        switch(interaction.commandName){
-            case "ping":{
-                interaction.reply({ content: "pong" });
-                return;
-            }
-        }
-    }
-});
-```
-
-```ts
-new Command({
-    name: "Profile",
-    dmPermission: false,
-    type: ApplicationCommandType.User, // <= User context menu command type
-    async run(interaction){ // UserContextMenuCommandInteraction
-        const { targetUser } = interaction;
-
-        interaction.reply({ content: `${targetUser.displayName}'s profile ` });
-    }
-});
-```
-
-```ts
-new Command({
-    name: "Say hello",
-    dmPermission: false,
-    type: ApplicationCommandType.Message, // <= Message context menu command type
-    async run(interaction){ // MessageContextMenuCommandInteraction
-        const { targetMessage } = interaction;
-
-        await interaction.deferReply({ ephemeral });
-    
-        targetMessage.reply({ content: `Hello ${targetMessage.author}!` });
-    }
-});
-```
-[Back to the top ↑](#structures)
-
-## Store
-
-You can use the **Store** structure to temporarily store information in a command. When creating a new Store you can set the default time and whether items are deleted by default.
-
-```ts
-import { Command, Store } from "#base";
-import { ApplicationCommandType, time} from "discord.js";
-
-const cooldowns = new Store<Date>({ clearTime: 60000 })
-
-new Command({
-    name: "mine",
-    description: "Mine command",
-    dmPermission: false,
-    type: ApplicationCommandType.ChatInput,
-    store: {
-    },
     async run(interaction){
-        const now = new Date();
-        const cooldown = cooldowns.get(interaction.member.id) ?? now;
-
-        if (cooldown > now){
-            interaction.reply({ ephemeral, 
-                content: `You will be able to mine again ${time(cooldown, "R")}` 
-            });
-            return;
-        }
-
-        interaction.reply({ ephemeral, content: `You mine!` });
-
-        now.setSeconds(now.getSeconds() + 60);
-
-        store.cooldowns.set(interaction.member.id, now);
+        const row = createRow(
+            new ButtonBuilder({
+                customId: "ping/button", 
+                label: "Ping", 
+                style: ButtonStyle.Success
+            })
+        );
+        interaction.reply({ ephemeral, components: [row] });
     }
 });
-```
-After using the **set** method, the defined value will be deleted after the time defined when creating this **Store**
 
-This way you don't have to worry about defining a **setTimeout** function. This is supposed to be temporary, do not store information that should be persistent. The Store works like a map, if the bot restarts, everything will be lost
-
-As the third argument of the set method, you can define a time in milliseconds different from the one defined when creating the Store
-```ts
-async run(interaction){
-    const { member } = interaction; 
-    cooldowns.set(member.id, now, 80000);
-}
-```
-Or if you prefer, you can choose not to delete the data stored in this key
-```ts
-cooldowns.set(member.id, now, null);
-```
-As a last argument you can define a callback that will be executed when the value is deleted
-```ts
-cooldowns.set(member.id, now, cooldowns.defaultClearTime, (value) => {
-    console.log("Value deleted", value);
+new Responder({
+    customId: "ping/button",
+    type: ResponderType.Button, cache: "cached",
+    async run(interaction) {
+        interaction.reply({ ephemeral, content: "pong" });
+    },
 });
 ```
 
 [Back to the top ↑](#structures)
 
-## How to use Components
+## Buttons
 
-About components, the Component class will be used to create the functionality of a fixed component
-
-Import the class from the `src/discord/base` folder, then set the custom id and component type
-The components that can be defined in the type property are buttons and any type of select menu
+Reply to a button by setting the Responder type as button
 
 ```ts
-import { ComponentType } from "discord.js";
-import { Component } from "#base";
+// ...
+const row = createRow(
+    new ButtonBuilder({
+        customId: "confirm/button", 
+        label: "Confirm", 
+        style: ButtonStyle.Success
+    })
+);
+interaction.reply({ ephemeral, components: [row] });
+// ...
 
-new Component({
-    customId: "example/component/button",
-    type: ComponentType.Button, cache: "cached",
+new Responder({
+    customId: "confirm/button",
+    type: ResponderType.Button, cache: "cached",
     async run(interaction) {
-        interaction.reply({ ephemeral, content: "This is a button component!" });
+        interaction.update({ ephemeral, content: "Confirmed", components: [] });
     },
 });
 ```
 
-```ts
-// Command code block 
-const channel = interaction.channel as TextChannel;
+[Back to the top ↑](#structures)
 
-const embed = new EmbedBuilder({ description: "Welcome to the store" });
+## Select menus
+Reply to a button by setting the Responder type as select
+
+```ts
+// ...
 const row = createRow(
     new StringSelectMenuBuilder({
-        customId: "store/products/select",
-        placeholder: "Select the product",
+        customId: "select/fruits",
+        placeholder: "Select fruits",
         options: [
-            { label: "Apple", value: "apple", emoji: "🍎" },
-            { label: "Melon", value: "melon", emoji: "🍉" },
-            { label: "Banana", value: "banana", emoji: "🍌" }
+            { emoji: "🍎", label: "Apple", value: "apple" },
+            { emoji: "🍉", label: "Melon", value: "melon" },
+            { emoji: "🍊", label: "Orange", value: "orange" }
         ]
     })
 );
+interaction.reply({ ephemeral, components: [row] });
+// ...
 
-channel.send({ embeds: [embed], components: [row] });
-// ===
-
-new Component({
-    customId: "store/products/select",
-    type: ComponentType.StringSelect, cache: "cached",
+new Responder({
+    customId: "select/fruits",
+    type: ResponderType.StringSelect, cache: "cached",
     async run(interaction) {
-        const { values:[selected] } = interaction;
-
-        interaction.reply({ ephemeral, content: `You select ${selected}` });
+        const selected = interaction.values[0];
+        interaction.update({ ephemeral, content: `${selected} selected`, components: [] });
     },
 });
 ```
+
+[Back to the top ↑](#structures)
+
+## Modals
+Reply to a modal by setting the Responder type as modal
+
+```ts
+// ...
+interaction.showModal({
+    customId: "form/modal",
+    title: "Form",
+    components: createModalFields({
+        name:{
+            label: "What's your name?",
+            style: TextInputStyle.Short
+        },
+        age:{
+            label: "What's your age?",
+            style: TextInputStyle.Short
+        },
+    })
+});
+// ...
+
+new Responder({
+    customId: "form/modal",
+    type: ResponderType.Modal, cache: "cached",
+    async run(interaction) {
+        const { fields, member } = interaction;
+        const name = fields.getTextInputValue("name");
+        const age = fields.getTextInputValue("age");
+
+        await registerMember(member, { name, age });
+
+        interaction.reply({ ephemeral, content: `Registered as ${name}` });
+    },
+});
+```
+
+[Back to the top ↑](#structures)
+
+# Events
+
+To create a listener for a discord.js event, use the Event class from the `src/discord/base` folder
+
+```ts
+import { Event } from "#base";
+
+new Event({
+    name: "Message edit logs",
+    event: "messageUpdate",
+    run(oldMessage, newMessage) {
+        console.log("Message edited at:", newMessage.editedAt?.toDateString());
+        console.log("Author", newMessage.author?.displayName);
+        console.log("Old message content: ", oldMessage.content);
+        console.log("New message content:", newMessage.content);   
+    }
+});
+```
+
+All discord events are typed in the "event" property, when choosing an event, the run function will also be typed with the arguments that the chosen event should receive
+
 [Back to the top ↑](#structures)
 
 ## Custom Id Params
 
-You can use a feature from this base named "Custom Id Params" to respond to components dynamically, see:
+You can use a feature from this base named "Custom Id Params" to reply any component or modal dynamically, see:
+
 ```ts
 // User context menu command
 new Command({
     name: "Manage user",
-    dmPermission: false,
     type: ApplicationCommandType.User,
     async run(interaction){
         const { targetUser } = interaction;
@@ -256,7 +391,7 @@ new Command({
 });
 
 // Dynamic button component function
-new Component({
+new Responder({
     customId: "manage/user/:userId/:action",
     type: ComponentType.Button, cache: "cached",
     async run(interaction, params) {
@@ -289,75 +424,27 @@ new Component({
 });
 ```
 
-[Back to the top ↑](#structures)
+* You can use this feature with all responder types, but don't forget that discord has a 100 character limit on the custom id
 
-## How to use Modals
+[Back to the top ↑](#features)
 
-You can create functionality for modals in the same way as [components](#how-to-use-components);
+## Store
 
-```ts
-import { Modal } from "#base";
+// TODO
 
-new Modal({
-    customId: "announcement/modal",
-    cache: "cached",
-    run(interaction) {
-        const { fields } = interaction;
-        const title = fields.getTextInputValue("title-input");
+[Back to the top ↑](#features)
 
-        interaction.reply({ content: title });
-    },
-});
-```
+## Cooldown
 
-If the modal is opened through a message component, you can set the **ModalMessageModalSubmitInteraction** typing by setting true in the **isFromMessage** property. 
+// TODO
 
-```ts
-new Modal({
-    customId: "announcement/modal",
-    cache: "cached",
-    isFromMessage: true, // Modal opened from button or select menu
-    run(interaction) { // ModalMessageModalSubmitInteraction
-        const { fields } = interaction;
-        const title = fields.getTextInputValue("title-input");
+[Back to the top ↑](#features)
 
-        interaction.update({ content: title, components: [] }); // Update method avaliable
-    },
-});
-```
-- You can also use "Custom Id Params" with modals
+## URL Store
 
-[Back to the top ↑](#structures)
+// TODO
 
-## How to use Events
-
-To create a listener for a discord.js event, use the Event class from the `src/discord/base` folder
-
-```ts
-import { Event } from "#base";
-
-new Event({
-    name: "Message edit logs",
-    event: "messageUpdate",
-    run(oldMessage, newMessage) {
-        console.log("Message edited at:", newMessage.editedAt?.toDateString());
-        console.log("Author", newMessage.author?.displayName);
-        console.log("Old message content: ", oldMessage.content);
-        console.log("New message content:", newMessage.content);   
-    }
-});
-```
-
-All discord events are typed in the name property, when choosing an event, the run function will also be typed with the arguments that the chosen event should receive
-
-Equivalent code with pure discord.js
-```ts
-client.on("messageUpdate", (oldMessage, newMessage) => {
-    // ...
-})
-```
-
-[Back to the top ↑](#structures)
+[Back to the top ↑](#features)
 
 ## ES6 Modules
 
@@ -371,7 +458,7 @@ export function sum(a: number, b: number){
 ```
 ```ts
 // src/functions/index.ts
-export * from "./math/mycustumfunc.ts"
+export * from "./math/mycustumfunc.js"
 ```
 Create an index file in the folders that have an alias in the tsconfig file
 
@@ -379,6 +466,12 @@ Create an index file in the folders that have an alias in the tsconfig file
 // src/commands/public/ping.ts
 import { sum } from "#functions"
 ```
+[Back to the top ↑](#features)
+
+## Path alias
+
+// TODO
+
 [Back to the top ↑](#features)
 
 ## Constants

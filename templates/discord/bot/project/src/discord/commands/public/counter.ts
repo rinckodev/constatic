@@ -5,9 +5,8 @@ import { ApplicationCommandType, ButtonBuilder, ButtonStyle, User } from "discor
 new Command({
     name: "counter",
     description: "Counter command",
-    dmPermission: false,
     type: ApplicationCommandType.ChatInput,
-    async run(interaction) {
+    run(interaction) {
         interaction.reply(counterMenu(interaction.user, 0));
     },
 });
@@ -15,7 +14,7 @@ new Command({
 new Responder({
     customId: "counter/:action/:current",
     type: ResponderType.Button, cache: "cached",
-    async run(interaction, params) {
+    run(interaction, params) {
         const current = Number.parseInt(params.current);
         const updated = params.action === "add" ? current + 1 : current - 1;
 
