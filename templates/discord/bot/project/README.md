@@ -31,8 +31,8 @@ This is the most complete discord bot base you've ever seen! Developed by [@rinc
 - [Cooldown](#cooldown)
 - [URLStore](#urlstore)
 - [ES6 Modules](#es6-modules)
-- [Path alias](#path-alias)
-- [Constants](#constants)
+- [Path aliases](#path-aliases)
+- [Global vars](#global-vars)
 - [Env file](#env-file)
 
 # Commands
@@ -430,19 +430,134 @@ new Responder({
 
 ## Store
 
-// TODO
+The Store class works the same as Map, but it is possible to define a time for the item to be deleted
+```ts
+const tempUser = new Store<string>();
+
+tempUser.set(user.id, "code", { time: 30000 });
+console.log(tempUser.get(user.id)) // "code";
+
+await sleep(40000);
+console.log(tempUser.get(user.id)) // undefined;
+```
+
+
+This class is useful for storing items temporarily, you can set a default time when creating the Store
+
+```ts
+const blockedStore = new Store<boolean>({ clearTime: 20000 });
+
+blockedStore.set(message.id, true);
+console.log(blockedStore.get(message.id)) // true;
+
+await sleep(25000);
+console.log(blockedStore.get(message.id)) // undefined;
+```
+
+It is possible to set a function to be executed before the item is deleted
+
+```ts
+const tempMessage = new Store<boolean>({ clearTime: 20000 });
+
+tempMessage.set(message.id, true, {
+    beforeEnd(){
+        console.log(message.id, "deleted");
+    },
+});
+
+await sleep(25000);
+// "123456789 deleted"
+```
 
 [Back to the top ↑](#features)
 
 ## Cooldown
 
-// TODO
+Manipulate a date with the Cooldown class, perfect for creating expiration dates for anything
+
+```ts
+const cooldown = new Cooldown();
+console.log(cooldown.expiresAt.toTimeString()); // 14:18:00
+cooldown.add(30, "minutes");
+console.log(cooldown.expiresAt.toTimeString()); // 14:48:00
+cooldown.remove(20, "minutes");
+console.log(cooldown.expiresAt.toTimeString()); // 14:28:00
+```
+
+The `add` and `remove` methods allow you to manipulate the date time easily.
+You can set a value with the following time units: milliseconds, seconds, minutes, hours, days
 
 [Back to the top ↑](#features)
 
 ## URL Store
 
-// TODO
+Use the URLStore class to store simple form data in a url, which can be sent in a discord message and retrieved again later
+
+```ts
+import { Command, Responder, ResponderType, URLStore } from "#base";
+import { brBuilder, createEmbed, createRow } from "@magicyan/discord";
+import { ApplicationCommandOptionType, ApplicationCommandType, ButtonBuilder, ButtonStyle } from "discord.js";
+
+new Command({
+    name: "setup",
+    description: "setup command",
+    type: ApplicationCommandType.ChatInput,
+    options: [
+        {
+            name: "channel",
+            description: "select a channel",
+            type: ApplicationCommandOptionType.Channel,
+            required
+        }
+    ],
+    async run(interaction){
+        const { options } = interaction;
+
+        const channel = options.getChannel("channel", true);
+        const urlStore = new URLStore();
+        urlStore.set("channelId", channel.id);
+
+        const embed = createEmbed({
+            url: urlStore.toString(),
+            description: brBuilder(
+                "# Panel",
+                "- View Channel"
+            )
+        });
+
+        const row = createRow(
+            new ButtonBuilder({
+                customId: "panel/channel", 
+                label: "View channel", 
+                style: ButtonStyle.Success
+            })
+        );
+
+        interaction.reply({ embeds: [embed], components: [row] });
+    }
+});
+
+new Responder({
+    customId: "panel/:context",
+    type: ResponderType.Button, cache: "cached",
+    async run(interaction, { context}) {
+        const { guild } = interaction;
+        const embed = createEmbed({ from: interaction });
+        const urlStore = new URLStore(embed.data.url);
+
+        switch(context){
+            case "channel":{
+                const channelId = urlStore.get("channelId")!;
+                const channel = guild.channels.cache.get(channelId);
+                interaction.reply({ ephemeral, content: `${channel ?? "not found"}` });
+                return;
+            }
+        }
+    },
+});
+```
+
+> ⚠️ Discord has a limit of 2048 characters in urls in embeds, so it is not possible to store much information this way, the ideal would be a database, but for simple data this class is very useful
 
 [Back to the top ↑](#features)
 
@@ -468,13 +583,70 @@ import { sum } from "#functions"
 ```
 [Back to the top ↑](#features)
 
-## Path alias
+## Path aliases
 
-// TODO
+Path aliases are a way of organizing imports in your code, instead of using a relative path, we can set in package.json, aliases for certain paths.
+
+```js
+// package.json
+{
+  "name": "awesome-bot-base",
+  "type": "module",
+  //..
+  "imports": {
+    "#base": ["./dist/discord/base/index.js"],
+    //..
+  }
+}
+```
+```js
+// tsconfig.json
+{
+	"compilerOptions": {
+        //..
+		"baseUrl": "./src",
+		"paths": {
+			"#base": ["./discord/base/index.ts"],
+		},
+	},
+}
+```
+With this we can import anything that was exported from the index file of this path, anywhere in our project
+
+```ts
+// src/discord/base/index.ts
+export * from "./App.js";
+export * from "./Command.js";
+export * from "./Event.js";
+export * from "./Responder.js";
+
+export * from "./utils/Store.js";
+export * from "./utils/URLStore.js";
+export * from "./utils/Cooldown.js";
+```
+
+```ts
+// src/discord/commands/public/ping.ts
+import { Command } from "#base";
+// import { Command } from "../../base/Command.js";
+```
+```ts
+// src/functions/utils/cooldown/create.ts
+import { Cooldown } from "#base";
+// import { Cooldown } from "../../../discord/base/utils/Cooldown.js";
+
+```
+```ts
+// src/discord/commands/private/context/manage.ts
+import { Command } from "#base";
+import { settings } from "#settings";
+// import { Command } from "../../../base/Command.js";
+// import { settings } from "../../../../settings/index.js";
+```
 
 [Back to the top ↑](#features)
 
-## Constants
+## Global vars
 
 There are global constants variables that you can use in method or function options objects, also using the "short syntax".
 
@@ -488,10 +660,14 @@ interaction.deferReply({ ephemeral }); // ephemeral is true by default;
 
 ```ts
 // src/settings/global.ts
-global.ephemeral = true; // Interaction reply/followUp property
+Object.assign(globalThis, { 
+    ephemeral: true // Interaction reply/followUp property
+    // ...
+}); 
 
 declare global {
     var ephemeral: true;
+    // ...
 }
 ```
 This way, it is not necessary to import these variables because they are global.

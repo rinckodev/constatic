@@ -33,7 +33,6 @@ interface BootstrapAppOptions extends Partial<ClientOptions> {
      * Send load logs in terminal
      */
     loadLogs?: boolean;
-    metadata?: Record<string, unknown>;
 }
 export async function bootstrapApp<O extends BootstrapAppOptions>(options: O): Promise<R<O>> {
 

@@ -6,7 +6,6 @@
 			"new Command({",
 			"    name: \"$1\",",
 			"    description: \"$2\",",
-			"    dmPermission: false,",
 			"    type: ApplicationCommandType.ChatInput,",
 			"    async run(interaction){",
 			"        $3",
@@ -22,7 +21,6 @@
 			"new Command({",
 			"    name: \"$1\",",
 			"    description: \"$2\",",
-			"    dmPermission: false,",
 			"    type: ApplicationCommandType.ChatInput,",
 			"    options: [",
 			"        {",
@@ -57,7 +55,6 @@
 		"body": [
 			"new Command({",
 			"    name: \"$1\",",
-			"    dmPermission,",
 			"    type: ApplicationCommandType.User,",
 			"    async run(interaction){",
 			"        ",
@@ -72,7 +69,6 @@
 		"body": [
 			"new Command({",
 			"    name: \"$1\",",
-			"    dmPermission,",
 			"    type: ApplicationCommandType.Message,",
 			"    async run(interaction){",
 			"        ",
