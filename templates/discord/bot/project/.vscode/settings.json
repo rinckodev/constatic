@@ -17,7 +17,8 @@
     "firestore": "Firebase",
     "mongodb": "Database",
     "mysql": "Database",
-    "quickdb": "Json"
+    "quickdb": "Json",
+    "responders": "Meta"
   },
   "material-icon-theme.files.associations": {
     "firebase.development.json": "Firebase",
