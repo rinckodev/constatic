@@ -101,5 +101,6 @@ function prepareClient(token: string, options: BootstrapAppOptions): Client {
 		if (interaction.isAutocomplete()) Command.onAutocomplete(interaction);
 		Responder.onInteraction(interaction);
     });
+    Event.register(client);
     return client;
 }
