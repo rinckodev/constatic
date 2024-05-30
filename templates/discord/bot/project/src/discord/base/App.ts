@@ -6,7 +6,7 @@ import ck from "chalk";
 import glob from "fast-glob";
 import path from "node:path";
 
-type R<O extends BootstrapAppOptions> = O["multiple"] extends true ? Client[] : Client;
+type R<O extends BootstrapAppOptions> = O["multiple"] extends true ? Client<true>[] : Client<true>;
 
 interface BootstrapAppOptions extends Partial<ClientOptions> {
     workdir: string;
@@ -33,8 +33,22 @@ interface BootstrapAppOptions extends Partial<ClientOptions> {
      * Send load logs in terminal
      */
     loadLogs?: boolean;
+    /**
+     * 
+     * Run before load directories
+     */
+    beforeLoad?(client: Client): void
 }
 export async function bootstrapApp<O extends BootstrapAppOptions>(options: O): Promise<R<O>> {
+    if (options.multiple){
+        const clients: Client[] = [];
+        for(const token of process.env.BOT_TOKEN.split(" ")){
+            const client = prepareClient(token, options);
+            clients.push(client);
+        }
+        return clients as R<O>;
+    }
+    const client = prepareClient(process.env.BOT_TOKEN, options);
 
     await loadDirectories(path.basename(options.workdir), options.directories);
     if (options.loadLogs??true){
@@ -49,15 +63,6 @@ export async function bootstrapApp<O extends BootstrapAppOptions>(options: O): P
     console.log();
     log.success(spaceBuilder("📦", versions));
 
-    if (options.multiple){
-        const clients: Client[] = [];
-        for(const token of process.env.BOT_TOKEN.split(" ")){
-            const client = prepareClient(token, options);
-            clients.push(client);
-        }
-        return clients as R<O>;
-    }
-    const client = prepareClient(process.env.BOT_TOKEN, options);
     return client as R<O>;
 }
 async function loadDirectories(foldername: string, directories: string[] = []) {
@@ -78,7 +83,9 @@ function prepareClient(token: string, options: BootstrapAppOptions): Client {
         partials: options.partials ?? CustomPartials.All,
         failIfNotExists: false
     }));
-    client.login(token);
+    if (options.beforeLoad){
+        options.beforeLoad(client);
+    }
     client.on("ready", async (client) => {
         const messages: string[] = new Array();
         const addMessage = (message: string) => messages.push(message);
@@ -102,5 +109,6 @@ function prepareClient(token: string, options: BootstrapAppOptions): Client {
 		Responder.onInteraction(interaction);
     });
     Event.register(client);
+    client.login(token);
     return client;
 }
