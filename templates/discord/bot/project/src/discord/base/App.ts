@@ -46,6 +46,8 @@ export async function bootstrapApp<O extends BootstrapAppOptions>(options: O): P
             const client = prepareClient(token, options);
             clients.push(client);
         }
+        await loadDirectories(path.basename(options.workdir), options.directories);
+        clients.forEach(Event.register);
         return clients as R<O>;
     }
     const client = prepareClient(process.env.BOT_TOKEN, options);
@@ -54,6 +56,8 @@ export async function bootstrapApp<O extends BootstrapAppOptions>(options: O): P
     if (options.loadLogs??true){
         Command.loadLogs(); Event.loadLogs(); Responder.loadLogs();
     }
+
+    Event.register(client);
 
     const versions = [
         `${ck.hex("#5865F2").underline("discord.js")} ${ck.yellow(djsVersion)}`,
@@ -108,7 +112,6 @@ function prepareClient(token: string, options: BootstrapAppOptions): Client {
 		if (interaction.isAutocomplete()) Command.onAutocomplete(interaction);
 		Responder.onInteraction(interaction);
     });
-    Event.register(client);
     client.login(token);
     return client;
 }
