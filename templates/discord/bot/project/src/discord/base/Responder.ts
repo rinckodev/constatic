@@ -57,6 +57,32 @@ export class Responder<I extends string, T extends ResponderType, C extends Cach
             }
         }
     }
+    public static sortCustomIds(){
+        function hasParam(customId: string) {
+            return customId.split("/").some(segment => segment.startsWith(":"));
+        }
+        function count(customId: string) {
+            return customId.split("/").length;
+        }
+        type ResponderDataEntry = [string, ResponderData<string, unknown, CacheType>]
+        function compareRoutes([customIdA]: ResponderDataEntry, [customIdB]: ResponderDataEntry) {
+            const hasParamA = hasParam(customIdA);
+            const hasParamB = hasParam(customIdB);
+        
+            if (hasParamA && !hasParamB) {
+                return 1; 
+            } else if (!hasParamA && hasParamB) {
+                return -1; 
+            }
+            return count(customIdA) - count(customIdB);
+        }
+
+        for(const [type, subItems] of Responder.items){
+            const entries = Array.from(subItems.entries());
+            entries.sort(compareRoutes);
+            Responder.items.set(type, new Collection(entries));
+        }
+    }
     public static onInteraction(interaction: Interaction){
         if (interaction.isCommand() || interaction.isAutocomplete()) return;
         const { customId } = interaction;

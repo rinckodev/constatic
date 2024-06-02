@@ -6,7 +6,7 @@ import ck from "chalk";
 import glob from "fast-glob";
 import path from "node:path";
 
-type R<O extends BootstrapAppOptions> = O["multiple"] extends true ? Client<true>[] : Client<true>;
+type R<O extends BootstrapAppOptions> = O["multiple"] extends true ? Client[] : Client;
 
 interface BootstrapAppOptions extends Partial<ClientOptions> {
     workdir: string;
@@ -43,22 +43,19 @@ export async function bootstrapApp<O extends BootstrapAppOptions>(options: O): P
     if (options.multiple){
         const clients: Client[] = [];
         for(const token of process.env.BOT_TOKEN.split(" ")){
-            const client = prepareClient(token, options);
+            const client = createClient(token, options);
             clients.push(client);
         }
         await loadDirectories(path.basename(options.workdir), options.directories);
         clients.forEach(Event.register);
         return clients as R<O>;
     }
-    const client = prepareClient(process.env.BOT_TOKEN, options);
-
+    const client = createClient(process.env.BOT_TOKEN, options);
     await loadDirectories(path.basename(options.workdir), options.directories);
     if (options.loadLogs??true){
         Command.loadLogs(); Event.loadLogs(); Responder.loadLogs();
     }
-
     Event.register(client);
-
     const versions = [
         `${ck.hex("#5865F2").underline("discord.js")} ${ck.yellow(djsVersion)}`,
         "/",
@@ -80,8 +77,9 @@ async function loadDirectories(foldername: string, directories: string[] = []) {
     ].flat();
     const paths: string[] = await glob(patterns, { absolute: true });
     await Promise.all(paths.map(path => import(`file://${path}`)));
+    Responder.sortCustomIds();
 }
-function prepareClient(token: string, options: BootstrapAppOptions): Client {
+function createClient(token: string, options: BootstrapAppOptions): Client {
     const client = new Client(Object.assign(options, {
         intents: options.intents ?? CustomItents.All,
         partials: options.partials ?? CustomPartials.All,
