@@ -1,6 +1,6 @@
 {
   "name": "constatic",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Constatic cli",
   "main": "dist/index.mjs",
   "bin": {

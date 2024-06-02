@@ -46,27 +46,21 @@ export async function bootstrapApp<O extends BootstrapAppOptions>(options: O): P
             const client = createClient(token, options);
             clients.push(client);
         }
-        await loadDirectories(path.basename(options.workdir), options.directories);
+        await loadDirectories(path.basename(options.workdir), options.directories, options.loadLogs);
+        
         clients.forEach(Event.register);
+        clients.forEach(client => client.login());
         return clients as R<O>;
     }
     const client = createClient(process.env.BOT_TOKEN, options);
-    await loadDirectories(path.basename(options.workdir), options.directories);
-    if (options.loadLogs??true){
-        Command.loadLogs(); Event.loadLogs(); Responder.loadLogs();
-    }
-    Event.register(client);
-    const versions = [
-        `${ck.hex("#5865F2").underline("discord.js")} ${ck.yellow(djsVersion)}`,
-        "/",
-        `${ck.hex("#68a063").underline("NodeJs")} ${ck.yellow(process.versions.node)}`,
-    ];
-    console.log();
-    log.success(spaceBuilder("📦", versions));
+    await loadDirectories(path.basename(options.workdir), options.directories, options.loadLogs);
 
+    Event.register(client);
+
+    client.login();
     return client as R<O>;
 }
-async function loadDirectories(foldername: string, directories: string[] = []) {
+async function loadDirectories(foldername: string, directories: string[] = [], loadLogs?: boolean) {
     const pattern: string = "**/*.{ts,js,tsx,jsx}";
     const patterns: string[] = [
         `!./${foldername}/discord/base/*`,
@@ -78,6 +72,16 @@ async function loadDirectories(foldername: string, directories: string[] = []) {
     const paths: string[] = await glob(patterns, { absolute: true });
     await Promise.all(paths.map(path => import(`file://${path}`)));
     Responder.sortCustomIds();
+    if (loadLogs??true){
+        Command.loadLogs(); Event.loadLogs(); Responder.loadLogs();
+    }
+    const versions = [
+        `${ck.hex("#5865F2").underline("discord.js")} ${ck.yellow(djsVersion)}`,
+        "/",
+        `${ck.hex("#68a063").underline("NodeJs")} ${ck.yellow(process.versions.node)}`,
+    ];
+    console.log();
+    log.success(spaceBuilder("📦", versions));
 }
 function createClient(token: string, options: BootstrapAppOptions): Client {
     const client = new Client(Object.assign(options, {
@@ -110,6 +114,6 @@ function createClient(token: string, options: BootstrapAppOptions): Client {
 		if (interaction.isAutocomplete()) Command.onAutocomplete(interaction);
 		Responder.onInteraction(interaction);
     });
-    client.login(token);
+    Object.assign(client, { token });
     return client;
 }
