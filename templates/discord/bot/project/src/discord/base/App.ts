@@ -48,16 +48,18 @@ export async function bootstrapApp<O extends BootstrapAppOptions>(options: O): P
         }
         await loadDirectories(path.basename(options.workdir), options.directories, options.loadLogs);
         
-        clients.forEach(Event.register);
-        clients.forEach(client => client.login());
+        clients.forEach(client => {
+            Event.register(client);
+            client.login();
+        });
         return clients as R<O>;
     }
     const client = createClient(process.env.BOT_TOKEN, options);
     await loadDirectories(path.basename(options.workdir), options.directories, options.loadLogs);
 
     Event.register(client);
-
     client.login();
+    
     return client as R<O>;
 }
 async function loadDirectories(foldername: string, directories: string[] = [], loadLogs?: boolean) {

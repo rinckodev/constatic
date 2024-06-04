@@ -95,7 +95,7 @@ export class Responder<I extends string, T extends ResponderType, C extends Cach
         interaction.isUserSelectMenu() ? ResponderType.UserSelect : 
         interaction.isMentionableSelectMenu() ? ResponderType.MentionableSelect : 
         interaction.isFromMessage() ? ResponderType.ModalComponent : 
-        interaction.isModalSubmit() ? ResponderType.ModalComponent : undefined;
+        interaction.isModalSubmit() ? ResponderType.Modal : undefined;
 
         if (!responderType) return;
 

@@ -15,14 +15,12 @@ export class Event<EventName extends keyof ClientEvents> {
         Event.items.set(data.event, events);
     }
     public static register(client: Client){
-
         const eventHandlers = Event.items.map((collection, event) => {
             const handlers = collection.map(({ run, once }) => ({ run, once }));
             return { event, handlers };
         });
 
         for(const { event, handlers } of eventHandlers){
-            
             client.on(event, (...args) => {
                 handlers.forEach(({ run, once }) => !once && run(...args));
             });
@@ -33,7 +31,6 @@ export class Event<EventName extends keyof ClientEvents> {
     }
     public static loadLogs(){
         for(const events of Event.items.values()){
-
             events.forEach(({ name }) => {
                 log.success(chalk.green(`${chalk.yellow.underline(name)} event loaded successfully!`));
             });
