@@ -1,10 +1,10 @@
 import { replaceText, limitText, createEmbed, createEmbedAuthor, brBuilder } from "@magicyan/discord";
 import { Client, codeBlock, WebhookClient } from "discord.js";
-import settingsJson from "../../settings.json" with { type: "json" };
+import settings from "../../settings.json" with { type: "json" };
 import { consola as log } from "consola";
 import chalk from "chalk";
 
-export async function onError(error: Error | any, client: Client<true>){
+export async function onError(error: any, client: Client<true>){
     log.log(client.user.displayName);
     log.error(error);
 
@@ -17,22 +17,20 @@ export async function onError(error: Error | any, client: Client<true>){
     if ("message" in error) errorMessage.push(String(error.message)); 
     if ("stack" in error) {
         const formated = replaceText(String(error.stack), { [__rootname]: "" });
-        const limited = limitText(formated, 2800, "...");
+        const limited = limitText(formated, 3500, "...");
         errorMessage.push(limited);
     }
-    
     const embed = createEmbed({
-        color: settingsJson.colors.danger,
+        color: settings.colors.danger,
         author: createEmbedAuthor(user),
         description: codeBlock("ts", brBuilder(...errorMessage)),
     });
 
     const webhook = new WebhookClient({ url: webhooksLogURL });
-
     webhook.send({ embeds: [embed] }).catch(log.error);
 }
 
 process.on("SIGINT", () => {
-    log.info(chalk.dim("👋 Exit"));
+    log.info(chalk.dim("👋 Bye"));
     process.exit(0);
 });
