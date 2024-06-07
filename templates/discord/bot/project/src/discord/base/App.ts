@@ -1,7 +1,7 @@
 import { Command, Event, Responder } from "#base";
 import { CustomItents, CustomPartials, spaceBuilder, toNull } from "@magicyan/discord";
 import { Client, ClientOptions, version as djsVersion } from "discord.js";
-import { log } from "#settings";
+import { log, onError } from "#settings";
 import ck from "chalk";
 import glob from "fast-glob";
 import path from "node:path";
@@ -110,6 +110,8 @@ function createClient(token: string, options: BootstrapAppOptions): Client {
         for(const message of messages){
             log.log(ck.green(` ${message}`));
         }
+        process.on("uncaughtException", err => onError(err, client));
+        process.on("unhandledRejection", err => onError(err, client));
     });
     client.on("interactionCreate", async (interaction) => {
         if (interaction.isCommand()) Command.onCommand(interaction);
