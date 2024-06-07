@@ -29,7 +29,7 @@ export class Store<V, K extends string | number | symbol = string>{
                     this.delete(key);
                     return;
                 }
-            }, options.time);
+            }, options.time ?? this.clearTime);
         }
     }
     public delete(key: K){

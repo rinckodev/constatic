@@ -29,7 +29,7 @@ export class Cooldown {
         return this.expiresAtDate;
     }
     display<Style extends TimestampStylesString>(style: Style){
-        return time(new Date(), style);
+        return time(this.expiresAt, style);
     }
     toString(){
         return this.display(this.defaultStyle);
