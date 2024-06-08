@@ -1,7 +1,7 @@
 {
   "name": "awesome-bot-base",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "build/index.js",
   "scripts": {
     "build:dev": "tsc --noEmit && echo ✔ Ok",
     "build": "tsc",
@@ -9,8 +9,8 @@
     "dev:dev": "tsx --env-file .env.development ./src/index.ts",
     "watch": "tsx --watch --env-file .env ./src/index.ts",
     "watch:dev": "tsx --watch --env-file .env.development ./src/index.ts",
-    "start": "node --env-file .env ./dist/index.js",
-    "start:dev": "node --env-file .env.development ./dist/index.js"
+    "start": "node --env-file .env ./build/index.js",
+    "start:dev": "node --env-file .env.development ./build/index.js"
   },
   "dependencies": {
     "@magicyan/discord": "^1.0.33",
@@ -30,22 +30,22 @@
   },
   "imports": {
     "#database": [
-      "./dist/database/index.js"
+      "./build/database/index.js"
     ],
     "#base": [
-      "./dist/discord/base/index.js"
+      "./build/discord/base/index.js"
     ],
     "#functions": [
-      "./dist/functions/index.js"
+      "./build/functions/index.js"
     ],
     "#menus": [
-      "./dist/menus/index.js"
+      "./build/menus/index.js"
     ],
     "#settings": [
-      "./dist/settings/index.js"
+      "./build/settings/index.js"
     ],
     "#tools": [
-      "./dist/tools/index.js"
+      "./build/tools/index.js"
     ],
     "#lang/*": [
       "./lang/*"

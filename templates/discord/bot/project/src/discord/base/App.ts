@@ -38,6 +38,7 @@ interface BootstrapAppOptions extends Partial<ClientOptions> {
      * Run before load directories
      */
     beforeLoad?(client: Client): void
+    whenReady?(client: Client<true>): void;
 }
 export async function bootstrapApp<O extends BootstrapAppOptions>(options: O): Promise<R<O>> {
     if (options.multiple){
@@ -112,6 +113,7 @@ function createClient(token: string, options: BootstrapAppOptions): Client {
         }
         process.on("uncaughtException", err => onError(err, client));
         process.on("unhandledRejection", err => onError(err, client));
+        if (options.whenReady) options.whenReady(client);
     });
     client.on("interactionCreate", async (interaction) => {
         if (interaction.isCommand()) Command.onCommand(interaction);

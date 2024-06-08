@@ -1,5 +1,5 @@
 # Folders
-/dist
+/build
 /discloud
 /deprecated
 /node_modules
