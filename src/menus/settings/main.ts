@@ -1,7 +1,7 @@
-import { select } from "@clack/prompts";
-import { checkCancel } from "../../helpers/index.js";
 import chalk from "chalk";
 import { menus } from "../index.js";
+import { select } from "@clack/prompts";
+import { handleCancel } from "../../helpers/index.js";
 
 export async function settingsMainMenu(props: ProgramProps){
     const selected = await select({
@@ -12,7 +12,7 @@ export async function settingsMainMenu(props: ProgramProps){
         ]
     }) as string;
 
-    checkCancel(selected);
+    handleCancel(selected);
 
     switch(selected){
         case "discordbot-tokens":{

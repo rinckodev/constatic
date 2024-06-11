@@ -1,1 +1,0 @@
-export const discordApiURL = "https://discord.com/api/v10";

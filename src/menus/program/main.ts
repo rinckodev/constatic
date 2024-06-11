@@ -1,28 +1,27 @@
 import { outro, select } from "@clack/prompts";
 import chalk from "chalk";
-import { checkCancel, messages } from "../../helpers/clack.js";
-import { discordBotInitMenu } from "../discordbot/main.js";
-import { settingsMainMenu } from "../settings/main.js";
+import { menus } from "../index.js";
+import { handleCancel, messages } from "../../helpers/index.js";
 
 export async function programMainMenu(props: ProgramProps){
     const selected = await select({
         message: "Select action",
         options: [
-            { label: chalk.green("Init discord bot project"), value: "discordbot-init" },  
+            { label: chalk.green("Init discord bot project"), value: "bot-init" },  
             { label: chalk.blue("Settings"), value: "settings" },  
             { label: chalk.red("Quit"), value: "quit" },  
         ],
-    })
+    }) as string;
 
-    checkCancel(selected);
+    handleCancel(selected);
 
     switch(selected){
-        case "discordbot-init":{
-            discordBotInitMenu(props);
+        case "bot-init":{
+            menus.bot.init(props);
             return;
         }
         case "settings":{
-            settingsMainMenu(props);
+            menus.settings.main(props);
             return;
         }
         case "quit":{

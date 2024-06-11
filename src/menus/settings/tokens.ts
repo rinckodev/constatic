@@ -1,11 +1,10 @@
 import { log, note, password, select, spinner } from "@clack/prompts";
 import chalk from "chalk";
-import { checkCancel } from "../../helpers/index.js";
 import { setTimeout } from "node:timers/promises";
-import { getDiscordBotInvite } from "../../helpers/discord.js";
+import { getDiscordBotInvite, handleCancel } from "../../helpers/index.js";
 import { menus } from "../index.js";
 
-export async function settingsDiscordBotTokensMenu(props: ProgramProps){
+export async function settingsTokensMenu(props: ProgramProps){
     const option = await select({
         message: "Select an option",
         options: [
@@ -16,7 +15,7 @@ export async function settingsDiscordBotTokensMenu(props: ProgramProps){
         ]
     }) as string;
 
-    checkCancel(option);
+    handleCancel(option);
 
     const tokens = props.conf.get("discord.bot.tokens", []) as DiscordBotToken[];
 
@@ -37,7 +36,7 @@ export async function settingsDiscordBotTokensMenu(props: ProgramProps){
                 mask: "*"
             }) as string;
 
-            checkCancel(token);
+            handleCancel(token);
             if (tokens.some(t => t.token === token)){
                 log.warn("This token is already saved");
                 break;
@@ -74,7 +73,7 @@ export async function settingsDiscordBotTokensMenu(props: ProgramProps){
                 ].flat()
             }) as string;
 
-            checkCancel(token);
+            handleCancel(token);
 
             if (token === "back") break;
 
@@ -91,5 +90,5 @@ export async function settingsDiscordBotTokensMenu(props: ProgramProps){
             return;
         }
     }
-    settingsDiscordBotTokensMenu(props);
+    settingsTokensMenu(props);
 }

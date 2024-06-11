@@ -1,5 +1,3 @@
-import { discordApiURL } from "../constants/index.js";
-
 interface SuccessResult {
     success: true;
     invite: string;
@@ -13,7 +11,7 @@ interface FailResult {
 type Result = SuccessResult | FailResult;
 
 export async function getDiscordBotInvite(token: string): Promise<Result> {
-    const response = await fetch(`${discordApiURL}/applications/@me`, {
+    const response = await fetch("https://discord.com/api/v10/applications/@me", {
         headers: { Authorization: `Bot ${token}` }
     });
     

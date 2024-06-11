@@ -13,13 +13,13 @@ export function listDirectoryItems(path: string){
     return folders.concat(files);
 }
 
-interface CopyDirOptions {
+interface CopyOptions {
     ignore?: {
         items?: string[];
         extensions?: string[];
     }
 }
-export async function copyDir(src: string, dest: string, options: CopyDirOptions = {}){
+export async function copy(src: string, dest: string, options: CopyOptions = {}){
     const { items, extensions } = options.ignore ?? {};
     return fs.copy(src, dest, {
         filter(item){

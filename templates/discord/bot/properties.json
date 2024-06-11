@@ -1,35 +1,92 @@
 {
-    "databases":[
+  "dbpresets":[
+    {
+      "name": "MongoDb",
+      "emoji": "🍃",
+      "hint": "mongoose",
+      "path": "mongoose",
+      "envSchema": "MONGO_URI: z.string({ description: \"MongoDb URI is required\" }).min(1),",
+      "isOrm": false,
+      "dependencies": {
+        "mongoose": "^8.3.1"
+      }
+    },
+    {
+      "name": "QuickDB",
+      "emoji": "🧊",
+      "hint": "better-sqlite3",
+      "path": "quickdb",
+      "isOrm": false,
+      "dependencies": {
+        "better-sqlite3": "^9.2.2",
+        "quick.db": "^9.1.7"
+      }
+    },
+    {
+      "name": "Firestore",
+      "emoji": "🦕",
+      "hint": "typesaurus",
+      "path": "typesaurus",
+      "envSchema": "FIREBASE_PATH: z.string({ description: \"Firebase account path is required\" }).min(1),",
+      "isOrm": false,
+      "dependencies": {
+        "firebase-admin": "^12.0.0",
+        "typesaurus": "^10.1.0"
+      }
+    },
+    {
+      "name": "Firestore",
+      "emoji": "🔥",
+      "hint": "firelord",
+      "path": "firelord",
+      "envSchema": "FIREBASE_PATH: z.string({ description: \"Firebase account path is required\" }).min(1),",
+      "isOrm": false,
+      "dependencies": {
+        "firebase-admin": "^11.11.1",
+        "firelord": "^2.7.1"
+      }
+    },
+    {
+      "name": "Prisma",
+      "emoji": "🔷",
+      "hint": "orm",
+      "isOrm": true,
+      "disabled": true,
+      "dependencies": {
+        
+      },
+      "databases": [
         {
-            "name": "🍃 MongoDb (mongoose)",
-            "path": "mongoose",
-            "dependencies":{
-                "mongoose": "^8.3.1"
-            }
-        },
-        {
-            "name": "🧊 QuickDB (better-sqlite3)",
-            "path": "quickdb",
-            "dependencies":{
-                "better-sqlite3": "^9.2.2",
-                "quick.db": "^9.1.7"
-            }
-        },
-        {
-            "name": "🦕 Firestore (typesaurus)",
-            "path": "typesaurus",
-            "dependencies":{
-                "firebase-admin": "^12.0.0",
-                "typesaurus": "^10.1.0"
-            }
-        },
-        {
-            "name": "🔥 Firestore (firelord)",
-            "path": "firelord",
-            "dependencies":{
-                "firebase-admin": "^11.11.1",
-                "firelord": "^2.7.1"
-            }
+          "name": "MySQL",
+          "emoji": "🐬",
+          "hint": "sql",
+          "path": "prisma/mysql",
+          "isOrm": false,
+          "dependencies": {
+          }
         }
-    ]
+      ]
+    },
+    {
+      "name": "Drizzle",
+      "emoji": "🌲",
+      "hint": "orm",
+      "isOrm": true,
+      "disabled": true,
+      "dependencies": {
+        
+      },
+      "databases": [
+        {
+          "name": "MySQL",
+          "emoji": "🐬",
+          "hint": "sql",
+          "path": "drizzle/mysql",
+          "isOrm": false,
+          "dependencies": {
+          }
+        }
+      ]
+    }
+  ]
 }
