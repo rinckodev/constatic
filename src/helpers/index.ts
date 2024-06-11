@@ -5,3 +5,4 @@ export * from "./package.js";
 export * from "./project.js";
 export * from "./install.js";
 export * from "./discord.js";
+export * from "./shell.js";

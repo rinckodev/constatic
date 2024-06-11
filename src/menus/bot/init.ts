@@ -5,7 +5,6 @@ import { copy, getCdProjectPath, handleCancel, json, listDirectoryItems, message
 import { readFile, writeFile } from "node:fs/promises";
 import { PackageJson } from "pkg-types";
 import { setTimeout } from "node:timers/promises";
-import { shellCommand } from "../../helpers/shell.js";
 
 type Paths = Record<
     "template" | "project" | "databases" | "extras" 
@@ -82,7 +81,6 @@ export async function botInitMenu(props: ProgramProps){
         required: false,
         options: [
             { label: "Discloud projet", hint: "Host", value: "discloud" },
-            // { label: "Http server", hint: "Api", value: "server" },
         ],
     }) as string[];
 
@@ -155,12 +153,8 @@ export async function botInitMenu(props: ProgramProps){
             path.join(paths.destination, "discloud.config")
         )
     }
-    // if (extras.includes("server")){
-    //     // TODO add
-    // }
 
     await json.write(paths.packageJson, projectPackageJson);
-    await shellCommand({ command: "git", args: ["init", "."], cwd: paths.destination }).catch(() => null);
 
     const items = listDirectoryItems(paths.destination);
 
