@@ -80,7 +80,7 @@ export async function botInitMenu(props: ProgramProps){
         message: "✨ Extra features",
         required: false,
         options: [
-            { label: "Discloud projet", hint: "Host", value: "discloud" },
+            { label: "Discloud project", hint: "Host", value: "discloud" },
         ],
     }) as string[];
 
