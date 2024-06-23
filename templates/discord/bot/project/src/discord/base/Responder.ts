@@ -1,8 +1,10 @@
 import { log } from "#settings";
 import { spaceBuilder } from "@magicyan/discord";
 import ck from "chalk";
-import { AnySelectMenuInteraction, ButtonInteraction, CacheType, ChannelSelectMenuInteraction, Collection, Interaction, MentionableSelectMenuInteraction, MessageComponentInteraction, ModalMessageModalSubmitInteraction, ModalSubmitInteraction, RoleSelectMenuInteraction, StringSelectMenuInteraction, UserSelectMenuInteraction } from "discord.js";
+import { AnySelectMenuInteraction, AutocompleteInteraction, ButtonInteraction, CacheType, ChannelSelectMenuInteraction, Collection, CommandInteraction, Interaction, MentionableSelectMenuInteraction, MessageComponentInteraction, ModalMessageModalSubmitInteraction, ModalSubmitInteraction, RoleSelectMenuInteraction, StringSelectMenuInteraction, UserSelectMenuInteraction } from "discord.js";
 import { getCustomIdParams, Params, Prettify } from "./utils/Params.js";
+
+type ResponderInteraction = Exclude<Interaction, CommandInteraction | AutocompleteInteraction>;
 
 export enum ResponderType {
     Row="Row",
@@ -51,7 +53,7 @@ export class Responder<I extends string, T extends ResponderType, C extends Cach
                 const text = spaceBuilder(
                     ck.greenBright.underline(type),
                     ck.blue.underline(customId),
-                    "responder loaded successfully!"
+                    "responder loaded!"
                 );
                 log.success(ck.green(text));
             }
@@ -83,12 +85,8 @@ export class Responder<I extends string, T extends ResponderType, C extends Cach
             Responder.items.set(type, new Collection(entries));
         }
     }
-    public static onInteraction(interaction: Interaction){
-        if (interaction.isCommand() || interaction.isAutocomplete()) return;
-        const { customId } = interaction;
-
-        const responderType = 
-        interaction.isButton() ? ResponderType.Button : 
+    private static getResponderType(interaction: Exclude<Interaction, CommandInteraction | AutocompleteInteraction>){
+        return interaction.isButton() ? ResponderType.Button : 
         interaction.isStringSelectMenu() ? ResponderType.StringSelect : 
         interaction.isChannelSelectMenu() ? ResponderType.ChannelSelect : 
         interaction.isRoleSelectMenu() ? ResponderType.RoleSelect : 
@@ -96,7 +94,10 @@ export class Responder<I extends string, T extends ResponderType, C extends Cach
         interaction.isMentionableSelectMenu() ? ResponderType.MentionableSelect : 
         interaction.isFromMessage() ? ResponderType.ModalComponent : 
         interaction.isModalSubmit() ? ResponderType.Modal : undefined;
-
+    }
+    public static onInteraction(interaction: ResponderInteraction){
+        const { customId } = interaction;
+        const responderType = Responder.getResponderType(interaction);
         if (!responderType) return;
 
         const findSubItems = (type: ResponderType): SubItems | undefined => {

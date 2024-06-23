@@ -8,26 +8,23 @@ export async function onError(error: any, client: Client<true>){
     log.log(client.user.displayName);
     log.error(error);
 
-    const webhooksLogURL = process.env.WEBHOOK_LOGS_URL;
-    if (!webhooksLogURL) return;
-    const { user } = client;
+    if (!process.env.WEBHOOK_LOGS_URL) return;
 
     const errorMessage: string[] = [];
     
     if ("message" in error) errorMessage.push(String(error.message)); 
     if ("stack" in error) {
         const formated = replaceText(String(error.stack), { [__rootname]: "" });
-        const limited = limitText(formated, 3500, "...");
-        errorMessage.push(limited);
+        errorMessage.push(limitText(formated, 3500, "..."));
     }
     const embed = createEmbed({
         color: settings.colors.danger,
-        author: createEmbedAuthor(user),
-        description: codeBlock("ts", brBuilder(...errorMessage)),
+        author: createEmbedAuthor(client.user),
+        description: codeBlock("ts", brBuilder(errorMessage)),
     });
 
-    const webhook = new WebhookClient({ url: webhooksLogURL });
-    webhook.send({ embeds: [embed] }).catch(log.error);
+    new WebhookClient({ url: process.env.WEBHOOK_LOGS_URL })
+    .send({ embeds: [embed] }).catch(log.error);
 }
 
 process.on("SIGINT", () => {

@@ -32,7 +32,7 @@ export class Event<EventName extends keyof ClientEvents> {
     public static loadLogs(){
         for(const events of Event.items.values()){
             events.forEach(({ name }) => {
-                log.success(chalk.green(`${chalk.yellow.underline(name)} event loaded successfully!`));
+                log.success(chalk.green(`${chalk.yellow.underline(name)} event loaded!`));
             });
         }
     }

@@ -4,7 +4,7 @@ import { ApplicationCommandType, ButtonBuilder, ButtonStyle, User } from "discor
 
 new Command({
     name: "counter",
-    description: "Counter command",
+    description: "Counter command 🔢",
     type: ApplicationCommandType.ChatInput,
     run(interaction) {
         interaction.reply(counterMenu(interaction.user, 0));
@@ -22,7 +22,7 @@ new Responder({
     },
 });
 
-function counterMenu(user: User, current: number){    
+function counterMenu(user: User, current: number) {    
     const embed = createEmbed({
         author: createEmbedAuthor(user),
         color: "Random",
@@ -31,13 +31,11 @@ function counterMenu(user: User, current: number){
     const row = createRow(
         new ButtonBuilder({
             customId: `counter/add/${current}`, 
-            label: "+", 
-            style: ButtonStyle.Success
+            label: "+", style: ButtonStyle.Success
         }),
         new ButtonBuilder({
             customId: `counter/remove/${current}`, 
-            label: "-", 
-            style: ButtonStyle.Danger
+            label: "-", style: ButtonStyle.Danger
         }),
     );
     return { ephemeral, embeds: [embed], components: [row] };

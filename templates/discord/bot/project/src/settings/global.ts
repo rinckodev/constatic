@@ -9,13 +9,6 @@ declare global {
 	const disabled: true;
 	const __rootname: string;
 	function rootTo(...path: string[]): string;
-
-	var bot: { name: string; id: string };
-
-	interface Bot {
-		name: string;
-		id: string;
-	}
 }
 
 Object.assign(globalThis, {

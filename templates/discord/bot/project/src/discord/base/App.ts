@@ -49,18 +49,13 @@ export async function bootstrapApp<O extends BootstrapAppOptions>(options: O): P
         }
         await loadDirectories(path.basename(options.workdir), options.directories, options.loadLogs);
         
-        clients.forEach(client => {
-            Event.register(client);
-            client.login();
-        });
+        for(const client of clients) startClient(client);
         return clients as R<O>;
     }
     const client = createClient(process.env.BOT_TOKEN, options);
     await loadDirectories(path.basename(options.workdir), options.directories, options.loadLogs);
 
-    Event.register(client);
-    client.login();
-    
+    startClient(client);
     return client as R<O>;
 }
 async function loadDirectories(foldername: string, directories: string[] = [], loadLogs?: boolean) {
@@ -116,10 +111,17 @@ function createClient(token: string, options: BootstrapAppOptions): Client {
         if (options.whenReady) options.whenReady(client);
     });
     client.on("interactionCreate", async (interaction) => {
-        if (interaction.isCommand()) Command.onCommand(interaction);
-		if (interaction.isAutocomplete()) Command.onAutocomplete(interaction);
-		Responder.onInteraction(interaction);
+        switch(true){
+            case interaction.isAutocomplete(): Command.onAutocomplete(interaction); return;
+            case interaction.isCommand(): Command.onCommand(interaction); return;
+            default: Responder.onInteraction(interaction); return;
+        }
     });
-    Object.assign(client, { token });
+    client.token=token;
     return client;
+}
+
+function startClient(client: Client){
+    Event.register(client);
+    client.login();
 }
