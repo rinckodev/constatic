@@ -1,8 +1,8 @@
-import { Command, Event, Responder } from "#base";
-import { CustomItents, CustomPartials, spaceBuilder, toNull } from "@magicyan/discord";
-import { Client, ClientOptions, version as djsVersion } from "discord.js";
+import { Command, Event, Responder, ResponderInteraction } from "#base";
 import { log, onError } from "#settings";
+import { CustomItents, CustomPartials, spaceBuilder, toNull } from "@magicyan/discord";
 import ck from "chalk";
+import { Client, ClientOptions, version as djsVersion } from "discord.js";
 import glob from "fast-glob";
 import path from "node:path";
 
@@ -17,7 +17,13 @@ interface BootstrapAppOptions extends Partial<ClientOptions> {
 		/**
 		 * Register commands in guilds
 		 */
-		guilds?: string[]
+		guilds?: string[],
+	},
+    /**
+	 * Responders options
+	 */
+	responders?: {
+        onNotFound?(interaction: ResponderInteraction): void
 	},
 	/**
 	 * A list of paths that will be imported to load the project's structure classes
@@ -41,6 +47,11 @@ interface BootstrapAppOptions extends Partial<ClientOptions> {
     whenReady?(client: Client<true>): void;
 }
 export async function bootstrapApp<O extends BootstrapAppOptions>(options: O): Promise<R<O>> {
+    if (options.responders){
+        Responder.setup({
+            onNotFound: options.responders.onNotFound
+        });
+    }
     if (options.multiple){
         const clients: Client[] = [];
         for(const token of process.env.BOT_TOKEN.split(" ")){
