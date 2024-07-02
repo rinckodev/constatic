@@ -1,5 +1,5 @@
 import { replaceText, limitText, createEmbed, createEmbedAuthor, brBuilder } from "@magicyan/discord";
-import { Client, codeBlock, WebhookClient } from "discord.js";
+import { type Client, codeBlock, WebhookClient } from "discord.js";
 import settings from "../../settings.json" with { type: "json" };
 import { consola as log } from "consola";
 import chalk from "chalk";
@@ -25,6 +25,21 @@ export async function onError(error: any, client: Client<true>){
 
     new WebhookClient({ url: process.env.WEBHOOK_LOGS_URL })
     .send({ embeds: [embed] }).catch(log.error);
+}
+export function registerIntentsErrorHandler(){
+    function errorHandler(err: Error){
+        if (!err.message.includes("intents")) return;
+        log.error({
+            type: "INTENTS",
+            message: chalk.red(err.message)
+        });
+        log.fatal(chalk.red(brBuilder(
+            "Go to the discord developer portal, access your application",
+            "then in the \"bot\" tab, activate the necessary intents"
+        )));
+    }
+    process.on("uncaughtException", errorHandler);
+    return () => process.off("uncaughtException", errorHandler);
 }
 
 process.on("SIGINT", () => {

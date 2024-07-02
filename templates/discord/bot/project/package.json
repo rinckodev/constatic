@@ -13,7 +13,7 @@
     "start:dev": "node --env-file .env.development ./build/index.js"
   },
   "dependencies": {
-    "@magicyan/discord": "^1.0.33",
+    "@magicyan/discord": "^1.0.35",
     "chalk": "^5.3.0",
     "consola": "^3.2.3",
     "discord.js": "^14.15.3",
@@ -21,21 +21,34 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/node": "^20.14.0",
+    "@types/node": "^20.14.9",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.57.0",
-    "tsx": "^4.11.0",
-    "typescript": "^5.4.5"
+    "tsx": "^4.16.0",
+    "typescript": "^5.5.3"
   },
   "imports": {
-    "#database": ["./build/database/index.js"],
-    "#base": ["./build/discord/base/index.js"],
-    "#functions": ["./build/functions/index.js"],
-    "#menus": ["./build/menus/index.js"],
-    "#settings": ["./build/settings/index.js"],
-    "#tools": ["./build/tools/index.js"],
-    "#lang/*": ["./lang/*"
+    "#database": [
+      "./build/database/index.js"
+    ],
+    "#base": [
+      "./build/discord/base/index.js"
+    ],
+    "#functions": [
+      "./build/functions/index.js"
+    ],
+    "#menus": [
+      "./build/menus/index.js"
+    ],
+    "#settings": [
+      "./build/settings/index.js"
+    ],
+    "#tools": [
+      "./build/tools/index.js"
+    ],
+    "#lang/*": [
+      "./lang/*"
     ]
   }
 }

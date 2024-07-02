@@ -1,8 +1,8 @@
-import { Command, Event, Responder, ResponderInteraction } from "#base";
-import { log, onError } from "#settings";
+import { Command, Event, Responder, type ResponderInteraction } from "#base";
+import { log, onError, registerIntentsErrorHandler } from "#settings";
 import { CustomItents, CustomPartials, spaceBuilder, toNull } from "@magicyan/discord";
 import ck from "chalk";
-import { Client, ClientOptions, version as djsVersion } from "discord.js";
+import { Client, type ClientOptions, version as djsVersion } from "discord.js";
 import glob from "fast-glob";
 import path from "node:path";
 
@@ -98,10 +98,15 @@ function createClient(token: string, options: BootstrapAppOptions): Client {
         partials: options.partials ?? CustomPartials.All,
         failIfNotExists: false
     }));
+
     if (options.beforeLoad){
         options.beforeLoad(client);
     }
+    
+    const unregisterIntentsErrorHandler = registerIntentsErrorHandler();
     client.on("ready", async (client) => {
+        unregisterIntentsErrorHandler();
+
         const messages: string[] = new Array();
         const addMessage = (message: string) => messages.push(message);
         await client.guilds.fetch().catch(toNull);
@@ -120,6 +125,7 @@ function createClient(token: string, options: BootstrapAppOptions): Client {
         process.on("uncaughtException", err => onError(err, client));
         process.on("unhandledRejection", err => onError(err, client));
         if (options.whenReady) options.whenReady(client);
+
     });
     client.on("interactionCreate", async (interaction) => {
         switch(true){
