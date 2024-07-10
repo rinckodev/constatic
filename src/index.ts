@@ -34,24 +34,34 @@ declare global {
         readonly cwd: string;
     }
 
-    interface BotDatabaseProps {
+    interface BotEnviroment {
+        schema: string;
+        file: string;
+    }
+
+    interface BotProjectPreset {
         name: string; hint: string; emoji: string; 
         dependencies: Record<string, string>;
-        envSchema?: string;
+        devDependencies?: Record<string, string>;
+        env?: BotEnviroment;
         disabled?: boolean;
     }
-    interface BotLibDatabasePreset extends BotDatabaseProps {
+    interface BotAPIServerPreset extends BotProjectPreset {
+        path: string;
+    }
+    interface BotLibDatabasePreset extends BotProjectPreset {
         isOrm: false;
         path: string;
     }
-    interface BotOrmDatabasePreset extends BotDatabaseProps {
+    interface BotOrmDatabasePreset extends BotProjectPreset {
         isOrm: true;
         databases: BotLibDatabasePreset[];
     }
     type BotDatabasePreset = BotLibDatabasePreset | BotOrmDatabasePreset;
 
     interface BotProperties {
-        dbpresets: BotDatabasePreset[]
+        dbpresets: BotDatabasePreset[],
+        apiservers: BotAPIServerPreset[]
     }
     interface BotToken {
         name: string; token: string;

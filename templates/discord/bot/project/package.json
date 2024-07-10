@@ -47,6 +47,9 @@
     "#tools": [
       "./build/tools/index.js"
     ],
+    "#server": [
+      "./build/server/index.js"
+    ],
     "#lang/*": [
       "./lang/*"
     ]

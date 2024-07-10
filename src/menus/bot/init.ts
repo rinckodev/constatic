@@ -7,8 +7,9 @@ import { PackageJson } from "pkg-types";
 import { setTimeout } from "node:timers/promises";
 
 type Paths = Record<
-    "template" | "project" | "databases" | "extras" 
-    | "destination" | "properties" | "packageJson", 
+    | "template" | "project" | "databases" | "extras" 
+    | "destination" | "properties" | "packageJson"
+    | "apiservers",
     string
 >
 export async function botInitMenu(props: ProgramProps){
@@ -21,6 +22,7 @@ export async function botInitMenu(props: ProgramProps){
         databases: path.join(templatePath, "databases"),
         extras: path.join(templatePath, "extras"),
         properties: path.join(templatePath, "properties.json"),
+        apiservers: path.join(templatePath, "extras/servers")
     });
 
     const projectName = await text({
@@ -49,7 +51,7 @@ export async function botInitMenu(props: ProgramProps){
     const properties = await json.read<BotProperties>(paths.properties);
 
     const dbpresetIndex = await select({
-        message: `🧰 Select database preset`,
+        message: `🧰 Database preset`,
         options:[
             { label: "None", value: -1 },
             properties.dbpresets
@@ -62,6 +64,7 @@ export async function botInitMenu(props: ProgramProps){
     }) as number;
 
     handleCancel(dbpresetIndex);
+    
     const dbpreset = properties.dbpresets[dbpresetIndex] as BotDatabasePreset | undefined;
     
     const ormDbIndex = dbpreset?.isOrm ? await select({
@@ -77,14 +80,32 @@ export async function botInitMenu(props: ProgramProps){
     handleCancel(ormDbIndex);
 
     const extras = await multiselect({
-        message: "✨ Extra features",
+        message: `✨ Extra features ${chalk.dim("(press space to select)")}`,
         required: false,
         options: [
             { label: "Discloud project", hint: "Host", value: "discloud" },
+            { label: "API Server", hint: "Http", value: "server" },
         ],
     }) as string[];
 
     handleCancel(extras);
+
+    const apiserverIndex = extras.includes("server") 
+    ? await select({
+        message: `🌐 API Server framework`,
+        options:[
+            { label: "None", value: -1 },
+            properties.apiservers
+            .filter(webserver => webserver.disabled !== true)
+            .map((dbpreset, index) => ({
+                label: `${dbpreset.emoji} ${dbpreset.name} ${chalk.dim(`(${dbpreset.hint})`)}`, 
+                value: index,
+            }))
+        ].flat()
+    }) as number
+    : -1
+
+    handleCancel(apiserverIndex);
 
     const tokens = conf.get("discord.bot.tokens", []) as BotToken[];
     const tokenIndex = tokens.length > 0 ? await select({
@@ -127,7 +148,37 @@ export async function botInitMenu(props: ProgramProps){
     Object.assign(projectPackageJson, { name: npmName });
 
     if (dbpreset){
-        await genDatabasePreset({ projectPackageJson, dbpreset, ormDbIndex, paths });
+        mergeDependencies(projectPackageJson, dbpreset);
+    
+        if (dbpreset.env){
+            await rewriteEnv(paths.destination, dbpreset.env);
+        }
+        if (dbpreset.isOrm){
+            const ormDb = dbpreset.databases[ormDbIndex];
+            Object.assign(projectPackageJson, {
+                dependencies: Object.assign(
+                    projectPackageJson.dependencies??{},
+                    ormDb.dependencies
+                )
+            })
+            await copy(path.join(paths.databases, ormDb.path), paths.destination);
+            if (ormDb.env){
+                await rewriteEnv(paths.destination, ormDb.env);
+            }
+        } else {
+            await copy(path.join(paths.databases, dbpreset.path), paths.destination);  
+        }
+    }
+
+    if (apiserverIndex !== -1){
+        const apiserver = properties.apiservers[apiserverIndex];
+        mergeDependencies(projectPackageJson, apiserver);
+        
+        if (apiserver.env){
+            await rewriteEnv(paths.destination, apiserver.env);
+        }
+
+        await copy(path.join(paths.apiservers, apiserver.path), paths.destination);  
     }
 
     if (tokenIndex !== -1){
@@ -202,46 +253,38 @@ export async function botInitMenu(props: ProgramProps){
     outro(messages.bye)
 }
 
-interface GenDatabasePresetOptions {
-    projectPackageJson: PackageJson;
-    paths: Paths;
-    dbpreset: BotDatabasePreset;
-    ormDbIndex: number;
-}
-async function genDatabasePreset(options: GenDatabasePresetOptions) {
-    const { projectPackageJson, paths, dbpreset, ormDbIndex } = options;
-    Object.assign(projectPackageJson, {
+function mergeDependencies(packageJson: PackageJson, deps: Pick<PackageJson, "dependencies" | "devDependencies">){
+    Object.assign(packageJson, {
         dependencies: Object.assign(
-            projectPackageJson.dependencies??{},
-            dbpreset.dependencies
+            packageJson.dependencies??{},
+            deps.dependencies??{}
+        ),
+        devDependencies: Object.assign(
+            packageJson.devDependencies??{},
+            deps.devDependencies??{}
         )
     })
-    if (dbpreset.envSchema){
-        await rewriteEnvSchema(paths.destination, dbpreset.envSchema);
-    }
-    if (dbpreset.isOrm){
-        const ormDb = dbpreset.databases[ormDbIndex];
-        Object.assign(projectPackageJson, {
-            dependencies: Object.assign(
-                projectPackageJson.dependencies??{},
-                ormDb.dependencies
-            )
-        })
-        await copy(path.join(paths.databases, ormDb.path), paths.destination);
-        if (ormDb.envSchema){
-            await rewriteEnvSchema(paths.destination, ormDb.envSchema);
-        }
-        return;
-    }
-    await copy(path.join(paths.databases, dbpreset.path), paths.destination);        
 }
 
-async function rewriteEnvSchema(destinationPath: string, envSchema: string){
+async function rewriteEnv(destinationPath: string, env: NonNullable<BotProjectPreset["env"]>){
     const envSchemaPath = path.join(destinationPath, "src/settings/env.ts");
     const envSchemaFile = await readFile(envSchemaPath, "utf-8");
-    envSchema = envSchema.replaceAll("\\n", "\n");
-    const replaceKey = "// Env vars..."
+    env.schema = env.schema.replaceAll("\\n", "\n");
+    let replaceKey = "// Env vars..."
     await writeFile(envSchemaPath, envSchemaFile.replace(
-        replaceKey, [envSchema, "    "+replaceKey].join("\n")
+        replaceKey, [env.schema, "    "+replaceKey].join("\n")
     ));
+
+    const envFilePath = path.join(destinationPath, ".env");
+    const envExampleFilePath = path.join(destinationPath, ".env.example");
+    const [envFile, envExampleFile] = await Promise.all([
+        readFile(envFilePath, "utf-8"), readFile(envExampleFilePath, "utf-8")
+    ]);
+    env.file = env.file.replaceAll("\\n", "\n")
+    replaceKey = "BOT_TOKEN="
+
+    await Promise.all([
+        writeFile(envFilePath, envFile.replace(replaceKey, [replaceKey, env.file].join("\n"))),
+        writeFile(envExampleFilePath, envExampleFile.replace(replaceKey, [replaceKey, env.file].join("\n")))
+    ])
 }
