@@ -108,7 +108,7 @@
       "hint": "fastify",
       "path": "fastify",
       "env":{
-        "schema": "SERVER_PORT: z.string().optional(),\n    SERVER_BASE_URL: z.string().optional(),",
+        "schema": "SERVER_PORT: z.number({ coerce: true }).optional(),\n    SERVER_BASE_URL: z.string().optional(),",
         "file":"SERVER_PORT=\nSERVER_BASE_URL="
       },
       "dependencies": {
@@ -123,7 +123,7 @@
       "hint": "express",
       "path": "express",
       "env":{
-        "schema": "SERVER_PORT: z.string().optional(),\n    SERVER_BASE_URL: z.string().optional(),",
+        "schema": "SERVER_PORT: z.number({ coerce: true }).optional(),\n    SERVER_BASE_URL: z.string().optional(),",
         "file":"SERVER_PORT=\nSERVER_BASE_URL="
       },
       "dependencies": {

@@ -27,6 +27,8 @@ if (!parseResult.success){
     )));
     process.exit(1);
 }
+process.env=Object({ ...process.env, ...parseResult.data });
+
 log.success(chalk.hex(settingsJson.colors.bravery)("Env vars loaded successfully!"));
 
 declare global {
