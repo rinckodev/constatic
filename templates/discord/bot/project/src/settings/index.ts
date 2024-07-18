@@ -1,13 +1,13 @@
-import settingsJson from "../../settings.json" with { type: "json" };
+import settings from "../../settings.json" with { type: "json" };
 import { envSchema, type EnvSchema } from "./env.js";
 import { brBuilder } from "@magicyan/discord";
 import { consola as log } from "consola";
-export * from "./error.js";
 import chalk from "chalk";
 
+export * from "./error.js";
 import "./global.js";
 
-export { log, settingsJson as settings };
+export { log, settings };
 
 if (!process.execArgv.includes("--env-file")){
     log.warn(chalk.yellow("The executed script does not contain the --env-file flag"));
@@ -29,7 +29,7 @@ if (!parseResult.success){
 }
 process.env=Object({ ...process.env, ...parseResult.data });
 
-log.success(chalk.hex(settingsJson.colors.bravery)("Env vars loaded successfully!"));
+log.success(chalk.hex(settings.colors.bravery)("Env vars loaded successfully!"));
 
 declare global {
     namespace NodeJS {

@@ -3,7 +3,7 @@
   "type": "module",
   "main": "build/index.js",
   "scripts": {
-    "build:dev": "tsc --noEmit && echo ✔ Ok",
+    "check": "tsc --noEmit && echo ✔ Ok",
     "build": "tsc",
     "dev": "tsx --env-file .env ./src/index.ts",
     "dev:dev": "tsx --env-file .env.development ./src/index.ts",
@@ -25,7 +25,7 @@
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.57.0",
-    "tsx": "^4.16.2",
+    "tsx": "4.8.0",
     "typescript": "^5.5.3"
   },
   "imports": {

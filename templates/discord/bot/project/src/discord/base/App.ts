@@ -1,5 +1,5 @@
 import { Command, Event, Responder, type ResponderInteraction } from "#base";
-import { log, onError, registerIntentsErrorHandler } from "#settings";
+import { log, onError } from "#settings";
 import { CustomItents, CustomPartials, spaceBuilder, toNull } from "@magicyan/discord";
 import ck from "chalk";
 import { Client, type ClientOptions, version as djsVersion } from "discord.js";
@@ -103,10 +103,7 @@ function createClient(token: string, options: BootstrapAppOptions): Client {
         options.beforeLoad(client);
     }
     
-    const unregisterIntentsErrorHandler = registerIntentsErrorHandler();
     client.on("ready", async (client) => {
-        unregisterIntentsErrorHandler();
-
         const messages: string[] = new Array();
         const addMessage = (message: string) => messages.push(message);
         await client.guilds.fetch().catch(toNull);

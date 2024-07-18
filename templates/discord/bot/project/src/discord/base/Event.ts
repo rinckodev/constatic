@@ -22,10 +22,12 @@ export class Event<EventName extends keyof ClientEvents> {
 
         for(const { event, handlers } of eventHandlers){
             client.on(event, (...args) => {
-                handlers.forEach(({ run, once }) => !once && run(...args));
+                for(const { run } of handlers.filter(e => !e.once)) run(...args);
+                // handlers.forEach(({ run, once }) => !once && run(...args));
             });
             client.once(event, (...args) => {
-                handlers.forEach(({ run, once }) => once && run(...args));
+                for(const { run } of handlers.filter(e => e.once)) run(...args);
+                // handlers.forEach(({ run, once }) => once && run(...args));
             });
         }
     }
