@@ -10,6 +10,7 @@ templates/*/build/
 
 /.env
 *.env.development
+*.env.dev
 /.gitignore
 /build.config.ts
 /tsconfig.json
