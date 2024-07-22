@@ -9,19 +9,14 @@ import path from "node:path";
 type R<O extends BootstrapAppOptions> = O["multiple"] extends true ? Client[] : Client;
 
 interface BootstrapAppOptions extends Partial<ClientOptions> {
+    /** src / build */
     workdir: string;
-    /**
-	 * Commands options
-	 */
+    /** Commands options */
 	commands?: {
-		/**
-		 * Register commands in guilds
-		 */
+		/** Register commands in guilds */
 		guilds?: string[],
 	},
-    /**
-	 * Responders options
-	 */
+    /** Responders options */
 	responders?: {
         onNotFound?(interaction: ResponderInteraction): void
 	},
@@ -31,19 +26,13 @@ interface BootstrapAppOptions extends Partial<ClientOptions> {
 	 * The paths are relative to the src/dist folder
 	 */
     directories?: string[];
-    /**
-     * Create multiple app instances
-     */
+    /** Create multiple app instances */
     multiple?: boolean;
-    /**
-     * Send load logs in terminal
-     */
+    /** Send load logs in terminal */
     loadLogs?: boolean;
-    /**
-     * 
-     * Run before load directories
-     */
+    /** Run before load directories */
     beforeLoad?(client: Client): void
+    /** Run when client is ready */
     whenReady?(client: Client<true>): void;
 }
 export async function bootstrapApp<O extends BootstrapAppOptions>(options: O): Promise<R<O>> {
@@ -58,18 +47,20 @@ export async function bootstrapApp<O extends BootstrapAppOptions>(options: O): P
             const client = createClient(token, options);
             clients.push(client);
         }
-        await loadDirectories(path.basename(options.workdir), options.directories, options.loadLogs);
-        
+        await loadDirectories(options);
         for(const client of clients) startClient(client);
         return clients as R<O>;
     }
     const client = createClient(process.env.BOT_TOKEN, options);
-    await loadDirectories(path.basename(options.workdir), options.directories, options.loadLogs);
+    await loadDirectories(options);
 
     startClient(client);
     return client as R<O>;
 }
-async function loadDirectories(foldername: string, directories: string[] = [], loadLogs?: boolean) {
+type LoadDirsOptions = Pick<BootstrapAppOptions, "workdir" | "directories" | "loadLogs">;
+async function loadDirectories(options: LoadDirsOptions) {
+    const { workdir, directories=[], loadLogs=true } = options;
+    const foldername = path.basename(workdir);
     const pattern: string = "**/*.{ts,js,tsx,jsx}";
     const patterns: string[] = [
         `!./${foldername}/discord/base/*`,
@@ -78,34 +69,33 @@ async function loadDirectories(foldername: string, directories: string[] = [], l
         .map(p => p.replaceAll("\\", "/"))
         .map(p => `./${p}/${pattern}`)
     ].flat();
+    
     const paths: string[] = await glob(patterns, { absolute: true });
     await Promise.all(paths.map(path => import(`file://${path}`)));
+
     Responder.sortCustomIds();
     if (loadLogs??true){
         Command.loadLogs(); Event.loadLogs(); Responder.loadLogs();
     }
-    const versions = [
+    console.log();
+    log.success(spaceBuilder("📦",
         `${ck.hex("#5865F2").underline("discord.js")} ${ck.yellow(djsVersion)}`,
         "/",
         `${ck.hex("#68a063").underline("NodeJs")} ${ck.yellow(process.versions.node)}`,
-    ];
-    console.log();
-    log.success(spaceBuilder("📦", versions));
+    ));
 }
 function createClient(token: string, options: BootstrapAppOptions): Client {
     const client = new Client(Object.assign(options, {
         intents: options.intents ?? CustomItents.All,
         partials: options.partials ?? CustomPartials.All,
-        failIfNotExists: false
+        failIfNotExists: options.failIfNotExists ?? false
     }));
 
-    if (options.beforeLoad){
-        options.beforeLoad(client);
-    }
-    
+    options.beforeLoad?.(client);
+
     client.on("ready", async (client) => {
-        const messages: string[] = new Array();
-        const addMessage = (message: string) => messages.push(message);
+        const messages: string[] = [];
+        const addMessage = (text: string) => messages.push(text);
         await client.guilds.fetch().catch(toNull);
         if (options.commands?.guilds){
             const guilds = client.guilds.cache.filter(
@@ -116,13 +106,12 @@ function createClient(token: string, options: BootstrapAppOptions): Client {
             await Command.register(addMessage, client);
         }
         log.log(ck.greenBright(`➝ Online as ${ck.hex("#57F287").underline(client.user.username)}`));
-        for(const message of messages){
-            log.log(ck.green(` ${message}`));
-        }
+        for(const message of messages) log.log(ck.green(` ${message}`));
+        
         process.on("uncaughtException", err => onError(err, client));
         process.on("unhandledRejection", err => onError(err, client));
-        if (options.whenReady) options.whenReady(client);
-
+        
+        options.whenReady?.(client);
     });
     client.on("interactionCreate", async (interaction) => {
         switch(true){

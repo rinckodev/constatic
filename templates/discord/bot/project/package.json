@@ -6,11 +6,11 @@
     "check": "tsc --noEmit && echo ✔ Ok",
     "build": "tsc",
     "dev": "tsx --env-file .env ./src/index.ts",
-    "dev:dev": "tsx --env-file .env.development ./src/index.ts",
+    "dev:dev": "tsx --env-file .env.dev ./src/index.ts",
     "watch": "tsx --watch --env-file .env ./src/index.ts",
-    "watch:dev": "tsx --watch --env-file .env.development ./src/index.ts",
+    "watch:dev": "tsx --watch --env-file .env.dev ./src/index.ts",
     "start": "node --env-file .env ./build/index.js",
-    "start:dev": "node --env-file .env.development ./build/index.js"
+    "start:dev": "node --env-file .env.dev ./build/index.js"
   },
   "dependencies": {
     "@magicyan/discord": "^1.1.3",

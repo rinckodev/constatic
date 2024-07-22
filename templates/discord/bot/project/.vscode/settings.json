@@ -8,6 +8,7 @@
     "experimental": "Test",
     "deprecated": "Archive",
     "development": "Test",
+    "dev": "Test",
     "production": "Dist",
     "staff": "Admin",
     "protection": "Guard",
@@ -18,7 +19,8 @@
     "mongodb": "Database",
     "mysql": "Database",
     "quickdb": "Json",
-    "responders": "Meta"
+    "responders": "Meta",
+    "procedures": "CI"
   },
   "material-icon-theme.files.associations": {
     "firebase.development.json": "Firebase",
@@ -27,15 +29,25 @@
     "config.json": "Raml",
     "*.lang.json": "i18n",
     "lang.json": "i18n",
-    "gitignore": "Git"
+    "gitignore": "Git",
   },
+  "material-icon-theme.folders.customClones": [
+    {
+      "name": "discord",
+      "base": "vm",
+      "color": "indigo-500",
+      "folderNames": [
+        "discord"
+      ]
+    }
+  ],
   "material-icon-theme.folders.theme": "specific",
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
     ".env": ".env*",
-    "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, tsconfig.json, .eslintrc.json, .gitignore, .discloudignore, biome.json, .nvmrc"
+    "package.json": "*lock.json, *.lock, *lock.yaml, *.lockb, tsconfig.json, .eslintrc.json, .gitignore, .discloudignore, biome.json, .nvmrc"
   },
   "typescript.suggest.autoImports": true,
-  "window.title": "${rootName}${separator}${appName}",
+  "window.title": "${rootName}${separator}vscode",
   "files.autoSave": "afterDelay",
 }

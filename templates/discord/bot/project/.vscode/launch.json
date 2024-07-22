@@ -37,6 +37,6 @@
             "name": "Run start:dev",
             "request": "launch",
             "command": "npm run start:dev"
-        },
+        }
     ]
 }

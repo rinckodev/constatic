@@ -6,28 +6,26 @@ interface EventData<EventName extends keyof ClientEvents> {
     name: string; event: EventName; once?: boolean;
     run(...args: ClientEvents[EventName]): void
 }
+type EventCollection = Collection<string, EventData<keyof ClientEvents>>;
 
 export class Event<EventName extends keyof ClientEvents> {
-    private static items = new Collection<keyof ClientEvents, Collection<string, EventData<any>>>();
+    private static items = new Collection<keyof ClientEvents, EventCollection>();
     constructor(data: EventData<EventName>){
         const events = Event.items.get(data.event) ?? new Collection();
         events.set(data.name, data);
         Event.items.set(data.event, events);
     }
     public static register(client: Client){
-        const eventHandlers = Event.items.map((collection, event) => {
-            const handlers = collection.map(({ run, once }) => ({ run, once }));
-            return { event, handlers };
-        });
+        const eventHandlers = Event.items.map((collection, event) => ({ 
+            event, handlers: collection.map(e => ({ run: e.run, once: e.once })) 
+        }));
 
         for(const { event, handlers } of eventHandlers){
             client.on(event, (...args) => {
                 for(const { run } of handlers.filter(e => !e.once)) run(...args);
-                // handlers.forEach(({ run, once }) => !once && run(...args));
             });
             client.once(event, (...args) => {
                 for(const { run } of handlers.filter(e => e.once)) run(...args);
-                // handlers.forEach(({ run, once }) => once && run(...args));
             });
         }
     }
