@@ -31,16 +31,12 @@
     "lang.json": "i18n",
     "gitignore": "Git",
   },
-  "material-icon-theme.folders.customClones": [
-    {
+  "material-icon-theme.folders.customClones": [{
       "name": "discord",
       "base": "vm",
       "color": "indigo-500",
-      "folderNames": [
-        "discord"
-      ]
-    }
-  ],
+      "folderNames": ["discord"]
+  }],
   "material-icon-theme.folders.theme": "specific",
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
@@ -50,4 +46,17 @@
   "typescript.suggest.autoImports": true,
   "window.title": "${rootName}${separator}vscode",
   "files.autoSave": "afterDelay",
+  "files.exclude": {
+    "src/discord/base": true,
+    "src/settings/global.ts": true,
+    "src/settings/error.ts": true,
+    "src/settings/index.ts": true,
+  },
+  "files.readonlyInclude": {
+    "node_modules/**": true,
+    "src/discord/base/**": true,
+    "src/settings/global.ts": true,
+    "src/settings/error.ts": true,
+    "src/settings/index.ts": true,
+  }
 }
