@@ -44,17 +44,16 @@ export async function bootstrapApp<O extends BootstrapAppOptions>(options: O): P
     if (options.multiple){
         const clients: Client[] = [];
         for(const token of process.env.BOT_TOKEN.split(" ")){
-            const client = createClient(token, options);
-            clients.push(client);
+            clients.push(createClient(token, options));
         }
         await loadDirectories(options);
-        for(const client of clients) startClient(client);
+        for(const client of clients) client.login();
         return clients as R<O>;
     }
     const client = createClient(process.env.BOT_TOKEN, options);
     await loadDirectories(options);
 
-    startClient(client);
+    client.login();
     return client as R<O>;
 }
 type LoadDirsOptions = Pick<BootstrapAppOptions, "workdir" | "directories" | "loadLogs">;
@@ -121,10 +120,6 @@ function createClient(token: string, options: BootstrapAppOptions): Client {
         }
     });
     client.token=token;
-    return client;
-}
-
-function startClient(client: Client){
     Event.register(client);
-    client.login();
+    return client;
 }
