@@ -1,8 +1,7 @@
 # Awesome Bot Base
 
-* This project can be generated using the [Constant CLI](https://github.com/rinckodev/constatic)
-
-See the full documentation for this base by accessing: https://constatic-docs.vercel.app/discord
+> [!NOTE] This project can be generated using the [Constant CLI](https://github.com/rinckodev/constatic)
+> See the full documentation for this base by accessing: https://constatic-docs.vercel.app/discord
 
 This is the most complete discord bot base you've ever seen! Developed by [@rinckodev](https://github.com/rinckodev), this project uses typescript in an incredible way to provide complete structures and facilitate the development of your discord bot.
 

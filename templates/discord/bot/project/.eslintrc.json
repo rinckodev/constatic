@@ -17,5 +17,8 @@
         "@typescript-eslint/no-require-imports": "error",
         "@typescript-eslint/await-thenable": "error"
     },
-    "ignorePatterns":["build", "dist", "prod", "product", "vendor", "node_modules"]
+    "ignorePatterns":[
+        "build", "dist", "prod", "product", "vendor", "node_modules",
+        "/*.config.{mjs,js}", "/*.build.{mjs,js}" 
+    ]
 }

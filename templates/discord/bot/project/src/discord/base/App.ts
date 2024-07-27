@@ -47,11 +47,15 @@ export async function bootstrapApp<O extends BootstrapAppOptions>(options: O): P
             clients.push(createClient(token, options));
         }
         await loadDirectories(options);
-        for(const client of clients) client.login();
+        for(const client of clients) {
+            Event.register(client);
+            client.login();
+        }
         return clients as R<O>;
     }
     const client = createClient(process.env.BOT_TOKEN, options);
     await loadDirectories(options);
+    Event.register(client);
 
     client.login();
     return client as R<O>;
@@ -120,6 +124,5 @@ function createClient(token: string, options: BootstrapAppOptions): Client {
         }
     });
     client.token=token;
-    Event.register(client);
     return client;
 }

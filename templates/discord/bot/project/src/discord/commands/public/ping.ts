@@ -8,7 +8,7 @@ new Command({
 	type: ApplicationCommandType.ChatInput,
 	run(interaction){
 		const row = createRow(
-			// ../../components/buttons/remind.ts
+			// ../../responders/buttons/remind.ts
 			new ButtonBuilder({ 
 				customId: `remind/${new Date().toISOString()}`,
 				label: "Ping",
