@@ -1,9 +1,10 @@
 #!/usr/bin/env node
-import packageJson from "../package.json" with { type: "json" };
-import path from "node:path";
-import { log } from "@clack/prompts";
-import Conf from "conf";
+import { intro, log } from "@clack/prompts";
+import ck from "chalk";
 import { runMain } from "citty";
+import Conf from "conf";
+import path from "node:path";
+import packageJson from "../package.json" with { type: "json" };
 import { menus } from "./menus/index.js";
 
 if (process.versions.node < "20.11"){
@@ -15,6 +16,8 @@ if (process.versions.node < "20.11"){
 const rootname = path.join(import.meta.dirname, "..");
 const conf = new Conf({ projectName: packageJson.name });
 const cwd = process.cwd();
+
+intro(`💎 ${ck.blue("Constatic CLI")} 📦 ${ck.dim.underline(packageJson.version)}`);
 
 runMain({
     meta: {

@@ -46,12 +46,6 @@
   "typescript.suggest.autoImports": true,
   "window.title": "${rootName}${separator}vscode",
   "files.autoSave": "afterDelay",
-  "files.exclude": {
-    "src/discord/base": true,
-    "src/settings/global.ts": true,
-    "src/settings/error.ts": true,
-    "src/settings/index.ts": true,
-  },
   "files.readonlyInclude": {
     "node_modules/**": true,
     "src/discord/base/**": true,
