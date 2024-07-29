@@ -123,6 +123,9 @@ export class Responder<I extends string, T extends ResponderType, C extends Cach
                     return Responder.items.get(ResponderType.Row) ?? findSubItems(ResponderType.All);
                 }
             }
+            if (interaction.isModalSubmit() && interaction.isFromMessage() && type === ResponderType.ModalComponent){
+                return Responder.items.get(ResponderType.Modal);
+            }
             return findSubItems(ResponderType.All);
         };
 
