@@ -1,5 +1,5 @@
 # Essential structure
-# - /src
+# - /build
 # - /.env
 # - /.discloudignore
 # - /discloud.config
@@ -17,6 +17,7 @@
 
 # Files
 /.env.development
+/.env.dev
 /.env.example
 /.eslintrc.json
 /.gitignore

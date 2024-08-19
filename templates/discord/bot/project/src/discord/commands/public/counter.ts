@@ -12,13 +12,11 @@ new Command({
 });
 
 new Responder({
-    customId: "counter/:action/:current",
+    customId: "counter/:current",
     type: ResponderType.Button, cache: "cached",
-    run(interaction, params) {
-        const current = Number.parseInt(params.current);
-        const updated = params.action === "add" ? current + 1 : current - 1;
-
-        interaction.update(counterMenu(interaction.user, updated));
+    run(interaction, { current }) {
+        const parsed = Number.parseInt(current);
+        interaction.update(counterMenu(interaction.user, parsed));
     },
 });
 
@@ -30,11 +28,11 @@ function counterMenu(user: User, current: number) {
     });
     const row = createRow(
         new ButtonBuilder({
-            customId: `counter/add/${current}`, 
+            customId: `counter/${current+1}`, 
             label: "+", style: ButtonStyle.Success
         }),
         new ButtonBuilder({
-            customId: `counter/remove/${current}`, 
+            customId: `counter/${current-1}`, 
             label: "-", style: ButtonStyle.Danger
         }),
     );

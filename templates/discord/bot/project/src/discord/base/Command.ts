@@ -1,5 +1,4 @@
 import { log } from "#settings";
-import { findCommand } from "@magicyan/discord";
 import ck from "chalk";
 import { ApplicationCommandType, AutocompleteInteraction, CacheType, ChatInputApplicationCommandData, ChatInputCommandInteraction, Client, Collection, CommandInteraction, Guild, MessageApplicationCommandData, MessageContextMenuCommandInteraction, UserApplicationCommandData, UserContextMenuCommandInteraction } from "discord.js";
 
@@ -29,26 +28,31 @@ type CommandData<N extends string, T, D> = CommandProps<N, D, T> & {
 	name: N; dmPermission?: D; type?: T; global?: boolean;
 }
 
+interface CommandHandler {
+	run(interaction: CommandInteraction): void
+	autocomplete?(interaction: AutocompleteInteraction): void;
+}
+
 export class Command<
 	N extends string,
 	T extends ApplicationCommandType = ApplicationCommandType.ChatInput, 
 	D extends boolean = false
 > {
-	private static items = new Collection<string, CommandData<any, any, any>>();
-	constructor(private readonly data: CommandData<N, T, D>){
+	private static Handlers = new Collection<string, CommandHandler>();
+	private static Commands = new Collection<string, CommandData<any, any, any>>();
+	constructor(data: CommandData<N, T, D>){
 		data.dmPermission??=false as D;
 		data.type??=ApplicationCommandType.ChatInput as T;
-		Command.items.set(data.name, data);
-	}
-	public getApplicationCommand(client: Client<true> | Guild) {
-		return findCommand(client).byName(this.data.name)!;
+		Command.Commands.set(data.name, data);
+		Command.Handlers.set(data.name, { 
+			run: data.run, autocomplete: "autocomplete" in data ? data.autocomplete : undefined 
+		});
 	}
 	public static async register(addMessage: Function, client: Client<true>, guilds?: Collection<string, Guild>){
-		function plural(value: number){
-			return (value > 1 && "s") || "";
-		}
+		const plural = (value: number) => value > 1 ? "s" : "";
+		
 		if (guilds?.size){
-			const [globalCommands, guildCommads] = Command.items.partition(c => c.global === true);
+			const [globalCommands, guildCommads] = Command.Commands.partition(c => c.global === true);
 			await client.application.commands.set(Array.from(globalCommands.values()))
 			.then(({ size }) => Boolean(size) &&
 				addMessage(`⤿ ${size} command${plural(size)} successfully registered globally!`)
@@ -59,29 +63,30 @@ export class Command<
 					addMessage(`⤿ ${size} command${plural(size)} registered in ${ck.underline(guild.name)} guild successfully!`)
 				);
 			}
+			Command.Commands.clear();
 			return;
 		}
 		for(const guild of client.guilds.cache.values()){
 			guild.commands.set([]);
 		}
-		await client.application.commands.set(Array.from(Command.items.values()))
+		await client.application.commands.set(Array.from(Command.Commands.values()))
 		.then(({ size }) => 
 			addMessage(`⤿ ${size} command${plural(size)} successfully registered globally!`)
 		);
+		Command.Commands.clear();
 	}
 	public static onCommand(interaction: CommandInteraction){
-		const command = Command.items.get(interaction.commandName);
+		const command = Command.Handlers.get(interaction.commandName);
 		if (!command) return;
 		command.run(interaction as never);
 	}
 	public static onAutocomplete(interaction: AutocompleteInteraction){
-		const command = Command.items.get(interaction.commandName);
-		if (command && "autocomplete" in command && command.autocomplete){
-			command.autocomplete(interaction);
-		}
+		const command = Command.Handlers.get(interaction.commandName);
+		if (!command || !command.autocomplete) return;
+		command.autocomplete(interaction);
 	}
 	public static loadLogs(){
-		for(const [name] of Command.items){
+		for(const [name] of Command.Commands){
 			log.success(ck.green(`{/} ${ck.blue.underline(name)} command loaded!`));
 		}
 	}

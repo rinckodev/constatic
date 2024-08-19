@@ -25,7 +25,8 @@
 			"#settings": ["./settings/index.ts"],
 			"#tools": ["./tools/index.ts"],
 			"#server": ["./server/index.ts"],
-			"#lang/*": ["../lang/*"]
+			"#lang/*": ["../lang/*"],
+			"@discordjs/builders/*": ["ignore"]
 		},
 	},
 	"include": ["src"],

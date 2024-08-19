@@ -1,24 +1,24 @@
-import { Command, Event, Responder, type ResponderInteraction } from "#base";
+import { Command, Event, Responder, ResponderType, type ResponderInteraction } from "#base";
 import { log, onError } from "#settings";
 import { CustomItents, CustomPartials, spaceBuilder, toNull } from "@magicyan/discord";
 import ck from "chalk";
-import { Client, type ClientOptions, version as djsVersion } from "discord.js";
+import { CacheType, Client, type ClientOptions, version as djsVersion } from "discord.js";
 import glob from "fast-glob";
 import path from "node:path";
 
 type R<O extends BootstrapAppOptions> = O["multiple"] extends true ? Client[] : Client;
 
 interface BootstrapAppOptions extends Partial<ClientOptions> {
-    /** src / build */
+    /** src | build */
     workdir: string;
     /** Commands options */
 	commands?: {
 		/** Register commands in guilds */
-		guilds?: string[],
+		guilds?: string[]
 	},
     /** Responders options */
 	responders?: {
-        onNotFound?(interaction: ResponderInteraction): void
+        onNotFound?(interaction: ResponderInteraction<ResponderType, CacheType>): void
 	},
 	/**
 	 * A list of paths that will be imported to load the project's structure classes
@@ -76,7 +76,6 @@ async function loadDirectories(options: LoadDirsOptions) {
     const paths: string[] = await glob(patterns, { absolute: true });
     await Promise.all(paths.map(path => import(`file://${path}`)));
 
-    Responder.sortCustomIds();
     if (loadLogs??true){
         Command.loadLogs(); Event.loadLogs(); Responder.loadLogs();
     }
@@ -100,6 +99,7 @@ function createClient(token: string, options: BootstrapAppOptions): Client {
         const messages: string[] = [];
         const addMessage = (text: string) => messages.push(text);
         await client.guilds.fetch().catch(toNull);
+
         if (options.commands?.guilds){
             const guilds = client.guilds.cache.filter(
                 ({ id }) => options?.commands?.guilds?.includes(id)

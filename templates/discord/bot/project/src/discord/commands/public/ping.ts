@@ -15,6 +15,6 @@ new Command({
 				style: ButtonStyle.Success
 			})
 		);
-		interaction.reply({ fetchReply, ephemeral, content: "pong", components: [row] });
+		interaction.reply({ ephemeral, content: "pong", components: [row] });
 	}
 });

@@ -48,6 +48,7 @@
   "files.autoSave": "afterDelay",
   "files.readonlyInclude": {
     "node_modules/**": true,
+    "build/**": true,
     "src/discord/base/**": true,
     "src/settings/global.ts": true,
     "src/settings/error.ts": true,

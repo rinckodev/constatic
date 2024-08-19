@@ -18,6 +18,7 @@
     "consola": "^3.2.3",
     "discord.js": "^14.15.3",
     "fast-glob": "^3.3.2",
+    "radix3": "^1.1.2",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -29,13 +30,29 @@
     "typescript": "^5.5.3"
   },
   "imports": {
-    "#database": ["./build/database/index.js"],
-    "#base": ["./build/discord/base/index.js"],
-    "#functions": ["./build/functions/index.js"],
-    "#menus": ["./build/menus/index.js"],
-    "#settings": ["./build/settings/index.js"],
-    "#tools": ["./build/tools/index.js"],
-    "#server": ["./build/server/index.js"],
-    "#lang/*": ["./lang/*"]
+    "#database": [
+      "./build/database/index.js"
+    ],
+    "#base": [
+      "./build/discord/base/index.js"
+    ],
+    "#functions": [
+      "./build/functions/index.js"
+    ],
+    "#menus": [
+      "./build/menus/index.js"
+    ],
+    "#settings": [
+      "./build/settings/index.js"
+    ],
+    "#tools": [
+      "./build/tools/index.js"
+    ],
+    "#server": [
+      "./build/server/index.js"
+    ],
+    "#lang/*": [
+      "./lang/*"
+    ]
   }
 }
