@@ -11,7 +11,7 @@ declare global {
 	function rootTo(...path: string[]): string;
 }
 
-Object.assign(globalThis, {
+Object.assign(globalThis, Object.freeze({
 	animated: true,
 	fetchReply: true,
 	ephemeral: true,
@@ -22,4 +22,4 @@ Object.assign(globalThis, {
 	rootTo(...path: string[]){
 		return join(process.cwd(), ...path);
 	}
-});
+}));

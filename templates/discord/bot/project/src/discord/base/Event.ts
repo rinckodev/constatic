@@ -31,9 +31,9 @@ export class Event<EventName extends keyof ClientEvents> {
     }
     public static loadLogs(){
         for(const events of Event.items.values()){
-            events.forEach(({ name }) => {
+            for(const { name } of events.values()){
                 log.success(chalk.green(`${chalk.yellow.underline(name)} event loaded!`));
-            });
+            }
         }
     }
 }

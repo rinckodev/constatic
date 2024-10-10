@@ -7,9 +7,13 @@
   </div>
 </div>
 
-See the full documentation by accessing: https://constatic-docs.vercel.app/
 
 Usage: 
 ```bash
 npx constatic@latest
 ```
+
+> [!WARNING]
+> [NodeJs](https://nodejs.org/en) version required: 20.11 or higher
+
+📚 See the full documentation by accessing: https://constatic-docs.vercel.app/

@@ -28,9 +28,9 @@ export async function getDiscordBotInvite(token: string): Promise<Result> {
     url.searchParams.set("permissions", "8");
     
     return {
+        success: true,
         id: data["id"],
         name: data["name"],
-        success: true,
         invite: url.toString()
     }
 }

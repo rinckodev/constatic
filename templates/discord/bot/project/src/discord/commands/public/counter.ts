@@ -1,6 +1,6 @@
 import { Command, Responder, ResponderType } from "#base";
 import { createEmbed, createEmbedAuthor, createRow } from "@magicyan/discord";
-import { ApplicationCommandType, ButtonBuilder, ButtonStyle, User } from "discord.js";
+import { ApplicationCommandType, ButtonBuilder, ButtonStyle, InteractionReplyOptions, User } from "discord.js";
 
 new Command({
     name: "counter",
@@ -8,7 +8,7 @@ new Command({
     type: ApplicationCommandType.ChatInput,
     run(interaction) {
         interaction.reply(counterMenu(interaction.user, 0));
-    },
+    }
 });
 
 new Responder({
@@ -26,15 +26,19 @@ function counterMenu(user: User, current: number) {
         color: "Random",
         description: `Current value: ${current}`
     });
-    const row = createRow(
-        new ButtonBuilder({
-            customId: `counter/${current+1}`, 
-            label: "+", style: ButtonStyle.Success
-        }),
-        new ButtonBuilder({
-            customId: `counter/${current-1}`, 
-            label: "-", style: ButtonStyle.Danger
-        }),
-    );
-    return { ephemeral, embeds: [embed], components: [row] };
+    const components = [
+        createRow(
+            new ButtonBuilder({
+                customId: `counter/${current+1}`, 
+                label: "+", style: ButtonStyle.Success
+            }),
+            new ButtonBuilder({
+                customId: `counter/${current-1}`, 
+                label: "-", style: ButtonStyle.Danger
+            }),
+        )
+    ];
+    return { 
+        ephemeral, embeds: [embed], components
+    } satisfies InteractionReplyOptions;
 }

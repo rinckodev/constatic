@@ -1,7 +1,7 @@
 import { replaceText, limitText, createEmbed, createEmbedAuthor, brBuilder } from "@magicyan/discord";
 import { type Client, codeBlock, WebhookClient } from "discord.js";
 import settings from "../../settings.json" with { type: "json" };
-import { consola as log } from "consola";
+import log from "consola";
 import chalk from "chalk";
 
 export async function onError(error: any, client: Client<true>){

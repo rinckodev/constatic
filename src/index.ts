@@ -1,11 +1,13 @@
 #!/usr/bin/env node
-import { intro, log } from "@clack/prompts";
-import ck from "chalk";
-import { runMain } from "citty";
-import Conf from "conf";
 import path from "node:path";
-import packageJson from "../package.json" with { type: "json" };
-import { menus } from "./menus/index.js";
+import { log } from "@clack/prompts";
+import Conf from "conf";
+import { readPackageJSON } from "pkg-types";
+import * as citty from "citty";
+import * as clack from "@clack/prompts";
+import ck from "chalk";
+import lodash from "lodash";
+import { menus } from "#menus";
 
 if (process.versions.node < "20.11"){
     log.error("Required node version: 20.11 or higher");
@@ -13,61 +15,16 @@ if (process.versions.node < "20.11"){
     process.exit(1);
 }
 
-const rootname = path.join(import.meta.dirname, "..");
+const cliroot = path.join(import.meta.dirname, "..");
+const packageJson = await readPackageJSON(path.join(cliroot, "package.json"));
+
 const conf = new Conf({ projectName: packageJson.name });
-const cwd = process.cwd();
 
-intro(`💎 ${ck.blue("Constatic CLI")} 📦 ${ck.dim.underline(packageJson.version)}`);
+clack.intro(`💎 ${ck.blue("Constatic CLI")} 📦 ${ck.dim.underline(packageJson.version)}`);
 
-runMain({
-    meta: {
-        name: packageJson.name,
-        version: packageJson.version,
-        description: packageJson.description,
-    },
-    async run() {
-        menus.program.main({ rootname, conf, cwd });
+citty.runMain({
+    meta: lodash.pick(packageJson, ["name", "version", "description"]),
+    run() {
+        menus.main({ cliroot, conf, cwd: process.cwd() });
     },
 });
-
-declare global {
-    interface ProgramProps {
-        readonly rootname: string;
-        readonly conf: Conf;
-        readonly cwd: string;
-    }
-
-    interface BotEnviroment {
-        schema: string;
-        file: string;
-    }
-
-    interface BotProjectPreset {
-        name: string; hint: string; emoji: string; 
-        dependencies: Record<string, string>;
-        devDependencies?: Record<string, string>;
-        env?: BotEnviroment;
-        disabled?: boolean;
-    }
-    interface BotAPIServerPreset extends BotProjectPreset {
-        path: string;
-    }
-    interface BotLibDatabasePreset extends BotProjectPreset {
-        isOrm: false;
-        path: string;
-    }
-    interface BotOrmDatabasePreset extends BotProjectPreset {
-        isOrm: true;
-        databases: BotLibDatabasePreset[];
-    }
-    type BotDatabasePreset = BotLibDatabasePreset | BotOrmDatabasePreset;
-
-    interface BotProperties {
-        dbpresets: BotDatabasePreset[],
-        apiservers: BotAPIServerPreset[]
-    }
-    interface BotToken {
-        name: string; token: string;
-        invite: string; id: string;
-    }
-}

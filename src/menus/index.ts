@@ -1,9 +1,13 @@
-import { botMenus } from "./bot/index.js";
-import { programMenus } from "./program/index.js";
-import { settingsMenus } from "./settings/index.js";
+import { botMenu } from "./bot/menu.js";
+import { mainMenu } from "./main/menu.js";
+import { settingsMenu } from "./settings/menu.js";
+import { tokenSettingsMenu } from "./settings/tokens/menu.js";
 
 export const menus = {
-    program: programMenus,
-    bot: botMenus,
-    settings: settingsMenus
-}
+    main: mainMenu,
+    bot: botMenu,
+    settings: {
+        main: settingsMenu,
+        tokens: tokenSettingsMenu
+    }
+};

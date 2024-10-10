@@ -44,7 +44,7 @@
     "package.json": "*lock.json, *.lock, *lock.yaml, *.lockb, tsconfig.json, .eslintrc.json, .gitignore, .discloudignore, biome.json, .nvmrc"
   },
   "typescript.suggest.autoImports": true,
-  "window.title": "${rootName}${separator}vscode",
+  "window.title": "${rootName}${separator}",
   "files.autoSave": "afterDelay",
   "files.readonlyInclude": {
     "node_modules/**": true,
@@ -53,5 +53,5 @@
     "src/settings/global.ts": true,
     "src/settings/error.ts": true,
     "src/settings/index.ts": true,
-  }
+  },
 }

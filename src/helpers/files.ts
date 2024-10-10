@@ -1,31 +1,12 @@
-import fs from "fs-extra";
-import path from "node:path";
+import fs from "node:fs/promises";
 
-export async function isEmptyDir(path: string){
-    const dir = await fs.readdir(path);
-    return dir.length < 1;
-}
-
-export function listDirectoryItems(path: string){
-    const items = fs.readdirSync(path, { withFileTypes: true })
-    const folders = items.filter(item => item.isDirectory());
-    const files = items.filter(item => item.isFile());
-    return folders.concat(files);
-}
-
-interface CopyOptions {
-    ignore?: {
-        items?: string[];
-        extensions?: string[];
+export const json = {
+    async read<T = any>(path: string): Promise<T> {
+        const stringfiedJson = await fs.readFile(path, "utf-8");
+        return JSON.parse(stringfiedJson);       
+    },
+    async write<T = any>(path: string, data: T){
+        const stringfiedJson = JSON.stringify(data, null, 2);
+        fs.writeFile(path, stringfiedJson, "utf-8");
     }
-}
-export async function copy(src: string, dest: string, options: CopyOptions = {}){
-    const { items, extensions } = options.ignore ?? {};
-    return fs.copy(src, dest, {
-        filter(item){
-            if (items?.includes(path.basename(item))) return false;
-            if (extensions?.some(ext => path.basename(item).endsWith(ext))) return false;
-            return true;
-        }
-    })
 }

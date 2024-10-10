@@ -9,7 +9,9 @@ export function toNpmName(name: string){
     .replace(/[^\w\s-]/gi, "");
 }
 
-export function getCdProjectPath(filepath: string){
+export function getCdPath(filepath: string){
     const basename = path.basename(filepath);
-    return basename.trim().includes(" ") ? `cd ./"${basename}"` : `cd ./${basename}`
+    return basename.trim().includes(" ") 
+        ? `cd "./${basename}"` 
+        : `cd ./${basename}`
 }

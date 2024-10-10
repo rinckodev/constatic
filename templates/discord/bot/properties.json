@@ -2,75 +2,78 @@
   "dbpresets":[
     {
       "name": "MongoDb",
-      "emoji": "🍃",
+      "icon": "🍃",
       "hint": "mongoose",
       "path": "mongoose",
-      "envSchema": "MONGO_URI: z.string({ description: \"MongoDb URI is required\" }).min(1),",
       "env":{
         "schema": "MONGO_URI: z.string({ description: \"MongoDb URI is required\" }).min(1),",
         "file":"MONGO_URI="
       },
-      "isOrm": false,
-      "dependencies": {
-        "mongoose": "^8.3.1"
-      }
+      "packageJson": {
+        "dependencies": {
+          "mongoose": "^8.3.1"
+        }
+      },
+      "isOrm": false
     },
     {
       "name": "QuickDB",
-      "emoji": "🧊",
+      "icon": "🧊",
       "hint": "better-sqlite3",
       "path": "quickdb",
       "isOrm": false,
-      "dependencies": {
-        "better-sqlite3": "^9.2.2",
-        "quick.db": "^9.1.7"
+      "packageJson":{
+        "dependencies": {
+          "better-sqlite3": "^9.2.2",
+          "quick.db": "^9.1.7"
+        }
       }
     },
     {
       "name": "Firestore",
-      "emoji": "🦕",
+      "icon": "🦕",
       "hint": "typesaurus",
       "path": "typesaurus",
-      "envSchema": "FIREBASE_PATH: z.string({ description: \"Firebase account path is required\" }).min(1),",
       "env":{
         "schema": "FIREBASE_PATH: z.string({ description: \"Firebase account path is required\" }).min(1),",
         "file":"FIREBASE_PATH=./firebase.json"
       },
       "isOrm": false,
-      "dependencies": {
-        "firebase-admin": "^12.0.0",
-        "typesaurus": "^10.1.0"
+      "packageJson":{
+        "dependencies": {
+          "firebase-admin": "^12.0.0",
+          "typesaurus": "^10.1.0"
+        }
       }
     },
     {
       "name": "Firestore",
-      "emoji": "🔥",
+      "icon": "🔥",
       "hint": "firelord",
       "path": "firelord",
-      "envSchema": "FIREBASE_PATH: z.string({ description: \"Firebase account path is required\" }).min(1),",
       "env":{
         "schema": "FIREBASE_PATH: z.string({ description: \"Firebase account path is required\" }).min(1),",
         "file":"FIREBASE_PATH=./firebase.json"
       },
       "isOrm": false,
-      "dependencies": {
-        "firebase-admin": "^11.11.1",
-        "firelord": "^2.7.1"
+      "packageJson":{
+        "dependencies": {
+          "firebase-admin": "^11.11.1",
+          "firelord": "^2.7.1"
+        }
       }
     },
     {
       "name": "Prisma",
-      "emoji": "🔷",
+      "icon": "🔷",
       "hint": "orm",
       "isOrm": true,
       "disabled": true,
-      "dependencies": {
-        
-      },
+      "packageJson":{},
       "databases": [
         {
           "name": "MySQL",
-          "emoji": "🐬",
+          "icon": "🐬",
           "hint": "sql",
           "path": "prisma/mysql",
           "isOrm": false,
@@ -81,17 +84,15 @@
     },
     {
       "name": "Drizzle",
-      "emoji": "🌲",
+      "icon": "🌲",
       "hint": "orm",
       "isOrm": true,
       "disabled": true,
-      "dependencies": {
-        
-      },
+      "packageJson": {},
       "databases": [
         {
           "name": "MySQL",
-          "emoji": "🐬",
+          "icon": "🐬",
           "hint": "sql",
           "path": "drizzle/mysql",
           "isOrm": false,
@@ -104,69 +105,74 @@
   "apiservers": [
     {
       "name": "Fastify",
-      "emoji": "🐅",
+      "icon": "🐅",
       "hint": "fastify",
       "path": "fastify",
       "env":{
         "schema": "SERVER_PORT: z.number({ coerce: true }).optional(),\n    SERVER_BASE_URL: z.string().optional(),",
-        "file":"SERVER_PORT=\nSERVER_BASE_URL="
+        "file":"SERVER_PORT=8080\nSERVER_BASE_URL="
       },
-      "dependencies": {
-        "http-status-codes": "^2.3.0",
-        "fastify": "^4.28.1",
-        "@fastify/cors": "^9.0.1"
+      "packageJson":{
+        "dependencies": {
+          "http-status-codes": "^2.3.0",
+          "fastify": "^4.28.1",
+          "@fastify/cors": "^9.0.1"
+        }
       }
     },
     {
       "name": "ExpressJS",
-      "emoji": "🦎",
+      "icon": "🦎",
       "hint": "express",
       "path": "express",
       "env":{
         "schema": "SERVER_PORT: z.number({ coerce: true }).optional(),\n    SERVER_BASE_URL: z.string().optional(),",
-        "file":"SERVER_PORT=\nSERVER_BASE_URL="
+        "file":"SERVER_PORT=8080\nSERVER_BASE_URL="
       },
-      "dependencies": {
-        "http-status-codes": "^2.3.0",
-        "express": "^4.19.2",    
-        "cors": "^2.8.5"
-      },
-      "devDependencies": {
-        "@types/cors": "^2.8.17",
-        "@types/express": "^4.17.21"
+      "packageJson":{
+        "dependencies": {
+          "http-status-codes": "^2.3.0",
+          "express": "^4.19.2",    
+          "cors": "^2.8.5"
+        },
+        "devDependencies": {
+          "@types/cors": "^2.8.17",
+          "@types/express": "^4.17.21"
+        }
       }
     },
     {
       "name": "elysia",
-      "emoji": "🦊",
+      "icon": "🦊",
       "hint": "elysia",
       "path": "elysia",
       "disabled": true,
       "env":{
         "schema": "SERVER_PORT: z.string().optional(),\n    SERVER_BASE_URL: z.string().optional(),",
-        "file":"SERVER_PORT=\nSERVER_BASE_URL="
+        "file":"SERVER_PORT=8080\nSERVER_BASE_URL="
       },
-      "dependencies": {
-        "http-status-codes": "^2.3.0"
-      },
-      "devDependencies": {
+      "packageJson":{
+        "dependencies": {
+          "http-status-codes": "^2.3.0"
+        },
+        "devDependencies": {}
       }
     },
     {
       "name": "Hono",
-      "emoji": "🔥",
+      "icon": "🔥",
       "hint": "hono",
       "path": "hono",
       "disabled": true,
       "env":{
         "schema": "SERVER_PORT: z.string().optional(),\n    SERVER_BASE_URL: z.string().optional(),",
-        "file":"SERVER_PORT=\n    SERVER_BASE_URL="
+        "file":"SERVER_PORT=8080\nSERVER_BASE_URL="
       },
-      "dependencies": {
-        "http-status-codes": "^2.3.0"
-      },
-      "devDependencies": {
-
+      "packageJson":{
+        "dependencies": {
+          "http-status-codes": "^2.3.0"
+        },
+        "devDependencies": {}
       }
     }
   ]

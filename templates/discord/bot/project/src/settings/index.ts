@@ -1,13 +1,13 @@
 import settings from "../../settings.json" with { type: "json" };
 import { envSchema, type EnvSchema } from "./env.js";
 import { brBuilder } from "@magicyan/discord";
-import { consola as log } from "consola";
 import chalk from "chalk";
+import log from "consola";
 
 export * from "./error.js";
 import "./global.js";
 
-export { log, settings };
+export { settings, log };
 
 if (!process.execArgv.includes("--env-file")){
     log.warn(chalk.yellow("The executed script does not contain the --env-file flag"));

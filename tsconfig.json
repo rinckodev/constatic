@@ -1,16 +1,27 @@
 {
     "compilerOptions": {
-      "noEmit": true,
+      // "noEmit": true,
       "module": "NodeNext",
       "target": "ESNext",
       "moduleResolution": "NodeNext",
       "resolveJsonModule": true,
       "strict": true,
       "esModuleInterop": true,
-      "forceConsistentCasingInFileNames": true,
       "skipLibCheck": true,
 
+      "rootDir": "src",
+      "outDir": "dist",
+
       "noUnusedLocals": true,
-      "noUnusedParameters": true
+      "noUnusedParameters": true,
+
+      "baseUrl": "./src",
+      "paths": {
+        "#helpers": ["./helpers/index.js"],
+        "#menus": ["./menus/index.js"],
+        "#types": ["./types/index.js"]
+      }
     },
+    "include": ["src"],
+    "exclude": ["node_modules", "deprecated"],
   }

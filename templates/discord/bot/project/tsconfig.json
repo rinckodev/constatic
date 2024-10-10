@@ -1,21 +1,29 @@
 {
 	"compilerOptions": {
+		// General options
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"skipLibCheck": true,
 		"resolveJsonModule": true,
 		"strict": true,
-		
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noImplicitReturns": true,
 
+		// Language and environment options
 		"lib": ["ESNext"],
 		"target": "ESNext",
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
+		
+		// Linting options
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"noImplicitOverride": true,
+
+		// Output Options
 		"outDir": "./build",
 		"rootDir": "./src",
+
+		// Path mapping Options
 		"baseUrl": "./src",
 		"paths": {
 			"#database": ["./database/index.ts"],
@@ -25,10 +33,12 @@
 			"#settings": ["./settings/index.ts"],
 			"#tools": ["./tools/index.ts"],
 			"#server": ["./server/index.ts"],
-			"#lang/*": ["../lang/*"],
+			"#lib": ["./lib/index.ts"],
 			"@discordjs/builders/*": ["ignore"]
-		},
+		}
 	},
+	
+	// Include and Exclude Options
 	"include": ["src"],
 	"exclude": ["node_modules"]
 }
