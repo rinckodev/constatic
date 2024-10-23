@@ -4,7 +4,6 @@ import { CustomItents, CustomPartials, spaceBuilder, toNull } from "@magicyan/di
 import ck from "chalk";
 import { CacheType, Client, type ClientOptions, version as djsVersion } from "discord.js";
 import glob from "fast-glob";
-import path from "node:path";
 
 interface BootstrapAppOptions extends Partial<ClientOptions> {
     /** Application entry point directory */
@@ -53,17 +52,13 @@ export async function bootstrapApp<O extends BootstrapAppOptions>(options: O){
 type LoadDirsOptions = Pick<BootstrapAppOptions, "workdir" | "directories" | "loadLogs">;
 async function loadDirectories(options: LoadDirsOptions) {
     const { workdir, directories=[], loadLogs=true } = options;
-    const foldername = path.basename(workdir);
     const pattern: string = "**/*.{ts,js,tsx,jsx}";
     const patterns: string[] = [
-        `!./${foldername}/discord/base/*`,
-        `./${foldername}/discord/${pattern}`,
-        directories.map(dir => path.join(foldername, dir))
-        .map(p => p.replaceAll("\\", "/"))
-        .map(p => `./${p}/${pattern}`)
+        `!./discord/base/*`, `./discord/${pattern}`,
+        directories.map(p => p.replaceAll("\\", "/")).map(p => `./${p}/${pattern}`)
     ].flat();
     
-    const paths: string[] = await glob(patterns, { absolute: true });
+    const paths: string[] = await glob(patterns, { absolute: true, cwd: workdir });
     await Promise.all(paths.map(path => import(`file://${path}`)));
 
     if (loadLogs??true){

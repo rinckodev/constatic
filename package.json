@@ -1,6 +1,6 @@
 {
   "name": "constatic",
-  "version": "0.6.0",
+  "version": "0.6.2",
   "description": "Constatic cli",
   "main": "dist/index.js",
   "type": "module",
