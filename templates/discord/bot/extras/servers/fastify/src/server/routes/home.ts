@@ -1,13 +1,12 @@
-import type { Client } from "discord.js";
-import type { FastifyInstance } from "fastify";
+import { defineRoutes } from "#server";
 import { StatusCodes } from "http-status-codes";
 
-export function homeRoutes(app: FastifyInstance, client: Client<true>){
+export default defineRoutes((app, client) => {
     app.get("/", (_, res) => {
-        res.status(StatusCodes.OK).send({
+        return res.status(StatusCodes.OK).send({
             message: `🍃 Online on discord as ${client.user.username}`,
             guilds: client.guilds.cache.size,
             users: client.users.cache.size
         });
     });
-}
+});

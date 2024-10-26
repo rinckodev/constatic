@@ -1,25 +1,34 @@
-import fastify from "fastify";
+import fastify, { type FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
+import autoload from "@fastify/autoload";
 import type { Client } from "discord.js";
 import { log } from "#settings";
 import ck from "chalk";
-import { registerAllRoutes } from "./routes/index.js";
-
-export const serverInfo = {
-    port: process.env.SERVER_PORT || 3000,
-    baseURL: process.env.SERVER_BASE_URL
-};
+import path from "node:path";
 
 export async function bootstrapServer(client: Client<true>){
     const app = fastify();
     app.register(cors, { origin: "*" });
+    app.register(autoload, {
+        dir: path.join(import.meta.dirname, "routes"),
+        routeParams: true,
+        options: client,
+    });
 
-    registerAllRoutes(app, client);
+    const port = process.env.SERVER_PORT || 3000
 
-    await app.listen({ port: serverInfo.port })
+    await app.listen({ port, host: "0.0.0.0" })
     .catch(err => {
         log.error(err);
         process.exit(1);
     });
-    log.log(ck.green(`➝ ${ck.underline("Fastify")} server listening on port ${serverInfo.port}`));
+    log.log(ck.green(`➝ ${ck.underline("Fastify")} server listening on port ${port}`));
+}
+
+export type RouteHandler = (app: FastifyInstance, client: Client<true>, done: Function) => any;
+export function defineRoutes(handler: RouteHandler){
+    return (...[app, client, done]: Parameters<RouteHandler>) => {
+        handler(app, client, done);
+        done();
+    }
 }
