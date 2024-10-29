@@ -6,41 +6,34 @@ type Cache<D> = D extends false ? "cached" : CacheType;
 
 type CommandType = Exclude<ApplicationCommandType, ApplicationCommandType.PrimaryEntryPoint>;
 
-type SlashName<N> =
+type ContextName<N> = N extends "" ? never : N;
+
+type SlashName<N> = 
 	N extends "" ? never :
 	N extends `${string} ${string}` ? never :
-	N extends string
-	? N extends Lowercase<N> ? N : never
-	: never;
+	N extends string 
+		? N extends Lowercase<N> ? N : never 
+		: never;
 
-type ContextName<N> = N extends "" ? never : N; 
-
-type CommandProps<N, T> =
-	T extends ApplicationCommandType.Message 
-	? MessageApplicationCommandData & { name: ContextName<N> }  : 
-	T extends ApplicationCommandType.User 
-	? UserApplicationCommandData  & { name: ContextName<N> } : 
-	ChatInputApplicationCommandData & { name: SlashName<N> }
-
-type CommandRun<T, D> =
-	T extends ApplicationCommandType.Message ? {
-		run(interaction: MessageContextMenuCommandInteraction<Cache<D>>): void;
-	} :
-	T extends ApplicationCommandType.User ? {
-		run(interaction: UserContextMenuCommandInteraction<Cache<D>>): void;
-	} : 
-	{
+type CommandProps<N, D, T> = 
+	T extends ApplicationCommandType.ChatInput ? ChatInputApplicationCommandData & {
+		name: SlashName<N>;
 		run(interaction: ChatInputCommandInteraction<Cache<D>>): void;
 		autocomplete?(interaction: AutocompleteInteraction<Cache<D>>): void;
-	}
+	} :
+	T extends ApplicationCommandType.Message ? MessageApplicationCommandData & {
+		name: ContextName<N>;
+		run(interaction: MessageContextMenuCommandInteraction<Cache<D>>): void;
+	} :
+	T extends ApplicationCommandType.User ? UserApplicationCommandData & {
+		name: ContextName<N>;
+		run(interaction: UserContextMenuCommandInteraction<Cache<D>>): void;
+	} : never;
 
-type CommandOptions<N, D> = {
-	name: N,
-	dmPermission?: D
-	global?: boolean;
+type CommandData<N, T extends CommandType, D> = CommandProps<N, D, T> & {
+	name: N; dmPermission?: D; 
+	type?: T; global?: boolean;
 }
-
-type CommandData<N, T, D> = CommandRun<T, D> & CommandProps<N, T> & CommandOptions<N, D>
 
 interface CommandHandler {
 	run(interaction: CommandInteraction): void

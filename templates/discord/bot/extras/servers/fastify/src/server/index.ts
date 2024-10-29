@@ -8,6 +8,10 @@ import path from "node:path";
 
 export async function bootstrapServer(client: Client<true>){
     const app = fastify();
+    app.addHook("onRoute", route => {
+        if (route.method === "HEAD" || route.method === "OPTIONS") return;
+        log.success(`${ck.yellow(route.method)} ${ck.blue(route.path)}`);
+    });
     app.register(cors, { origin: "*" });
     app.register(autoload, {
         dir: path.join(import.meta.dirname, "routes"),
