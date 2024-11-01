@@ -2,7 +2,7 @@ import { Command, Event, Responder, ResponderType, type ResponderInteraction } f
 import { log, onError } from "#settings";
 import { CustomItents, CustomPartials, spaceBuilder, toNull } from "@magicyan/discord";
 import ck from "chalk";
-import { CacheType, Client, type ClientOptions, version as djsVersion } from "discord.js";
+import { CacheType, Client, type ClientOptions, version as djsVersion, PermissionResolvable } from "discord.js";
 import glob from "fast-glob";
 
 interface BootstrapAppOptions extends Partial<ClientOptions> {
@@ -12,6 +12,8 @@ interface BootstrapAppOptions extends Partial<ClientOptions> {
 	commands?: {
 		/** Register commands in guilds */
 		guilds?: string[]
+		/** Globally sets default permissions for commands if they are not set */
+		defaultMemberPermissions?: PermissionResolvable[]
 	},
     /** Responders options */
 	responders?: {
@@ -48,6 +50,7 @@ export async function bootstrapApp<O extends BootstrapAppOptions>(options: O){
 
     Event.register(client);
     client.login();
+    return client;
 }
 type LoadDirsOptions = Pick<BootstrapAppOptions, "workdir" | "directories" | "loadLogs">;
 async function loadDirectories(options: LoadDirsOptions) {
@@ -80,13 +83,15 @@ function createClient(token: string, options: BootstrapAppOptions): Client {
         const addMessage = (text: string) => messages.push(text);
         await client.guilds.fetch().catch(toNull);
 
+        const defaultMemberPermissions = options.commands?.defaultMemberPermissions;
+
         if (options.commands?.guilds){
             const guilds = client.guilds.cache.filter(
                 ({ id }) => options?.commands?.guilds?.includes(id)
             );
-            await Command.register(addMessage, client, guilds);
+            await Command.register({ addMessage, client, defaultMemberPermissions, guilds });
         } else {
-            await Command.register(addMessage, client);
+            await Command.register({ addMessage, client, defaultMemberPermissions });
         }
         log.log(ck.greenBright(`➝ Online as ${ck.hex("#57F287").underline(client.user.username)}`));
         for(const message of messages) log.log(ck.green(` ${message}`));

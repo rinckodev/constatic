@@ -1,6 +1,6 @@
 import { log } from "#settings";
 import ck from "chalk";
-import { ApplicationCommandType, AutocompleteInteraction, CacheType, ChatInputApplicationCommandData, ChatInputCommandInteraction, Client, Collection, CommandInteraction, Guild, MessageApplicationCommandData, MessageContextMenuCommandInteraction, UserApplicationCommandData, UserContextMenuCommandInteraction } from "discord.js";
+import { ApplicationCommandType, AutocompleteInteraction, CacheType, ChatInputApplicationCommandData, ChatInputCommandInteraction, Client, Collection, CommandInteraction, Guild, MessageApplicationCommandData, MessageContextMenuCommandInteraction, PermissionResolvable, UserApplicationCommandData, UserContextMenuCommandInteraction } from "discord.js";
 
 type Cache<D> = D extends false ? "cached" : CacheType;
 
@@ -59,7 +59,15 @@ export class Command<
 				? data.autocomplete : undefined
 		});
 	}
-	public static async register(addMessage: Function, client: Client<true>, guilds?: Collection<string, Guild>) {
+	public static async register(options: CommandRegisterOptions) {
+		const { addMessage, client, guilds, defaultMemberPermissions } = options;
+
+		if (defaultMemberPermissions){
+			Command.commands.forEach(command => 
+				command.defaultMemberPermissions??=defaultMemberPermissions
+			);
+		}
+
 		const plural = (value: number) => value > 1 ? "s" : "";
 		if (guilds?.size) {
 			const [globalCommands, guildCommads] = Command.commands.partition(c => c.global === true);
@@ -100,4 +108,11 @@ export class Command<
 			log.success(ck.green(`{/} ${ck.blue.underline(name)} command loaded!`));
 		}
 	}
+}
+
+interface CommandRegisterOptions {
+	addMessage: Function,
+	client: Client<true>,
+	guilds?: Collection<string, Guild>,
+	defaultMemberPermissions?: PermissionResolvable[]
 }
