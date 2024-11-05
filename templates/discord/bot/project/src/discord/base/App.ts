@@ -1,9 +1,9 @@
-import { Command, Event, Responder, ResponderType, type ResponderInteraction } from "#base";
-import { log, onError } from "#settings";
-import { CustomItents, CustomPartials, spaceBuilder, toNull } from "@magicyan/discord";
-import ck from "chalk";
 import { CacheType, Client, type ClientOptions, version as djsVersion, PermissionResolvable } from "discord.js";
+import { Command, Event, Responder, ResponderType, type ResponderInteraction } from "#base";
+import { CustomItents, CustomPartials, spaceBuilder } from "@magicyan/discord";
+import { log, onError } from "#settings";
 import glob from "fast-glob";
+import ck from "chalk";
 
 interface BootstrapAppOptions extends Partial<ClientOptions> {
     /** Application entry point directory */
@@ -32,7 +32,7 @@ interface BootstrapAppOptions extends Partial<ClientOptions> {
     /** Run when client is ready */
     whenReady?(client: Client<true>): void;
 }
-export async function bootstrapApp<O extends BootstrapAppOptions>(options: O){
+export async function bootstrapApp<O extends BootstrapAppOptions>(options: O): Promise<Client> {
     if (options.responders){
         Responder.setup({
             onNotFound: options.responders.onNotFound
@@ -81,7 +81,7 @@ function createClient(token: string, options: BootstrapAppOptions): Client {
     client.on("ready", async (client) => {
         const messages: string[] = [];
         const addMessage = (text: string) => messages.push(text);
-        await client.guilds.fetch().catch(toNull);
+        await client.guilds.fetch().catch(() => null);
 
         const defaultMemberPermissions = options.commands?.defaultMemberPermissions;
 
