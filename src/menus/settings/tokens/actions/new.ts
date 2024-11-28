@@ -24,7 +24,7 @@ export async function newTokenAction(props: Props){
         fetching.stop("The provided token is invalid", 1);
         return;
     }
-    const { name, invite, id } = result;
+    const { name, invite, id } = result.data;
     
     props.tokens.push({ name, invite, id, token: props.token });
 

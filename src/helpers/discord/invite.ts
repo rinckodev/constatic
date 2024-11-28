@@ -1,14 +1,10 @@
-interface SuccessResult {
-    success: true;
+import { FetchResult } from "#types";
+
+type Result = FetchResult<{
     invite: string;
     name: string;
     id: string;
-}
-interface FailResult {
-    success: false;
-    message: string;
-}
-type Result = SuccessResult | FailResult;
+}>;
 
 export async function getDiscordBotInvite(token: string): Promise<Result> {
     const response = await fetch("https://discord.com/api/v10/applications/@me", {
@@ -18,7 +14,7 @@ export async function getDiscordBotInvite(token: string): Promise<Result> {
     if (response.status !== 200){
         return {
             success: false,
-            message: "The provided token is invalid"
+            error: "The provided token is invalid"
         }
     }
     const data = await response.json();
@@ -29,8 +25,10 @@ export async function getDiscordBotInvite(token: string): Promise<Result> {
     
     return {
         success: true,
-        id: data["id"],
-        name: data["name"],
-        invite: url.toString()
+        data: {
+            id: data["id"],
+            name: data["name"],
+            invite: url.toString()
+        }
     }
 }

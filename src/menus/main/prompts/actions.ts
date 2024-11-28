@@ -7,8 +7,9 @@ export function actionsPrompt(title: string = ""){
         message: ck.bold(`⤷ Select an action ${title}`),
         options: [
             { label: ck.green("◈ Init discord bot project"), value: "bot-init" },
+            { label: ck.green("◈ Manage discord emojis"), value: "discord-emojis" },
             { label: ck.blue("☰ Settings"), value: "settings" },
             { label: ck.red("✕ Quit"), value: "quit" },
         ],
-    })) satisfies Promise<"bot-init" | "settings" | "quit">;
+    })) satisfies Promise<"bot-init" | "discord-emojis" |"settings" | "quit">;
 }

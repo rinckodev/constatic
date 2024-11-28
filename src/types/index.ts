@@ -5,3 +5,4 @@ export * from "./bot/project.js";
 export * from "./bot/apiServer.js";
 export * from "./bot/token.js";
 export * from "./main.js";
+export * from "./discord.js";

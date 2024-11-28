@@ -14,6 +14,10 @@ export async function mainMenu(props: ProgramMenuProps){
             menus.bot(props);
             return;
         }
+        case "discord-emojis":{
+            menus.emojis.main(props);
+            return;
+        }
         case "settings":{
             menus.settings.main(props);
             return;

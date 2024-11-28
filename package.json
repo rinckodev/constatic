@@ -1,6 +1,6 @@
 {
   "name": "constatic",
-  "version": "0.6.6",
+  "version": "0.7.0",
   "description": "Constatic cli",
   "main": "dist/index.js",
   "type": "module",
@@ -63,6 +63,7 @@
     "citty": "^0.1.6",
     "conf": "^12.0.0",
     "cross-spawn": "^7.0.3",
+    "fast-glob": "^3.3.2",
     "fs-extra": "^11.2.0",
     "lodash": "^4.17.21",
     "pkg-types": "^1.1.3"
