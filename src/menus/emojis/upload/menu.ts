@@ -14,17 +14,17 @@ export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: Bo
 
     const processing = spinner();
     processing.start("🔍 Searching for files in nested folders");
-    await setTimeout(500);
+    await setTimeout(300);
     
     const paths = await getEmojiPaths(directory);
     
     processing.message("🗃️ Getting information from found files");
-    await setTimeout(500);
+    await setTimeout(300);
     
     const rawinfo = await getFileInfo(paths);
     
     processing.message("💾 Filtering files by size in KBs");
-    await setTimeout(500);
+    await setTimeout(300);
 
     const files = rawinfo.filter(file => file.size < 256);
 

@@ -23,14 +23,14 @@ export async function uploadImages({ emojis, files, overwrite, token }: UploadIm
             const procced = await overwriteMethod({ overwrite, existing, token });
             if (!procced) continue
         }
-        await setTimeout(300);
+        await setTimeout(150);
         const result = await createDiscordEmoji(token, { image: file.base64, name: file.name });
         if (!result.success){
             uploading.stop(result.error, 1);
             continue;
         }
         const action = existing ? "overwrited" : "created";
-        uploading.stop(ck.green(`Success ${ck.yellow.underline(file.name)} ${action}!`));
+        uploading.stop(ck.green(`Success! ${ck.yellow.underline(file.name)} emoji ${ck.bgGreen(` ${action} `)}`));
     }
 }
 
@@ -51,8 +51,8 @@ async function overwriteMethod({ overwrite, token, existing }: OverwriteMethodPr
             const confirmDeletion = await handlePrompt(confirm({
                 message: `Do you want to overwrite the emoji ${existing.name}?`,
             }));
-            uploading.start(`Wait`);
             if (confirmDeletion){
+                uploading.start(`Wait`);
                 await deleteDiscordEmoji(token, existing.id);
             }
             return confirmDeletion;

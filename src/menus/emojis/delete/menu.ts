@@ -1,4 +1,4 @@
-import { deleteDiscordEmoji, getDiscordEmojis } from "#helpers";
+import { deleteDiscordEmoji, getDiscordEmojis, handlePrompt } from "#helpers";
 import { menus } from "#menus";
 import { BotToken, ProgramMenuProps } from "#types";
 import { confirm, log, spinner } from "@clack/prompts";
@@ -6,24 +6,29 @@ import ck from "chalk";
 import { setTimeout } from "node:timers/promises";
 
 export async function discordEmojisDeleteMenu(props: ProgramMenuProps, token: BotToken){
+    const loading = spinner();
+    loading.start("Wait");
+
     const existingEmojis = await getDiscordEmojis(token)
     if (!existingEmojis.success){
-        log.error("Unable to get application emojis");
+        loading.stop("Unable to get application emojis", 1);
         await setTimeout(400);
         menus.emojis.main(props, token);
         return;
     }
     const amount = existingEmojis.data.length;
     if (!amount){
-        log.error("No emojis to delete");
+        loading.stop("No emojis to delete", 1);
         await setTimeout(400);
         menus.emojis.main(props, token);
         return;
     }
 
-    const procced = await confirm({
+    loading.stop("Checks completed!");
+
+    const procced = await handlePrompt(confirm({
         message: `You are about to delete ${amount} emoji${amount > 1 ? "s":""}, do you want to continue?`
-    });
+    }));
 
     if (!procced){
         await setTimeout(400);
@@ -41,7 +46,7 @@ export async function discordEmojisDeleteMenu(props: ProgramMenuProps, token: Bo
             deleting.stop(`An error occurred while trying to delete the emoji: ${name}`, 1);
             continue;
         }
-        deleting.stop(`Emoji ${name} successfully deleted`);
+        deleting.stop(ck.green(`Success! ${name} emoji ${ck.bgRed(" deleted ")}`));
     }
 
     log.success("Deleting process completed!")

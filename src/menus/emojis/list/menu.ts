@@ -5,7 +5,7 @@ import { note, spinner } from "@clack/prompts";
 import ck from "chalk";
 import { setTimeout } from "node:timers/promises";
 
-export async function discordEmojisListMenu(_props: ProgramMenuProps, token: BotToken){
+export async function discordEmojisListMenu(props: ProgramMenuProps, token: BotToken){
     const loading = spinner();
     loading.start("Wait");
 
@@ -13,11 +13,19 @@ export async function discordEmojisListMenu(_props: ProgramMenuProps, token: Bot
     if (!result.success){
         loading.stop(`An error occurred while fetching ${token.name}'s emojis`, 1)
         await setTimeout(1400);
-        menus.emojis.main(_props, token);
+        menus.emojis.main(props, token);
+        return;
+    }
+
+    const amount = result.data.length;
+    if (!amount){
+        loading.stop("No emojis to list", 1);
+        await setTimeout(400);
+        menus.emojis.main(props, token);
         return;
     }
     
-    loading.stop(`2 Emojis founded`);
+    loading.stop("Checks completed!");
 
     const list = result.data.map(emoji => ({
         type: emoji.animated ? ck.magenta("animated") : ck.cyan("static"),
@@ -32,6 +40,6 @@ export async function discordEmojisListMenu(_props: ProgramMenuProps, token: Bot
         `Application emojis: ${result.data.length}`
     );
 
-    await setTimeout(2000);
-    menus.emojis.main(_props, token);
+    await setTimeout(400);
+    menus.emojis.main(props, token);
 }
