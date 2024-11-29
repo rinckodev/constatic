@@ -41,6 +41,7 @@
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
     ".env": ".env*",
+    "settings.json": "emojis.json, emojis.dev.json",
     "package.json": "*lock.json, *.lock, *lock.yaml, *.lockb, tsconfig.json, .eslintrc.json, .gitignore, .discloudignore, biome.json, .nvmrc"
   },
   "typescript.suggest.autoImports": true,
