@@ -49,6 +49,12 @@ interface ResponderData<Path, Type extends ResponderType, Parsed, Cache extends 
 type ResponderDataGeneric = ResponderData<string, ResponderType, any, CacheType>;
 type ResponderRouter = RadixRouter<ResponderDataGeneric>;
 
+export type ResponderErrorHandler = (
+    error: unknown, 
+    interaction: ResponderInteraction<ResponderType, CacheType>,
+    params?: object,
+) => void;
+
 export class Responder<Path extends string, Type extends ResponderType, Schema, Cache extends CacheType = CacheType> {
     private static routers = new Map<ResponderType, ResponderRouter>;
     private static logs = new Map<ResponderType, Set<string>>();
@@ -70,7 +76,7 @@ export class Responder<Path extends string, Type extends ResponderType, Schema, 
         interaction.isModalSubmit() && interaction.isFromMessage() ? ResponderType.ModalComponent : 
         interaction.isModalSubmit() ? ResponderType.Modal : undefined;
     }
-    public static async onInteraction(interaction: MessageComponentInteraction | ModalSubmitInteraction){
+    public static async onInteraction(interaction: MessageComponentInteraction | ModalSubmitInteraction, onError?: ResponderErrorHandler){
         console.time("Responder time");
         const responderType = Responder.getResponderType(interaction);
         if (!responderType) return;
@@ -92,7 +98,16 @@ export class Responder<Path extends string, Type extends ResponderType, Schema, 
                 handler.params = isPromise(params) ? await params : params; 
             }
         } else handler.params = {};
-        handler.run(interaction, handler.params);
+        
+        try {
+            const execution = handler.run(interaction, handler.params);
+			if (isPromise(execution) && onError){
+				execution.catch(error => onError(error, interaction, handler.params));
+			}
+		} catch(error){
+			if (onError) onError(error, interaction, handler.params);
+			else throw error;
+		}
     }
     private static findHandler(router: ResponderRouter | undefined, type: ResponderType, customId: string): MatchedRoute<ResponderDataGeneric> | null {
         if (!router) return null;

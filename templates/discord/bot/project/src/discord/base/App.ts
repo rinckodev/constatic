@@ -1,5 +1,5 @@
 import { CacheType, Client, type ClientOptions, version as djsVersion, PermissionResolvable } from "discord.js";
-import { Command, Event, Responder, ResponderType, type ResponderInteraction } from "#base";
+import { Command, CommandErrorHandler, Event, Responder, ResponderErrorHandler, ResponderType, type ResponderInteraction } from "#base";
 import { CustomItents, CustomPartials, spaceBuilder } from "@magicyan/discord";
 import { log, onError } from "#settings";
 import glob from "fast-glob";
@@ -11,13 +11,15 @@ interface BootstrapAppOptions extends Partial<ClientOptions> {
     /** Commands options */
 	commands?: {
 		/** Register commands in guilds */
-		guilds?: string[]
+		guilds?: string[];
 		/** Globally sets default permissions for commands if they are not set */
-		defaultMemberPermissions?: PermissionResolvable[]
+		defaultMemberPermissions?: PermissionResolvable[];
+        onError?: CommandErrorHandler;
 	},
     /** Responders options */
 	responders?: {
-        onNotFound?(interaction: ResponderInteraction<ResponderType, CacheType>): void
+        onNotFound?(interaction: ResponderInteraction<ResponderType, CacheType>): void;
+        onError?: ResponderErrorHandler;
 	},
 	/**
 	 * A list of paths that will be imported to load the project's structure classes
@@ -103,9 +105,15 @@ function createClient(token: string, options: BootstrapAppOptions): Client {
     });
     client.on("interactionCreate", async (interaction) => {
         switch(true){
-            case interaction.isAutocomplete(): Command.onAutocomplete(interaction); return;
-            case interaction.isCommand(): Command.onCommand(interaction); return;
-            default: Responder.onInteraction(interaction); return;
+            case interaction.isAutocomplete(): 
+                Command.onAutocomplete(interaction); 
+                return;
+            case interaction.isCommand(): 
+                Command.onCommand(interaction, options.commands?.onError); 
+                return;
+            default: 
+                Responder.onInteraction(interaction, options.responders?.onError); 
+                return;
         }
     });
     return client;

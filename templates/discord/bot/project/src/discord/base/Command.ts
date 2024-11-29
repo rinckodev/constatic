@@ -1,6 +1,7 @@
 import { log } from "#settings";
 import ck from "chalk";
 import { ApplicationCommandType, AutocompleteInteraction, CacheType, ChatInputApplicationCommandData, ChatInputCommandInteraction, Client, Collection, CommandInteraction, Guild, MessageApplicationCommandData, MessageContextMenuCommandInteraction, PermissionResolvable, UserApplicationCommandData, UserContextMenuCommandInteraction } from "discord.js";
+import { isPromise } from "node:util/types";
 
 type Cache<D> = D extends false ? "cached" : CacheType;
 
@@ -41,6 +42,8 @@ interface CommandHandler {
 }
 
 type CommandCollection = Collection<string, CommandData<any, any, any>>;
+
+export type CommandErrorHandler = (error: unknown, interaction: CommandInteraction) => void;
 
 export class Command<
 	N extends string,
@@ -93,10 +96,20 @@ export class Command<
 			);
 		Command.commands.clear();
 	}
-	public static onCommand(interaction: CommandInteraction) {
+	public static onCommand(interaction: CommandInteraction, onError?: CommandErrorHandler) {
 		const command = Command.handlers.get(interaction.commandName);
 		if (!command) return;
-		command.run(interaction as never);
+
+		try {
+			const execution = command.run(interaction as never);
+			if (isPromise(execution) && onError){
+				execution.catch(error => onError(error, interaction));
+			}
+		} catch(error){
+			if (onError) onError(error, interaction);
+			else throw error;
+		}
+
 	}
 	public static onAutocomplete(interaction: AutocompleteInteraction) {
 		const command = Command.handlers.get(interaction.commandName);
