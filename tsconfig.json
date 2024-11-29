@@ -10,7 +10,7 @@
       "skipLibCheck": true,
 
       "rootDir": "src",
-      "outDir": "dist",
+      "outDir": "build",
 
       "noUnusedLocals": true,
       "noUnusedParameters": true,
