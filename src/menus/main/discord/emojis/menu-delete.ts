@@ -1,4 +1,4 @@
-import { cliTheme, commonTexts, discordEmojis, divider, log, uiText } from "#helpers";
+import { cliTheme, commonTexts, discordEmojis, divider, log, sleep, uiText } from "#helpers";
 import { menus } from "#menus";
 import { DiscordBotToken, ProgramMenuProps } from "#types";
 import { checkbox, confirm } from "@inquirer/prompts";
@@ -6,8 +6,8 @@ import ck from "chalk";
 import { fetchDiscordEmojis } from "./fetch.js";
 import ora from "ora";
 
-export async function discordEmojisDeleteMenu(props: ProgramMenuProps, token: DiscordBotToken){
-    const emojis = await fetchDiscordEmojis(props, token);
+export async function discordEmojisDeleteMenu(props: ProgramMenuProps, token: DiscordBotToken) {
+    const emojis = await fetchDiscordEmojis({ props, token });
     if (!emojis) return;
 
     const choices = emojis.map((emoji, index) => ({
@@ -39,8 +39,8 @@ export async function discordEmojisDeleteMenu(props: ProgramMenuProps, token: Di
     });
     divider();
 
-    const amountText = ck.underline(`${indexList.length} emoji${indexList.length > 1 ? "s":""}`);
-    
+    const amountText = ck.underline(`${indexList.length} emoji${indexList.length > 1 ? "s" : ""}`);
+
     log.warn(uiText(props.lang, {
         "en-US": `You are about to delete ${amountText}!`,
         "pt-BR": `Você está prestes a excluir ${amountText}!`,
@@ -53,13 +53,13 @@ export async function discordEmojisDeleteMenu(props: ProgramMenuProps, token: Di
         }),
         theme: cliTheme
     });
-    
-    if (!proceed){
+
+    if (!proceed) {
         menus.discord.emojis.main(props, token);
         return;
     }
 
-    for(const index of indexList){
+    for (const index of indexList) {
         const emoji = emojis[index];
         const name = ck.yellow.underline(emoji.name);
         const deleting = ora();
@@ -67,11 +67,11 @@ export async function discordEmojisDeleteMenu(props: ProgramMenuProps, token: Di
             "en-US": `Deleting ${emoji.name}...`,
             "pt-BR": `Excluindo ${emoji.name}...`
         }));
-        
-        const result = await discordEmojis.delete(token, emoji.id);                
+
+        const result = await discordEmojis.delete(token, emoji.id);
         deleting.stop();
 
-        if (!result.success){
+        if (!result.success) {
             log.error(uiText(props.lang, {
                 "en-US": `An error occurred while trying delete the emoji ${name}!`,
                 "pt-BR": `Ocorreu um erro ao tentar excluir o emoji ${name}!`
@@ -83,6 +83,16 @@ export async function discordEmojisDeleteMenu(props: ProgramMenuProps, token: Di
             "pt-BR": `${ck.bgRed(" Excluído ")} Emoji ${name} excluído com sucesso!`
         }, ck.green));
     }
+    
     divider();
+    log.success(uiText(props.lang, {
+        "en-US": "Deleting process completed!",
+        "pt-BR": "Processo de exclusão concluído!",
+    }, ck.green));
+    divider();
+
+    await sleep(500);
+
+    menus.discord.emojis.main(props, token);
 }
 

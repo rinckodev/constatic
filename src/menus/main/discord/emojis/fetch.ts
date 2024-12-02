@@ -3,7 +3,13 @@ import { menus } from "#menus";
 import { DiscordBotToken, ProgramMenuProps } from "#types";
 import ora from "ora";
 
-export async function fetchDiscordEmojis(props: ProgramMenuProps, token: DiscordBotToken){
+interface FetchDiscordEmojisProps {
+    props: ProgramMenuProps,
+    token: DiscordBotToken;
+    notCheckAmount?: boolean;
+}
+
+export async function fetchDiscordEmojis({ props, token, notCheckAmount=false }: FetchDiscordEmojisProps){
     const loading = ora({
         text: uiText(props.lang, {
             "en-US": "Fetching emojis",
@@ -24,8 +30,7 @@ export async function fetchDiscordEmojis(props: ProgramMenuProps, token: Discord
         return null;
     }
 
-    const amount = result.data.length;
-    if (!amount){
+    if (!notCheckAmount && !result.data.length){
         log.fail(uiText(props.lang, {
             "en-US": "No emojis to list",
             "pt-BR": "Nenhum emoji para listar",

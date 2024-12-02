@@ -14,8 +14,8 @@ export async function settingsMenu(props: ProgramMenuProps){
         choices: [
             { 
                 name: uiText(props.lang, {
-                    "pt-BR": "🗝️  Gerenciar tokens de discord",
-                    "en-US": "🗝️  Manage discord tokens",
+                    "pt-BR": "🗝️ Gerenciar tokens de discord",
+                    "en-US": "🗝️ Manage discord tokens",
                 }, ck.green),
                 value: "discord/bot/tokens" 
             },

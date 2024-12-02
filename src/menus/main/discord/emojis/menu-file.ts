@@ -2,11 +2,11 @@ import { APIEmoji, DiscordBotToken, ProgramMenuProps } from "#types";
 import { input } from "@inquirer/prompts";
 import { fetchDiscordEmojis } from "./fetch.js";
 import fs from "node:fs/promises";
-import { cliTheme, log, sleep, uiText } from "#helpers";
+import { cliTheme, divider, log, sleep, uiText } from "#helpers";
 import { menus } from "#menus";
 
 export async function discordEmojisFileMenu(props: ProgramMenuProps, token: DiscordBotToken){
-    const emojis = await fetchDiscordEmojis(props, token);
+    const emojis = await fetchDiscordEmojis({ props, token });
     if (!emojis) return;
 
     const filepath = await input({
@@ -37,6 +37,7 @@ export async function discordEmojisFileMenu(props: ProgramMenuProps, token: Disc
         animated: emojis.filter(e => e.animated).reduce(toRecord, {}),
     };
 
+    divider();
     try {
         const toJson = JSON.stringify(data, null, 2);
         await fs.writeFile(filepath, toJson, "utf-8");
@@ -50,7 +51,8 @@ export async function discordEmojisFileMenu(props: ProgramMenuProps, token: Disc
             "pt-BR": "Ocorreu um erro ao tentar escrever o arquivo!",
         }));
     }
+    divider();
 
-    await sleep(1000);
+    await sleep(500);
     menus.discord.emojis.main(props, token);
 }

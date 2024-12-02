@@ -1,0 +1,12 @@
+{
+	"UI Text":{
+		"scope": "typescript",
+		"prefix": "ui.text",
+		"body": [
+			"uiText(props.lang, {",
+			"   \"en-US\": \"\",",
+			"   \"pt-BR\": \"\",",
+			"})",
+		]
+	}
+}

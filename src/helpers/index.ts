@@ -4,6 +4,7 @@ export * from "./conf.js";
 export * from "./files.js";
 export * from "./ui.js";
 export * from "./log.js";
+export * from "./validation.js";
 
 import ck from "chalk";
 

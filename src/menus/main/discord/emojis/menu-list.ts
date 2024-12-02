@@ -1,4 +1,4 @@
-import { sleep, uiText } from "#helpers";
+import { divider, sleep, uiText } from "#helpers";
 import { menus } from "#menus";
 import { DiscordBotToken, ProgramMenuProps } from "#types";
 import ck from "chalk";
@@ -6,7 +6,7 @@ import Table from "cli-table3";
 import { fetchDiscordEmojis } from "./fetch.js";
 
 export async function discordEmojisListMenu(props: ProgramMenuProps, token: DiscordBotToken){
-    const emojis = await fetchDiscordEmojis(props, token);
+    const emojis = await fetchDiscordEmojis({ props, token });
     if (!emojis) return;
 
     const cc = {
@@ -36,8 +36,8 @@ export async function discordEmojisListMenu(props: ProgramMenuProps, token: Disc
     ]))
 
     console.log(table.toString());
-
-    await sleep(1000);
-
+    divider();
+    
+    await sleep(500);
     menus.discord.emojis.main(props, token);
 }
