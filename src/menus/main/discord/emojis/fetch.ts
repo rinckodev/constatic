@@ -1,7 +1,6 @@
-import { uiText, discordEmojis, sleep } from "#helpers";
+import { uiText, discordEmojis, sleep, log } from "#helpers";
 import { menus } from "#menus";
 import { DiscordBotToken, ProgramMenuProps } from "#types";
-import log from "consola";
 import ora from "ora";
 
 export async function fetchDiscordEmojis(props: ProgramMenuProps, token: DiscordBotToken){
@@ -16,7 +15,10 @@ export async function fetchDiscordEmojis(props: ProgramMenuProps, token: Discord
     loading.stop();
 
     if (!result.success){
-        log.error(`An error occurred while fetching ${token.name}'s emojis`);
+        log.error(uiText(props.lang, {
+            "en-US": `An error occurred while fetching ${token.name}'s emojis`,
+            "pt-BR": `Ocorreu um erro ao buscar os emojis de ${token.name}`,
+        }));
         await sleep(1000);
         menus.discord.emojis.main(props, token);
         return null;
@@ -24,7 +26,10 @@ export async function fetchDiscordEmojis(props: ProgramMenuProps, token: Discord
 
     const amount = result.data.length;
     if (!amount){
-        log.fail("No emojis to list");
+        log.fail(uiText(props.lang, {
+            "en-US": "No emojis to list",
+            "pt-BR": "Nenhum emoji para listar",
+        }));
         await sleep(1000);
         menus.discord.emojis.main(props, token);
         return null;

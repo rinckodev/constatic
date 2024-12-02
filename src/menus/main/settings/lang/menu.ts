@@ -1,4 +1,4 @@
-import { commonTexts, uiText } from "#helpers";
+import { cliTheme, commonTexts, divider, uiText } from "#helpers";
 import { menus } from "#menus";
 import { Language, ProgramMenuProps } from "#types";
 import { select } from "@inquirer/prompts";
@@ -10,6 +10,7 @@ export async function settingsLangMenu(props: ProgramMenuProps){
             "en-US": "Change CLI language",
             "pt-BR": "Alterar idioma da CLI",
         }),
+        theme: cliTheme,
         choices: [
             {
                 name: "💚 " + uiText(props.lang, {
@@ -31,6 +32,7 @@ export async function settingsLangMenu(props: ProgramMenuProps){
             },
         ]
     });
+    divider();
 
     if (arg === "back"){
         menus.settings.main(props);

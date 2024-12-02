@@ -1,4 +1,4 @@
-import { uiText, sleep, commonTexts, divider } from "#helpers";
+import { uiText, sleep, commonTexts, divider, cliTheme } from "#helpers";
 import { menus } from "#menus";
 import { ProgramMenuProps } from "#types";
 import { select } from "@inquirer/prompts";
@@ -28,6 +28,7 @@ export async function selectDiscordBot(props: ProgramMenuProps){
             "en-US": "Select an application",
             "pt-BR": "Selecione uma aplicação",
         }),
+        theme: cliTheme,
         choices
     });
     divider();

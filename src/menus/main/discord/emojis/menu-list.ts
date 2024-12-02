@@ -1,4 +1,4 @@
-import { sleep } from "#helpers";
+import { sleep, uiText } from "#helpers";
 import { menus } from "#menus";
 import { DiscordBotToken, ProgramMenuProps } from "#types";
 import ck from "chalk";
@@ -9,8 +9,23 @@ export async function discordEmojisListMenu(props: ProgramMenuProps, token: Disc
     const emojis = await fetchDiscordEmojis(props, token);
     if (!emojis) return;
 
+    const cc = {
+        type: uiText(props.lang, 
+            { "en-US": "Type", "pt-BR": "Tipo", },
+            ck.white
+        ),
+        id: uiText(props.lang, 
+            { "en-US": "ID", "pt-BR": "ID", },
+            ck.white
+        ),
+        name: uiText(props.lang, 
+            { "en-US": "Name", "pt-BR": "Nome", },
+            ck.white
+        ),
+    }
+
     const table = new Table({
-        head: [ck.white("Type"), ck.white("ID"), ck.white("Name")],
+        head: [cc.type, cc.id, cc.name],
         style: { compact: true },
     });
 

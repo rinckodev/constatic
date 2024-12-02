@@ -1,7 +1,9 @@
 export * from "./discord/emojis.js";
 
 export * from "./conf.js";
-export * from  "./ui.js";
+export * from "./files.js";
+export * from "./ui.js";
+export * from "./log.js";
 
 import ck from "chalk";
 

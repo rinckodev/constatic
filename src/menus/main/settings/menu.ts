@@ -1,4 +1,4 @@
-import { colors, commonTexts, divider, uiText } from "#helpers";
+import { cliTheme, colors, commonTexts, divider, uiText } from "#helpers";
 import { menus } from "#menus";
 import { ProgramMenuProps } from "#types";
 import { select } from "@inquirer/prompts";
@@ -10,6 +10,7 @@ export async function settingsMenu(props: ProgramMenuProps){
             "pt-BR": "❑ Configurações",
             "en-US": "❑ Settings",
         }, ck.reset.cyan.underline),
+        theme: cliTheme,
         choices: [
             { 
                 name: uiText(props.lang, {

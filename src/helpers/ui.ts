@@ -1,4 +1,5 @@
-import { Language } from "#types";
+import { DeepPartial, Language } from "#types";
+import type { Theme } from "@inquirer/core";
 import ck, { ChalkInstance } from "chalk";
 export { setTimeout as sleep } from "node:timers/promises";
 
@@ -12,6 +13,10 @@ export function commonTexts(lang: Language){
             "en-US": ck.red(`⤶ Back`),
             "pt-BR": ck.red(`⤶ Voltar`),
         }),
+        instructions: uiText(lang, {
+            "en-US": ck.reset.dim(`(Press ${ck.cyan("<space>")} to select, ${ck.cyan("<a>")} to select all and  ${ck.cyan("<enter>")} to proceed)`),
+            "pt-BR": ck.reset.dim(`(Pressione ${ck.cyan("<espaço>")} para selecionar, ${ck.cyan("<a>")} para selecionar tudo e ${ck.cyan("<enter>")} para proceder)`)
+        })
     }
 }
 
@@ -22,3 +27,16 @@ export const colors = {
 export function divider(){
     console.log();
 }
+
+const cliTheme = {
+    style: {
+        message: (text: string) => ck.reset(text),
+        answer: (text: string) => ck.dim(text)
+    }, 
+    prefix: {
+        idle: ck.cyan("◆"),
+        done: ck.green("◇")
+    },
+} satisfies DeepPartial<Theme>;
+
+export { cliTheme };

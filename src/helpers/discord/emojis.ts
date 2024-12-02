@@ -1,5 +1,4 @@
 import type { APIEmoji, DiscordBotToken, FetchResult } from "#types";
-import ck from "chalk";
 
 const baseURL = "https://discord.com/api/v10";
 
@@ -25,7 +24,7 @@ async function getDiscordEmojis(token: DiscordBotToken): Promise<GetDiscordEmoji
 }
 
 
-type CreateDiscordEmojiResult = FetchResult<APIEmoji>;
+type CreateDiscordEmojiResult = FetchResult<APIEmoji, { exists?: boolean }>;
 
 interface CreateDiscordEmojiProps {
     name: string, image: string;
@@ -41,7 +40,7 @@ async function createDiscordEmoji(token: DiscordBotToken, props: CreateDiscordEm
     });
     const data = await response.json();
     if (response.status === 400 && data.code && data.code === 50035) {
-        return { success: false, error: `An emoji named ${ck.underline(props.name)} already exists for this application` }
+        return { success: false, error: data.code, exists: true }
     }
     if (!response.ok) {
         return {

@@ -1,4 +1,4 @@
-import { commonTexts, divider, uiText } from "#helpers";
+import { cliTheme, commonTexts, divider, uiText } from "#helpers";
 import { menus } from "#menus";
 import { DiscordBotToken, ProgramMenuProps } from "#types";
 import { select } from "@inquirer/prompts";
@@ -17,6 +17,7 @@ export async function discordEmojisMenu(props: ProgramMenuProps, token?: Discord
             "en-US": "❑ Manage emojis",
         }, ck.reset.cyan.underline) +
         ck.green(` 🤖 ${token.name}`),
+        theme: cliTheme,
         choices: [
             { 
                 name: uiText(props.lang, {
@@ -68,6 +69,10 @@ export async function discordEmojisMenu(props: ProgramMenuProps, token?: Discord
         }
         case "upload":{
             menus.discord.emojis.upload(props, token);
+            return;
+        }
+        case "delete":{
+            menus.discord.emojis.delete(props, token);
             return;
         }
         case "file":{

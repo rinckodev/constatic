@@ -1,8 +1,10 @@
 import { ProgramMenuProps } from "#types";
 import { select } from "@inquirer/prompts";
-import { divider, uiText } from "#helpers";
+import { cliTheme, divider, uiText } from "#helpers";
 import ck from "chalk";
 import { menus } from "#menus";
+
+"◆ ◇ ◈"
 
 export async function mainMenu(props: ProgramMenuProps){
     const menu = await select({
@@ -10,6 +12,7 @@ export async function mainMenu(props: ProgramMenuProps){
             "pt-BR": "❑ Menu principal",
             "en-US": "❑ Main menu",
         }, ck.reset.cyan.underline),
+        theme: cliTheme,
         choices: [
             { 
                 name: uiText(props.lang, {
