@@ -30,6 +30,7 @@ export function divider(){
 
 export const cliTheme = {
     style: {
+        help: () => "",
         message: (text: string) => ck.reset(text),
         answer: (text: string) => ck.dim(text)
     }, 

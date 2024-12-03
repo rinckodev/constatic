@@ -50,7 +50,7 @@ export async function discordBotMenu(props: ProgramMenuProps) {
         message: uiText(props.lang, {
            "en-US": "🧰 Database preset",
            "pt-BR": "🧰 Predefinição de banco de dados",
-        }) + "\n",
+        }),
         theme: cliTheme,
         choices: [
             { 
@@ -106,7 +106,7 @@ export async function discordBotMenu(props: ProgramMenuProps) {
         theme: {
             prefix: cliTheme.prefix,
             style: {
-                renderSelectedChoices: () => "",
+                renderSelectedChoices: () => ""
             }
         },
         choices: [
