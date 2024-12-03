@@ -28,7 +28,8 @@ export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: Di
                 });
             }
             return true;
-        }
+        },
+        default: "./",
     });
 
     const processing = ora();

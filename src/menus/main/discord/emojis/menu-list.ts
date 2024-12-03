@@ -1,4 +1,4 @@
-import { divider, sleep, uiText } from "#helpers";
+import { cliTableChars, divider, sleep, uiText } from "#helpers";
 import { menus } from "#menus";
 import { DiscordBotToken, ProgramMenuProps } from "#types";
 import ck from "chalk";
@@ -10,30 +10,31 @@ export async function discordEmojisListMenu(props: ProgramMenuProps, token: Disc
     if (!emojis) return;
 
     const cc = {
-        type: uiText(props.lang, 
-            { "en-US": "Type", "pt-BR": "Tipo", },
+        name: uiText(props.lang, 
+            { "en-US": "Name", "pt-BR": "Nome", },
             ck.white
         ),
         id: uiText(props.lang, 
             { "en-US": "ID", "pt-BR": "ID", },
             ck.white
         ),
-        name: uiText(props.lang, 
-            { "en-US": "Name", "pt-BR": "Nome", },
+        type: uiText(props.lang, 
+            { "en-US": "Type", "pt-BR": "Tipo", },
             ck.white
         ),
     }
 
     const table = new Table({
-        head: [cc.type, cc.id, cc.name],
+        head: [cc.name, cc.id, cc.type],
         style: { compact: true },
+        chars: cliTableChars,
     });
 
     emojis.forEach(emoji => table.push([
-        emoji.animated ? ck.magenta("animated") : ck.cyan("static"),
-        ck.green(emoji.id),
         ck.yellow(emoji.name),
-    ]))
+        ck.green(emoji.id),
+        emoji.animated ? ck.magenta("animated") : ck.cyan("static"),
+    ]));
 
     console.log(table.toString());
     divider();

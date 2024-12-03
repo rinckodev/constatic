@@ -10,8 +10,8 @@ export function uiText(lang: Language, texts: Record<Language, string>, style?: 
 export function commonTexts(lang: Language){
     return {
         back: uiText(lang, {
-            "en-US": ck.red(`⤶ Back`),
-            "pt-BR": ck.red(`⤶ Voltar`),
+            "en-US": ck.red.dim(`⤶ Back`),
+            "pt-BR": ck.red.dim(`⤶ Voltar`),
         }),
         instructions: uiText(lang, {
             "en-US": ck.reset.dim(`(Press ${ck.cyan("<space>")} to select, ${ck.cyan("<a>")} to select all and  ${ck.cyan("<enter>")} to proceed)`),
@@ -28,7 +28,7 @@ export function divider(){
     console.log();
 }
 
-const cliTheme = {
+export const cliTheme = {
     style: {
         message: (text: string) => ck.reset(text),
         answer: (text: string) => ck.dim(text)
@@ -39,4 +39,9 @@ const cliTheme = {
     },
 } satisfies DeepPartial<Theme>;
 
-export { cliTheme };
+export const cliTableChars = {
+    "top-left": "╭",
+    "top-right": "╮",
+    "bottom-right": "╯",
+    "bottom-left": "╰",
+}

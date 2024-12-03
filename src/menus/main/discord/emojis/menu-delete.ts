@@ -19,7 +19,7 @@ export async function discordEmojisDeleteMenu(props: ProgramMenuProps, token: Di
         value: index,
     }));
 
-    const indexList = await checkbox({
+    const selected = await checkbox({
         message: [
             uiText(props.lang, {
                 "en-US": "Select the emojis you want to delete",
@@ -39,7 +39,17 @@ export async function discordEmojisDeleteMenu(props: ProgramMenuProps, token: Di
     });
     divider();
 
-    const amountText = ck.underline(`${indexList.length} emoji${indexList.length > 1 ? "s" : ""}`);
+    if (selected.length < 1){
+        log.warn(uiText(props.lang, {
+           "en-US": "No emoji selected, back to emojis menu",
+           "pt-BR": "Nenhum emoji selecionado, voltando ao menu de emojis",
+        }));
+        await sleep(500);
+        menus.discord.emojis.main(props);
+        return;
+    }
+
+    const amountText = ck.underline(`${selected.length} emoji${selected.length > 1 ? "s" : ""}`);
 
     log.warn(uiText(props.lang, {
         "en-US": `You are about to delete ${amountText}!`,
@@ -59,7 +69,7 @@ export async function discordEmojisDeleteMenu(props: ProgramMenuProps, token: Di
         return;
     }
 
-    for (const index of indexList) {
+    for (const index of selected) {
         const emoji = emojis[index];
         const name = ck.yellow.underline(emoji.name);
         const deleting = ora();

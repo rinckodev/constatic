@@ -36,7 +36,7 @@ export async function settingsMenu(props: ProgramMenuProps){
     
     switch(menu){
         case "discord/bot/tokens":{
-
+            menus.settings.tokens.main(props);
             return;
         }
         case "lang":{
