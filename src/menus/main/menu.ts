@@ -48,7 +48,7 @@ export async function mainMenu(props: ProgramMenuProps){
     
     switch(menu){
         case "discord/bot":{
-
+            menus.discord.bot(props);
             return;
         }
         case "discord/emojis":{

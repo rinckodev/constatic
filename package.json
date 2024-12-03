@@ -51,8 +51,9 @@
   },
   "license": "ISC",
   "devDependencies": {
+    "@types/cross-spawn": "^6.0.6",
     "@types/fs-extra": "^11.0.4",
-    "@types/lodash": "^4.17.10",
+    "@types/lodash": "^4.17.13",
     "@types/node": "^20.14.13",
     "tsx": "^4.16.2",
     "typescript": "^5.7.2"
@@ -65,9 +66,11 @@
     "cli-table3": "^0.6.5",
     "conf": "12.0.0",
     "consola": "^3.2.3",
+    "cross-spawn": "^7.0.6",
     "fast-glob": "3.3.2",
     "fs-extra": "11.2.0",
     "inquirer-file-selector": "0.6.0",
+    "lodash": "^4.17.21",
     "moderndash": "^4.0.0",
     "ora": "^8.1.1",
     "pkg-types": "^1.2.1",

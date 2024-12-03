@@ -12,5 +12,8 @@ export const log = {
     },
     warn<T>(...data: T[]){
         console.log(`${ck.yellow("▲")}`, ...data)
+    },
+    custom<T>(prefix: string, ...data: T[]){
+        console.log(prefix, ...data)
     }
 }

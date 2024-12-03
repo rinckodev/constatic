@@ -1,3 +1,4 @@
+import { discordBotMenu } from "./main/discord/bot/menu.js";
 import { discordEmojisDeleteMenu } from "./main/discord/emojis/menu-delete.js";
 import { discordEmojisFileMenu } from "./main/discord/emojis/menu-file.js";
 import { discordEmojisListMenu } from "./main/discord/emojis/menu-list.js";
@@ -15,6 +16,7 @@ import { settingsTokensMenu } from "./main/settings/tokens/menu.js";
 export const menus = {
     main: mainMenu,
     discord: {
+        bot: discordBotMenu,
         emojis: {
             main: discordEmojisMenu,
             list: discordEmojisListMenu,
