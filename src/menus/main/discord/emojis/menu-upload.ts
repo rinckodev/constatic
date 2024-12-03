@@ -118,24 +118,24 @@ export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: Di
         theme: cliTheme,
         choices: [
             {
-                name: "✍️ " + uiText(props.lang, {
+                name: ck.green("✎ ") + uiText(props.lang, {
                    "en-US": "Overwrite if exists",
                    "pt-BR": "Sobrescrever se existir",
-                }),
+                }, ck.green),
                 value: "all",
             },
             {
-                name: "❔ " + uiText(props.lang, {
+                name: ck.cyan("▣ ") + uiText(props.lang, {
                    "en-US": "Ask before overwrite",
                    "pt-BR": "Perguntar antes de sobrescrever",
-                }),
+                }, ck.cyan),
                 value: "ask",
             },
             {
-                name: "🔏 " + uiText(props.lang, {
+                name: ck.blue("◎ ") + uiText(props.lang, {
                    "en-US": "Skip and do not overwrite",
                    "pt-BR": "Pular e não sobrescrever",
-                }),
+                }, ck.blue),
                 value: "skip",
             },
         ],
@@ -177,7 +177,6 @@ export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: Di
                     });
 
                     if (!proceed) continue;
-                    
                     await deleteEmoji();
                     break;
                 }
@@ -203,7 +202,7 @@ export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: Di
             log.fail(uiText(props.lang, {
                 "en-US": `An emoji named ${emojiName} already exists for this application!`,
                 "pt-BR": `Um emoji chamado ${emojiName} já existe para essa aplicação!`,
-            }, ck.red))
+            }, ck.red));
             continue;
         }
 
@@ -216,8 +215,8 @@ export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: Di
         }
 
         log.success(uiText(props.lang, {
-            "en-US": `${ck.bgGreen(existing ? " Overwrited " : " Created ")} ${emojiName} emoji ${existing ? "overwrited" : "created"} successfully!`,
-            "pt-BR": `${ck.bgGreen(existing ? " Sobrescrito " : " Criado ")} Emoji ${emojiName} ${existing ? "sobrescrito" : "criado"} com sucesso!`,
+            "en-US": `${ck.bgGreen.white(existing ? " Overwrited " : " Created ")} ${emojiName} emoji ${existing ? "overwrited" : "created"} successfully!`,
+            "pt-BR": `${ck.bgGreen.white(existing ? " Sobrescrito " : " Criado ")} Emoji ${emojiName} ${existing ? "sobrescrito" : "criado"} com sucesso!`,
         }, ck.green));
     }
 

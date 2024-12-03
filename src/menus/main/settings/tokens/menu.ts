@@ -22,8 +22,8 @@ export async function settingsTokensMenu(props: ProgramMenuProps){
             },
             { 
                 name: uiText(props.lang, {
-                    "en-US": "⇡ New token",
-                    "pt-BR": "⇡ Novo token",
+                    "en-US": "✎ New token",
+                    "pt-BR": "✎ Novo token",
                 }, ck.green),
                 value: "new" 
             },

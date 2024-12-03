@@ -89,8 +89,8 @@ export async function discordEmojisDeleteMenu(props: ProgramMenuProps, token: Di
             continue;
         }
         log.success(uiText(props.lang, {
-            "en-US": `${ck.bgRed(" Deleted ")} Emoji ${name} deleted successfully!`,
-            "pt-BR": `${ck.bgRed(" Excluído ")} Emoji ${name} excluído com sucesso!`
+            "en-US": `${ck.bgRed.white(" Deleted ")} Emoji ${name} deleted successfully!`,
+            "pt-BR": `${ck.bgRed.white(" Excluído ")} Emoji ${name} excluído com sucesso!`
         }, ck.green));
     }
     
