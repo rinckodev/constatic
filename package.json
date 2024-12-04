@@ -1,6 +1,6 @@
 {
   "name": "constatic",
-  "version": "0.7.4",
+  "version": "0.8.0",
   "description": "Constatic cli",
   "main": "build/index.js",
   "type": "module",
@@ -71,7 +71,6 @@
     "fs-extra": "11.2.0",
     "inquirer-file-selector": "0.6.0",
     "lodash": "^4.17.21",
-    "moderndash": "^4.0.0",
     "ora": "^8.1.1",
     "pkg-types": "^1.2.1",
     "tasuku": "^2.0.1"

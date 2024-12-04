@@ -3,15 +3,28 @@ import "#helpers";
 import ck from "chalk";
 import path from "node:path";
 import { readPackageJSON } from "pkg-types";
-import * as utils from "moderndash";
-import { runMain } from "citty";
+import * as citty from "citty";
 import { menus } from "#menus";
-import { initConf } from "#helpers";
+import { initConf, log, uiText } from "#helpers";
+import lodash from "lodash";
 
 const cliroot = path.join(import.meta.dirname, "..");
 const packageJson = await readPackageJSON(path.join(cliroot, "package.json"));
 
 const conf = initConf(packageJson.name);
+const lang = conf.get("lang");
+
+if (process.versions.node < "20.11"){
+    log.error(uiText(lang, {
+       "en-US": "Required node version: 20.11 or higher",
+       "pt-BR": "Versão do node necessária: 20.11 ou superior",
+    }));
+    console.log(uiText(lang, {
+       "en-US": `Your node version: ${process.versions.node}`,
+       "pt-BR": `A versão do seu node: ${process.versions.node}`,
+    }));
+    process.exit(1);
+}
 
 console.log(
     ck.blue("💎 Constatic CLI"), "📦",
@@ -19,13 +32,9 @@ console.log(
     "\n"
 );
 
-runMain({
-    meta: utils.pick(packageJson, ["name", "version", "description"]),
+citty.runMain({
+    meta: lodash.pick(packageJson, ["name", "version", "description"]),
     run() {
-        menus.main({ 
-            cliroot, conf,
-            lang: conf.get("lang"), 
-            cwd: process.cwd()
-        });
+        menus.main({ cliroot, conf, lang, cwd: process.cwd() });
     },
 });

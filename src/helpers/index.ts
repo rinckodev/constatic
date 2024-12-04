@@ -13,12 +13,15 @@ import ck from "chalk";
 
 export const byeMessage = [
     `👋 Discord: ${ck.blue("http://discord.gg/tTu8dGN")}`,
-    `😺 ${ck.cyan("Github")} and ${ck.red("youtube")}: @rinckodev`,
+    `😺 ${ck.cyan("Github")} / ${ck.red("youtube")}: @rinckodev`,
 ].join("\n")
 
 function onCancel(error: any){
-    if (error.name !== "ExitPromptError") return;
+    if (error.name !== "ExitPromptError") {
+        throw error;
+    };
     console.log(byeMessage);
+    console.log();
     process.exit(0);
 }
 

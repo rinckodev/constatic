@@ -1,6 +1,6 @@
 import { ProgramMenuProps } from "#types";
 import { select } from "@inquirer/prompts";
-import { cliTheme, divider, uiText } from "#helpers";
+import { byeMessage, cliTheme, divider, uiText } from "#helpers";
 import ck from "chalk";
 import { menus } from "#menus";
 
@@ -57,9 +57,10 @@ export async function mainMenu(props: ProgramMenuProps){
             menus.settings.main(props);
             return;
         }
-        case "discord/emojis/manage":{
-
-            return;
+        case "quit":{
+            console.log(byeMessage);
+            divider();
+            process.exit(0);
         }
     }
 }

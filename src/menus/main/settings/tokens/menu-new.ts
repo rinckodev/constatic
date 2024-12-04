@@ -13,6 +13,16 @@ export async function settingsTokensNewMenu(props: ProgramMenuProps) {
         }),
         theme: cliTheme,
         mask: "*",
+        validate(value) {
+            const message = uiText(props.lang, {
+                "en-US": "You need to provide the token for your bot application.",
+                "pt-BR": "É necessário informar o token da sua aplicação de bot",
+            });
+            if (!value){
+                return message;
+            }
+            return true;
+        },
     });
 
     const tokens = props.conf.get("discord.bot.tokens", []);
