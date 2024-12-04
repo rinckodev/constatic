@@ -14,6 +14,7 @@ export async function selectDiscordBot(props: ProgramMenuProps){
         }));
         await sleep(1400);
         menus.main(props);
+        return;
     }
 
     const choices = tokens.map((token, index) => ({
