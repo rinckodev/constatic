@@ -6,8 +6,8 @@ import ck from "chalk";
 import log from "consola";
 
 export async function selectDiscordBot(props: ProgramMenuProps){
-    const tokens = props.conf.get("discord.bot.tokens");
-    if (!tokens.length){
+    const tokens = props.conf.get("discord.bot.tokens", []);
+    if (!tokens?.length){
         log.warn(uiText(props.lang, {
             "en-US": "You don't have any tokens saved yet! Go to the settings in the main menu.",
             "pt-BR": "Você não tem nenhum token salvo ainda! Acesse as configurações no menu principal",
