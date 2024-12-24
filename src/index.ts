@@ -7,8 +7,12 @@ import * as citty from "citty";
 import { menus } from "#menus";
 import { initConf, log, uiText } from "#helpers";
 import lodash from "lodash";
+import { fileURLToPath } from "url";
 
-const cliroot = path.join(import.meta.dirname, "..");
+const cliroot = import.meta.dirname 
+    ? path.join(import.meta.dirname, "..")
+    : path.dirname(path.join(fileURLToPath(import.meta.url), ".."));
+
 const packageJson = await readPackageJSON(path.join(cliroot, "package.json"));
 
 const conf = initConf(packageJson.name);

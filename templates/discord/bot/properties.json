@@ -68,14 +68,48 @@
       "icon": "🔷",
       "hint": "orm",
       "isOrm": true,
-      "disabled": true,
-      "packageJson":{},
+      "disabled": false,
+      "packageJson":{
+        "devDependencies":{
+          "prisma": "^6.1.0"
+        }
+      },
       "databases": [
         {
           "name": "MySQL",
           "icon": "🐬",
           "hint": "sql",
           "path": "prisma/mysql",
+          "env":{
+            "schema": "DATABASE_URL: z.string({ description: \"Database URL is required\" }).min(1),",
+            "file":"DATABASE_URL=mysql://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
+          },
+          "isOrm": false,
+          "dependencies": {
+          }
+        },
+        {
+          "name": "PostgreSQL",
+          "icon": "🐘",
+          "hint": "sql",
+          "path": "prisma/postgres",
+          "env":{
+            "schema": "DATABASE_URL: z.string({ description: \"Database URL is required\" }).min(1),",
+            "file":"DATABASE_URL=postgresql://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
+          },
+          "isOrm": false,
+          "dependencies": {
+          }
+        },
+        {
+          "name": "MongoDb",
+          "icon": "🍃",
+          "hint": "nosql",
+          "path": "prisma/mongodb",
+          "env":{
+            "schema": "DATABASE_URL: z.string({ description: \"Database URL is required\" }).min(1),",
+            "file":"DATABASE_URL=mongodb://<USERNAME>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
+          },
           "isOrm": false,
           "dependencies": {
           }

@@ -31,8 +31,14 @@ export async function installDeps({ lang, command, distpath, spinner }: InstallD
         case "fail":
         case "error": {
             log[result.status](uiText(lang, {
-               "en-US": "❌ Unable to install dependencies!",
-               "pt-BR": "❌ Não foi possível instalar dependências!",
+               "en-US": [
+                "❌ Unable to install dependencies!",
+                `Install manually using ${command} install`
+               ].join("\n"),
+               "pt-BR": [
+                "❌ Não foi possível instalar dependências!",
+                `Instale manualmente usando ${command} install`
+               ].join("\n"),
             }));
             if (result.status === "error") log.error(result.error.message);
             break;

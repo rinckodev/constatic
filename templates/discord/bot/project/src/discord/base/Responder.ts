@@ -77,7 +77,6 @@ export class Responder<Path extends string, Type extends ResponderType, Schema, 
         interaction.isModalSubmit() ? ResponderType.Modal : undefined;
     }
     public static async onInteraction(interaction: MessageComponentInteraction | ModalSubmitInteraction, onError?: ResponderErrorHandler){
-        console.time("Responder time");
         const responderType = Responder.getResponderType(interaction);
         if (!responderType) return;
 

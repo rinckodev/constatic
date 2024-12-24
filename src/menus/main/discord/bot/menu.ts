@@ -77,20 +77,12 @@ export async function discordBotMenu(props: ProgramMenuProps) {
            "pt-BR": `${dbPreset.icon} Selecione a predefinição de banco de dados ${dbPreset.name}`,
         }),
         theme: cliTheme,
-        choices: [
-            { 
-                name: uiText(props.lang, {
-                   "en-US": "None",
-                   "pt-BR": "Nenhum",
-                }, ck.red.dim), value: -1 
-            },
-            dbPreset.databases
-            .filter(preset => preset.disabled !== true)
-            .map((preset, index) =>({
-                name: `${preset.icon} ${preset.name} ${ck.dim(`(${preset.hint})`)}`,
-                value: index,
-            }))
-        ].flat(),
+        choices: dbPreset.databases
+        .filter(preset => preset.disabled !== true)
+        .map((preset, index) =>({
+            name: `${preset.icon} ${preset.name} ${ck.dim(`(${preset.hint})`)}`,
+            value: index,
+        }))
     }) : -1
     if (dbPreset?.isOrm) divider();
 
