@@ -64,12 +64,48 @@
       }
     },
     {
+      "name": "MySQL",
+      "icon": "🐬",
+      "hint": "sql",
+      "path": "mysql",
+      "env":{
+        "schema": "MYSQL_USER: z.string().min(1),\n    MYSQL_PASSWORD: z.string().min(1),\n    MYSQL_HOST: z.string().min(1),\n    MYSQL_PORT: z.number({ coerce: true }).min(1),\n    MYSQL_DATABASE: z.string().min(1),",
+        "file":"MYSQL_USER=\nMYSQL_PASSWORD=\nMYSQL_HOST=\nMYSQL_PORT=3306\nMYSQL_DATABASE="
+      },
+      "isOrm": false,
+      "packageJson":{
+        "dependencies": {
+          "mysql2": "^3.12.0"
+        }
+      }
+    },
+    {
+      "name": "MariaDb",
+      "icon": "🦭",
+      "hint": "sql",
+      "path": "mariadb",
+      "env":{
+        "schema": "MARIADB_USER: z.string().min(1),\n    MARIADB_PASSWORD: z.string().min(1),\n    MARIADB_HOST: z.string().min(1),\n    MARIADB_PORT: z.number({ coerce: true }).min(1),\n    MARIADB_DATABASE: z.string().min(1),",
+        "file":"MARIADB_USER=\nMARIADB_PASSWORD=\nMARIADB_HOST=\nMARIADB_PORT=3306\nMARIADB_DATABASE="
+      },
+      "isOrm": false,
+      "packageJson":{
+        "dependencies": {
+          "mariadb": "^3.4.0"
+        }
+      }
+    },
+    {
       "name": "Prisma",
       "icon": "🔷",
       "hint": "orm",
       "isOrm": true,
       "disabled": false,
       "packageJson":{
+        "scripts": {
+          "prestart": "prisma migrate deploy",
+          "postinstall": "prisma generate"
+        },
         "devDependencies":{
           "prisma": "^6.1.0"
         }
@@ -85,8 +121,7 @@
             "file":"DATABASE_URL=mysql://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
           },
           "isOrm": false,
-          "dependencies": {
-          }
+          "packageJson": {}
         },
         {
           "name": "PostgreSQL",
@@ -98,8 +133,7 @@
             "file":"DATABASE_URL=postgresql://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
           },
           "isOrm": false,
-          "dependencies": {
-          }
+          "packageJson": {}
         },
         {
           "name": "MongoDb",
@@ -111,8 +145,7 @@
             "file":"DATABASE_URL=mongodb://<USERNAME>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
           },
           "isOrm": false,
-          "dependencies": {
-          }
+          "packageJson": {}
         }
       ]
     },
@@ -130,7 +163,7 @@
           "hint": "sql",
           "path": "drizzle/mysql",
           "isOrm": false,
-          "dependencies": {
+          "packageJson": {
           }
         }
       ]
