@@ -2,8 +2,8 @@ import { join } from "node:path";
 
 declare global {
 	const animated: true;
-	const fetchReply: true;
-	const ephemeral: true;
+	const withResponse: true;
+	const flags: ["Ephemeral"];
 	const required: true;
 	const inline: true;
 	const disabled: true;
@@ -13,8 +13,8 @@ declare global {
 
 Object.assign(globalThis, Object.freeze({
 	animated: true,
-	fetchReply: true,
-	ephemeral: true,
+	withResponse: true,
+	flags: ["Ephemeral"],
 	required: true,
 	inline: true,
 	disabled: true,

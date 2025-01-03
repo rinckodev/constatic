@@ -6,7 +6,7 @@ import { log } from "#settings";
 import ck from "chalk";
 import path from "node:path";
 
-export async function bootstrapServer(client: Client<true>){
+export async function startServer(client: Client<true>){
     const app = fastify();
     app.addHook("onRoute", route => {
         if (route.method === "HEAD" || route.method === "OPTIONS") return;

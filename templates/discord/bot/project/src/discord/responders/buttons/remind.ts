@@ -1,15 +1,17 @@
-import { Responder, ResponderType } from "#base";
+import { createResponder, ResponderType } from "#base";
 import { time } from "discord.js";
 import { z } from "zod";
 
 const schema = z.object({
     date: z.coerce.date(),
 });
-new Responder({
-    customId: "remind/:date",
-    type: ResponderType.Button,
-    parse: params => schema.parse(params),
-    run(interaction, { date }) {
-        interaction.reply({ ephemeral, content: `You run ping command ${time(date, "R")}` });
+createResponder({
+    customId: "remind/:date", 
+    types: [ResponderType.Button], 
+    parse: schema.parse, cache: "cached",
+    async run(interaction, { date }) {
+        await interaction.reply({ flags, 
+            content: `You run ping command ${time(date, "R")}` 
+        });
     },
 });

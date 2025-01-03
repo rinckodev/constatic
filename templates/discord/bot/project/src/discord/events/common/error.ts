@@ -1,7 +1,7 @@
-import { Event } from "#base";
+import { createEvent } from "#base";
 import { log } from "#settings";
 
-new Event({
+createEvent({
     name: "Error handler",
     event: "error",
     async run(error) {

@@ -1,7 +1,7 @@
-import { bootstrapApp } from "#base";
-import { bootstrapServer } from "#server";
+import { bootstrap } from "#base";
+import { startServer } from "#server";
 
-await bootstrapApp({ 
-    workdir: import.meta.dirname,
-    whenReady: bootstrapServer
+await bootstrap({ 
+    meta: import.meta,
+    whenReady: startServer
 });

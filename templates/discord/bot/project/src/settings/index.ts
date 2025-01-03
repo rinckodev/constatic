@@ -2,10 +2,12 @@ import settings from "../../settings.json" with { type: "json" };
 import { envSchema, type EnvSchema } from "./env.js";
 import { brBuilder } from "@magicyan/discord";
 import chalk from "chalk";
-import log from "consola";
+import { createConsola } from "consola";
 
-export * from "./error.js";
 import "./global.js";
+export * from "./error.js";
+
+const log = createConsola();
 
 export { settings, log };
 

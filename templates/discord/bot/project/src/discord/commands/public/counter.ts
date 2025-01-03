@@ -1,8 +1,8 @@
-import { Command, Responder, ResponderType } from "#base";
+import { createCommand, createResponder, ResponderType } from "#base";
 import { createEmbed, createEmbedAuthor, createRow } from "@magicyan/discord";
 import { ApplicationCommandType, ButtonBuilder, ButtonStyle, InteractionReplyOptions, User } from "discord.js";
 
-new Command({
+createCommand({
     name: "counter",
     description: "Counter command 🔢",
     type: ApplicationCommandType.ChatInput,
@@ -11,16 +11,16 @@ new Command({
     }
 });
 
-new Responder({
+createResponder({
     customId: "counter/:current",
-    type: ResponderType.Button, cache: "cached",
-    run(interaction, { current }) {
+    types: [ResponderType.Button], cache: "cached",
+    async run(interaction, { current }) {
         const parsed = Number.parseInt(current);
-        interaction.update(counterMenu(interaction.user, parsed));
+        await interaction.update(counterMenu(interaction.user, parsed));
     },
 });
 
-function counterMenu(user: User, current: number) {    
+function counterMenu<R>(user: User, current: number): R {    
     const embed = createEmbed({
         author: createEmbedAuthor(user),
         color: "Random",
@@ -38,7 +38,8 @@ function counterMenu(user: User, current: number) {
             }),
         )
     ];
-    return { 
-        ephemeral, embeds: [embed], components
-    } satisfies InteractionReplyOptions;
+
+    return ({
+        flags, embeds: [embed], components
+    } satisfies InteractionReplyOptions) as R;
 }

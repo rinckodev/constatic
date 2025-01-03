@@ -1,3 +1,3 @@
-import { bootstrapApp } from "#base";
+import { bootstrap } from "#base";
 
-await bootstrapApp({ workdir: import.meta.dirname });
+await bootstrap({ meta: import.meta });

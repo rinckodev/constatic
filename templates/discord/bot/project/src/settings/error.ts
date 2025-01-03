@@ -4,7 +4,7 @@ import settings from "../../settings.json" with { type: "json" };
 import log from "consola";
 import chalk from "chalk";
 
-export async function onError(error: any, client: Client<true>){
+export async function baseErrorHandler(error: any, client: Client<true>){
     log.log(client.user.displayName);
     log.error(error);
 

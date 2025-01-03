@@ -1,3 +1,5 @@
+import { RecordKey } from "../base.types.js";
+
 interface StoreOptions {
     clearTime?: number;
 }
@@ -5,20 +7,17 @@ interface StoreSetOptions {
     time?: number;
     beforeEnd?(): boolean;
 }
-export class Store<V, K extends string | number | symbol = string>{
-    private store = new Map<K, V>();
+export class Store<V, K extends RecordKey = string> extends Map<K, V> {
     private clearTime?: number;
-    constructor(options: StoreOptions = {}){
-        this.clearTime = options.clearTime;
-    }
-    public get size(){
-        return this.store.size;
-    }
     public get defaultClearTime(){
         return this.clearTime;
     }
-    public set(key: K, value: V, options: StoreSetOptions = {}){
-        this.store.set(key, value);
+    constructor(options: StoreOptions = {}){
+        super();
+        this.clearTime = options.clearTime;
+    }
+    override set(key: K, value: V, options: StoreSetOptions = {}){
+        super.set(key, value);
         if (options.time ?? this.clearTime){
             setTimeout(() => {
                 if (!options.beforeEnd){
@@ -31,17 +30,6 @@ export class Store<V, K extends string | number | symbol = string>{
                 }
             }, options.time ?? this.clearTime);
         }
-    }
-    public delete(key: K){
-        this.store.delete(key);
-    }
-    public get(key: K): V | undefined {
-        return this.store.get(key);
-    }
-    public has(key: K){
-        return this.store.has(key);
-    }
-    public getMap(){
-        return this.store;
+        return this;
     }
 }

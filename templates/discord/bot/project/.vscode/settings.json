@@ -47,6 +47,7 @@
   "typescript.suggest.autoImports": true,
   "window.title": "${rootName}${separator}",
   "files.autoSave": "afterDelay",
+  "typescript.experimental.expandableHover": true,
   "files.readonlyInclude": {
     "node_modules/**": true,
     "build/**": true,

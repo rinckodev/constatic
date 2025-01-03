@@ -10,7 +10,7 @@ export const serverInfo = {
     baseURL: process.env.SERVER_BASE_URL
 };
 
-export function bootstrapServer(client: Client<true>){
+export function startServer(client: Client<true>){
     const app = express();
     app.use(express.json(), cors());
 

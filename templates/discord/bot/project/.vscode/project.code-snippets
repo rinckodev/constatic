@@ -1,11 +1,11 @@
 {
 	"Slash Command": {
-		"prefix": "new.command",
+		"prefix": ["new.command", "create.command"],
 		"scope":"typescript",
 		"body": [
-			"new Command({",
+			"createCommand({",
 			"    name: \"$1\",",
-			"    description: \"$2\",",
+			"    description: \"app command\",",
 			"    type: ApplicationCommandType.ChatInput,",
 			"    async run(interaction){",
 			"        $3",
@@ -15,12 +15,12 @@
 		"description": "Create a new Slash Command"
 	},
 	"Slash Command with options": {
-		"prefix": "new.command.options",
+		"prefix": ["new.command.options", "create.command.options"],
 		"scope":"typescript",
 		"body": [
-			"new Command({",
+			"createCommand({",
 			"    name: \"$1\",",
-			"    description: \"$2\",",
+			"    description: \"app command\",",
 			"    type: ApplicationCommandType.ChatInput,",
 			"    options: [",
 			"        {",
@@ -38,22 +38,22 @@
 		"description": "Create a new Slash Command with options"
 	},
 	"Slash Command option": {
-		"prefix": "new.option",
+		"prefix": ["new.option"],
 		"scope":"typescript",
 		"body": [
 			"{",
 			"    name: \"$1\",",
-			"    description: \"$2\",",
+			"    description: \"command option\",",
 			"    type: ApplicationCommandOptionType.$3,",
 			"}",
 		],
 		"description": "Create a new Slash Command with options"
 	},
 	"User Context Command": {
-		"prefix": "new.command.user",
+		"prefix": ["new.command.user", "create.command.user"],
 		"scope":"typescript",
 		"body": [
-			"new Command({",
+			"createCommand({",
 			"    name: \"$1\",",
 			"    type: ApplicationCommandType.User,",
 			"    async run(interaction){",
@@ -64,10 +64,10 @@
 		"description": "Create a new User Context Command"
 	},
 	"Message Context Command": {
-		"prefix": "new.command.message",
+		"prefix": ["new.command.message", "create.command.message"],
 		"scope":"typescript",
 		"body": [
-			"new Command({",
+			"createCommand({",
 			"    name: \"$1\",",
 			"    type: ApplicationCommandType.Message,",
 			"    async run(interaction){",
@@ -78,12 +78,12 @@
 		"description": "Create a new Message Context Command"
 	},
 	"Responder": {
-		"prefix": "new.responder",
+		"prefix": ["new.responder", "create.responder"],
 		"scope":"typescript",
 		"body": [
-			"new Responder({",
-			"    customId: \"example/component/button\",",
-			"    type: ResponderType.$1, cache: \"cached\",",
+			"createResponder({",
+			"    customId: \"context/action\",",
+			"    types: [ResponderType.Button], cache: \"cached\",",
 			"    async run(interaction) {",
 			"        ",
 			"    },",
@@ -92,12 +92,12 @@
 		"description": "Create a new responder"
 	},
 	"Responder Params": {
-		"prefix": "new.Responder.params",
+		"prefix": ["new.responder.params", "create.responder.params"],
 		"scope":"typescript",
 		"body": [
-			"new Responder({",
+			"createResponder({",
 			"    customId: \"users/:userId/:action\",",
-			"    type: ResponderType.ActionRow, cache: \"cached\",",
+			"    types: [ResponderType.Button], cache: \"cached\",",
 			"    async run(interaction, { userId, action }) {",
 			"        ",
 			"    },",
@@ -106,12 +106,12 @@
 		"description": "Create a new responder with params"
 	},
 	"Event": {
-		"prefix": "new.event",
+		"prefix": ["new.event", "create.event"],
 		"scope":"typescript",
 		"body": [
-			"import { Event } from \"#base\";",
+			"import { createEvent } from \"#base\";",
 			"",
-			"new Event({",
+			"createEvent({",
 			"    name: \"$1\",",
 			"    event: \"$2\",",
 			"    $3",
@@ -120,7 +120,7 @@
 		"description": "Create a new event"
 	},
 	"Create Row With Buttons": {
-		"prefix": "createrow.buttons",
+		"prefix": "create.row.buttons",
 		"scope":"typescript",
 		"body": [
 			"createRow(",
@@ -182,5 +182,34 @@
 			"const { values, member, guild } = interaction;"
 		],
 		"description": "Extract select interaction properties"
-	}
+	},
+	"Create a interactive menu function": {
+		"prefix": ["new.menu", "create.menu"],
+		"scope":"typescript",
+		"body": [
+			"import { ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from \"discord.js\";",
+			"import { createEmbed, createRow } from \"@magicyan/discord\";",
+			"",
+			"export function ${TM_FILENAME_BASE}Menu<R>(): R {",
+			"    const embed = createEmbed({",
+			"        description: \"Menu\"",
+			"    });",
+			"",
+			"    const row = createRow(",
+			"        new ButtonBuilder({",
+			"            customId: \"menu/action\",",
+			"            label: \">\", ",
+			"            style: ButtonStyle.Success",
+			"        })",
+			"    );",
+			"",
+			"    return ({",
+			"        flags,",
+			"        embeds: [embed],",
+			"        components: [row] " ,
+			"    } satisfies InteractionReplyOptions) as R;",
+			"}"
+		],
+		"description": "Extract select interaction properties"
+	},
 }
