@@ -14,9 +14,13 @@ createCommand({
 createResponder({
     customId: "counter/:current",
     types: [ResponderType.Button], cache: "cached",
+    parse: params => ({ 
+        current: Number.parseInt(params.current) 
+    }),
     async run(interaction, { current }) {
-        const parsed = Number.parseInt(current);
-        await interaction.update(counterMenu(interaction.user, parsed));
+        await interaction.update(
+            counterMenu(interaction.user, current)
+        );
     },
 });
 

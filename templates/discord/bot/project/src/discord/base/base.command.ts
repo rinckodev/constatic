@@ -1,9 +1,9 @@
-import { ApplicationCommandType, AutocompleteInteraction, CacheType, ChatInputApplicationCommandData, ChatInputCommandInteraction, Client, CommandInteraction, MessageApplicationCommandData, MessageContextMenuCommandInteraction, UserApplicationCommandData, UserContextMenuCommandInteraction } from "discord.js";
-import { baseStorage } from "./base.storage.js";
-import { ContextName, SlashName } from "./base.types.js";
-import ck from "chalk";
 import { log } from "#settings";
 import { brBuilder } from "@magicyan/discord";
+import ck from "chalk";
+import { ApplicationCommand, ApplicationCommandType, AutocompleteInteraction, CacheType, ChatInputApplicationCommandData, ChatInputCommandInteraction, Client, Collection, CommandInteraction, MessageApplicationCommandData, MessageContextMenuCommandInteraction, UserApplicationCommandData, UserContextMenuCommandInteraction } from "discord.js";
+import { baseStorage } from "./base.storage.js";
+import { ContextName, SlashName } from "./base.types.js";
 
 export type CommandType = Exclude<ApplicationCommandType, ApplicationCommandType.PrimaryEntryPoint>;
 type Cache<D extends boolean> = D extends false ? "cached" : CacheType;
@@ -90,18 +90,25 @@ export async function baseRegisterCommands(client: Client<true>) {
             .map(c => Array.from(c.values()));
         
         await client.application.commands.set(globalCommands)
-            .then(({ size }) => Boolean(size) &&
-                messages.push(ck.greenBright(
-                    `⤿ ${size} command${plural(size)} successfully registered globally!`
-                ))
-            );
+        .then(commands => {
+            if (!commands.size) return;
+            messages.push(ck.greenBright(
+                `⤿ ${commands.size} command${plural(commands.size)} successfully registered globally!`
+            ));
+            if (baseStorage.config.commands.verboose){
+                messages.push(...verbooseLogs(commands));
+            }
+        });
         for (const guild of guilds.values()) {
             await guild.commands.set(guildCommands)
-            .then(({ size }) => Boolean(size) &&
+            .then(commands => {
                 messages.push(ck.greenBright(
-                    `⤿ ${size} command${plural(size)} registered in ${ck.underline(guild.name)} guild successfully!`
+                    `⤿ ${commands.size} command${plural(commands.size)} registered in ${ck.underline(guild.name)} guild successfully!`
                 ))
-            );
+                if (baseStorage.config.commands.verboose){
+                    messages.push(...verbooseLogs(commands));
+                }
+            });
         }
         log.log(brBuilder(messages));
         return;
@@ -111,13 +118,31 @@ export async function baseRegisterCommands(client: Client<true>) {
     }
     const commands = Array.from(baseStorage.commands.values());
     await client.application.commands.set(commands)
-    .then(({ size }) => 
+    .then(commands => {
         messages.push(ck.greenBright(
-            `⤿ ${size} command${plural(size)} successfully registered globally!`
-        ))
-    );
+            `⤿ ${commands.size} command${plural(commands.size)} successfully registered globally!`
+        ));
+        if (baseStorage.config.commands.verboose){
+            messages.push(...verbooseLogs(commands));
+        }
+    });
 
     log.log(brBuilder(messages));
+}
+
+function verbooseLogs(commands: Collection<string, ApplicationCommand>){
+    const u = ck.underline;
+    return commands.map(({ id, name, client, createdAt, guild }) => ck.dim.green(
+        [
+            "{/}", u.blue(name),
+            `(${id}) registerd in`,
+            guild 
+                ? `${u.blue(guild.name)} guild`
+                : `${u.blue(client.user.username)} application`,
+            "at",
+            u.greenBright(createdAt.toLocaleTimeString()),
+        ].join(" ")
+    ));
 }
 
 export function baseCommandLog(data: GenericCommandData){

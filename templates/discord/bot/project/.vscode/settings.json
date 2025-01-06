@@ -49,8 +49,6 @@
   "files.autoSave": "afterDelay",
   "typescript.experimental.expandableHover": true,
   "files.readonlyInclude": {
-    "node_modules/**": true,
-    "build/**": true,
     "src/discord/base/**": true
   },
 }

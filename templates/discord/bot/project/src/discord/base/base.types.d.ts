@@ -63,6 +63,7 @@ type InArray<T, X> =
 
 interface BaseStorageCommandConfig {
     guilds: string[];
+    verboose?: boolean;
     middleware?(interaction: CommandInteraction, block: ()=> void): Promise<void>;
     onNotFound?(interaction: CommandInteraction): void;
     onError?(error: unknown, interaction: CommandInteraction): void;
