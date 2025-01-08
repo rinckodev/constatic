@@ -43,7 +43,9 @@ export function setupCreators(options: SetupCreatorsOptions = {}){
             /** @defaults */
             data.type??=ApplicationCommandType.ChatInput as Type
             data.dmPermission??=false as DmPermission;
-            data.defaultMemberPermissions??=options.commands?.defaultMemberPermissions;
+            if (options.commands?.defaultMemberPermissions){
+                data.defaultMemberPermissions??=options.commands?.defaultMemberPermissions;
+            }
             /** @store */
             baseStorage.commands.set(data.name, data);
 
