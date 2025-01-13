@@ -1,6 +1,6 @@
 {
   "name": "constatic",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Constatic cli",
   "main": "build/index.js",
   "type": "module",
@@ -9,11 +9,12 @@
   },
   "scripts": {
     "link": "npm unlink constatic && npm link",
-    "build": "tsc",
+    "build": "tsup",
     "test": "npm run build && npm run link",
     "predev": "rm -rf playground && mkdir playground",
     "dev": "npm run build && cd playground && constatic",
-    "tsx": "tsx"
+    "tsx": "tsx",
+    "check": "tsc --noEmit"
   },
   "keywords": [
     "discord",
@@ -72,6 +73,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/lodash": "^4.17.13",
     "@types/node": "^20.14.13",
+    "tsup": "^8.3.5",
     "tsx": "^4.16.2",
     "typescript": "^5.7.2"
   },

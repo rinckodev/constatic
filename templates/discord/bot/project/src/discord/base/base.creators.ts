@@ -10,9 +10,7 @@ interface CommandCreatorOptions extends Partial<BaseStorageCommandConfig> {
     defaultMemberPermissions?: PermissionResolvable[];
 }
 
-interface ResponderCreatorOptions extends Partial<BaseStorageRespondersConfig> {
-    
-}
+interface ResponderCreatorOptions extends Partial<BaseStorageRespondersConfig> {}
 
 interface SetupCreatorsOptions {
     commands?: CommandCreatorOptions;
@@ -22,7 +20,7 @@ export function setupCreators(options: SetupCreatorsOptions = {}){
     
     /** @commands */
     baseStorage.config.commands.guilds = options.commands?.guilds??[];
-    baseStorage.config.commands.verboose = options.commands?.verboose
+    baseStorage.config.commands.verbose = options.commands?.verbose
     baseStorage.config.commands.middleware = options.commands?.middleware;
     baseStorage.config.commands.onNotFound = options.commands?.onNotFound;
     baseStorage.config.commands.onError = options.commands?.onError;

@@ -104,18 +104,25 @@ export async function discordBotMenu(props: ProgramMenuProps) {
         choices: [
             { 
                 name: uiText(props.lang, {
-                   "en-US": "Discloud project",
-                   "pt-BR": "Projeto discloud",
-                }),
+                   "en-US": "🗐 Discloud files",
+                   "pt-BR": "🗐 Arquivos Discloud",
+                }, ck.greenBright),
                 value: "discloud",
                 checked: true,  
             },
             { 
                 name: uiText(props.lang, {
-                   "en-US": "API Server",
-                   "pt-BR": "Servidor de API",
-                }), 
+                   "en-US": "◍ API Server",
+                   "pt-BR": "◍ Servidor de API",
+                }, ck.cyanBright), 
                 value: "server" 
+            },
+            { 
+                name: uiText(props.lang, {
+                   "en-US": "🗲 Tsup compiler",
+                   "pt-BR": "🗲 Compilador tsup",
+                }, ck.blueBright),
+                value: "tsup" 
             },
         ],
         required: false,
@@ -272,6 +279,18 @@ export async function discordBotMenu(props: ProgramMenuProps) {
             path.join(distpath, "discloud.config")
         )
     };
+    if (extraFeatures.includes("tsup")){
+        const tsupPackageJson = await readPackageJSON(
+            path.join(extraFeaturesPath, "tsup/package.json")
+        );
+
+        lodash.merge(packageJson, tsupPackageJson);
+
+        await cp(
+            path.join(extraFeaturesPath, "tsup/tsup.config.ts"),
+            path.join(distpath, "tsup.config.ts")
+        )
+    }
 
     await json.write(path.join(distpath, "package.json"), packageJson);
 

@@ -19,7 +19,7 @@ export async function startServer(client: Client<true>){
         options: client,
     });
 
-    const port = process.env.SERVER_PORT || 3000
+    const port = Number(process.env.SERVER_PORT ?? 3000);
 
     await app.listen({ port, host: "0.0.0.0" })
     .catch(err => {

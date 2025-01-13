@@ -32,4 +32,9 @@ export class Store<V, K extends RecordKey = string> extends Map<K, V> {
         }
         return this;
     }
+    override get(key: K): V | undefined
+    override get(key: K, fallback: V): V
+    override get(key: K, fallback?: V){
+        return super.get(key) ?? fallback;
+    }
 }

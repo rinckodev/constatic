@@ -95,7 +95,7 @@ export async function baseRegisterCommands(client: Client<true>) {
             messages.push(ck.greenBright(
                 `⤿ ${commands.size} command${plural(commands.size)} successfully registered globally!`
             ));
-            if (baseStorage.config.commands.verboose){
+            if (baseStorage.config.commands.verbose){
                 messages.push(...verbooseLogs(commands));
             }
         });
@@ -105,7 +105,7 @@ export async function baseRegisterCommands(client: Client<true>) {
                 messages.push(ck.greenBright(
                     `⤿ ${commands.size} command${plural(commands.size)} registered in ${ck.underline(guild.name)} guild successfully!`
                 ))
-                if (baseStorage.config.commands.verboose){
+                if (baseStorage.config.commands.verbose){
                     messages.push(...verbooseLogs(commands));
                 }
             });
@@ -122,7 +122,7 @@ export async function baseRegisterCommands(client: Client<true>) {
         messages.push(ck.greenBright(
             `⤿ ${commands.size} command${plural(commands.size)} successfully registered globally!`
         ));
-        if (baseStorage.config.commands.verboose){
+        if (baseStorage.config.commands.verbose){
             messages.push(...verbooseLogs(commands));
         }
     });
