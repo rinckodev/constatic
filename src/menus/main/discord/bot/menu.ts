@@ -73,8 +73,8 @@ export async function discordBotMenu(props: ProgramMenuProps) {
 
     const ormPresetIndex = dbPreset?.isOrm ? await select({
         message: uiText(props.lang, {
-           "en-US": `${dbPreset.icon} Select ${dbPreset.name} database preset`,
-           "pt-BR": `${dbPreset.icon} Selecione a predefinição de banco de dados ${dbPreset.name}`,
+           "en-US": `Select ${dbPreset.name} database preset ${dbPreset.icon} `,
+           "pt-BR": `Selecione a predefinição de banco de dados ${dbPreset.name} ${dbPreset.icon} `,
         }),
         theme: cliTheme,
         choices: dbPreset.databases
