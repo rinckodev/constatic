@@ -16,7 +16,7 @@ createCommand({
 			})
 		);
 		await interaction.reply({
-			flags, content: "pong",
+			flags, content: `Pong 🏓`,
 			components: [row],
 		});
 	}

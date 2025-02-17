@@ -1,9 +1,11 @@
 import { log } from "#settings";
 import { brBuilder } from "@magicyan/discord";
 import ck from "chalk";
-import { ApplicationCommand, ApplicationCommandType, AutocompleteInteraction, CacheType, ChatInputApplicationCommandData, ChatInputCommandInteraction, Client, Collection, CommandInteraction, MessageApplicationCommandData, MessageContextMenuCommandInteraction, UserApplicationCommandData, UserContextMenuCommandInteraction } from "discord.js";
+import { ApplicationCommand, ApplicationCommandOptionChoiceData, ApplicationCommandType, AutocompleteInteraction, CacheType, ChatInputApplicationCommandData, ChatInputCommandInteraction, Client, Collection, CommandInteraction, MessageApplicationCommandData, MessageContextMenuCommandInteraction, UserApplicationCommandData, UserContextMenuCommandInteraction } from "discord.js";
 import { baseStorage } from "./base.storage.js";
 import { ContextName, SlashName } from "./base.types.js";
+
+type AutocompleteReturn = Promise<void | undefined | readonly ApplicationCommandOptionChoiceData[]>;
 
 export type CommandType = Exclude<ApplicationCommandType, ApplicationCommandType.PrimaryEntryPoint>;
 type Cache<D extends boolean> = D extends false ? "cached" : CacheType;
@@ -26,7 +28,7 @@ T extends ApplicationCommandType.Message ?
     ChatInputApplicationCommandData & {
         name: SlashName<N>,
         run(interaction: ChatInputCommandInteraction<Cache<D>>): void;
-        autocomplete?(interaction: AutocompleteInteraction<Cache<D>>): void;
+        autocomplete?(interaction: AutocompleteInteraction<Cache<D>>): AutocompleteReturn;
     }
 
 export type CommandData<
@@ -71,7 +73,10 @@ export async function baseCommandHandler(interaction: CommandInteraction){
 export async function baseAutocompleteHandler(interaction: AutocompleteInteraction){
     const command = baseStorage.commands.get(interaction.commandName);
     if (command && "autocomplete" in command && command.autocomplete){
-        command.autocomplete(interaction);
+        const choices = await command.autocomplete(interaction);
+        if (choices && Array.isArray(choices)){
+            interaction.respond(choices.slice(0, 25));
+        }
     };
 }
 

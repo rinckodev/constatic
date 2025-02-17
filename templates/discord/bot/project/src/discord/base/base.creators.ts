@@ -30,8 +30,6 @@ export function setupCreators(options: SetupCreatorsOptions = {}){
     baseStorage.config.responders.onNotFound = options.responders?.onNotFound;
     baseStorage.config.responders.onError = options.responders?.onError;
 
-    /** @logs */
-
     return {
         createCommand: function<
             Name extends string = string, 
@@ -48,7 +46,6 @@ export function setupCreators(options: SetupCreatorsOptions = {}){
             baseStorage.commands.set(data.name, data);
 
             baseCommandLog(data);
-
             return data;
         },
         createEvent: function<
@@ -60,7 +57,6 @@ export function setupCreators(options: SetupCreatorsOptions = {}){
             baseStorage.events.set(data.event, events);
 
             baseEventLog(data);
-            
             return data;
         },
         createResponder: function<

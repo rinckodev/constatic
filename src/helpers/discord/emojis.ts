@@ -82,8 +82,20 @@ async function deleteDiscordEmoji(token: DiscordBotToken, id: string): Promise<D
     }
 }
 
+function formatEmojiName(name: string){
+    return name
+    .trim()
+    .replaceAll(" ", "_")
+    .replaceAll("-", "_")
+    .split("_")
+    .filter(w => w.length)
+    .join("_")
+    .toLowerCase()
+}
+
 export const discordEmojis = {
     get: getDiscordEmojis,
     create: createDiscordEmoji,
-    delete: deleteDiscordEmoji
+    delete: deleteDiscordEmoji,
+    formatName: formatEmojiName
 }

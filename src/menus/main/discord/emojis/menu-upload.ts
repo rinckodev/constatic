@@ -40,7 +40,7 @@ export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: Di
 
     const paths = await glob("**/*.{png,jpeg,gif}", {
         cwd: path.resolve(dirpath),
-        absolute: true
+        absolute: true,
     });
 
     processing.text = uiText(props.lang, {
@@ -60,7 +60,7 @@ export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: Di
         const imagedata = await fs.readFile(filepath, { encoding: "base64" });
         const base64 = `data:image/${ext.slice(1)};base64,${imagedata}`;
 
-        data.push({ base64, name: name.trim() });
+        data.push({ base64, name: discordEmojis.formatName(name) });
     }
     processing.stop();
 
