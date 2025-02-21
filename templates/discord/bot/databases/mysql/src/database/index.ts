@@ -1,4 +1,4 @@
-import { log } from "#settings";
+import { logger } from "#settings";
 import ck from "chalk";
 import { createPool } from "mysql2/promise";
 
@@ -12,8 +12,8 @@ export const pool = createPool({
 
 try {
     await pool.getConnection();
-    log.success(ck.green("MySQL database connected!"));
+    logger.success(ck.green("MySQL database connected!"));
 } catch(err) {
-    log.error(err);
+    logger.error(err);
     process.exit(1);
 }

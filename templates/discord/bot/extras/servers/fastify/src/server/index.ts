@@ -2,7 +2,7 @@ import fastify, { type FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 import autoload from "@fastify/autoload";
 import type { Client } from "discord.js";
-import { log } from "#settings";
+import { logger } from "#settings";
 import ck from "chalk";
 import path from "node:path";
 
@@ -10,7 +10,7 @@ export async function startServer(client: Client<true>){
     const app = fastify();
     app.addHook("onRoute", route => {
         if (route.method === "HEAD" || route.method === "OPTIONS") return;
-        log.success(`${ck.yellow(route.method)} ${ck.blue(route.path)}`);
+        logger.success(`${ck.yellow(route.method)} ${ck.blue(route.path)}`);
     });
     app.register(cors, { origin: "*" });
     app.register(autoload, {
@@ -23,10 +23,10 @@ export async function startServer(client: Client<true>){
 
     await app.listen({ port, host: "0.0.0.0" })
     .catch(err => {
-        log.error(err);
+        logger.error(err);
         process.exit(1);
     });
-    log.log(ck.green(`➝ ${ck.underline("Fastify")} server listening on port ${port}`));
+    logger.log(ck.green(`● ${ck.underline("Fastify")} server listening on port ${port}`));
 }
 
 export type RouteHandler = (app: FastifyInstance, client: Client<true>, done: Function) => any;

@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import chalk from "chalk";
-import { log } from "#settings";
+import { logger } from "#settings";
 import path from "node:path";
 
 const firebaseAccountPath = rootTo(process.env.FIREBASE_PATH);
@@ -8,7 +8,7 @@ const firebaseAccountPath = rootTo(process.env.FIREBASE_PATH);
 if (!fs.existsSync(firebaseAccountPath)){
     const filename = chalk.yellow(`"${path.basename(firebaseAccountPath)}"`);
     const text = chalk.red(`The ${filename} file was not found in ${__rootname}`);
-    log.error(text);
+    logger.error(text);
     process.exit(0);
 }
 

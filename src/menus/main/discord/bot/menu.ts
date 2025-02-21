@@ -292,6 +292,11 @@ export async function discordBotMenu(props: ProgramMenuProps) {
         )
     }
 
+    const baseAppPath = path.join(distpath, "src/discord/base/base.app.ts");
+    await readFile(baseAppPath, "utf-8")
+    .then(content => content.replace("{{baseVersion}}", props.version))
+    .then(content => writeFile(baseAppPath, content, "utf-8"))
+
     await json.write(path.join(distpath, "package.json"), packageJson);
 
     if (manager !== "no"){

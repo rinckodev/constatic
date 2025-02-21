@@ -103,5 +103,5 @@ export async function baseResponderHandler(interaction: MessageComponentInteract
 export function baseResponderLog(customId: string, type: string){
     const u = ck.underline;
     baseStorage.loadLogs.responders
-    .push(ck.green(spaceBuilder(u.greenBright(type),u.blue(customId),"responder loaded!")))
+    .push(ck.green(spaceBuilder(ck.greenBright(`▸ ${type}`),ck.gray(">"), u.blue(customId),"✓")))
 }

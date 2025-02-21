@@ -1,12 +1,14 @@
-import { baseErrorHandler, log } from "#settings";
-import { CustomItents, CustomPartials } from "@magicyan/discord";
 import { Client, ClientOptions, version as djsVersion } from "discord.js";
+import { baseErrorHandler, logger, validateEnv } from "#settings";
+import { CustomItents, CustomPartials } from "@magicyan/discord";
 import { baseAutocompleteHandler, baseCommandHandler, baseRegisterCommands } from "./base.command.js";
+import { baseStorage } from "./base.storage.js";
 import { baseRegisterEvents } from "./base.event.js";
 import { baseResponderHandler } from "./base.responder.js";
-import { baseStorage } from "./base.storage.js";
-import glob from "fast-glob";
 import ck from "chalk";
+import glob from "fast-glob";
+
+export const BASE_VERSION = "{{baseVersion}}" as const; // DO NOT CHANGE THIS VAR
 
 interface BootstrapOptions extends Partial<ClientOptions> {
     meta: ImportMeta;
@@ -32,12 +34,13 @@ export async function bootstrap(options: BootstrapOptions){
     if (options.loadLogs??true){
         loadLogs();
     }
-
-    console.log();
-    log.info("📦",
-        `${ck.hex("#5865F2").underline("discord.js")} ${ck.dim(djsVersion)}`,
-        "/",
-        `${ck.hex("#68a063").underline("NodeJs")} ${ck.dim(process.versions.node)}`,
+    
+    logger.log();
+    logger.log(ck.blue(`★ Constatic Base ${ck.reset.dim(BASE_VERSION)}`));
+    logger.log(
+        `${ck.hex("#5865F2")("◌ discord.js")} ${ck.dim(djsVersion)}`,
+        "|",
+        `${ck.hex("#54A044")("◌ node.js")} ${ck.reset.dim(process.versions.node)}`
     );
     
     baseRegisterEvents(client);
@@ -58,9 +61,7 @@ async function loadModules(workdir: string, directories: string[] = []){
         )
     ].flat(), { absolute: true, cwd: workdir });
 
-    await Promise.all(files.map(path => {
-        return import(`file://${path}`);
-    }));
+    await Promise.all(files.map(path => import(`file://${path}`)));
 }
 
 function createClient(token: string, options: BootstrapOptions) {
@@ -73,10 +74,10 @@ function createClient(token: string, options: BootstrapOptions) {
 
     client.token=token;
     client.on("ready", async (client) => {
-        await client.guilds.fetch().catch(() => null);
+        await client.guilds.fetch().catch(() => null);;
 
-        log.log(ck.greenBright(`➝ Online as ${ck.hex("#57F287").underline(client.user.username)}`));
-        
+        logger.log(ck.green(`● ${ck.greenBright.underline(client.user.username)} online ✓`))
+
         await baseRegisterCommands(client);
         
         process.on("uncaughtException", err => baseErrorHandler(err, client));
@@ -110,5 +111,7 @@ function loadLogs(){
         baseStorage.loadLogs.responders,
         baseStorage.loadLogs.events,
     ].flat();
-    logs.forEach(text => log.success(text));
+    logs.forEach(text => logger.log(text));
 }
+
+validateEnv();

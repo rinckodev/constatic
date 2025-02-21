@@ -2,7 +2,7 @@ import firebase from "firebase-admin";
 import { MemberDocument } from "./documents/MemberDocument.js";
 import { GuildDocument } from "./documents/GuildDocument.js";
 import { schema, Typesaurus } from "typesaurus";
-import { log } from "#settings";
+import { logger } from "#settings";
 import path from "node:path";
 import chalk from "chalk";
 import fs from "node:fs";
@@ -12,7 +12,7 @@ const firebaseAccountPath = rootTo(process.env.FIREBASE_PATH);
 if (!fs.existsSync(firebaseAccountPath)){
     const filename = chalk.yellow(`"${path.basename(firebaseAccountPath)}"`);
     const text = chalk.red(`The ${filename} file was not found in ${__rootname}`);
-    log.error(text);
+    logger.error(text);
     process.exit(0);
 }
 

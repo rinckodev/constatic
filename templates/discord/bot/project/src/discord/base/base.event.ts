@@ -30,6 +30,7 @@ export function baseRegisterEvents(client: Client){
 }
 
 export function baseEventLog(data: GenericEventData){
+    const u = ck.underline;
     baseStorage.loadLogs.events
-    .push(ck.green(`${ck.greenBright.underline(`${data.event}`)} ${ck.yellow.underline(data.name)} event loaded!`));
+    .push(`${ck.yellow(`☉ ${data.name}`)} ${ck.gray(">")} ${u.yellowBright(data.event)} ${ck.green(`event ✓`)}`)
 };

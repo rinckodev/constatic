@@ -1,4 +1,4 @@
-import { log } from "#settings";
+import { logger } from "#settings";
 import { brBuilder } from "@magicyan/discord";
 import ck from "chalk";
 import { ApplicationCommand, ApplicationCommandOptionChoiceData, ApplicationCommandType, AutocompleteInteraction, CacheType, ChatInputApplicationCommandData, ChatInputCommandInteraction, Client, Collection, CommandInteraction, MessageApplicationCommandData, MessageContextMenuCommandInteraction, UserApplicationCommandData, UserContextMenuCommandInteraction } from "discord.js";
@@ -98,7 +98,7 @@ export async function baseRegisterCommands(client: Client<true>) {
         .then(commands => {
             if (!commands.size) return;
             messages.push(ck.greenBright(
-                `⤿ ${commands.size} command${plural(commands.size)} successfully registered globally!`
+                `└ ${commands.size} command${plural(commands.size)} successfully registered globally!`
             ));
             if (baseStorage.config.commands.verbose){
                 messages.push(...verbooseLogs(commands));
@@ -108,14 +108,14 @@ export async function baseRegisterCommands(client: Client<true>) {
             await guild.commands.set(guildCommands)
             .then(commands => {
                 messages.push(ck.greenBright(
-                    `⤿ ${commands.size} command${plural(commands.size)} registered in ${ck.underline(guild.name)} guild successfully!`
+                    `└ ${commands.size} command${plural(commands.size)} registered in ${ck.underline(guild.name)} guild successfully!`
                 ))
                 if (baseStorage.config.commands.verbose){
                     messages.push(...verbooseLogs(commands));
                 }
             });
         }
-        log.log(brBuilder(messages));
+        logger.log(brBuilder(messages));
         return;
     }
     for (const guild of client.guilds.cache.values()) {
@@ -125,32 +125,48 @@ export async function baseRegisterCommands(client: Client<true>) {
     await client.application.commands.set(commands)
     .then(commands => {
         messages.push(ck.greenBright(
-            `⤿ ${commands.size} command${plural(commands.size)} successfully registered globally!`
+            `└ ${commands.size} command${plural(commands.size)} successfully registered globally!`
         ));
         if (baseStorage.config.commands.verbose){
             messages.push(...verbooseLogs(commands));
         }
     });
 
-    log.log(brBuilder(messages));
+    logger.log(brBuilder(messages));
 }
 
 function verbooseLogs(commands: Collection<string, ApplicationCommand>){
     const u = ck.underline;
-    return commands.map(({ id, name, client, createdAt, guild }) => ck.dim.green(
-        [
-            "{/}", u.blue(name),
-            `(${id}) registerd in`,
-            guild 
+    return commands.map(({ id, name, type: commandType, client, createdAt, guild }) => {
+        const [icon] = getCommandTitle(commandType);
+
+        return ck.dim.green(
+            [
+                ` └ ${icon}`,
+                u.cyan(id),
+                "CREATED",
+                u.blue(name),
+                ck.gray(">"),
+                guild 
                 ? `${u.blue(guild.name)} guild`
                 : `${u.blue(client.user.username)} application`,
-            "at",
-            u.greenBright(createdAt.toLocaleTimeString()),
-        ].join(" ")
-    ));
+                ck.gray(">"),
+                "created at:",
+                u.greenBright(createdAt.toLocaleTimeString()),
+            ].join(" ")
+        )
+    });
 }
 
 export function baseCommandLog(data: GenericCommandData){
+    const [icon, type] = getCommandTitle(data.type);
+
     baseStorage.loadLogs.commands
-    .push(ck.green(`{/} ${ck.blue.underline(data.name)} command loaded!`))
+    .push(ck.green(`${icon} ${type} ${ck.gray(">")} ${ck.blue.underline(data.name)} ✓`))
 };
+
+function getCommandTitle(type: ApplicationCommandType){
+    return type === ApplicationCommandType.Message ? ["{☰}", "Message context menu"] :
+    type === ApplicationCommandType.User ? ["{☰}", "User context menu"] :
+    ["{/}", "Slash command"]
+}

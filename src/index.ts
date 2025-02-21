@@ -36,9 +36,14 @@ console.log(
     "\n"
 );
 
+const meta = lodash.pick(packageJson, ["name", "version", "description"]);
+
 citty.runMain({
-    meta: lodash.pick(packageJson, ["name", "version", "description"]),
+    meta,
     run() {
-        menus.main({ cliroot, conf, lang, cwd: process.cwd() });
+        menus.main({ 
+            cliroot, conf, lang, cwd: process.cwd(), 
+            version: meta.version??"0.0.0" 
+        });
     },
 });

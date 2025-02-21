@@ -6,4 +6,5 @@ export interface ProgramMenuProps {
     cliroot: string;
     cwd: string;
     conf: Conf<ConfSchema>;
+    version: string;
 }
