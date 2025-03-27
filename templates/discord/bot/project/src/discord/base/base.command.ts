@@ -18,16 +18,16 @@ type ApplicationCommandData<
 T extends ApplicationCommandType.User ? 
     UserApplicationCommandData & {
         name: ContextName<N>,
-        run(interaction: UserContextMenuCommandInteraction<Cache<D>>): void;
+        run(interaction: UserContextMenuCommandInteraction<Cache<D>>): Promise<void>;
     } :
 T extends ApplicationCommandType.Message ? 
     MessageApplicationCommandData & {
         name: ContextName<N>,
-        run(interaction: MessageContextMenuCommandInteraction<Cache<D>>): void;
+        run(interaction: MessageContextMenuCommandInteraction<Cache<D>>): Promise<void>;
     } :
     ChatInputApplicationCommandData & {
         name: SlashName<N>,
-        run(interaction: ChatInputCommandInteraction<Cache<D>>): void;
+        run(interaction: ChatInputCommandInteraction<Cache<D>>): Promise<void>;
         autocomplete?(interaction: AutocompleteInteraction<Cache<D>>): AutocompleteReturn;
     }
 
@@ -52,21 +52,15 @@ export async function baseCommandHandler(interaction: CommandInteraction){
         return;
     };
 
-    try {
-        let block = false;
-        if (middleware) await middleware(interaction, () => block=true);
-        if (block) return;
+    let block = false;
+    if (middleware) await middleware(interaction, () => block=true);
+    if (block) return;
 
-        const execution = command.run(interaction as never) as void | Promise<void>;
-        if (execution instanceof Promise && onError){
-            execution.catch(error => onError(error, interaction));
-        }
-    } catch(error){
-        if (onError){
-            onError(error, interaction);
-        } else {
-            throw error;
-        };
+    const execution = command.run(interaction as never);
+    if (onError){
+        await execution.catch(error => onError(error, interaction));
+    } else {
+        await execution;
     }
 }
 

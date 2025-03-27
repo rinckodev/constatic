@@ -11,7 +11,8 @@ export const baseStorage: BaseStorage = {
         commands: {
             guilds: []
         },
-        responders: {}
+        responders: {},
+        events: {}
     },
     loadLogs: {
         commands: [],

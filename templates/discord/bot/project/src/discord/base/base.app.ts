@@ -74,16 +74,17 @@ function createClient(token: string, options: BootstrapOptions) {
 
     client.token=token;
     client.on("ready", async (client) => {
+        registerErrorHandlers(client);
+
         await client.guilds.fetch().catch(() => null);;
 
         logger.log(ck.green(`● ${ck.greenBright.underline(client.user.username)} online ✓`))
 
         await baseRegisterCommands(client);
-        
-        process.on("uncaughtException", err => baseErrorHandler(err, client));
-        process.on("unhandledRejection", err => baseErrorHandler(err, client));
-        
-        options.whenReady?.(client);
+
+        if (options.whenReady){
+            options.whenReady(client);
+        }
     });
 
     client.on("interactionCreate", async (interaction) => {
@@ -115,3 +116,18 @@ function loadLogs(){
 }
 
 validateEnv();
+
+function registerErrorHandlers(client?: Client<true>){
+    if (client){
+        process.removeListener("uncaughtException", baseErrorHandler);
+        process.removeListener("unhandledRejection", baseErrorHandler);
+
+        process.on("uncaughtException", err => baseErrorHandler(err, client));
+        process.on("unhandledRejection", err => baseErrorHandler(err, client));
+        return;
+    }
+    process.on("uncaughtException", baseErrorHandler);
+    process.on("unhandledRejection", baseErrorHandler);
+}
+
+registerErrorHandlers();

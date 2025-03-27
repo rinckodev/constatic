@@ -297,6 +297,8 @@ export async function discordBotMenu(props: ProgramMenuProps) {
     .then(content => content.replace("{{baseVersion}}", props.version))
     .then(content => writeFile(baseAppPath, content, "utf-8"))
 
+    packageJson.baseVersion = props.version;
+
     await json.write(path.join(distpath, "package.json"), packageJson);
 
     if (manager !== "no"){

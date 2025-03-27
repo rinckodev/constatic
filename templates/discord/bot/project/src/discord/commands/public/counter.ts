@@ -6,8 +6,8 @@ createCommand({
     name: "counter",
     description: "Counter command 🔢",
     type: ApplicationCommandType.ChatInput,
-    run(interaction) {
-        interaction.reply(counterMenu(interaction.user, 0));
+    async run(interaction) {
+        await interaction.reply(counterMenu(interaction.user, 0));
     }
 });
 

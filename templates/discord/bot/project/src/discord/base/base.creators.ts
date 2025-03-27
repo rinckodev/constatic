@@ -4,7 +4,7 @@ import { baseCommandLog, CommandData, CommandType } from "./base.command.js";
 import { baseEventLog, EventData } from "./base.event.js";
 import { baseResponderLog, ResponderData, ResponderType } from "./base.responder.js";
 import { baseStorage } from "./base.storage.js";
-import { BaseStorageCommandConfig, BaseStorageRespondersConfig } from "./base.types.js";
+import { BaseStorageCommandConfig, BaseStorageEventsConfig, BaseStorageRespondersConfig } from "./base.types.js";
 
 interface CommandCreatorOptions extends Partial<BaseStorageCommandConfig> {
     defaultMemberPermissions?: PermissionResolvable[];
@@ -12,9 +12,12 @@ interface CommandCreatorOptions extends Partial<BaseStorageCommandConfig> {
 
 interface ResponderCreatorOptions extends Partial<BaseStorageRespondersConfig> {}
 
+interface EventCreatorOptions extends Partial<BaseStorageEventsConfig> {}
+
 interface SetupCreatorsOptions {
     commands?: CommandCreatorOptions;
-    responders?: ResponderCreatorOptions
+    responders?: ResponderCreatorOptions;
+    events?: EventCreatorOptions;
 }
 export function setupCreators(options: SetupCreatorsOptions = {}){
     
@@ -29,6 +32,10 @@ export function setupCreators(options: SetupCreatorsOptions = {}){
     baseStorage.config.responders.middleware = options.responders?.middleware;
     baseStorage.config.responders.onNotFound = options.responders?.onNotFound;
     baseStorage.config.responders.onError = options.responders?.onError;
+    
+    /** @events  */
+    baseStorage.config.events.middleware = options.events?.middleware;
+    baseStorage.config.events.onError = options.events?.onError;
 
     return {
         createCommand: function<
@@ -63,7 +70,7 @@ export function setupCreators(options: SetupCreatorsOptions = {}){
             Path extends string, 
             const Types extends readonly ResponderType[], 
             Schema, 
-            Cache extends CacheType = CacheType
+            Cache extends CacheType = CacheType,
         >(data: ResponderData<Path, Types, Schema, Cache>){
             /** @store */
             const { customId } = data;

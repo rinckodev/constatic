@@ -5,6 +5,7 @@ import { logger } from "#settings";
 import chalk from "chalk";
 
 try {
+   logger.log(chalk.blue("Connecting to MongoDB..."));
    await mongoose.connect(process.env.MONGO_URI, { dbName: "database" });
    logger.success(chalk.green("MongoDB connected"));
 } catch(err){
