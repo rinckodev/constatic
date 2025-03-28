@@ -4,7 +4,7 @@ import ck from "chalk";
 import { EventPropData } from "./base.types.js";
 
 export interface EventData<EventName extends keyof ClientEvents> {
-    name: string; event: EventName; once?: boolean;
+    name: string; event: EventName; once?: boolean; tags?: string[];
     run(...args: ClientEvents[EventName]): Promise<void>;
 }
 
@@ -13,7 +13,7 @@ export type EventsCollection = Collection<string, GenericEventData>;
 
 export function baseRegisterEvents(client: Client){
     const eventHandlers = baseStorage.events.map((collection, event) => ({ 
-        event, handlers: collection.map(e => ({ run: e.run, once: e.once })) 
+        event, handlers: collection.map(e => ({ run: e.run, once: e.once, tags: e.tags })) 
     }));
 
     const { middleware, onError } = baseStorage.config.events;
