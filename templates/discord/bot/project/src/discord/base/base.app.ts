@@ -1,14 +1,13 @@
+import { baseErrorHandler, env, logger } from "#settings";
 import { Client, ClientOptions, version as djsVersion } from "discord.js";
-import { baseErrorHandler, logger, validateEnv } from "#settings";
 import { CustomItents, CustomPartials } from "@magicyan/discord";
 import { baseAutocompleteHandler, baseCommandHandler, baseRegisterCommands } from "./base.command.js";
 import { baseStorage } from "./base.storage.js";
 import { baseRegisterEvents } from "./base.event.js";
 import { baseResponderHandler } from "./base.responder.js";
+import { BASE_VERSION, runtimeDisplay } from "./base.version.js";
 import ck from "chalk";
 import glob from "fast-glob";
-
-export const BASE_VERSION = "{{baseVersion}}" as const; // DO NOT CHANGE THIS VAR
 
 interface BootstrapOptions extends Partial<ClientOptions> {
     meta: ImportMeta;
@@ -26,7 +25,7 @@ interface BootstrapOptions extends Partial<ClientOptions> {
     whenReady?(client: Client<true>): void;
 }
 export async function bootstrap(options: BootstrapOptions){
-    const client = createClient(process.env.BOT_TOKEN, options);
+    const client = createClient(env.BOT_TOKEN, options);
     options.beforeLoad?.(client);
     
     await loadModules(options.meta.dirname, options.directories);
@@ -40,7 +39,7 @@ export async function bootstrap(options: BootstrapOptions){
     logger.log(
         `${ck.hex("#5865F2")("◌ discord.js")} ${ck.dim(djsVersion)}`,
         "|",
-        `${ck.hex("#54A044")("◌ node.js")} ${ck.reset.dim(process.versions.node)}`
+        runtimeDisplay
     );
     
     baseRegisterEvents(client);
@@ -114,8 +113,6 @@ function loadLogs(){
     ].flat();
     logs.forEach(text => logger.log(text));
 }
-
-validateEnv();
 
 function registerErrorHandlers(client?: Client<true>){
     if (client){

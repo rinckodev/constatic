@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 import "#helpers";
+import { getPackageManager, initConf, log, uiText } from "#helpers";
+import { menus } from "#menus";
 import ck from "chalk";
+import * as citty from "citty";
+import lodash from "lodash";
 import path from "node:path";
 import { readPackageJSON } from "pkg-types";
-import * as citty from "citty";
-import { menus } from "#menus";
-import { initConf, log, uiText } from "#helpers";
-import lodash from "lodash";
 import { fileURLToPath } from "url";
 
 const cliroot = import.meta.dirname 
@@ -43,7 +43,8 @@ citty.runMain({
     run() {
         menus.main({ 
             cliroot, conf, lang, cwd: process.cwd(), 
-            version: meta.version??"0.0.0" 
+            version: meta.version??"0.0.0",
+            isBun: getPackageManager() === "bun"
         });
     },
 });

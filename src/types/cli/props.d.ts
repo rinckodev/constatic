@@ -7,4 +7,5 @@ export interface ProgramMenuProps {
     cwd: string;
     conf: Conf<ConfSchema>;
     version: string;
+    isBun: boolean;
 }

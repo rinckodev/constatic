@@ -22,15 +22,15 @@ export async function settingsTokensMenu(props: ProgramMenuProps){
             },
             { 
                 name: uiText(props.lang, {
-                    "en-US": "✎ New token",
-                    "pt-BR": "✎ Novo token",
+                    "en-US": "✦ New token",
+                    "pt-BR": "✦ Novo token",
                 }, ck.green),
                 value: "new" 
             },
             { 
                 name: uiText(props.lang, {
-                    "en-US": "▤ Delete tokens",
-                    "pt-BR": "▤ Excluir tokens",
+                    "en-US": "✗ Delete tokens",
+                    "pt-BR": "✗ Excluir tokens",
                 }, ck.red),
                 value: "delete" 
             },
@@ -62,4 +62,3 @@ export async function settingsTokensMenu(props: ProgramMenuProps){
     }
 
 }
-

@@ -69,30 +69,38 @@ export async function discordEmojisDeleteMenu(props: ProgramMenuProps, token: Di
         return;
     }
 
+    const promises: Promise<void>[] = [];
+
+    const deleting = ora();
+    deleting.start(uiText(props.lang, {
+        "en-US": `Preparing to delete emojis...`,
+        "pt-BR": `Preparando para excluir emojis...`
+    }));
+
     for (const index of selected) {
         const emoji = emojis[index];
         const name = ck.yellow.underline(emoji.name);
-        const deleting = ora();
-        deleting.start(uiText(props.lang, {
-            "en-US": `Deleting ${emoji.name}...`,
-            "pt-BR": `Excluindo ${emoji.name}...`
-        }));
+        
 
-        const result = await discordEmojis.delete(token, emoji.id);
-        deleting.stop();
+        const promise = discordEmojis.delete(token, emoji.id)
+        .then(result => {
+            if (!result.success) {
+                log.error(uiText(props.lang, {
+                    "en-US": `An error occurred while trying delete the emoji ${name}!`,
+                    "pt-BR": `Ocorreu um erro ao tentar excluir o emoji ${name}!`
+                }, ck.red));
+            }
+            log.custom(ck.red(log.icon.success), uiText(props.lang, {
+                "en-US": `${ck.red.bold("Deleted")} → ${name}`,
+                "pt-BR": `${ck.bgRed.bold("Excluído")} → ${name}`
+            }));
+        })
 
-        if (!result.success) {
-            log.error(uiText(props.lang, {
-                "en-US": `An error occurred while trying delete the emoji ${name}!`,
-                "pt-BR": `Ocorreu um erro ao tentar excluir o emoji ${name}!`
-            }, ck.red));
-            continue;
-        }
-        log.success(uiText(props.lang, {
-            "en-US": `${ck.bgRed.white(" Deleted ")} Emoji ${name} deleted successfully!`,
-            "pt-BR": `${ck.bgRed.white(" Excluído ")} Emoji ${name} excluído com sucesso!`
-        }, ck.green));
+        promises.push(promise);
     }
+    deleting.stop();
+
+    await Promise.all(promises);
     
     divider();
     log.success(uiText(props.lang, {

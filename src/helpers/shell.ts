@@ -15,8 +15,15 @@ type ShellCommandResult =
 }
 export function shellCommand(options: ShellCommandOptions): Promise<ShellCommandResult> {
     const { command, args, stdio, cwd } = options;
+
+    const env = {
+        ...process.env,
+        NODE_ENV: "development",
+        DISABLE_OPENCOLLECTIVE: "1",
+    };
+
     return new Promise(resolve => {
-        const child = spawn(command, args, { stdio, cwd });
+        const child = spawn(command, args, { stdio, cwd, env });
 
         child.on("exit", code => {
             if (code === 0){

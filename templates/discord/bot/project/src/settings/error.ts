@@ -32,7 +32,7 @@ export async function baseErrorHandler(error: any, client?: Client<true>){
     });
 
     try {
-        new WebhookClient({ url: process.env.WEBHOOK_LOGS_URL })
+        await new WebhookClient({ url: process.env.WEBHOOK_LOGS_URL })
         .send({ embeds: [embed] })
         .catch(logger.error);
     } catch {
@@ -43,7 +43,10 @@ export async function baseErrorHandler(error: any, client?: Client<true>){
     }
 }
 
-process.on("SIGINT", async () => {
+function exit(){
     logger.log(ck.dim("..."));
     process.exit(0);
-});
+}
+
+process.on("SIGINT", exit);
+process.on("SIGTERM", exit);

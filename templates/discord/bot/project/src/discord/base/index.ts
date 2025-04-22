@@ -1,4 +1,4 @@
-import "#settings";
+// import "#settings";
 
 export * from "./utils/Store.js";
 export * from "./utils/URLStore.js";

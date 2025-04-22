@@ -28,22 +28,22 @@ export async function discordEmojisMenu(props: ProgramMenuProps, token?: Discord
             },
             { 
                 name: uiText(props.lang, {
-                    "en-US": "⇡ Upload emojis",
-                    "pt-BR": "⇡ Enviar emojis",
+                    "en-US": "↥ Upload emojis",
+                    "pt-BR": "↥ Enviar emojis",
                 }, ck.green),
                 value: "upload" 
             },
             { 
                 name: uiText(props.lang, {
-                    "en-US": "⇣ Generate emojis file",
-                    "pt-BR": "⇣ Gerar arquivo de emojis",
+                    "en-US": "↯ Generate emojis file",
+                    "pt-BR": "↯ Gerar arquivo de emojis",
                 }, ck.blue),
                 value: "file" 
             },
             { 
                 name: uiText(props.lang, {
-                    "en-US": "▤ Delete emojis",
-                    "pt-BR": "▤ Excluir emojis",
+                    "en-US": "✗ Delete emojis",
+                    "pt-BR": "✗ Excluir emojis",
                 }, ck.red),
                 value: "delete" 
             },

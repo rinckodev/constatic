@@ -1,0 +1,8 @@
+NAME=Docker bun
+TYPE=bot
+MAIN=Dockerfile
+RAM=100
+VERSION=latest
+AUTORESTART=false
+START=bun run start
+AVATAR=https://i.imgur.com/vCmpTqL.png

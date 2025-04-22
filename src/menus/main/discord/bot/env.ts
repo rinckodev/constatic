@@ -3,7 +3,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 export async function rewriteEnv(destinationPath: string, env: NonNullable<BotProjectPreset["env"]>){
-    const envSchemaPath = path.join(destinationPath, "src/settings/env.ts");
+    const envSchemaPath = path.join(destinationPath, "src/settings/env.schema.ts");
     const envSchemaFile = await readFile(envSchemaPath, "utf-8");
     env.schema = env.schema.replaceAll("\\n", "\n");
     let replaceKey = "// Env vars...";

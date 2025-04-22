@@ -9,15 +9,19 @@ import path from "node:path";
 import ora from "ora";
 import { fetchDiscordEmojis } from "./fetch.js";
 
+const u = ck.underline;
+
 export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: DiscordBotToken) {
     const emojis = await fetchDiscordEmojis({ props, token, notCheckAmount: true });
     if (!emojis) return;
 
+    const displayCurrCwd = ck.dim.underline(path.basename(props.cwd)+"/");
+
     const dirpath = await input({
         message: uiText(props.lang, {
-            "pt-BR": "Informe o caminho diretório de imagens",
-            "en-US": "Provide the image directory path",
-        }),
+            "pt-BR": `Informe o caminho diretório de imagens`,
+            "en-US": `Provide the image directory path `,
+        }) + `${displayCurrCwd}\n`,
         theme: cliTheme,
         async validate(dirpath) {
             const exists = await fileExists(path.resolve(dirpath));
@@ -69,7 +73,6 @@ export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: Di
            "en-US": "No images found in the given directory!",
            "pt-BR": "Nenhum imagem encontrada no diretório fornecido!",
         }));
-        await sleep(400);
         menus.discord.emojis.main(props, token);
         return;
     }
@@ -142,7 +145,7 @@ export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: Di
     });
 
     for (const { name, base64 } of data) {
-        const emojiName = ck.yellow.underline(name);
+        const emojiName = u.yellow(name);
         const existing = emojis.find(
             emoji => equalsIgnoringCase(emoji.name, name)
         );
@@ -181,10 +184,10 @@ export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: Di
                     break;
                 }
                 case "skip":{
-                    log.warn(uiText(props.lang, {
-                       "en-US": `Skipped existing ${emojiName} emoji!`,
-                       "pt-BR": `Emoji ${emojiName} já existente pulado!`,
-                    }, ck.yellow));
+                    log.custom(ck.yellow("◎"), uiText(props.lang, {
+                       "en-US": `${ck.bold.yellow("Skipped")} → Skipped existing ${emojiName} emoji!`,
+                       "pt-BR": `${ck.bold.yellow("Pulado")} → Emoji ${emojiName} já existente pulado!`,
+                    }));
                     continue;
                 }
             }
@@ -210,14 +213,14 @@ export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: Di
             log.error(uiText(props.lang, {
                 "en-US": `An error occurred while trying ${existing ? "overwrite" : "create"} the ${emojiName} emoji!`,
                 "pt-BR": `Ocorreu um erro ao tentar ${existing ? "sobrescrever" : "criar"} o emoji ${emojiName}!`
-            }, ck.red));
+            }, ck.red) + ck.red.dim(result.error));
             continue;
         }
 
-        log.success(uiText(props.lang, {
-            "en-US": `${ck.bgGreen.white(existing ? " Overwrited " : " Created ")} ${emojiName} emoji ${existing ? "overwrited" : "created"} successfully!`,
-            "pt-BR": `${ck.bgGreen.white(existing ? " Sobrescrito " : " Criado ")} Emoji ${emojiName} ${existing ? "sobrescrito" : "criado"} com sucesso!`,
-        }, ck.green));
+        log.custom(ck.green("✦"), uiText(props.lang, {
+            "en-US": `${ck.bold.green(existing ? "Overwrited" : "Created")} → ${emojiName} ${u.dim.green(result.data.id)}`,
+            "pt-BR": `${ck.bold.green(existing ? "Sobrescrito" : "Criado")} → ${emojiName} ${u.dim.green(result.data.id)}`,
+        }));
     }
 
     divider();

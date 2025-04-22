@@ -1,4 +1,4 @@
-import { byeMessage, cliTheme, commonTexts, divider, getCdPath, json, log, toNpmName, uiText } from "#helpers";
+import { byeMessage, cliTheme, commonTexts, divider, getCdPath, getPackageManager, json, log, toNpmName, uiText } from "#helpers";
 import { BotTemplateProperties, ProgramMenuProps } from "#types";
 import { checkbox, input, select } from "@inquirer/prompts";
 import ck from "chalk";
@@ -171,26 +171,40 @@ export async function discordBotMenu(props: ProgramMenuProps) {
     }) : -1
     divider();
 
-    const manager = await select({
+    const manager = getPackageManager();
+
+    // const installAllDeps = await confirm({
+    //     message: uiText(props.lang, {
+    //         "en-US": `📥 Install dependencies? ${ck.underline.dim(manager)} detected!`,
+    //         "pt-BR": `📥 Instalar dependências? ${ck.underline.dim(manager)} detectado!`,
+    //     }),
+    //     theme: cliTheme,
+    // });
+    // divider();
+
+    const managerSuffix = ck.bgWhite(` ${manager} `);
+
+    const installAllDeps = await select({
         message: uiText(props.lang, {
-           "en-US": "📥 Install dependencies?",
-           "pt-BR": "📥 Instalar dependências?",
+           "en-US": `📥 Install dependencies? ${managerSuffix}`,
+           "pt-BR": `📥 Instalar dependências? ${managerSuffix}`,
         }),
         theme: cliTheme,
         choices: [
-            ["npm", "yarn", "pnpm", "bun"]
-            .map(manager =>({
-                name: ck.green(manager),
-                value: manager,
-            })),
+            { 
+                name: uiText(props.lang, {
+                   "en-US": "Yes",
+                   "pt-BR": "Sim",
+                }, ck.greenBright), value: "yes" 
+            },
             { 
                 name: uiText(props.lang, {
                    "en-US": "No",
                    "pt-BR": "Não",
-                }, ck.red.dim), value: "no" 
+                }, ck.redBright), value: "no" 
             },
-        ].flat(),
-    });
+        ]
+    }) == "yes";
     divider();
     
     const generating = ora();
@@ -270,14 +284,22 @@ export async function discordBotMenu(props: ProgramMenuProps) {
         path.join(distpath, ".gitignore")
     )
     if (extraFeatures.includes("discloud")){
+        const folder = props.isBun ? "bun" : "discloud"
         await cp(
-            path.join(extraFeaturesPath, "discloud/discloudignore.txt"),
+            path.join(extraFeaturesPath, 
+                `${folder}/discloud.ignore.txt`),
             path.join(distpath, ".discloudignore")
         )
         await cp(
-            path.join(extraFeaturesPath, "discloud/discloudconfig.txt"),
+            path.join(extraFeaturesPath, `${folder}/discloud.config.txt`),
             path.join(distpath, "discloud.config")
         )
+        if (props.isBun){
+            await cp(
+                path.join(extraFeaturesPath, "bun/Dockerfile"),
+                path.join(distpath, "Dockerfile")
+            ) 
+        }
     };
     if (extraFeatures.includes("tsup")){
         const tsupPackageJson = await readPackageJSON(
@@ -292,16 +314,27 @@ export async function discordBotMenu(props: ProgramMenuProps) {
         )
     }
 
-    const baseAppPath = path.join(distpath, "src/discord/base/base.app.ts");
-    await readFile(baseAppPath, "utf-8")
+    const baseVersionPath = path.join(distpath, "src/discord/base/base.version.ts");
+    await readFile(baseVersionPath, "utf-8")
     .then(content => content.replace("{{baseVersion}}", props.version))
-    .then(content => writeFile(baseAppPath, content, "utf-8"))
+    .then(content => writeFile(baseVersionPath, content, "utf-8"))
 
     packageJson.baseVersion = props.version;
 
+    if (props.isBun){
+        const bunPkgJson = await readPackageJSON(
+            path.join(extraFeaturesPath, "bun/package.json")
+        );
+        lodash.merge(packageJson, bunPkgJson);
+        packageJson.devDependencies = lodash.omit(
+            packageJson.devDependencies,
+            "@types/node", "tsx"
+        );
+    }
+
     await json.write(path.join(distpath, "package.json"), packageJson);
 
-    if (manager !== "no"){
+    if (installAllDeps){
         await installDeps({ 
             lang: props.lang, distpath, 
             spinner: generating, 
@@ -323,7 +356,7 @@ export async function discordBotMenu(props: ProgramMenuProps) {
            "pt-BR": `Use: ${getCdPath(distpath)}`,
         }));
     }
-    if (manager === "no"){
+    if (!installAllDeps){
         log.custom(ck.green("➞"), uiText(props.lang, {
             "en-US": "Install the dependencies",
             "pt-BR": "Instale as dependências",
