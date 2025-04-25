@@ -1,11 +1,12 @@
-import { replaceText, limitText, createEmbed, createEmbedAuthor, brBuilder } from "@magicyan/discord";
-import { type Client, codeBlock, WebhookClient } from "discord.js";
-import settings from "../../settings.json" with { type: "json" };
+import { env } from "#settings";
+import { brBuilder, createEmbed, createEmbedAuthor, createWebhookClient, limitText, replaceText } from "@magicyan/discord";
 import ck from "chalk";
+import { type Client, codeBlock } from "discord.js";
+import settings from "../../settings.json" with { type: "json" };
 import { logger } from "./logger.js";
 
-export async function baseErrorHandler(error: any, client?: Client<true>){
-    if (client) logger.log(client.user.displayName);
+export async function baseErrorHandler(error: any, client?: Client){
+    if (client?.user) logger.log(client.user.displayName);
 
     const errorMessage: string[] = [];
 
@@ -23,24 +24,26 @@ export async function baseErrorHandler(error: any, client?: Client<true>){
     
     logger.error(brBuilder(errorMessage));
 
-    if (!process.env.WEBHOOK_LOGS_URL) return;
+    if (!env.WEBHOOK_LOGS_URL) return;
     
     const embed = createEmbed({
         color: settings.colors.danger,
-        author: client ? createEmbedAuthor(client.user) : undefined,
+        author: client?.user ? createEmbedAuthor(client.user) : undefined,
         description: codeBlock("ansi", brBuilder(errorMessage)),
     });
 
-    try {
-        await new WebhookClient({ url: process.env.WEBHOOK_LOGS_URL })
-        .send({ embeds: [embed] })
-        .catch(logger.error);
-    } catch {
+    const webhook = createWebhookClient(env.WEBHOOK_LOGS_URL);
+    if (!webhook){
         logger.log();
-        logger.error(`ENV VAR: ${ck.bold("WEBHOOK_LOGS_URL")} Invalid webhook url`)
+        logger.error(`ENV VAR → ${ck.bold.underline("WEBHOOK_LOGS_URL")} Invalid webhook url`)
         logger.log();
         logger.warn("Unable to send logs to webhook because the url is invalid");
+        return;
     }
+
+    await webhook
+    .send({ embeds: [embed] })
+    .catch(logger.error);
 }
 
 function exit(){
