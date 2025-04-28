@@ -13,26 +13,42 @@
     "start:dev": "node --env-file .env.dev ."
   },
   "dependencies": {
-    "discord.js": "14.18.0",
-    "@magicyan/discord": "1.3.1",
+    "@magicyan/discord": "1.4.1",
+    "chalk": "5.4.1",
+    "discord.js": "14.19.1",
     "fast-glob": "3.3.3",
     "rou3": "0.5.1",
-    "zod": "3.24.1",
-    "chalk": "5.4.1"
+    "zod": "3.24.1"
   },
   "devDependencies": {
     "@types/node": "20.17.12",
-    "tsx": "4.8.0",
+    "tsx": "4.19.3",
     "typescript": "5.7.2"
   },
   "imports": {
-    "#database": ["./build/database/index.js"],
-    "#base": ["./build/discord/base/index.js"],
-    "#functions": ["./build/functions/index.js"],
-    "#menus": ["./build/menus/index.js"],
-    "#settings": ["./build/settings/index.js"],
-    "#tools": ["./build/tools/index.js"],
-    "#server": ["./build/server/index.js"],
-    "#lib": ["./build/lib/index.js"]
+    "#database": [
+      "./build/database/index.js"
+    ],
+    "#base": [
+      "./build/discord/base/index.js"
+    ],
+    "#functions": [
+      "./build/functions/index.js"
+    ],
+    "#menus": [
+      "./build/menus/index.js"
+    ],
+    "#settings": [
+      "./build/settings/index.js"
+    ],
+    "#tools": [
+      "./build/tools/index.js"
+    ],
+    "#server": [
+      "./build/server/index.js"
+    ],
+    "#lib": [
+      "./build/lib/index.js"
+    ]
   }
 }
