@@ -2,7 +2,7 @@ import fastify, { type FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 import autoload from "@fastify/autoload";
 import type { Client } from "discord.js";
-import { logger } from "#settings";
+import { env, logger } from "#settings";
 import ck from "chalk";
 import path from "node:path";
 
@@ -19,7 +19,7 @@ export async function startServer(client: Client<true>){
         options: client,
     });
 
-    const port = Number(process.env.SERVER_PORT ?? 3000);
+    const port = Number(env.SERVER_PORT ?? 3000);
 
     await app.listen({ port, host: "0.0.0.0" })
     .catch(err => {

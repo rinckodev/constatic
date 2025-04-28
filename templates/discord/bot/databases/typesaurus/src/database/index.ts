@@ -2,12 +2,12 @@ import firebase from "firebase-admin";
 import { MemberDocument } from "./documents/MemberDocument.js";
 import { GuildDocument } from "./documents/GuildDocument.js";
 import { schema, Typesaurus } from "typesaurus";
-import { logger } from "#settings";
+import { env, logger } from "#settings";
 import path from "node:path";
 import chalk from "chalk";
 import fs from "node:fs";
 
-const firebaseAccountPath = rootTo(process.env.FIREBASE_PATH);
+const firebaseAccountPath = rootTo(env.FIREBASE_PATH);
 
 if (!fs.existsSync(firebaseAccountPath)){
     const filename = chalk.yellow(`"${path.basename(firebaseAccountPath)}"`);

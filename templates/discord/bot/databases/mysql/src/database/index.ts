@@ -1,13 +1,13 @@
-import { logger } from "#settings";
+import { env, logger } from "#settings";
 import ck from "chalk";
 import { createPool } from "mysql2/promise";
 
 export const pool = createPool({
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    host: process.env.MYSQL_HOST,
-    port: process.env.MYSQL_PORT,
-    database: process.env.MYSQL_DATABASE
+    user: env.MYSQL_USER,
+    password: env.MYSQL_PASSWORD,
+    host: env.MYSQL_HOST,
+    port: env.MYSQL_PORT,
+    database: env.MYSQL_DATABASE
 });
 
 try {

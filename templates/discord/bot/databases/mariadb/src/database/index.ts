@@ -1,13 +1,13 @@
-import { logger } from "#settings";
+import { env, logger } from "#settings";
 import ck from "chalk";
 import { createPool } from "mariadb";
 
 export const pool = createPool({
-    user: process.env.MARIADB_USER,
-    password: process.env.MARIADB_PASSWORD,
-    host: process.env.MARIADB_HOST,
-    port: process.env.MARIADB_PORT,
-    database: process.env.MARIADB_DATABASE
+    user: env.MARIADB_USER,
+    password: env.MARIADB_PASSWORD,
+    host: env.MARIADB_HOST,
+    port: env.MARIADB_PORT,
+    database: env.MARIADB_DATABASE
 });
 
 try {

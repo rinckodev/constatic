@@ -1,9 +1,9 @@
 import fs from "node:fs";
 import chalk from "chalk";
-import { logger } from "#settings";
+import { env, logger } from "#settings";
 import path from "node:path";
 
-const firebaseAccountPath = rootTo(process.env.FIREBASE_PATH);
+const firebaseAccountPath = rootTo(env.FIREBASE_PATH);
 
 if (!fs.existsSync(firebaseAccountPath)){
     const filename = chalk.yellow(`"${path.basename(firebaseAccountPath)}"`);
