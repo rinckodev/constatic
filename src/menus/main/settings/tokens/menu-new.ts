@@ -1,29 +1,12 @@
-import { cliTheme, getDiscordBotInfo, log, sleep, uiText } from "#helpers";
+import { cliTheme, log, sleep, uiText } from "#helpers";
 import { menus } from "#menus";
-import { ProgramMenuProps } from "#types";
+import { fetchDiscordTokenData } from "#shared/tokens.js";
+import { Language, ProgramMenuProps } from "#types";
 import { password } from "@inquirer/prompts";
 import ck from "chalk";
-import ora from "ora";
 
 export async function settingsTokensNewMenu(props: ProgramMenuProps) {
-    const token = await password({
-        message: uiText(props.lang, {
-           "en-US": "Insert your discord bot token",
-           "pt-BR": "Insira seu token de bot de discord",
-        }),
-        theme: cliTheme,
-        mask: "*",
-        validate(value) {
-            const message = uiText(props.lang, {
-                "en-US": "You need to provide the token for your bot application.",
-                "pt-BR": "É necessário informar o token da sua aplicação de bot",
-            });
-            if (!value){
-                return message;
-            }
-            return true;
-        },
-    });
+    const token = await promptToken(props.lang);
 
     const tokens = props.conf.get("discord.bot.tokens", []);
     const existing = tokens.find(t => t.token === token)
@@ -38,19 +21,9 @@ export async function settingsTokensNewMenu(props: ProgramMenuProps) {
         return;
     }
 
-    const fetching = ora();
-    fetching.start(uiText(props.lang, {
-        "en-US": "🔍 Fetching token information...",
-        "pt-BR": "🔍 Buscando informações do token...",
-     }));
-
-    const result = await getDiscordBotInfo(token);
-    fetching.stop();
+    const result = await fetchDiscordTokenData(token, props.lang);
     if (!result.success){
-        log.error(uiText(props.lang, {
-           "en-US": "The provided token is invalid",
-           "pt-BR": "O token informado é inválido!",
-        }, ck.red));
+        log.error(result.error);
         await sleep(500);
         menus.settings.tokens.main(props);
         return;
@@ -68,4 +41,22 @@ export async function settingsTokensNewMenu(props: ProgramMenuProps) {
     
     await sleep(500);
     menus.settings.tokens.main(props);
+}
+
+export async function promptToken(lang: Language){
+    return await password({
+        message: uiText(lang, {
+           "en-US": "Insert your discord bot token",
+           "pt-BR": "Insira seu token de bot de discord",
+        }),
+        theme: cliTheme,
+        mask: "*",
+        validate(value) {
+            const message = uiText(lang, {
+                "en-US": "You need to provide the token for your bot application.",
+                "pt-BR": "É necessário informar o token da sua aplicação de bot",
+            });
+            return !value ? message : true;
+        },
+    });
 }

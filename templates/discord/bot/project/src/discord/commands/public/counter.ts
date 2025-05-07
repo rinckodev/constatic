@@ -1,6 +1,5 @@
 import { createCommand, createResponder, ResponderType } from "#base";
-import { settings } from "#settings";
-import { createContainer, createSection } from "@magicyan/discord";
+import { createContainer, createSection, createSeparator } from "@magicyan/discord";
 import { ApplicationCommandType, ButtonBuilder, ButtonStyle, InteractionReplyOptions } from "discord.js";
 
 createCommand({
@@ -27,24 +26,30 @@ createResponder({
 
 function counterMenu<R>(current: number): R {
     const container = createContainer({
-        accentColor: settings.colors.azoxo,
+        accentColor: "Random",
         components: [
             createSection({
                 content: `## Current value: \` ${current} \``,
                 button: new ButtonBuilder({
                     customId: `counter/00`, 
-                    label: "Reset", style: ButtonStyle.Secondary
+                    label: "Reset", 
+                    disabled: current === 0,
+                    style: 
+                        current > 0 ? ButtonStyle.Primary :
+                        current < 0 ? ButtonStyle.Danger :
+                        ButtonStyle.Secondary
                 }),
             }),
+            createSeparator(),
             createSection({
-                content: `-# Increment value`,
+                content: `Increment value`,
                 button: new ButtonBuilder({
                     customId: `counter/${current+1}`, 
                     label: "+", style: ButtonStyle.Success
                 }),
             }),
             createSection({
-                content: `-# Decrement value`,
+                content: `Decrement value`,
                 button: new ButtonBuilder({
                     customId: `counter/${current-1}`, 
                     label: "-", style: ButtonStyle.Danger

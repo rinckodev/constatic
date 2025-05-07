@@ -20,6 +20,7 @@
       "paths": {
         "#helpers": ["./helpers/index.js"],
         "#menus": ["./menus/index.js"],
+        "#shared/*": ["./shared/*"],
         "#types": ["./types/index.js"]
       }
     },

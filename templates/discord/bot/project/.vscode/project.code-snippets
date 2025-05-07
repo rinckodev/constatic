@@ -187,6 +187,41 @@
 		"prefix": ["new.menu", "create.menu"],
 		"scope":"typescript",
 		"body": [
+			"import { settings } from \"#settings\";",
+            "import { brBuilder, createContainer, createRow } from \"@magicyan/discord\";",
+            "import { ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from \"discord.js\";",
+            "",
+            "export function ${TM_FILENAME_BASE}Menu<R>(): R {",
+            "    const components = [",
+            "        brBuilder(",
+            "            \"## ${TM_FILENAME_BASE} menu\"",
+            "        ),",
+            "        createRow(",
+            "            new ButtonBuilder({",
+            "                customId: \"menu/action\",",
+            "                label: \">\",", 
+            "                style: ButtonStyle.Success",
+            "            })",
+            "        )",
+            "    ];",
+            "",
+            "    const container = createContainer({",
+            "        accentColor: settings.colors.danger,",
+            "        components,",
+            "    });",
+            "",
+            "    return ({",
+            "        flags: [\"Ephemeral\", \"IsComponentsV2\"],", 
+            "        components: [container]",
+            "    } satisfies InteractionReplyOptions) as R;",
+            "}"
+		],
+		"description": "Create a interactive menu function"
+	},
+	"Create a interactive menu function (Legacy)": {
+		"prefix": ["new.legacy.menu", "create.legacy.menu"],
+		"scope":"typescript",
+		"body": [
 			"import { ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from \"discord.js\";",
 			"import { createEmbed, createRow, brBuilder } from \"@magicyan/discord\";",
 			"",
@@ -213,6 +248,6 @@
 			"    } satisfies InteractionReplyOptions) as R;",
 			"}"
 		],
-		"description": "Extract select interaction properties"
+		"description": "Create a interactive menu function (legacy)"
 	},
 }

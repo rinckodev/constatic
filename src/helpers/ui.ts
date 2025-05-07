@@ -14,7 +14,7 @@ export function commonTexts(lang: Language){
             "pt-BR": ck.dim(`⤶ Voltar`),
         }),
         instructions: uiText(lang, {
-            "en-US": ck.reset.dim(`(Press ${ck.cyan("<space>")} to select, ${ck.cyan("<a>")} to select all and  ${ck.cyan("<enter>")} to proceed)`),
+            "en-US": ck.reset.dim(`(Press ${ck.cyan("<space>")} to select, ${ck.cyan("<a>")} to select all and ${ck.cyan("<enter>")} to proceed)`),
             "pt-BR": ck.reset.dim(`(Pressione ${ck.cyan("<espaço>")} para selecionar, ${ck.cyan("<a>")} para selecionar tudo e ${ck.cyan("<enter>")} para proceder)`)
         })
     }
