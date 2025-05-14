@@ -13,7 +13,7 @@
     "start:dev": "node --env-file .env.dev ."
   },
   "dependencies": {
-    "@magicyan/discord": "1.4.6",
+    "@magicyan/discord": "1.4.7",
     "chalk": "5.4.1",
     "discord.js": "14.19.3",
     "fast-glob": "3.3.3",

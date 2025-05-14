@@ -28,9 +28,9 @@ function counterMenu<R>(current: number): R {
     const container = createContainer({
         accentColor: "Random",
         components: [
-            createSection({
-                content: `## Current value: \` ${current} \``,
-                button: new ButtonBuilder({
+            createSection(
+                `## Current value: \` ${current} \``,
+                new ButtonBuilder({
                     customId: `counter/00`, 
                     label: "Reset", 
                     disabled: current === 0,
@@ -39,22 +39,22 @@ function counterMenu<R>(current: number): R {
                         current < 0 ? ButtonStyle.Danger :
                         ButtonStyle.Secondary
                 }),
-            }),
+            ),
             createSeparator(),
-            createSection({
-                content: `Increment value`,
-                button: new ButtonBuilder({
+            createSection(
+                "Increment value",
+                new ButtonBuilder({
                     customId: `counter/${current+1}`, 
                     label: "+", style: ButtonStyle.Success
                 }),
-            }),
-            createSection({
-                content: `Decrement value`,
-                button: new ButtonBuilder({
+            ),
+            createSection(
+                "Decrement value",
+                new ButtonBuilder({
                     customId: `counter/${current-1}`, 
                     label: "-", style: ButtonStyle.Danger
                 }),
-            }),
+            ),
         ]
     });
 
