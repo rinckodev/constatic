@@ -5,8 +5,6 @@
         "PKief.material-icon-theme",
         "ms-vscode.vscode-typescript-next",
         "naumovs.color-highlight",
-        "usernamehw.errorlens",
-        "discloud.discloud",
-        "idered.npm",
+        "usernamehw.errorlens"
     ]
 }

@@ -9,6 +9,7 @@ export * from "./log.js";
 export * from "./validation.js";
 export * from "./npm.js";
 export * from "./agent.js";
+export * from "./env.js";
 
 import ck from "chalk";
 
