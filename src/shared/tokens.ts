@@ -1,13 +1,13 @@
-import { getDiscordBotInfo, uiText } from "#helpers";
-import { DiscordBotToken, FetchResult, Language } from "#types";
+import type { DiscordBotToken, FetchResult } from "#types";
+import { getDiscordBotInfo, uiMessage } from "#helpers";
 import ck from "chalk";
 import ora from "ora";
 
 type FetchDiscordTokenDataReturn = Promise<FetchResult<DiscordBotToken>>;
 
-export async function fetchDiscordTokenData(token: string, lang: Language): FetchDiscordTokenDataReturn {
+export async function fetchDiscordTokenData(token: string): FetchDiscordTokenDataReturn {
     const fetching = ora();
-    fetching.start(uiText(lang, {
+    fetching.start(uiMessage({
         "en-US": "🔍 Fetching token information...",
         "pt-BR": "🔍 Buscando informações do token...",
     }));
@@ -20,7 +20,7 @@ export async function fetchDiscordTokenData(token: string, lang: Language): Fetc
     return success
         ? { success, data: { token, ...result.data } }
         : {
-            success, error: uiText(lang, {
+            success, error: uiMessage({
                 "en-US": "The provided token is invalid",
                 "pt-BR": "O token informado é inválido!",
             }, ck.red)

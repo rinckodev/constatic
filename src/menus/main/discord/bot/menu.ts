@@ -1,7 +1,10 @@
-import { byeMessage, cliTheme, commonTexts, divider, getCdPath, getPackageManager, json, log, toNpmName, uiText } from "#helpers";
+import { byeMessage, divider, getCdPath, getPackageManager, instructions, json, log, toNpmName, uiMessage } from "#helpers";
+import { theme, withDefaults } from "#prompts";
+import { applyScriptPresets } from "#shared/presets/scripts/apply.js";
 import { BotTemplateProperties, ProgramMenuProps } from "#types";
 import { checkbox, input, select } from "@inquirer/prompts";
 import ck from "chalk";
+import { select as searchSelect } from "inquirer-select-pro";
 import lodash from "lodash";
 import { cp, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -15,14 +18,13 @@ export async function discordBotMenu(props: ProgramMenuProps) {
     const templatePath = path.join(props.cliroot, "/templates/discord/bot");
     
     const displayCurrCwd = ck.dim.underline(path.basename(props.cwd)+"/");
-    const projectpath = await input({
-        message: uiText(props.lang, {
+    const projectpath = await input(withDefaults({
+        message: uiMessage({
             "en-US": `📁 Project name ${displayCurrCwd}`,
             "pt-BR": `📁 Nome do projeto ${displayCurrCwd}`,
         }) + "\n",
-        theme: cliTheme,
         async validate(projetpath) {
-            const message = uiText(props.lang, {
+            const message = uiMessage({
                 "en-US": `${projetpath} is not a valid path`,
                 "pt-BR": `${projetpath} não é um caminho válido!`,
             });
@@ -33,7 +35,7 @@ export async function discordBotMenu(props: ProgramMenuProps) {
         },
         required: true,
         default: "./",
-    });
+    }));
     divider();
 
     const distpath = path.resolve(projectpath);
@@ -46,15 +48,14 @@ export async function discordBotMenu(props: ProgramMenuProps) {
     const properties = await json
         .read<BotTemplateProperties>(path.join(templatePath, "properties.json"));
 
-    const dbPresetIndex = await select({
-        message: uiText(props.lang, {
+    const dbPresetIndex = await select(withDefaults({
+        message: uiMessage({
            "en-US": "🧰 Database preset",
            "pt-BR": "🧰 Predefinição de banco de dados",
         }),
-        theme: cliTheme,
         choices: [
             { 
-                name: uiText(props.lang, {
+                name: uiMessage({
                    "en-US": "None",
                    "pt-BR": "Nenhum",
                 }, ck.red.dim), value: -1 
@@ -66,44 +67,33 @@ export async function discordBotMenu(props: ProgramMenuProps) {
                 value: index,
             }))
         ].flat(),
-    });
+    }));
     divider();
 
     const dbPreset = properties.dbpresets[dbPresetIndex];
 
-    const ormPresetIndex = dbPreset?.isOrm ? await select({
-        message: uiText(props.lang, {
+    const ormPresetIndex = dbPreset?.isOrm ? await select<number>(withDefaults({
+        message: uiMessage({
            "en-US": `Select ${dbPreset.name} database preset ${dbPreset.icon} `,
            "pt-BR": `Selecione a predefinição de banco de dados ${dbPreset.name} ${dbPreset.icon} `,
         }),
-        theme: cliTheme,
         choices: dbPreset.databases
         .filter(preset => preset.disabled !== true)
         .map((preset, index) =>({
             name: `${preset.icon} ${preset.name} ${ck.dim(`(${preset.hint})`)}`,
             value: index,
         }))
-    }) : -1
+    })) : -1
     if (dbPreset?.isOrm) divider();
 
-    const extraFeatures = await checkbox({
-        message: [
-            uiText(props.lang, {
-                "en-US": "✨ Extra features",
-                "pt-BR": "✨ Recursos extras",
-            }),
-            commonTexts(props.lang).instructions
-        ].join("\n"),
-        instructions: false,
-        theme: {
-            prefix: cliTheme.prefix,
-            style: {
-                renderSelectedChoices: () => ""
-            }
-        },
+    const extraFeatures = await checkbox(withDefaults({
+        message: uiMessage({
+            "en-US": "✨ Extra features",
+            "pt-BR": "✨ Recursos extras",
+        }),
         choices: [
             { 
-                name: uiText(props.lang, {
+                name: uiMessage({
                    "en-US": "🗐 Discloud files",
                    "pt-BR": "🗐 Arquivos Discloud",
                 }, ck.greenBright),
@@ -111,31 +101,31 @@ export async function discordBotMenu(props: ProgramMenuProps) {
                 checked: true,  
             },
             { 
-                name: uiText(props.lang, {
+                name: uiMessage({
                    "en-US": "◍ API Server",
                    "pt-BR": "◍ Servidor de API",
                 }, ck.cyanBright), 
                 value: "server" 
             },
             { 
-                name: uiText(props.lang, {
+                name: uiMessage({
                    "en-US": "🗲 Tsup compiler",
                    "pt-BR": "🗲 Compilador tsup",
                 }, ck.blueBright),
                 value: "tsup" 
             },
         ],
+        instructions: instructions.checkbox,
         required: false,
-    });
+    }));
     divider();
 
     const apiServerIndex = extraFeatures.includes("server") 
-    ? await select({
-        message: uiText(props.lang, {
+    ? await select(withDefaults({
+        message: uiMessage({
            "en-US": "🌐 API Server framework",
            "pt-BR": "🌐 Framework de Servidor de API",
         }),
-        theme: cliTheme,
         choices: [
             properties.apiservers
             .filter(preset => preset.disabled !== true)
@@ -144,20 +134,19 @@ export async function discordBotMenu(props: ProgramMenuProps) {
                 value: index,
             }))
         ].flat(),
-    }) : -1
+    })) : -1
     if (extraFeatures.includes("server")) divider();
 
     const tokens = props.conf.get("discord.bot.tokens", []);
     const tokenIndex = tokens.length >= 1
-    ? await select({
-        message: uiText(props.lang, {
+    ? await select(withDefaults({
+        message: uiMessage({
            "en-US": "🔑 Saved token",
            "pt-BR": "🔑 Token salvo",
         }),
-        theme: cliTheme,
         choices: [
             { 
-                name: uiText(props.lang, {
+                name: uiMessage({
                    "en-US": "None",
                    "pt-BR": "Nenhum",
                 }, ck.red.dim), value: -1 
@@ -168,47 +157,52 @@ export async function discordBotMenu(props: ProgramMenuProps) {
                 value: index,
             }))
         ].flat(),
-    }) : -1
+    })) : -1
     divider();
+
+    const scripts = props.conf.get("presets.scripts", []);
+    const selectedScripts = scripts.length < 1 ? [] : await searchSelect(withDefaults({
+        message: uiMessage({
+           "en-US": "🗐 Script presets",
+           "pt-BR": "🗐 Predefinições de scripts",
+        }),
+        options: scripts.map(script => ({
+            name: script.name,
+            value: script.id,
+        })),
+        theme: theme.searchSelect,
+        instructions: instructions.searchSelect,
+    }));
+    if (scripts.length >= 1) divider();
 
     const manager = getPackageManager();
 
-    // const installAllDeps = await confirm({
-    //     message: uiText(props.lang, {
-    //         "en-US": `📥 Install dependencies? ${ck.underline.dim(manager)} detected!`,
-    //         "pt-BR": `📥 Instalar dependências? ${ck.underline.dim(manager)} detectado!`,
-    //     }),
-    //     theme: cliTheme,
-    // });
-    // divider();
-
     const managerSuffix = ck.bgWhite(` ${manager} `);
 
-    const installAllDeps = await select({
-        message: uiText(props.lang, {
+    const installAllDeps = await select(withDefaults({
+        message: uiMessage({
            "en-US": `📥 Install dependencies? ${managerSuffix}`,
            "pt-BR": `📥 Instalar dependências? ${managerSuffix}`,
         }),
-        theme: cliTheme,
         choices: [
             { 
-                name: uiText(props.lang, {
+                name: uiMessage({
                    "en-US": "Yes",
                    "pt-BR": "Sim",
                 }, ck.greenBright), value: "yes" 
             },
             { 
-                name: uiText(props.lang, {
+                name: uiMessage({
                    "en-US": "No",
                    "pt-BR": "Não",
                 }, ck.redBright), value: "no" 
             },
         ]
-    }) == "yes";
+    })) == "yes";
     divider();
     
     const generating = ora();
-    generating.start(uiText(props.lang, {
+    generating.start(uiMessage({
        "en-US": "The project is being generated! Please wait...",
        "pt-BR": "O projeto está sendo gerado! Aguarde...",
     }));
@@ -219,7 +213,7 @@ export async function discordBotMenu(props: ProgramMenuProps) {
     lodash.set(packageJson, "name", npmName);
 
     if (dbPreset){
-        generating.text = uiText(props.lang, {
+        generating.text = uiMessage({
            "en-US": "Setting up the database",
            "pt-BR": "Configurando o banco de dados",
         });
@@ -249,7 +243,7 @@ export async function discordBotMenu(props: ProgramMenuProps) {
     }
 
     if (apiServerIndex !== -1){
-        generating.text = uiText(props.lang, {
+        generating.text = uiMessage({
             "en-US": "Setting up the API Server...",
             "pt-BR": "Configurando Servidor de API...",
         });
@@ -267,7 +261,7 @@ export async function discordBotMenu(props: ProgramMenuProps) {
 
     const token = tokens[tokenIndex];
     if (token){
-        generating.text = uiText(props.lang, {
+        generating.text = uiMessage({
             "en-US": "Writing the token to the .env file...",
             "pt-BR": "Escrevendo o token no arquivo .env...",
         });
@@ -321,6 +315,17 @@ export async function discordBotMenu(props: ProgramMenuProps) {
 
     packageJson.baseVersion = props.version;
 
+    if (selectedScripts.length){
+        await applyScriptPresets({
+            configdir: props.configdir,
+            cwd: props.cwd,
+            presets: scripts.filter(script => 
+                selectedScripts.includes(script.id)
+            ),
+            packageJson
+        });
+    }
+
     if (props.isBun){
         const bunPkgJson = await readPackageJSON(
             path.join(extraFeaturesPath, "bun/package.json")
@@ -336,7 +341,7 @@ export async function discordBotMenu(props: ProgramMenuProps) {
 
     if (installAllDeps){
         await installDeps({ 
-            lang: props.lang, distpath, 
+            distpath, 
             spinner: generating, 
             command: manager, 
         });
@@ -344,26 +349,26 @@ export async function discordBotMenu(props: ProgramMenuProps) {
     }
     generating.stop();
     
-    log.success(uiText(props.lang, {
+    log.success(uiMessage({
        "en-US": "Project generate successfully!",
        "pt-BR": "Projeto gerado com sucesso!",
     }));
     divider();
 
     if (!isDistRoot){
-        log.custom(ck.green("➞"), uiText(props.lang, {
+        log.custom(ck.green("➞"), uiMessage({
            "en-US": `Use: ${getCdPath(distpath)}`,
            "pt-BR": `Use: ${getCdPath(distpath)}`,
         }));
     }
     if (!installAllDeps){
-        log.custom(ck.green("➞"), uiText(props.lang, {
+        log.custom(ck.green("➞"), uiMessage({
             "en-US": "Install the dependencies",
             "pt-BR": "Instale as dependências",
         }));
     }
 
-    log.custom(ck.green("➞"), uiText(props.lang, {
+    log.custom(ck.green("➞"), uiMessage({
         "en-US": `Run ${ck.underline("dev")} script`,
         "pt-BR": `Execute o script ${ck.underline("dev")}`,
     }));

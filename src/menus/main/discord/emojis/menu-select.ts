@@ -1,10 +1,11 @@
-import { cliTheme, commonTexts, divider, log, parseEnvFile, sleep, uiText } from "#helpers";
+import { commonTexts, divider, log, parseEnvFile, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
+import { withDefaults } from "#prompts";
 import { fetchDiscordTokenData } from "#shared/tokens.js";
 import { ProgramMenuProps } from "#types";
 import { select } from "@inquirer/prompts";
+import { glob } from "@reliverse/reglob";
 import ck from "chalk";
-import fg from "fast-glob";
 
 type ChoiceData = { name: string, value: string | number };
 
@@ -16,7 +17,7 @@ export async function selectDiscordBot(props: ProgramMenuProps) {
         value: index,
     }));
 
-    const paths = await fg("./.env*", { cwd: props.cwd });
+    const paths = await glob("./.env*", { cwd: props.cwd });
 
     const envs = await Promise.all(
         paths.map(async filepath => {
@@ -24,51 +25,54 @@ export async function selectDiscordBot(props: ProgramMenuProps) {
             return { name: filepath, vars }
         })
     )
-    .then(envs => envs.filter(
-        ({ vars }) => "BOT_TOKEN" in vars && !!vars.BOT_TOKEN
-    ));
+        .then(envs => envs.filter(
+            ({ vars }) => "BOT_TOKEN" in vars && !!vars.BOT_TOKEN
+        ));
 
     choices.unshift(...envs.map(data => ({
-        name: uiText(props.lang, {
+        name: uiMessage({
             "en-US": `▲ Use ${ck.underline(data.name)} file BOT_TOKEN`,
             "pt-BR": `▲ Use o BOT_TOKEN do arquivo ${ck.underline(data.name)}`,
         }, ck.yellow),
-        value: data.vars.BOT_TOKEN, 
+        value: data.vars.BOT_TOKEN,
     })))
 
     choices.unshift({
-        name: uiText(props.lang, {
+        name: uiMessage({
             "en-US": "✦ New temporary application",
             "pt-BR": "✦ Nova aplicação temporária",
         }, ck.green),
         value: -2,
     })
 
-    choices.push({ name: commonTexts(props.lang).back, value: -1 });
+    choices.push({ name: commonTexts.back, value: -1 });
 
-    const index = await select({
-        message: uiText(props.lang, {
+    const index = await select(withDefaults({
+        message: uiMessage({
             "en-US": "Select an application",
             "pt-BR": "Selecione uma aplicação",
         }),
-        theme: cliTheme,
         choices
-    });
+    }));
     divider();
 
+    const onTokenNotFound = async (error: string) => {
+        log.error(error);
+        divider();
+        await sleep(400);
+        selectDiscordBot(props);
+    }
+
     const fetchTokenOperation = async (token: string) => {
-        const result = await fetchDiscordTokenData(token, props.lang);
+        const result = await fetchDiscordTokenData(token);
         if (!result.success) {
-            log.error(result.error);
-            divider();
-            await sleep(500);
-            selectDiscordBot(props);
+            onTokenNotFound(result.error);
             return;
         }
         menus.discord.emojis.main(props, result.data);
     }
 
-    if (typeof index === "string"){
+    if (typeof index === "string") {
         await fetchTokenOperation(index);
         return;
     }
@@ -78,9 +82,13 @@ export async function selectDiscordBot(props: ProgramMenuProps) {
         return;
     }
     if (index === -2) {
-        const token = await menus.settings.tokens.prompts.token(props.lang);
+        const result = await menus.presets.tokens.prompts.token(tokens);
         divider();
-        await fetchTokenOperation(token);
+        if (!result.success) {
+            onTokenNotFound(result.error);
+            return;
+        }
+        menus.discord.emojis.main(props, result.data);
         return;
     }
     menus.discord.emojis.main(props, tokens[index]);

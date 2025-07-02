@@ -1,4 +1,4 @@
-import { cliTableChars, divider, sleep, uiText } from "#helpers";
+import { cliTableChars, divider, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { DiscordBotToken, ProgramMenuProps } from "#types";
 import ck from "chalk";
@@ -10,15 +10,15 @@ export async function discordEmojisListMenu(props: ProgramMenuProps, token: Disc
     if (!emojis) return;
 
     const cc = {
-        name: uiText(props.lang, 
+        name: uiMessage(
             { "en-US": "Name", "pt-BR": "Nome", },
             ck.white
         ),
-        id: uiText(props.lang, 
+        id: uiMessage(
             { "en-US": "ID", "pt-BR": "ID", },
             ck.white
         ),
-        type: uiText(props.lang, 
+        type: uiMessage(
             { "en-US": "Type", "pt-BR": "Tipo", },
             ck.white
         ),

@@ -1,15 +1,13 @@
-import { log, shellCommand, uiText } from "#helpers";
-import { Language } from "#types";
-import { type Ora } from "ora";
+import { log, shellCommand, uiMessage } from "#helpers";
+import type { Ora } from "ora";
 
 interface InstallDepsProps {
-    lang: Language, 
     distpath: string, 
     command: string,
     spinner: Ora;
 }
-export async function installDeps({ lang, command, distpath, spinner }: InstallDepsProps) {
-    spinner.text = uiText(lang, {
+export async function installDeps({ command, distpath, spinner }: InstallDepsProps) {
+    spinner.text = uiMessage({
         "en-US": "Installing dependencies...",
         "pt-BR": "Instalando dependências...",
     });
@@ -22,7 +20,7 @@ export async function installDeps({ lang, command, distpath, spinner }: InstallD
 
     switch (result.status) {
         case "success": {
-            log.success(uiText(lang, {
+            log.success(uiMessage({
                "en-US": "✅ Dependencies installed successfully!",
                "pt-BR": "✅ Dependências instaladas com sucesso!",
             }));
@@ -30,7 +28,7 @@ export async function installDeps({ lang, command, distpath, spinner }: InstallD
         }
         case "fail":
         case "error": {
-            log[result.status](uiText(lang, {
+            log[result.status](uiMessage({
                "en-US": [
                 "❌ Unable to install dependencies!",
                 `Install manually using ${command} install`

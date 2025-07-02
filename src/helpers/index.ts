@@ -1,15 +1,19 @@
 export * from "./discord/emojis.js";
 export * from "./discord/tokens.js";
 
-export * from "./conf.js";
-export * from "./files.js";
-export * from "./ui.js";
-export * from "./shell.js";
-export * from "./log.js";
-export * from "./validation.js";
-export * from "./npm.js";
-export * from "./agent.js";
-export * from "./env.js";
+export * from "./npm/package.js";
+
+export * from "./helper.agent.js";
+export * from "./helper.conf.js";
+export * from "./helper.env.js";
+export * from "./helper.files.js";
+export * from "./helper.format.js";
+export * from "./helper.lang.js";
+export * from "./helper.log.js";
+export * from "./helper.npm.js";
+export * from "./helper.shell.js";
+export * from "./helper.ui.js";
+export * from "./helper.validation.js";
 
 import ck from "chalk";
 
@@ -18,10 +22,7 @@ export const byeMessage = [
     `😺 ${ck.cyan("Github")} / ${ck.red("youtube")}: @rinckodev`,
 ].join("\n")
 
-function onCancel(error: any){
-    if (error.name !== "ExitPromptError") {
-        throw error;
-    };
+function onCancel(_error: any){
     console.log(byeMessage);
     console.log();
     process.exit(0);

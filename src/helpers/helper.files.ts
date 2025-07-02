@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-// import path from "path";
+import path from "node:path";
 
 export const json = {
     async read<T = any>(path: string): Promise<T> {
@@ -14,7 +14,22 @@ export const json = {
 
 export async function fileExists(filePath: string): Promise<boolean> {
   try {
-    await fs.access(filePath);
+    const stats = await fs.stat(filePath);
+    return stats.isFile();
+  } catch {
+    return false;
+  }
+}
+
+export async function moveFile(srcPath: string, destPath: string) {
+  const destDir = path.dirname(destPath);
+  await fs.mkdir(destDir, { recursive: true });
+  await fs.rename(srcPath, destPath);
+}
+
+export async function pathExists(path: string): Promise<boolean> {
+  try {
+    await fs.stat(path);
     return true;
   } catch {
     return false;

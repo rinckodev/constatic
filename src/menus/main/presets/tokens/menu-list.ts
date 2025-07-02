@@ -1,20 +1,16 @@
-import { uiText, divider, sleep, cliTableChars } from "#helpers";
+import type { DiscordBotToken, ProgramMenuProps } from "#types";
+import { cliTableChars, divider, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
-import { ProgramMenuProps } from "#types";
 import ck from "chalk";
 import Table from "cli-table3";
-import { getDiscordTokens } from "./get.js";
 
-export async function settingsTokensListMenu(props: ProgramMenuProps) {
-    const tokens = await getDiscordTokens(props);
-    if (!tokens) return;
-
+export async function presetsTokensListMenu(props: ProgramMenuProps, tokens: DiscordBotToken[]) {
     const cc = {
-        name: uiText(props.lang, 
+        name: uiMessage( 
             { "en-US": "Name", "pt-BR": "Nome", },
             ck.white
         ),
-        id: uiText(props.lang, 
+        id: uiMessage( 
             { "en-US": "ID", "pt-BR": "ID", },
             ck.white
         )
@@ -35,5 +31,5 @@ export async function settingsTokensListMenu(props: ProgramMenuProps) {
     divider();
     
     await sleep(500);
-    menus.settings.tokens.main(props);
+    menus.presets.tokens.main(props);
 }
