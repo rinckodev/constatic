@@ -64,21 +64,21 @@ async function loadModules(workdir: string, directories: string[] = []){
 }
 
 function createClient(token: string, options: BootstrapOptions) {
-
-    const client = new Client(Object.assign(options, {
+    const client = new Client({ ...options,
         intents: options.intents ?? CustomItents.All,
         partials: options.partials ?? CustomPartials.All,
-        failIfNotExists: options.failIfNotExists ?? false
-    }));
+        failIfNotExists: options.failIfNotExists ?? false,
+    });
 
     client.token=token;
     client.on("ready", async (client) => {
         registerErrorHandlers(client);
-
-        await client.guilds.fetch().catch(() => null);;
-
+        await client.guilds
+            .fetch()
+            .catch(() => null);
+            
         logger.log(ck.green(`● ${ck.greenBright.underline(client.user.username)} online ✓`))
-
+        
         await baseRegisterCommands(client);
 
         if (options.whenReady){
@@ -87,19 +87,13 @@ function createClient(token: string, options: BootstrapOptions) {
     });
 
     client.on("interactionCreate", async (interaction) => {
-        switch(true){
-            case interaction.isAutocomplete():{
-                baseAutocompleteHandler(interaction);
-                return;
-            }
-            case interaction.isCommand(): {
-                baseCommandHandler(interaction);
-                return;
-            }
-            default: 
-                baseResponderHandler(interaction);
-                return;
+        if (interaction.isAutocomplete()){
+            return baseAutocompleteHandler(interaction);
         }
+        if (interaction.isCommand()){
+            return baseCommandHandler(interaction);
+        }
+        return baseResponderHandler(interaction);
     });
 
     return client;
@@ -107,11 +101,11 @@ function createClient(token: string, options: BootstrapOptions) {
 
 function loadLogs(){
     const logs = [
-        baseStorage.loadLogs.commands,
-        baseStorage.loadLogs.responders,
-        baseStorage.loadLogs.events,
-    ].flat();
-    logs.forEach(text => logger.log(text));
+        ...baseStorage.loadLogs.commands,
+        ...baseStorage.loadLogs.responders,
+        ...baseStorage.loadLogs.events,
+    ];
+    for(const text of logs) logger.log(text);
 }
 
 function registerErrorHandlers(client?: Client<true>){

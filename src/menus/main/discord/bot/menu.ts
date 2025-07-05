@@ -1,4 +1,4 @@
-import { byeMessage, createEnvEditor, divider, getCdPath, getPackageManager, instructions, json, log, toNpmName, uiMessage } from "#helpers";
+import { byeMessage, copy, createEnvEditor, divider, getCdPath, getPackageManager, instructions, json, log, toNpmName, uiMessage } from "#helpers";
 import { theme, withDefaults } from "#prompts";
 import { applyScriptPresets } from "#shared/presets/scripts/apply.js";
 import { BotTemplateProperties, ProgramMenuProps } from "#types";
@@ -6,7 +6,7 @@ import { checkbox, input, select } from "@inquirer/prompts";
 import ck from "chalk";
 import { select as searchSelect } from "inquirer-select-pro";
 import merge from "lodash.merge";
-import { cp as copy, readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import ora from "ora";
 import { readPackageJSON } from "pkg-types";
@@ -213,10 +213,23 @@ export async function discordBotMenu(props: ProgramMenuProps) {
     const project = new Project({
         tsConfigFilePath: path.join(distpath, "tsconfig.json"),
     });
+
+    generating.text = uiMessage({
+        "en-US": "Creating environment variables editor",
+        "pt-BR": "Criando editor de variáveis de ambiente",
+    });
+
     const envEditor = await createEnvEditor(path.join(distpath, ".env"));
     const projectFiles = {
-        envSchema: project.addSourceFileAtPath("src/settings/env.schema.ts")
+        envSchema: project.addSourceFileAtPath("src/settings/env.schema.ts"),
+        index: project.addSourceFileAtPath("src/index.ts"),
     }
+
+    generating.text = uiMessage({
+        "en-US": "Reading package.json",
+        "pt-BR": "Lendo package.json",
+    });
+
     const packageJson = await readPackageJSON(path.join(distpath, "package.json"));
 
     packageJson.name = npmName;
@@ -234,16 +247,12 @@ export async function discordBotMenu(props: ProgramMenuProps) {
             await updateEnv(projectFiles.envSchema, envEditor, database.env);
         }
         if (database.path){
-            await copy(path.join(dbPath, database.path), distpath, {
-                recursive: true, force: true,
-            });
+            await copy(path.join(dbPath, database.path), distpath);
         }
         if (orm){
             merge(packageJson, orm.packageJson);
             
-            await copy(path.join(dbPath, orm.path), distpath, {
-                recursive: true, force: true,
-            });
+            await copy(path.join(dbPath, orm.path), distpath);
             if (orm.env){
                 await updateEnv(projectFiles.envSchema, envEditor, orm.env);
             }
@@ -256,13 +265,15 @@ export async function discordBotMenu(props: ProgramMenuProps) {
             "pt-BR": "Configurando Servidor de API...",
         });
 
-        const apiServersPath = path.join(templatePath, "extras/servers");
+        const serversPath = path.join(templatePath, "servers");
         merge(packageJson, server.packageJson);
         if (server.env){
             await updateEnv(projectFiles.envSchema, envEditor, server.env);
         }
-        await copy(path.join(apiServersPath, server.path), distpath, {
-            recursive: true, force: true,
+        await copy(path.join(serversPath, server.path), distpath);
+
+        projectFiles.index.addImportDeclaration({
+            moduleSpecifier: "#server"
         });
     }
 

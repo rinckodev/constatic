@@ -1,5 +1,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { CopyOptions, copy as fsCopy } from "fs-extra";
+import { log } from "./helper.log.js";
+import { uiMessage } from "./helper.ui.js";
 
 export const json = {
     async read<T = any>(path: string): Promise<T> {
@@ -34,4 +37,25 @@ export async function pathExists(path: string): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+export async function copy(src: string, dest: string, options?: CopyOptions){
+  return fsCopy(src, dest, options)
+    .catch((err) => {
+      const message = [
+        `src: ${src}`,
+        `dest: ${dest}`,
+        `${err}`
+      ];
+      log.fail(uiMessage({
+        "pt-BR": [
+          "Ocorreu um erro ao tentar copiar!",
+          ...message
+        ].join("\n"),
+        "en-US": [
+          "An error occurred while trying to copy",
+          ...message
+        ].join("\n")
+      }))
+  });
 }

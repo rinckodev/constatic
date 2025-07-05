@@ -241,7 +241,6 @@
           "dependencies": {
             "http-status-codes": "2.3.0",
             "fastify": "5.0.0",
-            "@fastify/autoload": "6.0.2",
             "@fastify/cors": "10.0.1"
           }
         }

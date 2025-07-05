@@ -30,12 +30,13 @@ export interface EnvEditor {
   save(): Promise<void>;
 }
 
-export async function createEnvEditor(filePath = path.resolve(".env")): Promise<EnvEditor> {
+export async function createEnvEditor(filePath: string): Promise<EnvEditor> {
   const env: Record<string, string> = {};
   const originalLines: string[] = [];
 
-  if (await fileExists(filePath)) {
-    const content = await readFile(filePath, "utf-8");
+  if (await fileExists(filePath).catch(() => false)) {
+    const content = await readFile(filePath, "utf-8")
+      .catch(() => "");
 
     for (const line of content.split("\n")) {
       const trimmed = line.trim();
