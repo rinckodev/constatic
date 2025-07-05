@@ -13,4 +13,5 @@ node_modules
 *.env.dev
 /.gitignore
 /build.config.ts
+/tsup.config.ts
 /tsconfig.json

@@ -3,7 +3,6 @@ import { cliLang, getPackageManager, initConf, log, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import ck from "chalk";
 import * as citty from "citty";
-import lodash from "lodash";
 import path from "node:path";
 import { readPackageJSON } from "pkg-types";
 import { fileURLToPath } from "url";
@@ -34,15 +33,17 @@ console.log(
     "\n"
 );
 
-const meta = lodash.pick(packageJson, ["name", "version", "description"]);
-
 citty.runMain({
-    meta,
+    meta: {
+        name: packageJson.name,
+        version: packageJson.version,
+        description: packageJson.description,
+    },
     run() {
         menus.main({
             configdir: path.dirname(conf.path),
             cwd: process.cwd(), cliroot, conf, 
-            version: meta.version??"0.0.0",
+            version: packageJson.version??"0.0.0",
             isBun: getPackageManager() === "bun",
             get lang(){
                 return cliLang.get()

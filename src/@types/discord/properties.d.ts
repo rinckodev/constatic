@@ -1,10 +1,8 @@
-import { BotAPIServerPreset } from "./apiServerPreset.js";
-import { BotOrmDatabasePreset } from "./dbOrmPreset.js";
-import { BotLibDatabasePreset } from "./dbPreset.js";
-
-export type BotDatabasePreset = BotLibDatabasePreset | BotOrmDatabasePreset;
+import type { BotAPIServerPreset, BotDatabasePreset } from "./preset.js";
 
 export interface BotTemplateProperties {
-    dbpresets: BotDatabasePreset[];
-    apiservers: BotAPIServerPreset[];
+    presets: {
+        databases: Record<string, BotDatabasePreset>;
+        servers: Record<string, BotAPIServerPreset>
+    }
 }

@@ -1,9 +1,9 @@
 {
 	"UI Text":{
 		"scope": "typescript",
-		"prefix": "ui.text",
+		"prefix": "ui.message",
 		"body": [
-			"uiText(props.lang, {",
+			"uiMessage({",
 			"   \"en-US\": \"\",",
 			"   \"pt-BR\": \"\",",
 			"})",

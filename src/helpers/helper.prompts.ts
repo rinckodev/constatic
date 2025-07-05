@@ -1,5 +1,5 @@
 import ck from "chalk";
-import lodash from "lodash";
+import merge from "lodash.merge";
 
 export const baseTheme = {
     style: {
@@ -35,6 +35,6 @@ export function withDefaults<T>(config: T): T {
         mask: "*",
         instructions: false,
         ...config,
-        theme: lodash.merge(theme, lodash.get(config, "theme")),
+        theme: merge(theme, (config as { theme: object })?.["theme"]),
     };
 }

@@ -14,6 +14,8 @@ export * from "./helper.npm.js";
 export * from "./helper.shell.js";
 export * from "./helper.ui.js";
 export * from "./helper.validation.js";
+export * from "./morph/functions.js";
+export * from "./morph/objects.js";
 
 import ck from "chalk";
 

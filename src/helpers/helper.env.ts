@@ -19,3 +19,73 @@ export async function parseEnvFile(filePath: string) {
 
   return envVars;
 }
+
+import { readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
+import { fileExists } from "./helper.files.js";
+
+export interface EnvEditor {
+  set(key: string, value: string): void;
+  remove(key: string): void;
+  save(): Promise<void>;
+}
+
+export async function createEnvEditor(filePath = path.resolve(".env")): Promise<EnvEditor> {
+  const env: Record<string, string> = {};
+  const originalLines: string[] = [];
+
+  if (await fileExists(filePath)) {
+    const content = await readFile(filePath, "utf-8");
+
+    for (const line of content.split("\n")) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) {
+        originalLines.push(line);
+        continue;
+      }
+
+      const [key, ...rest] = trimmed.split("=");
+      env[key] = rest.join("=").trim();
+      originalLines.push(line);
+    }
+  }
+
+  return {
+    set(key, value) {
+      env[key] = value;
+    },
+
+    remove(key) {
+      delete env[key];
+    },
+
+    async save() {
+      const updatedKeys = new Set(Object.keys(env));
+      const finalLines: string[] = [];
+
+      for (const line of originalLines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith("#")) {
+          finalLines.push(line);
+          continue;
+        }
+
+        const [key] = trimmed.split("=");
+        if (env[key] !== undefined) {
+          finalLines.push(`${key}=${env[key]}`);
+          updatedKeys.delete(key);
+        }
+      }
+
+      for (const key of updatedKeys) {
+        finalLines.push(`${key}=${env[key]}`);
+      }
+
+      await writeFile(filePath, finalLines.join("\n") + "\n", "utf-8");
+
+      const examplePath = path.join(path.dirname(filePath), ".env.example");
+      const exampleLines = Object.keys(env).map((key) => `${key}=`);
+      await writeFile(examplePath, exampleLines.join("\n") + "\n", "utf-8");
+    },
+  };
+}

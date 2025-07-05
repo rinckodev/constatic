@@ -6,8 +6,8 @@ import { baseStorage } from "./base.storage.js";
 import { baseRegisterEvents } from "./base.event.js";
 import { baseResponderHandler } from "./base.responder.js";
 import { BASE_VERSION, runtimeDisplay } from "./base.version.js";
+import { glob } from "@reliverse/reglob";
 import ck from "chalk";
-import glob from "fast-glob";
 
 interface BootstrapOptions extends Partial<ClientOptions> {
     meta: ImportMeta;
