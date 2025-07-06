@@ -1,3 +1,5 @@
+import path from "node:path";
+import { fileExists } from "./helper.files.js";
 import * as fs from "node:fs/promises";
 
 export async function parseEnvFile(filePath: string) {
@@ -20,9 +22,6 @@ export async function parseEnvFile(filePath: string) {
   return envVars;
 }
 
-import { readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
-import { fileExists } from "./helper.files.js";
 
 export interface EnvEditor {
   set(key: string, value: string): void;
@@ -35,7 +34,7 @@ export async function createEnvEditor(filePath: string): Promise<EnvEditor> {
   const originalLines: string[] = [];
 
   if (await fileExists(filePath).catch(() => false)) {
-    const content = await readFile(filePath, "utf-8")
+    const content = await fs.readFile(filePath, "utf-8")
       .catch(() => "");
 
     for (const line of content.split("\n")) {
@@ -82,11 +81,11 @@ export async function createEnvEditor(filePath: string): Promise<EnvEditor> {
         finalLines.push(`${key}=${env[key]}`);
       }
 
-      await writeFile(filePath, finalLines.join("\n") + "\n", "utf-8");
+      await fs.writeFile(filePath, finalLines.join("\n") + "\n", "utf-8");
 
       const examplePath = path.join(path.dirname(filePath), ".env.example");
       const exampleLines = Object.keys(env).map((key) => `${key}=`);
-      await writeFile(examplePath, exampleLines.join("\n") + "\n", "utf-8");
+      await fs.writeFile(examplePath, exampleLines.join("\n") + "\n", "utf-8");
     },
   };
 }

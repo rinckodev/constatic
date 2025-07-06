@@ -24,10 +24,13 @@ export const byeMessage = [
     `😺 ${ck.cyan("Github")} / ${ck.red("youtube")}: @rinckodev`,
 ].join("\n")
 
-function onCancel(_error: any){
-    console.log(byeMessage);
-    console.log();
-    process.exit(0);
+function onCancel(error: any): never {
+    if (error instanceof Error && error.name === 'ExitPromptError') {
+        console.log(byeMessage);
+        console.log();
+        process.exit(0);
+    }
+    throw error;
 }
 
 process.on("unhandledRejection", onCancel);

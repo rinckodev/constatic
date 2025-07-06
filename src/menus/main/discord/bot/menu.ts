@@ -19,7 +19,7 @@ export async function discordBotMenu(props: ProgramMenuProps) {
     const templatePath = path.join(props.cliroot, "/templates/discord/bot");
     
     const displayCurrCwd = ck.dim.underline(path.basename(props.cwd)+"/");
-    const projectpath = await input(withDefaults({
+    const projectPath = await input(withDefaults({
         message: uiMessage({
             "en-US": `📁 Project name ${displayCurrCwd}`,
             "pt-BR": `📁 Nome do projeto ${displayCurrCwd}`,
@@ -39,10 +39,10 @@ export async function discordBotMenu(props: ProgramMenuProps) {
     }));
     divider();
 
-    const distpath = path.resolve(projectpath);
-    const isDistRoot = distpath === props.cwd;
+    const distPath = path.resolve(projectPath);
+    const isDistRoot = distPath === props.cwd;
 
-    const npmName = toNpmName(path.basename(isDistRoot ? distpath : projectpath));
+    const npmName = toNpmName(path.basename(isDistRoot ? distPath : projectPath));
     log.success(ck.bgBlue(` ${npmName} `));
     divider();
 
@@ -208,10 +208,12 @@ export async function discordBotMenu(props: ProgramMenuProps) {
        "pt-BR": "O projeto está sendo gerado! Aguarde...",
     }));
 
-    await copyProject(path.join(templatePath, "project"), distpath);
+    const resolveDistPath = (...paths: string[]) => path.join(distPath, ...paths);
+
+    await copyProject(path.join(templatePath, "project"), distPath);
 
     const project = new Project({
-        tsConfigFilePath: path.join(distpath, "tsconfig.json"),
+        tsConfigFilePath: resolveDistPath("tsconfig.json"),
     });
 
     generating.text = uiMessage({
@@ -219,18 +221,23 @@ export async function discordBotMenu(props: ProgramMenuProps) {
         "pt-BR": "Criando editor de variáveis de ambiente",
     });
 
-    const envEditor = await createEnvEditor(path.join(distpath, ".env"));
+    const envEditor = await createEnvEditor(path.join(distPath, ".env"));
     const projectFiles = {
-        envSchema: project.addSourceFileAtPath("src/settings/env.schema.ts"),
-        index: project.addSourceFileAtPath("src/index.ts"),
+        envSchema: project.addSourceFileAtPath(
+            resolveDistPath("src/settings/env.schema.ts")
+        ),
+        index: project.addSourceFileAtPath(
+            resolveDistPath("src/index.ts")
+        ),
     }
+
 
     generating.text = uiMessage({
         "en-US": "Reading package.json",
         "pt-BR": "Lendo package.json",
     });
 
-    const packageJson = await readPackageJSON(path.join(distpath, "package.json"));
+    const packageJson = await readPackageJSON(resolveDistPath("package.json"));
 
     packageJson.name = npmName;
 
@@ -247,12 +254,12 @@ export async function discordBotMenu(props: ProgramMenuProps) {
             await updateEnv(projectFiles.envSchema, envEditor, database.env);
         }
         if (database.path){
-            await copy(path.join(dbPath, database.path), distpath);
+            await copy(path.join(dbPath, database.path), distPath);
         }
         if (orm){
             merge(packageJson, orm.packageJson);
             
-            await copy(path.join(dbPath, orm.path), distpath);
+            await copy(path.join(dbPath, orm.path), distPath);
             if (orm.env){
                 await updateEnv(projectFiles.envSchema, envEditor, orm.env);
             }
@@ -270,7 +277,7 @@ export async function discordBotMenu(props: ProgramMenuProps) {
         if (server.env){
             await updateEnv(projectFiles.envSchema, envEditor, server.env);
         }
-        await copy(path.join(serversPath, server.path), distpath);
+        await copy(path.join(serversPath, server.path), distPath);
 
         projectFiles.index.addImportDeclaration({
             moduleSpecifier: "#server"
@@ -288,22 +295,22 @@ export async function discordBotMenu(props: ProgramMenuProps) {
 
     await copy(
         path.join(extraFeaturesPath, "gitignore.txt"),
-        path.join(distpath, ".gitignore")
+        resolveDistPath(".gitignore")
     )
     if (extraFeatures.includes("discloud")){
         const folder = path.join(extraFeaturesPath, props.isBun ? "bun" : "discloud");
         await copy(
             path.join(folder, "discloud.ignore.txt"),
-            path.join(distpath, ".discloudignore")
+            resolveDistPath(".discloudignore")
         )
         await copy(
             path.join(folder, "discloud.config.txt"),
-            path.join(distpath, "discloud.config")
+            resolveDistPath("discloud.config")
         )
         if (props.isBun){
             await copy(
                 path.join(folder, "Dockerfile"),
-                path.join(distpath, "Dockerfile")
+                resolveDistPath("Dockerfile")
             )
         }
     };
@@ -316,11 +323,11 @@ export async function discordBotMenu(props: ProgramMenuProps) {
 
         await copy(
             path.join(extraFeaturesPath, "tsup/tsup.config.ts"),
-            path.join(distpath, "tsup.config.ts")
+            resolveDistPath("tsup.config.ts")
         )
     }
 
-    const baseVersionPath = path.join(distpath, "src/discord/base/base.version.ts");
+    const baseVersionPath = resolveDistPath("src/discord/base/base.version.ts");
     await readFile(baseVersionPath, "utf-8")
         .then(content => content.replace("{{baseVersion}}", props.version))
         .then(content => writeFile(baseVersionPath, content, "utf-8"))
@@ -347,14 +354,14 @@ export async function discordBotMenu(props: ProgramMenuProps) {
         delete packageJson.devDependencies["@types/node"];
     }
 
-    await json.write(path.join(distpath, "package.json"), packageJson);
+    await json.write(resolveDistPath("package.json"), packageJson);
 
     project.save();
     envEditor.save();
 
     if (installAllDeps){
         await installDeps({ 
-            distpath, 
+            distpath: distPath, 
             spinner: generating, 
             command: manager, 
         });
@@ -370,8 +377,8 @@ export async function discordBotMenu(props: ProgramMenuProps) {
 
     if (!isDistRoot){
         log.custom(ck.green("➞"), uiMessage({
-           "en-US": `Use: ${getCdPath(distpath)}`,
-           "pt-BR": `Use: ${getCdPath(distpath)}`,
+           "en-US": `Use: ${getCdPath(distPath)}`,
+           "pt-BR": `Use: ${getCdPath(distPath)}`,
         }));
     }
     if (!installAllDeps){

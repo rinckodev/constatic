@@ -2,7 +2,7 @@ import type { ProgramMenuProps, ScriptPreset } from "#types";
 import merge from "lodash.merge";
 import { PackageJson } from "pkg-types";
 import path from "node:path";
-import { copy } from "fs-extra";
+import { copy } from "#helpers";
 
 interface ApplyScriptPresetsProps extends Pick<ProgramMenuProps, "cwd" | "configdir"> {
     presets: ScriptPreset[];

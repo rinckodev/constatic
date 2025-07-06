@@ -1,9 +1,8 @@
-import { divider, uiMessage } from "#helpers";
+import { copy, divider, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { withDefaults } from "#prompts";
 import { ProgramMenuProps, ScriptPreset } from "#types";
 import { search } from "@inquirer/prompts";
-import { copy } from "fs-extra";
 import { rm } from "node:fs/promises";
 import path from "node:path";
 import { formatPresets } from "./actions/format.js";

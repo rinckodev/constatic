@@ -1,11 +1,10 @@
-import { divider, log, sleep, uiMessage } from "#helpers";
+import { copy, divider, log, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { withDefaults } from "#prompts";
 import { ProgramMenuProps, ScriptPreset } from "#types";
 import { input } from "@inquirer/prompts";
 
 import ck from "chalk";
-import { copy } from "fs-extra";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { modifyScriptPresetMenu } from "./actions/modify.js";

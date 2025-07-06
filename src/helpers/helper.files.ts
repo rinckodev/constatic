@@ -24,10 +24,9 @@ export async function fileExists(filePath: string): Promise<boolean> {
   }
 }
 
-export async function moveFile(srcPath: string, destPath: string) {
-  const destDir = path.dirname(destPath);
-  await fs.mkdir(destDir, { recursive: true });
-  await fs.rename(srcPath, destPath);
+export async function moveFile(srcPath: string, distPath: string) {
+  await fs.mkdir(path.dirname(distPath), { recursive: true });
+  await fs.rename(srcPath, distPath);
 }
 
 export async function pathExists(path: string): Promise<boolean> {
