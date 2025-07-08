@@ -25,7 +25,8 @@ export const byeMessage = [
 ].join("\n")
 
 function onCancel(error: any): never {
-    if (error instanceof Error && error.name === 'ExitPromptError') {
+    if (error instanceof Error && error.name === "ExitPromptError") {
+        console.log();
         console.log(byeMessage);
         console.log();
         process.exit(0);

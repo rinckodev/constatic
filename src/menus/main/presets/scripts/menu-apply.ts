@@ -59,9 +59,9 @@ export async function presetsScriptsApplyMenu(props: ProgramMenuProps, presets: 
 
     await applyScriptPresets({
         configdir: props.configdir,
-        cwd: props.cwd,
         presets: selectedPresets,
         packageJson,
+        distPath: props.cwd
     });
 
     if (packageJson) {

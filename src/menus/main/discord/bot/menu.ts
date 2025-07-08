@@ -1,10 +1,9 @@
 import { byeMessage, copy, createEnvEditor, divider, getCdPath, getPackageManager, instructions, json, log, toNpmName, uiMessage } from "#helpers";
-import { theme, withDefaults } from "#prompts";
+import { searchSelect, theme, withDefaults } from "#prompts";
 import { applyScriptPresets } from "#shared/presets/scripts/apply.js";
 import { BotTemplateProperties, ProgramMenuProps } from "#types";
 import { checkbox, input, select } from "@inquirer/prompts";
 import ck from "chalk";
-import { select as searchSelect } from "inquirer-select-pro";
 import merge from "lodash.merge";
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -338,9 +337,9 @@ export async function discordBotMenu(props: ProgramMenuProps) {
     if (selectedScripts.length >= 1){
         await applyScriptPresets({
             configdir: props.configdir,
-            cwd: props.cwd,
             presets: selectedScripts,
-            packageJson
+            packageJson,
+            distPath,
         });
     }
 

@@ -1,10 +1,9 @@
 import { divider, fetchNpmPackage, instructions, log, sleep, uiMessage } from "#helpers";
-import { theme, withDefaults } from "#prompts";
+import { searchSelect, theme, withDefaults } from "#prompts";
 import { ProgramMenuProps, ScriptPreset } from "#types";
 import { checkbox, input, select, Separator } from "@inquirer/prompts";
 import { glob } from "@reliverse/reglob";
 import ck from "chalk";
-import { select as searchSelect } from "inquirer-select-pro";
 import ora from "ora";
 import { formatPresetFiles } from "./format.js";
 import { printPreview } from "./preview.js";
@@ -143,7 +142,7 @@ export async function modifyScriptPresetMenu(
 
                 preset.files.push(
                     ...filtered.map(p => ({ path: p, dist: p })
-                    ));
+                ));
                 continue;
             }
             case "rm": {
