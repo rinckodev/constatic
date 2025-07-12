@@ -84,16 +84,18 @@ export async function baseResponderHandler(interaction: MessageComponentInteract
     const middleware = baseStorage.config.responders.middleware;
     const onError = baseStorage.config.responders.onError;
 
-    let block = false;
-    if (middleware) await middleware(interaction, () => block=true, params);
-    if (block) return;
+    let isBlock = false;
+    if (middleware) await middleware(interaction, () => isBlock=true, params);
+    if (isBlock) return;
     
-    const execution = handler.data.run(interaction as never, params);
-    if (onError){
-        await execution.catch(error => onError(error, interaction, params));
-    } else {
-        await execution;
-    }
+    await handler.data.run(interaction as never, params)
+    .catch(err => {
+        if (onError){
+            onError(err, interaction, params);
+            return;
+        }
+        throw err;
+    });
 }
 
 export function baseResponderLog(customId: string, type: string){

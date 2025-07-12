@@ -8,53 +8,52 @@ export interface EventData<EventName extends keyof ClientEvents> {
     run(...args: ClientEvents[EventName]): Promise<void>;
 }
 
+type GenericEventArgs = ClientEvents[keyof ClientEvents];
 type GenericEventData = EventData<keyof ClientEvents>;
+
 export type EventsCollection = Collection<string, GenericEventData>;
 
 export function baseRegisterEvents(client: Client){
-    const eventHandlers = baseStorage.events.map((collection, event) => ({ 
-        event, handlers: collection.map(e => ({ run: e.run, once: e.once, tags: e.tags })) 
-    }));
+    const collection = baseStorage.events.filter((_,key) => key !== "ready");
 
+    for(const [key, events] of collection.entries()){
+        client.on(key, (...args) => {
+            for(const data of events.values()){
+                baseEventHandler(data, args);
+            }
+        });
+    }
+}
+
+export async function baseEventHandler(data: GenericEventData, args: GenericEventArgs){
     const { middleware, onError } = baseStorage.config.events;
 
-    for(const { event, handlers } of eventHandlers){
-
-        const onHandlers = handlers.filter(e => !e.once);
-        const onceHandlers = handlers.filter(e => e.once);
-
-        type GenericEventHandler = { run: (...args: any[]) => Promise<void>, tags?: string[] };
-
-        const processHandlers = (eventHandlers: GenericEventHandler[]) => {
-            return async (...args: any[]) => {
-                const eventData = { name: event, args } as EventPropData;
-                
-                for (const { run, tags: eventTags } of eventHandlers) {
-                    (async function() {
-                        let block = false;
-                        const blockFunction = (...tags: string[]) => {
-                            if (tags && eventTags && tags.some(tag => eventTags.includes(tag))){
-                                block = true;
-                            }
-                            if (!tags || tags.length < 1) block = true;
-                        }
-                        if (middleware) await middleware(eventData, blockFunction);
-                        if (block) return;
-
-                        const execution = run(...args);
-                        if (onError) {
-                            await execution.catch(error => onError(error, eventData));
-                        } else {
-                            await execution;
-                        }
-                    })();
-                }
-            };
-        };
-
-        client.on(event, processHandlers(onHandlers));
-        client.once(event, processHandlers(onceHandlers));
+    let isBlock = false;
+    const tags = data.tags??[];
+    const block = (...selected: string[]) => {
+        if (selected.length>=1 && selected.some(tag => tags.includes(tag))){
+            isBlock = true;
+        }
+        if (tags.length < 1) isBlock = true;
     }
+
+    const eventData = { name: data.event, args } as EventPropData;
+
+    if (middleware) await middleware(eventData, block);
+    if (isBlock) return;
+
+    await data.run(...args)
+    .catch(err => {
+        if (onError){
+            onError(err, eventData);
+            return;
+        }
+        throw err;
+    });
+    
+    if (data.once){
+        baseStorage.events.get(data.event)?.delete(data.name);
+    };
 }
 
 export function baseEventLog(data: GenericEventData){

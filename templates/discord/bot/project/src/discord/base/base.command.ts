@@ -1,5 +1,5 @@
 import { logger } from "#settings";
-import { brBuilder } from "@magicyan/discord";
+import { brBuilder, spaceBuilder } from "@magicyan/discord";
 import ck from "chalk";
 import { ApplicationCommand, ApplicationCommandOptionChoiceData, ApplicationCommandType, AutocompleteInteraction, CacheType, ChatInputApplicationCommandData, ChatInputCommandInteraction, Client, Collection, CommandInteraction, MessageApplicationCommandData, MessageContextMenuCommandInteraction, UserApplicationCommandData, UserContextMenuCommandInteraction } from "discord.js";
 import { baseStorage } from "./base.storage.js";
@@ -56,12 +56,14 @@ export async function baseCommandHandler(interaction: CommandInteraction){
     if (middleware) await middleware(interaction, () => block=true);
     if (block) return;
 
-    const execution = command.run(interaction as never);
-    if (onError){
-        await execution.catch(error => onError(error, interaction));
-    } else {
-        await execution;
-    }
+    await command.run(interaction as never)
+    .catch(err => {
+        if (onError){
+            onError(err, interaction);
+            return;
+        }
+        throw err;
+    });
 }
 
 export async function baseAutocompleteHandler(interaction: AutocompleteInteraction){
@@ -134,21 +136,19 @@ function verbooseLogs(commands: Collection<string, ApplicationCommand>){
     return commands.map(({ id, name, type: commandType, client, createdAt, guild }) => {
         const [icon] = getCommandTitle(commandType);
 
-        return ck.dim.green(
-            [
-                ` └ ${icon}`,
-                u.cyan(id),
-                "CREATED",
-                u.blue(name),
-                ck.gray(">"),
-                guild 
-                ? `${u.blue(guild.name)} guild`
-                : `${u.blue(client.user.username)} application`,
-                ck.gray(">"),
-                "created at:",
-                u.greenBright(createdAt.toLocaleTimeString()),
-            ].join(" ")
-        )
+        return ck.dim.green(spaceBuilder(
+            ` └ ${icon}`,
+            u.cyan(id),
+            "CREATED",
+            u.blue(name),
+            ck.gray(">"),
+            guild 
+            ? `${u.blue(guild.name)} guild`
+            : `${u.blue(client.user.username)} application`,
+            ck.gray(">"),
+            "created at:",
+            u.greenBright(createdAt.toLocaleTimeString()),
+        ));
     });
 }
 

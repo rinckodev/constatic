@@ -5,7 +5,7 @@ import ck from "chalk";
 import { registerRoutes } from "./routes/index.js";
 
 createEvent({
-    name: "Start Fastify Server",
+    name: "Start Express Server",
     event: "ready", once: true,
     async run(client) {
         const app = express();

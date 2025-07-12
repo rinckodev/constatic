@@ -13,6 +13,5 @@ createResponder({
         await interaction.reply({ flags, 
             content: `You run ping command ${time(date, "R")}` 
         });
-        
     },
 });

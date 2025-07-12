@@ -1,9 +1,9 @@
 import { baseErrorHandler, env, logger } from "#settings";
-import { Client, ClientOptions, version as djsVersion } from "discord.js";
+import { Client, ClientOptions, Collection, version as djsVersion } from "discord.js";
 import { CustomItents, CustomPartials } from "@magicyan/discord";
 import { baseAutocompleteHandler, baseCommandHandler, baseRegisterCommands } from "./base.command.js";
 import { baseStorage } from "./base.storage.js";
-import { baseRegisterEvents } from "./base.event.js";
+import { baseEventHandler, baseRegisterEvents } from "./base.event.js";
 import { baseResponderHandler } from "./base.responder.js";
 import { BASE_VERSION, runtimeDisplay } from "./base.version.js";
 import { glob } from "@reliverse/reglob";
@@ -11,18 +11,9 @@ import ck from "chalk";
 
 interface BootstrapOptions extends Partial<ClientOptions> {
     meta: ImportMeta;
-	/**
-	 * A list of paths that will be imported to load the project's structure classes
-	 * 
-	 * The paths are relative to the **workdir** folder
-	 */
     directories?: string[];
-    /** Send load logs in terminal */
     loadLogs?: boolean;
-    /** Run before load directories */
-    beforeLoad?(client: Client): void
-    /** Run when client is ready */
-    whenReady?(client: Client<true>): void;
+    beforeLoad?(client: Client): void;
 }
 export async function bootstrap(options: BootstrapOptions){
     const client = createClient(env.BOT_TOKEN, options);
@@ -81,8 +72,10 @@ function createClient(token: string, options: BootstrapOptions) {
         
         await baseRegisterCommands(client);
 
-        if (options.whenReady){
-            options.whenReady(client);
+        const events = baseStorage.events.get("ready") ?? new Collection();
+
+        for(const data of events.values()){
+            baseEventHandler(data, [client]);
         }
     });
 

@@ -9,7 +9,7 @@
         "env": [
           [
             "MONGO_URI",
-            "z.string({ description: \"MongoDb URI is required\" }).min(1)"
+            "z.string(\"MongoDb URI is required\").min(1)"
           ]
         ],
         "packageJson": {
@@ -40,7 +40,7 @@
         "env": [
           [
             "FIREBASE_PATH",
-            "z.string({ description: \"Firebase account path is required\" }).min(1)",
+            "z.string(\"Firebase account path is required\").min(1)",
             "./firebase.json"
           ]
         ],
@@ -60,7 +60,7 @@
         "env": [
           [
             "FIREBASE_PATH",
-            "z.string({ description: \"Firebase account path is required\" }).min(1)",
+            "z.string(\"Firebase account path is required\").min(1)",
             "./firebase.json"
           ]
         ],
@@ -92,7 +92,7 @@
           ],
           [
             "MYSQL_PORT",
-            "z.number({ coerce: true }).min(1)",
+            "z.coerce.number().min(1)",
             "3306"
           ],
           [
@@ -127,7 +127,7 @@
           ],
           [
             "MARIADB_PORT",
-            "z.number({ coerce: true }).min(1)",
+            "z.coerce.number().min(1)",
             "3306"
           ],
           [
@@ -166,7 +166,7 @@
             "env": [
               [
                 "DATABASE_URL",
-                "z.string({ description: \"Database URL is required\" }).min(1)",
+                "z.url(\"Database URL is required\").min(1)",
                 "mysql://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
               ]
             ],
@@ -181,7 +181,7 @@
             "env": [
               [
                 "DATABASE_URL",
-                "z.string({ description: \"Database URL is required\" }).min(1)",
+                "z.url(\"Database URL is required\").min(1)",
                 "postgresql://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
               ]
             ],
@@ -196,7 +196,7 @@
             "env": [
               [
                 "DATABASE_URL",
-                "z.string({ description: \"Database URL is required\" }).min(1)",
+                "z.url(\"Database URL is required\").min(1)",
                 "mongodb://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
               ]
             ],
@@ -233,7 +233,7 @@
         "env": [
           [
             "SERVER_PORT",
-            "z.number({ coerce: true }).min(1).optional()",
+            "z.coerce.number().min(1).optional()",
             "8080"
           ]
         ],
@@ -253,7 +253,7 @@
         "env": [
           [
             "SERVER_PORT",
-            "z.number({ coerce: true }).min(1).optional()",
+            "z.coerce.number().min(1).optional()",
             "8080"
           ]
         ],
@@ -275,14 +275,15 @@
         "hint": "elysia",
         "path": "elysia",
         "disabled": true,
-        "env": {
-          "schema": "SERVER_PORT: z.string().optional(),\n    SERVER_BASE_URL: z.string().optional(),",
-          "file": "SERVER_PORT=8080\nSERVER_BASE_URL="
-        },
+        "env": [
+          [
+            "SERVER_PORT",
+            "z.coerce.number().min(1).optional()",
+            "8080"
+          ]
+        ],
         "packageJson": {
-          "dependencies": {
-            "http-status-codes": "2.3.0"
-          },
+          "dependencies": {},
           "devDependencies": {}
         }
       },
@@ -292,14 +293,15 @@
         "hint": "hono",
         "path": "hono",
         "disabled": true,
-        "env": {
-          "schema": "SERVER_PORT: z.string().optional(),\n    SERVER_BASE_URL: z.string().optional(),",
-          "file": "SERVER_PORT=8080\nSERVER_BASE_URL="
-        },
+        "env": [
+          [
+            "SERVER_PORT",
+            "z.coerce.number().min(1).optional()",
+            "8080"
+          ]
+        ],
         "packageJson": {
-          "dependencies": {
-            "http-status-codes": "2.3.0"
-          },
+          "dependencies": {},
           "devDependencies": {}
         }
       }

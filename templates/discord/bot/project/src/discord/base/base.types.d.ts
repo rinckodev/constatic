@@ -75,7 +75,7 @@ interface BaseStorageRespondersConfig {
     onError?(error: unknown, interaction: GenericResponderInteraction, params: object): void;
 }
 
-type EventPropData = {
+export type EventPropData = {
     [Key in keyof ClientEvents]: {
         name: Key;
         args: ClientEvents[Key]

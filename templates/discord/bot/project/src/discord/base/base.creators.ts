@@ -60,6 +60,7 @@ export function setupCreators(options: SetupCreatorsOptions = {}){
         >(data: EventData<EventName>){
             /** @store */
             const events = baseStorage.events.get(data.event) ?? new Collection();
+            
             events.set(data.name, data);
             baseStorage.events.set(data.event, events);
 
