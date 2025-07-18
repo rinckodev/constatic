@@ -48,12 +48,18 @@ export async function presetsTokensMenu(props: ProgramMenuProps) {
     }));
     divider();
 
-    if (action === "back"){
-        menus.main(props);
-        return;
+    const tokens = props.conf.get("discord.bot.tokens", []);
+    switch(action){
+        case "back":{
+            menus.main(props);
+            return;
+        }
+        case "new": {
+            menus.presets.tokens.new(props, tokens);
+            return;
+        }
     }
 
-    const tokens = props.conf.get("discord.bot.tokens", []);
     if (!tokens.length){
         log.fail(uiMessage({
             "en-US": "No tokens to list",
@@ -65,10 +71,6 @@ export async function presetsTokensMenu(props: ProgramMenuProps) {
     }
 
     switch (action) {
-        case "new": {
-            menus.presets.tokens.new(props, tokens);
-            return;
-        }
         case "list": {
             menus.presets.tokens.list(props, tokens);
             return;
