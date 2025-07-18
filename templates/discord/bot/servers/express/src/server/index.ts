@@ -1,3 +1,4 @@
+import { createEvent } from "#base";
 import express from "express";
 import cors from "cors";
 import { env, logger } from "#settings";
