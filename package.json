@@ -11,7 +11,7 @@
     "link": "npm unlink constatic && npm link",
     "build": "tsup",
     "test": "npm run build && npm run link",
-    "predev": "rm -rf playground && mkdir playground",
+    "predev": "tsx scripts/predev.ts",
     "dev": "npm run build && cd playground && constatic",
     "tsx": "tsx",
     "check": "tsc --noEmit"
