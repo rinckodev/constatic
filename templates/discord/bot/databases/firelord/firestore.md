@@ -1,1 +1,1 @@
-https://constatic-docs.vercel.app/docs/discord/databases/firestore
+https://constatic-docs.vercel.app/docs/discord/presets/databases/firestore

@@ -148,7 +148,7 @@ export async function discordBotMenu(props: ProgramMenuProps) {
                     name: uiMessage({
                     "en-US": "None",
                     "pt-BR": "Nenhum",
-                    }, ck.red.dim), value: "none" 
+                    }, ck.red.dim), value: "" 
                 },
                 ...tokens
                 .map(token =>({
@@ -223,7 +223,7 @@ export async function discordBotMenu(props: ProgramMenuProps) {
     const envEditor = await createEnvEditor(path.join(distPath, ".env"));
     const projectFiles = {
         envSchema: project.addSourceFileAtPath(
-            resolveDistPath("src/settings/env.schema.ts")
+            resolveDistPath("src/env.ts")
         ),
         index: project.addSourceFileAtPath(
             resolveDistPath("src/index.ts")

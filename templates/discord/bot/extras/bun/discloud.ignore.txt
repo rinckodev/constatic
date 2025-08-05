@@ -13,6 +13,7 @@
 /deprecated
 /discloud
 /node_modules
+/build
 
 # Files
 /.env.development
@@ -20,7 +21,6 @@
 /.env.example
 /.eslintrc.json
 /.gitignore
-/package-lock.json
 /README.md
 
 # Extensions

@@ -1,5 +1,4 @@
-import { createEvent } from "#base";
-import { logger } from "#settings";
+import { createEvent, logger } from "#base";
 
 createEvent({
     name: "Error handler",

@@ -1,4 +1,5 @@
-import { env, logger } from "#settings";
+import { logger } from "#base";
+import { env } from "#env";
 import ck from "chalk";
 import { createPool } from "mariadb";
 

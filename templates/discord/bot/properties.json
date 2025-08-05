@@ -10,6 +10,11 @@
           [
             "MONGO_URI",
             "z.string(\"MongoDb URI is required\").min(1)"
+          ],
+          [
+            "DATABASE_NAME",
+            "z.string().optional()",
+            "database"
           ]
         ],
         "packageJson": {

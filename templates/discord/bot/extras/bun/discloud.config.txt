@@ -1,4 +1,4 @@
-NAME=Docker bun
+NAME=Awesome Bot Docker
 TYPE=bot
 MAIN=Dockerfile
 RAM=100

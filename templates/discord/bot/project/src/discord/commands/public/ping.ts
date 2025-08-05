@@ -16,7 +16,8 @@ createCommand({
 			})
 		);
 		await interaction.reply({
-			flags, content: `Pong 🏓`,
+			flags: ["Ephemeral"], 
+			content: `Pong 🏓`,
 			components: [row],
 		});
 	}

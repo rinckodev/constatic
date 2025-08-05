@@ -1,26 +1,26 @@
+import { getFirelord, getFirestore } from "firelord";
+import { cert, initializeApp } from "firebase-admin/app";
+
 import fs from "node:fs";
 import chalk from "chalk";
-import { env, logger } from "#settings";
 import path from "node:path";
+import { logger } from "#base";
+import { env } from "#env";
 
-const firebaseAccountPath = rootTo(env.FIREBASE_PATH);
+import { GuildDocument } from "./documents/GuildDocument.js";
+import { MemberDocument } from "./documents/MemberDocument.js";
 
-if (!fs.existsSync(firebaseAccountPath)){
-    const filename = chalk.yellow(`"${path.basename(firebaseAccountPath)}"`);
-    const text = chalk.red(`The ${filename} file was not found in ${__rootname}`);
+if (!fs.existsSync(env.FIREBASE_PATH)){
+    const filename = chalk.yellow(`"${path.basename(env.FIREBASE_PATH)}"`);
+    const text = chalk.red(`The ${filename} file was not found in ${process.cwd()}`);
     logger.error(text);
     process.exit(0);
 }
 
 const firebaseAccount = JSON.parse(
-    fs.readFileSync(firebaseAccountPath, { encoding: "utf-8" })
+    fs.readFileSync(env.FIREBASE_PATH, { encoding: "utf-8" })
 );
 
-import { getFirelord, getFirestore } from "firelord";
-import { cert, initializeApp } from "firebase-admin/app";
-
-import { GuildDocument } from "./documents/GuildDocument.js";
-import { MemberDocument } from "./documents/MemberDocument.js";
 
 const app = getFirestore(initializeApp({ credential: cert(firebaseAccount) })); 
 

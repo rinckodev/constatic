@@ -10,7 +10,8 @@ createResponder({
     types: [ResponderType.Button], 
     parse: schema.parse, cache: "cached",
     async run(interaction, { date }) {
-        await interaction.reply({ flags, 
+        await interaction.reply({ 
+            flags: ["Ephemeral"], 
             content: `You run ping command ${time(date, "R")}` 
         });
     },

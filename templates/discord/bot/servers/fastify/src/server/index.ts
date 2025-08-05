@@ -1,17 +1,17 @@
-import { createEvent } from "#base";
-import { env, logger } from "#settings";
+import { createEvent, logger } from "#base";
+import { env } from "#env";
 import cors from "@fastify/cors";
 import ck from "chalk";
 import fastify from "fastify";
 import { registerRoutes } from "./routes/index.js";
 
+const app = fastify();
+app.register(cors, { origin: "*" });
+
 createEvent({
     name: "Start Fastify Server",
     event: "ready", once: true,
     async run(client) {
-        const app = fastify();
-        app.register(cors, { origin: "*" });
-        
         registerRoutes(app, client);
 
         const port = env.SERVER_PORT ?? 3000;

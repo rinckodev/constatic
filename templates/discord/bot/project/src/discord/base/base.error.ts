@@ -1,35 +1,34 @@
-import { env } from "#settings";
+import { env } from "#env";
 import { brBuilder, createEmbed, createEmbedAuthor, createWebhookClient, limitText, replaceText } from "@magicyan/discord";
 import ck from "chalk";
 import { type Client, codeBlock } from "discord.js";
-import settings from "../../settings.json" with { type: "json" };
-import { logger } from "./logger.js";
+import { logger } from "./base.logger.js";
 
 export async function baseErrorHandler(error: any, client?: Client){
     if (client?.user) logger.log(client.user.displayName);
 
-    const errorMessage: string[] = [];
+    const text: string[] = [];
 
     const hightlight = (text: string) => text
     .replace(/\(([^)]+)\)/g, (_, match) =>  ck.gray(`(${ck.cyan(match)})`));
 
-    if ("message" in error) errorMessage.push(ck.red(`${error.message}`)); 
+    if ("message" in error) text.push(ck.red(`${error.message}`)); 
     if ("stack" in error) {
         const formated = replaceText(String(error.stack), { 
-            [__rootname]: ".", 
+            [process.cwd()]: ".", 
             "at ": ck.gray("at ")
         });
-        errorMessage.push(limitText(hightlight(formated), 3500, "..."));
+        text.push(limitText(hightlight(formated), 2800, "..."));
     }
     
-    logger.error(brBuilder(errorMessage));
+    logger.error(brBuilder(text));
 
     if (!env.WEBHOOK_LOGS_URL) return;
     
     const embed = createEmbed({
-        color: settings.colors.danger,
+        color: constants.colors.azoxo,
         author: client?.user ? createEmbedAuthor(client.user) : undefined,
-        description: codeBlock("ansi", brBuilder(errorMessage)),
+        description: codeBlock("ansi", brBuilder(text)),
     });
 
     const webhook = createWebhookClient(env.WEBHOOK_LOGS_URL);
@@ -42,11 +41,13 @@ export async function baseErrorHandler(error: any, client?: Client){
     }
 
     await webhook
-    .send({ embeds: [embed] })
-    .catch(logger.error);
+        .send({ embeds: [embed] })
+        .catch(logger.error);
 }
 
 function exit(){
+    process.stdout.clearLine(0);
+    process.stdout.cursorTo(0);
     logger.log(ck.dim("..."));
     process.exit(0);
 }

@@ -1,1 +1,1 @@
-https://constatic-docs.vercel.app/docs/discord/databases/mongodb
+https://constatic-docs.vercel.app/docs/discord/presets/databases/mongodb

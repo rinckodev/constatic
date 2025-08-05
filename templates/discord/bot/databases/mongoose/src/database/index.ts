@@ -1,12 +1,15 @@
 import mongoose, { InferSchemaType, model } from "mongoose";
 import { guildSchema } from "./schemas/guild.js";
 import { memberSchema } from "./schemas/member.js";
-import { env, logger } from "#settings";
+import { logger } from "#base";
+import { env } from "#env";
 import chalk from "chalk";
 
 try {
    logger.log(chalk.blue("Connecting to MongoDB..."));
-   await mongoose.connect(env.MONGO_URI, { dbName: "database" });
+   await mongoose.connect(env.MONGO_URI, { 
+      dbName: env.DATABASE_NAME || "database" 
+   });
    logger.success(chalk.green("MongoDB connected"));
 } catch(err){
    logger.error(err);

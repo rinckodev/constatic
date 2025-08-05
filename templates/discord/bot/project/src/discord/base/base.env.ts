@@ -1,6 +1,6 @@
 import ck from "chalk";
 import { z, ZodObject, ZodRawShape } from "zod";
-import { logger } from "./logger.js";
+import { logger } from "./base.logger.js";
 import { brBuilder } from "@magicyan/discord";
 
 export function validateEnv<T extends ZodRawShape>(schema: ZodObject<T>){
@@ -26,11 +26,7 @@ export function validateEnv<T extends ZodRawShape>(schema: ZodObject<T>){
     }
     logger.log(ck.green(`${ck.magenta("☰ Environment variables")} loaded ✓`));
 
-    type EnvSchema = z.infer<typeof schema>;
-    
-    type EnvVars = EnvSchema & Record<string, string>;
-
-    return result.data as EnvVars;
+    return result.data as Record<string, string> & z.infer<typeof schema>;
 }
 
 declare global {

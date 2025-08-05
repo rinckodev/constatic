@@ -1,16 +1,17 @@
-import { createEvent } from "#base";
+import { createEvent, logger } from "#base";
+import { env } from "#env";
 import express from "express";
 import cors from "cors";
-import { env, logger } from "#settings";
 import ck from "chalk";
 import { registerRoutes } from "./routes/index.js";
+
+const app = express();
+app.use(express.json(), cors());
 
 createEvent({
     name: "Start Express Server",
     event: "ready", once: true,
     async run(client) {
-        const app = express();
-        app.use(express.json(), cors());
 
         registerRoutes(app, client);
 
