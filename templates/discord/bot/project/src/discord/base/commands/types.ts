@@ -75,6 +75,13 @@ export interface GroupOptionData<P> extends Omit<BaseOptionData, "required"> {
     options: SubCommandOptionData<P>[]
 }
 
+type RunThis = {
+    /**
+     * Blocks the flow of executions
+     */
+    block(): never;
+}
+
 export type SlashCommandPrimitiveOptionData<P> = 
     | StringOptionData<P>
     | NumberOptionData<P>
@@ -105,7 +112,7 @@ export interface AppCommandData<T, P, R> extends BaseAppCommandData {
     dmPermission?: P;
     type?: T;
     global?: boolean;
-    run?: (this: void, interaction: RunInteraction<T, P>) => Promise<R>;
+    run?: (this: RunThis, interaction: RunInteraction<T, P>) => Promise<R>;
     autocomplete?: AutocompleteRun<string | number, P>;
     options?: 
         | SlashCommandPrimitiveOptionData<P>[]
@@ -122,7 +129,7 @@ export type SubCommandModuleData<P extends boolean, R> =
     Omit<BaseOptionData, "required"> & {
         group?: string;
         run(
-            this: void, 
+            this: RunThis, 
             interaction: ChatInputCommandInteraction<CacheMode<P>>, 
             data: ResolveCommandModuleData<R>
         ): Promise<void>;
@@ -133,7 +140,7 @@ export type SubCommandGroupModuleData<P extends boolean, R, T> =
     Omit<BaseOptionData, "required"> & {
         options?: Omit<SubCommandOptionData<P>, "type">[]
         run?(
-            this: void, 
+            this: RunThis, 
             interaction: ChatInputCommandInteraction<CacheMode<P>>, 
             data: ResolveCommandModuleData<R>
         ): Promise<T>;
@@ -171,3 +178,10 @@ export type GenericCommandHandler = (
     interaction: unknown, 
     data?: unknown
 ) => Promise<unknown>;
+
+export class RunBlockError extends Error {
+    constructor(){
+        super("The execution flow has been blocked");
+        this.name = "RunBlockError";
+    }
+}

@@ -3,7 +3,7 @@ import ck from "chalk";
 import { ApplicationCommand, AutocompleteInteraction, Client, Collection, CommandInteraction } from "discord.js";
 import { Constatic } from "../app.js";
 import { logger } from "../base.logger.js";
-import { CommandType } from "./types.js";
+import { CommandType, RunBlockError } from "./types.js";
 
 export abstract class BaseCommandHandlers {
     public static async autocomplete(interaction: AutocompleteInteraction) {
@@ -53,9 +53,15 @@ export abstract class BaseCommandHandlers {
         try {
             let result;
             for (const run of handler.filter(isDefined)) {
-                result = await run(interaction, result)
+                result = await run.call({
+                    block(){
+                        throw new RunBlockError();
+                    }
+                }, interaction, result);
+                
             }
         } catch (err) {
+            if (err instanceof RunBlockError) return;
             if (onError) {
                 onError(err, interaction);
                 return;

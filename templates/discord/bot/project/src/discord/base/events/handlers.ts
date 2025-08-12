@@ -44,9 +44,9 @@ export abstract class BaseEventHandlers {
 
         for (const [key, events] of collection.entries()) {
             client.on(key, (...args) => {
-                Promise.all(Array.from(events.values().map(data =>
+                Promise.all(Array.from(events.values()).map(data =>
                     BaseEventHandlers.handler(data, args)
-                )))
+                ))
             });
         }
     }

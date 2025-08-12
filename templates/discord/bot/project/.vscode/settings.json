@@ -57,7 +57,7 @@
   "files.autoSave": "afterDelay",
   "typescript.experimental.expandableHover": true,
   "files.readonlyInclude": {
-    // "src/discord/base/**": true
+    "src/discord/base/**": true
   },
   "editor.codeActionsOnSave": {
     "source.addMissingImports.ts": "explicit",
