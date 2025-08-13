@@ -39,10 +39,8 @@ export async function bootstrap(options: BootstrapOptions){
         
         await BaseCommandHandlers.register(client);
 
-        Promise.all(Array.from(
-            app.events.getEvents("ready").values().map(data => 
-                BaseEventHandlers.handler(data, [client])
-            ))
+        await Promise.all(Array.from(app.events.getEvents("ready").values())
+            .map(data => BaseEventHandlers.handler(data, [client]))
         );
     });
 
