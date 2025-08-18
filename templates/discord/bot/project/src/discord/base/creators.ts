@@ -3,6 +3,7 @@ import { type BaseCommandsConfig, type BaseEventsConfig, type BaseRespondersConf
 import { AppCommandData, CommandInstance, CommandType, SubCommandGroupModuleData, SubCommandModuleData } from "./commands/types.js";
 import { ResponderData, ResponderType } from "./responders/types.js";
 import { EventData } from "./events/types.js";
+import { env } from "#env";
 
 interface SetupCreatorsOptions {
     commands?: Partial<BaseCommandsConfig> & {
@@ -15,6 +16,11 @@ export function setupCreators(options: SetupCreatorsOptions = {}){
     const app = Constatic.getInstance();
 
     app.config.commands = { ...options.commands };
+
+    if (env.GUILD_ID) {
+        (app.config.commands.guilds??=[]).push(env.GUILD_ID)
+    }
+
     app.config.responders = { ...options.responders };
     app.config.events = { ...options.events };
 

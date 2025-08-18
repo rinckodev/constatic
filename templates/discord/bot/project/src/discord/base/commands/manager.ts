@@ -194,16 +194,21 @@ export class CommandManager {
 
                 const path = `/${data.type}/${data.name}`;
 
+                const buildedOptions = this.buildOptions([
+                    ...options ?? [],
+                    ...this.resolveModules(
+                        modules ?? [], path, data.run
+                    )
+                ], path)
+
                 const slashData = data.type === ApplicationCommandType.ChatInput
                     ? {
                         description: description ?? data.name,
                         descriptionLocalizations,
-                        options: this.buildOptions([
-                            ...options ?? [],
-                            ...this.resolveModules(
-                                modules ?? [], path, data.run
-                            )
-                        ], path)
+                        ...(buildedOptions.length >= 1 
+                            ? { options: buildedOptions }
+                            : {}
+                        )
                     }
                     : {}
                 return { ...data, ...slashData }

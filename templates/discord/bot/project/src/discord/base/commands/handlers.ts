@@ -54,11 +54,11 @@ export abstract class BaseCommandHandlers {
             let result;
             for (const run of handler.filter(isDefined)) {
                 result = await run.call({
-                    block(){
+                    block() {
                         throw new RunBlockError();
                     }
                 }, interaction, result);
-                
+
             }
         } catch (err) {
             if (err instanceof RunBlockError) return;
@@ -111,24 +111,27 @@ export abstract class BaseCommandHandlers {
             const globalCommands = commands.filter(c => c.global);
             const guildCommands = commands.filter(c => !c.global);
 
-            await client.application.commands.set(globalCommands)
-                .then(commands => {
-                    if (!commands.size) return;
-                    logRegistration(commands, "globally")
-                });
-            for (const guild of targetGuilds.values()) {
-                const commands = await guild.commands.set(guildCommands);
-                logRegistration(commands, `in ${ck.underline(guild.name)} guild`);
-            }
+            await Promise.all([
+                client.application.commands.set(globalCommands)
+                    .then(commands => {
+                        if (!commands.size) return;
+                        logRegistration(commands, "globally")
+                    }
+                ),
+                ...targetGuilds.map(async (guild) => {
+                    const commands = await guild.commands.set(guildCommands);
+                    logRegistration(commands, `in ${ck.underline(guild.name)} guild`);
+                })
+            ]);
         } else {
-            await Promise.all(client.guilds.cache
-                .map(guild => guild.commands.set([]))
-            );
-
             await client.application.commands.set(commands)
                 .then(commands =>
                     logRegistration(commands, "globally")
                 );
+            
+            client.guilds.cache.forEach(g => g.commands
+                .set([]).catch(() => null)
+            );
         }
 
         app.commands.clear();
