@@ -24,19 +24,6 @@
         },
         "isORM": false
       },
-      "quickdb": {
-        "name": "QuickDB",
-        "icon": "🧊",
-        "hint": "better-sqlite3",
-        "path": "quickdb",
-        "isORM": false,
-        "packageJson": {
-          "dependencies": {
-            "better-sqlite3": "9.2.2",
-            "quick.db": "9.1.7"
-          }
-        }
-      },
       "typesaurus": {
         "name": "Firestore",
         "icon": "🦕",
@@ -72,8 +59,8 @@
         "isORM": false,
         "packageJson": {
           "dependencies": {
-            "firebase-admin": "11.11.1",
-            "firelord": "2.7.1"
+            "firebase-admin": "13.4.0",
+            "typesaurus": "10.7.0"
           }
         }
       },
@@ -159,7 +146,7 @@
             "postinstall": "prisma generate"
           },
           "devDependencies": {
-            "prisma": "6.1.0"
+            "prisma": "6.14.0"
           }
         },
         "databases": {

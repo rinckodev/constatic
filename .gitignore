@@ -6,8 +6,11 @@ node_modules
 /.env
 *.env.development
 *.env.dev
-package-lock.json
+**/package-lock.json
+!/package-lock.json
+
 
 playground
 /playground
 templates/*/build/
+

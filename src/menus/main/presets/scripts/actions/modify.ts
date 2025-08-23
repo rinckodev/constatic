@@ -105,7 +105,8 @@ export async function modifyScriptPresetMenu(
                     message: uiMessage({
                         "en-US": "Preset name",
                         "pt-BR": "Nome da predefinição",
-                    })
+                    }),
+                    required: true,
                 }));
                 divider();
                 continue;

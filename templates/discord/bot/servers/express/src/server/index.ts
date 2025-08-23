@@ -10,9 +10,8 @@ app.use(express.json(), cors());
 
 createEvent({
     name: "Start Express Server",
-    event: "ready", once: true,
+    event: "clientReady", once: true,
     async run(client) {
-
         registerRoutes(app, client);
 
         const port = env.SERVER_PORT ?? 3000;

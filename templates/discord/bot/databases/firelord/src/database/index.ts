@@ -2,27 +2,18 @@ import { getFirelord, getFirestore } from "firelord";
 import { cert, initializeApp } from "firebase-admin/app";
 
 import fs from "node:fs";
-import chalk from "chalk";
-import path from "node:path";
-import { logger } from "#base";
 import { env } from "#env";
 
 import { GuildDocument } from "./documents/GuildDocument.js";
 import { MemberDocument } from "./documents/MemberDocument.js";
 
-if (!fs.existsSync(env.FIREBASE_PATH)){
-    const filename = chalk.yellow(`"${path.basename(env.FIREBASE_PATH)}"`);
-    const text = chalk.red(`The ${filename} file was not found in ${process.cwd()}`);
-    logger.error(text);
-    process.exit(0);
-}
+const accountFile = fs.readFileSync(env.FIREBASE_PATH, { 
+    encoding: "utf-8" 
+});
 
-const firebaseAccount = JSON.parse(
-    fs.readFileSync(env.FIREBASE_PATH, { encoding: "utf-8" })
-);
-
-
-const app = getFirestore(initializeApp({ credential: cert(firebaseAccount) })); 
+const app = getFirestore(initializeApp({
+    credential: cert(JSON.parse(accountFile))
+}));
 
 export const db = {
     guildsRef: getFirelord<GuildDocument>(app, "guilds"),

@@ -10,7 +10,7 @@ app.register(cors, { origin: "*" });
 
 createEvent({
     name: "Start Fastify Server",
-    event: "ready", once: true,
+    event: "clientReady", once: true,
     async run(client) {
         registerRoutes(app, client);
 

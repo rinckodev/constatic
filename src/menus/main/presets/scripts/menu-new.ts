@@ -28,7 +28,8 @@ export async function presetsScriptsNewMenu(props: ProgramMenuProps) {
         message: uiMessage({
             "en-US": "Preset name:",
             "pt-BR": "Nome da predefinição:",
-        })
+        }),
+        required: true,
     }));
     divider();
     

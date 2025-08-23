@@ -240,6 +240,10 @@ export async function discordBotMenu(props: ProgramMenuProps) {
 
     packageJson.name = npmName;
 
+    // const lockFile = await json.read(resolveDistPath(
+    //     props.isBun ? "bun.lock" : "package-lock.json"
+    // ));
+
     if (database){
         generating.text = uiMessage({
            "en-US": "Setting up the database",
