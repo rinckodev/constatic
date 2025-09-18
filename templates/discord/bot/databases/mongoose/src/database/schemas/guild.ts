@@ -5,8 +5,8 @@ export const guildSchema = new Schema(
     {
         id: t.string,
         channels: {
-            logs: t.channelInfo,
-            general: t.channelInfo,
+            logs: String,
+            general: String,
         }
     },
     {
