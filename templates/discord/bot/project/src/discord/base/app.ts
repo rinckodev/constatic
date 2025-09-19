@@ -1,6 +1,5 @@
 import { type CommandInteraction } from "discord.js";
 import { brBuilder } from "@magicyan/discord";
-import { logger } from "./base.logger.js";
 import { CommandManager } from "./commands/manager.js";
 import { ResponderManager } from "./responders/manager.js";
 import { GenericResponderInteraction } from "./responders/types.js";
@@ -58,7 +57,7 @@ export class Constatic {
         return Constatic.instance;
     }
     public printLoadLogs(){
-        logger.log(brBuilder(
+        console.log(brBuilder(
             ...this.commands.logs,
             ...this.responders.logs,
             ...this.events.logs,

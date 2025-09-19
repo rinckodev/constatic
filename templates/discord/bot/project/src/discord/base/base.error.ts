@@ -1,11 +1,10 @@
 import { env } from "#env";
-import { brBuilder, createEmbed, createEmbedAuthor, createWebhookClient, limitText, replaceText } from "@magicyan/discord";
+import { brBuilder, createComponents, createDate, createWebhookClient, limitText, replaceText, spaceBuilder } from "@magicyan/discord";
 import ck from "chalk";
-import { type Client, codeBlock } from "discord.js";
-import { logger } from "./base.logger.js";
+import { type Client, codeBlock, time } from "discord.js";
 
 export async function baseErrorHandler(error: any, client?: Client){
-    if (client?.user) logger.log(client.user.displayName);
+    if (client?.user) console.log(client.user.displayName);
 
     const text: string[] = [];
 
@@ -21,34 +20,36 @@ export async function baseErrorHandler(error: any, client?: Client){
         text.push(limitText(hightlight(formated), 2800, "..."));
     }
     
-    logger.error(brBuilder(text));
+    console.error(brBuilder(text));
 
     if (!env.WEBHOOK_LOGS_URL) return;
-    
-    const embed = createEmbed({
-        color: constants.colors.azoxo,
-        author: client?.user ? createEmbedAuthor(client.user) : undefined,
-        description: codeBlock("ansi", brBuilder(text)),
-    });
 
     const webhook = createWebhookClient(env.WEBHOOK_LOGS_URL);
     if (!webhook){
-        logger.log();
-        logger.error(`ENV VAR → ${ck.bold.underline("WEBHOOK_LOGS_URL")} Invalid webhook url`)
-        logger.log();
-        logger.warn("Unable to send logs to webhook because the url is invalid");
+        console.log();
+        console.error(`ENV VAR → ${ck.bold.underline("WEBHOOK_LOGS_URL")} Invalid webhook url`)
+        console.log();
+        console.warn("Unable to send logs to webhook because the url is invalid");
         return;
     }
 
     await webhook
-        .send({ embeds: [embed] })
-        .catch(logger.error);
+        .send({
+            flags: ["IsComponentsV2"],
+            components: createComponents([
+                codeBlock("ansi", brBuilder(text)),
+                time(createDate(), "R")
+            ]),
+            avatarURL: client?.user?.displayAvatarURL({ size: 512 }),
+            username: spaceBuilder(client?.user?.username, "Logs")
+        })
+        .catch(console.error);
 }
 
 function exit(){
     process.stdout.clearLine(0);
     process.stdout.cursorTo(0);
-    logger.log(ck.dim("..."));
+    console.log(ck.dim("..."));
     process.exit(0);
 }
 
