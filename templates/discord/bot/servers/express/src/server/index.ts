@@ -1,4 +1,4 @@
-import { createEvent, logger } from "#base";
+import { createEvent } from "#base";
 import { env } from "#env";
 import express from "express";
 import cors from "cors";
@@ -17,7 +17,7 @@ createEvent({
         const port = env.SERVER_PORT ?? 3000;
 
         app.listen(port, "0.0.0.0", () => {
-            logger.log(ck.green(`● ${ck.underline("Express")} server listening on port ${port}`));
+            console.log(ck.green(`● ${ck.underline("Express")} server listening on port ${port}`));
         });
     },
 });

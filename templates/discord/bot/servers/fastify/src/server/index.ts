@@ -1,4 +1,4 @@
-import { createEvent, logger } from "#base";
+import { createEvent } from "#base";
 import { env } from "#env";
 import cors from "@fastify/cors";
 import ck from "chalk";
@@ -18,12 +18,12 @@ createEvent({
 
         await app.listen({ port, host: "0.0.0.0" })
         .then(() => {
-            logger.log(ck.green(
+            console.log(ck.green(
                 `● ${ck.underline("Fastify")} server listening on port ${port}`
             ));
         })
         .catch(err => {
-            logger.error(err);
+            console.error(err);
             process.exit(1);
         });
     },

@@ -1,4 +1,3 @@
-import { logger } from "#base";
 import { env } from "#env";
 import ck from "chalk";
 import { createPool } from "mariadb";
@@ -13,8 +12,8 @@ export const pool = createPool({
 
 try {
     await pool.getConnection();
-    logger.success(ck.green("MariaDB database connected!"));
+    console.log(ck.green("MariaDB database connected!"));
 } catch(err) {
-    logger.error(err);
+    console.error(err);
     process.exit(1);
 }
