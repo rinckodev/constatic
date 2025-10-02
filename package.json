@@ -1,6 +1,6 @@
 {
   "name": "constatic",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "description": "Constatic cli",
   "main": "build/index.js",
   "type": "module",
@@ -104,6 +104,9 @@
     ],
     "#shared/*": [
       "./build/shared/*"
+    ],
+    "#lib/*": [
+      "./build/lib/*"
     ],
     "#types": [
       "./build/types/index.js"
