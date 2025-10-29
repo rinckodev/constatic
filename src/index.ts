@@ -1,53 +1,32 @@
 #!/usr/bin/env node
-import { cliLang, getPackageManager, initConf, log, uiMessage } from "#helpers";
-import { menus } from "#menus";
-import ck from "chalk";
-import * as citty from "citty";
+import { log, showUsage, uiMessage } from "#helpers";
 import path from "node:path";
-import { readPackageJSON } from "pkg-types";
 import { fileURLToPath } from "url";
+import createMain from "./commands/main.js";
+import { CLI } from "./cli/index.js";
+import { runMain } from "citty";
+import ck from "chalk";
 
 const cliroot = import.meta.dirname 
     ? path.join(import.meta.dirname, "..")
     : path.dirname(path.join(fileURLToPath(import.meta.url), ".."));
 
-const packageJson = await readPackageJSON(path.join(cliroot, "package.json"));
+const REQ_VERSION = "20.12";
 
-const conf = initConf(packageJson.name);
-
-if (process.versions.node < "20.11"){
+if (process.versions.node < REQ_VERSION){
     log.error(uiMessage({
-       "en-US": "Required node version: 20.11 or higher",
-       "pt-BR": "Versão do node necessária: 20.11 ou superior",
+       "en-US": `Required node version: ${ck.gray(`${REQ_VERSION} or higher`)}`,
+       "pt-BR": `Versão do node necessária: ${ck.gray(`${REQ_VERSION} ou superior`)}`,
     }));
     console.log(uiMessage({
-       "en-US": `Your node version: ${process.versions.node}`,
-       "pt-BR": `A versão do seu node: ${process.versions.node}`,
+       "en-US": `  Your node version: ${ck.gray(process.versions.node)}`,
+       "pt-BR": `  A versão do seu node: ${ck.gray(process.versions.node)}`,
     }));
     process.exit(1);
 }
 
-console.log(
-    ck.blue("💎 Constatic CLI"), "📦",
-    ck.dim.underline(packageJson.version),
-    "\n"
-);
+const cli = await CLI.init(cliroot);
 
-citty.runMain({
-    meta: {
-        name: packageJson.name,
-        version: packageJson.version,
-        description: packageJson.description,
-    },
-    run() {
-        menus.main({
-            configdir: path.dirname(conf.path),
-            cwd: process.cwd(), cliroot, conf, 
-            version: packageJson.version??"0.0.0",
-            isBun: getPackageManager() === "bun",
-            get lang(){
-                return cliLang.get()
-            }, 
-        });
-    },
+runMain(createMain(cli), { 
+    showUsage 
 });

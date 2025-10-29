@@ -3,19 +3,15 @@ export * from "./discord/tokens.js";
 
 export * from "./npm/package.js";
 
-export * from "./helper.agent.js";
-export * from "./helper.conf.js";
-export * from "./helper.env.js";
-export * from "./helper.files.js";
-export * from "./helper.format.js";
-export * from "./helper.lang.js";
-export * from "./helper.log.js";
-export * from "./helper.npm.js";
-export * from "./helper.shell.js";
-export * from "./helper.ui.js";
-export * from "./helper.validation.js";
+export * from "./files.js";
+export * from "./format.js";
+export * from "./lang.js";
+export * from "./log.js";
+export * from "./ui.js";
+export * from "./validation.js";
 export * from "./morph/functions.js";
 export * from "./morph/objects.js";
+export * from "./prompts.js";
 
 import ck from "chalk";
 

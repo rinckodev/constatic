@@ -1,13 +1,13 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { CopyOptions, copy as fsCopy } from "fs-extra";
-import { log } from "./helper.log.js";
-import { uiMessage } from "./helper.ui.js";
+import { log } from "./log.js";
+import { uiMessage } from "./ui.js";
 
 export const json = {
     async read<T = any>(path: string): Promise<T> {
         const stringfiedJson = await fs.readFile(path, "utf-8");
-        return JSON.parse(stringfiedJson);       
+        return JSON.parse(stringfiedJson);
     },
     async write<T = any>(path: string, data: T){
         const stringfiedJson = JSON.stringify(data, null, 2);

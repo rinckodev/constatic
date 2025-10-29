@@ -1,14 +1,14 @@
-import { APIEmoji, DiscordBotToken, ProgramMenuProps } from "#types";
+import { APIEmoji, DiscordBotToken } from "#types";
 import { input, select } from "@inquirer/prompts";
-import { fetchDiscordEmojis } from "./fetch.js";
 import fs from "node:fs/promises";
-import { divider, log, sleep, uiMessage } from "#helpers";
+import { divider, log, sleep, uiMessage, withDefaults } from "#helpers";
 import { menus } from "#menus";
 import ck from "chalk";
-import { withDefaults } from "#prompts";
+import { CLI } from "#cli";
+import { fetchDiscordEmojis } from "#shared/emojis/fetch.js";
 
-export async function discordEmojisFileMenu(props: ProgramMenuProps, token: DiscordBotToken){
-    const emojis = await fetchDiscordEmojis({ props, token });
+export async function discordEmojisFileMenu(cli: CLI, token: DiscordBotToken){
+    const emojis = await fetchDiscordEmojis({ cli, token });
     if (!emojis) return;
 
     const filepath = await input(withDefaults({
@@ -85,7 +85,7 @@ export async function discordEmojisFileMenu(props: ProgramMenuProps, token: Disc
     divider();
 
     await sleep(500);
-    menus.discord.emojis.main(props, token);
+    menus.discord.emojis.main(cli, token);
 }
 
 function toEmojiURL(emojiId: string, animated=false){

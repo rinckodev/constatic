@@ -1,4 +1,4 @@
-import { PackageJson } from "pkg-types";
+import type { PackageJson } from "pkg-types";
 
 export function packageJsonHasDeps(packageJson: PackageJson, type?: "dev" | "prod"): boolean {
     const depsMap = {

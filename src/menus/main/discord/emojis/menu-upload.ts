@@ -1,22 +1,22 @@
-import { discordEmojis, divider, equalsIgnoringCase, log, pathExists, sleep, uiMessage } from "#helpers";
+import { discordEmojis, divider, equalsIgnoringCase, log, pathExists, sleep, uiMessage, withDefaults } from "#helpers";
 import { menus } from "#menus";
-import { DiscordBotToken, ProgramMenuProps } from "#types";
+import { DiscordBotToken } from "#types";
 import { confirm, input, select } from "@inquirer/prompts";
 import ck from "chalk";
 import { glob } from "@reliverse/reglob";
 import fs from "node:fs/promises";
 import path from "node:path";
 import ora from "ora";
-import { fetchDiscordEmojis } from "./fetch.js";
-import { withDefaults } from "#prompts";
+import { CLI } from "#cli";
+import { fetchDiscordEmojis } from "#shared/emojis/fetch.js";
 
 const u = ck.underline;
 
-export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: DiscordBotToken) {
-    const emojis = await fetchDiscordEmojis({ props, token, notCheckAmount: true });
+export async function discordEmojisUploadMenu(cli: CLI, token: DiscordBotToken) {
+    const emojis = await fetchDiscordEmojis({ cli, token, notCheckAmount: true });
     if (!emojis) return;
 
-    const displayCurrCwd = ck.dim.underline(path.basename(props.cwd)+"/");
+    const displayCurrCwd = ck.dim.underline(path.basename(process.cwd())+"/");
 
     const dirpath = await input(withDefaults({
         message: uiMessage({
@@ -73,7 +73,7 @@ export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: Di
            "en-US": "No images found in the given directory!",
            "pt-BR": "Nenhum imagem encontrada no diretório fornecido!",
         }));
-        menus.discord.emojis.main(props, token);
+        menus.discord.emojis.main(cli, token);
         return;
     }
 
@@ -108,7 +108,7 @@ export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: Di
 
     if (!proceed) {
         await sleep(400);
-        menus.discord.emojis.main(props, token);
+        menus.discord.emojis.main(cli, token);
         return;
     };
 
@@ -198,14 +198,13 @@ export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: Di
 
         const result = await discordEmojis.create(token, { image: base64, name });
         uploading.stop();
-        if (!result.success && result.exists) {
+        if (!result.success && result.code === 1) {
             log.fail(uiMessage({
                 "en-US": `An emoji named ${emojiName} already exists for this application!`,
                 "pt-BR": `Um emoji chamado ${emojiName} já existe para essa aplicação!`,
             }, ck.red));
             continue;
         }
-
         if (!result.success) {
             log.error(uiMessage({
                 "en-US": `An error occurred while trying ${existing ? "overwrite" : "create"} the ${emojiName} emoji!`,
@@ -229,5 +228,5 @@ export async function discordEmojisUploadMenu(props: ProgramMenuProps, token: Di
 
     await sleep(500);
 
-    menus.discord.emojis.main(props, token);
+    menus.discord.emojis.main(cli, token);
 }

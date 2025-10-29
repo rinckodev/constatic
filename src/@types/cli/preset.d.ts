@@ -7,7 +7,8 @@ export interface ScriptPresetFile {
 
 export interface ScriptPreset {
     id: string;
-    type: "default"
+    type: "default",
+    alias?: string;
     name: string;
     files: ScriptPresetFile[];
     packageJson?: Pick<PackageJson, "dependencies" | "devDependencies">,

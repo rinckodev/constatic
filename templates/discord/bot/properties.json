@@ -2,8 +2,8 @@
   "presets": {
     "databases": {
       "mongoose": {
-        "name": "MongoDb",
-        "icon": "🍃",
+        "name": "MongoDb 🍃",
+        "icon": "☵",
         "hint": "mongoose",
         "path": "mongoose",
         "env": [
@@ -25,8 +25,8 @@
         "isORM": false
       },
       "typesaurus": {
-        "name": "Firestore",
-        "icon": "🦕",
+        "name": "Firestore 🦕",
+        "icon": "☵",
         "hint": "typesaurus",
         "path": "typesaurus",
         "env": [
@@ -45,8 +45,8 @@
         }
       },
       "firelord": {
-        "name": "Firestore",
-        "icon": "🔥",
+        "name": "Firestore 🔥",
+        "icon": "☵",
         "hint": "firelord",
         "path": "firelord",
         "env": [
@@ -65,9 +65,9 @@
         }
       },
       "mysql": {
-        "name": "MySQL",
-        "icon": "🐬",
-        "hint": "sql",
+        "name": "MySQL 🐬",
+        "icon": "☷",
+        "hint": "mysql2",
         "path": "mysql",
         "env": [
           [
@@ -100,9 +100,9 @@
         }
       },
       "mariadb": {
-        "name": "MariaDb",
-        "icon": "🦭",
-        "hint": "sql",
+        "name": "MariaDb 🦭",
+        "icon": "☷",
+        "hint": "mariadb",
         "path": "mariadb",
         "env": [
           [
@@ -134,12 +134,81 @@
           }
         }
       },
+      "prisma-mysql": {
+        "name": "Prisma MySQL 🐬",
+        "icon": "◭",
+        "hint": "prisma",
+        "path": "prisma/mysql",
+        "env": [
+          [
+            "DATABASE_URL",
+            "z.url(\"Database URL is required\").min(1)",
+            "mysql://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
+          ]
+        ],
+        "isORM": true,
+        "packageJson": {
+          "scripts": {
+            "prestart": "prisma migrate deploy",
+            "postinstall": "prisma generate"
+          },
+          "devDependencies": {
+            "prisma": "6.14.0"
+          }
+        }
+      },
+      "prisma-postgres": {
+        "name": "Prisma PostgreSQL 🐘",
+        "icon": "◭",
+        "hint": "prisma",
+        "path": "prisma/postgres",
+        "env": [
+          [
+            "DATABASE_URL",
+            "z.url(\"Database URL is required\").min(1)",
+            "postgresql://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
+          ]
+        ],
+        "isORM": true,
+        "packageJson": {
+          "scripts": {
+            "prestart": "prisma migrate deploy",
+            "postinstall": "prisma generate"
+          },
+          "devDependencies": {
+            "prisma": "6.14.0"
+          }
+        }
+      },
+      "prisma-mongodb": {
+        "name": "Prisma MongoDB 🍃",
+        "icon": "◭",
+        "hint": "prisma",
+        "path": "prisma/mongodb",
+        "env": [
+          [
+            "DATABASE_URL",
+            "z.url(\"Database URL is required\").min(1)",
+            "mongodb://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
+          ]
+        ],
+        "isORM": false,
+        "packageJson": {
+          "scripts": {
+            "prestart": "prisma migrate deploy",
+            "postinstall": "prisma generate"
+          },
+          "devDependencies": {
+            "prisma": "6.14.0"
+          }
+        }
+      },
       "prisma": {
         "name": "Prisma",
         "icon": "🔷",
         "hint": "orm",
         "isORM": true,
-        "disabled": false,
+        "disabled": true,
         "packageJson": {
           "scripts": {
             "prestart": "prisma migrate deploy",

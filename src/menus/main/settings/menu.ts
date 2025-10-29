@@ -1,23 +1,16 @@
 import { colors, commonTexts, divider, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { select } from "@inquirer/prompts";
-import { ProgramMenuProps } from "#types";
 import ck from "chalk";
+import type { CLI } from "#cli";
 
-export async function settingsMenu(props: ProgramMenuProps){
+export async function settingsMenu(cli: CLI){
     const menu = await select({
         message: uiMessage({
             "pt-BR": "❑ Configurações",
             "en-US": "❑ Settings",
         }, ck.reset.cyan.underline),
         choices: [
-            // { 
-            //     name: uiMessage({
-            //         "pt-BR": "🗝️ Gerenciar tokens de discord",
-            //         "en-US": "🗝️ Manage discord tokens",
-            //     }, ck.green),
-            //     value: "discord/bot/tokens" 
-            // },
             { 
                 name: uiMessage({
                     "pt-BR": "🌐 Idioma",
@@ -34,16 +27,12 @@ export async function settingsMenu(props: ProgramMenuProps){
     divider();
     
     switch(menu){
-        // case "discord/bot/tokens":{
-        //     menus.settings.tokens.main(props);
-        //     return;
-        // }
         case "lang":{
-            menus.settings.lang(props);
+            menus.settings.lang(cli);
             return;
         }
         case "back":{
-            menus.main(props);
+            menus.main(cli);
             return;
         }
     }

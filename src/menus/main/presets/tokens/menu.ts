@@ -1,11 +1,11 @@
 import { commonTexts, divider, log, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { select } from "@inquirer/prompts";
-import { ProgramMenuProps } from "#types";
 import ck from "chalk";
-import { withDefaults } from "#prompts";
+import { withDefaults } from "../../../../helpers/prompts.js";
+import { CLI } from "#cli";
 
-export async function presetsTokensMenu(props: ProgramMenuProps) {
+export async function presetsTokensMenu(cli: CLI) {
     const action = await select(withDefaults({
         message: uiMessage({
             "pt-BR": "❑ Gerenciar tokens",
@@ -48,14 +48,14 @@ export async function presetsTokensMenu(props: ProgramMenuProps) {
     }));
     divider();
 
-    const tokens = props.conf.get("discord.bot.tokens", []);
+    const tokens = cli.config.get("discord.bot.tokens", []);
     switch(action){
         case "back":{
-            menus.main(props);
+            menus.main(cli);
             return;
         }
         case "new": {
-            menus.presets.tokens.new(props, tokens);
+            menus.presets.tokens.new(cli, tokens);
             return;
         }
     }
@@ -66,21 +66,21 @@ export async function presetsTokensMenu(props: ProgramMenuProps) {
             "pt-BR": "Nenhum token para listar",
         }));
         await sleep(400);
-        menus.presets.tokens.main(props);
+        menus.presets.tokens.main(cli);
         return;
     }
 
     switch (action) {
         case "list": {
-            menus.presets.tokens.list(props, tokens);
+            menus.presets.tokens.list(cli, tokens);
             return;
         }
         case "edit": {
-            menus.presets.tokens.edit(props, tokens);
+            menus.presets.tokens.edit(cli, tokens);
             return;
         }
         case "delete": {
-            menus.presets.tokens.delete(props, tokens);
+            menus.presets.tokens.delete(cli, tokens);
             return;
         }
     }

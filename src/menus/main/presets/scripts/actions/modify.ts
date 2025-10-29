@@ -1,6 +1,6 @@
 import { divider, fetchNpmPackage, instructions, log, sleep, uiMessage } from "#helpers";
-import { searchSelect, theme, withDefaults } from "#prompts";
-import { ProgramMenuProps, ScriptPreset } from "#types";
+import { searchSelect, theme, withDefaults } from "../../../../../helpers/prompts.js";
+import { ScriptPreset } from "#types";
 import { checkbox, input, select, Separator } from "@inquirer/prompts";
 import { glob } from "@reliverse/reglob";
 import ck from "chalk";
@@ -8,9 +8,10 @@ import ora from "ora";
 import { formatPresetFiles } from "./format.js";
 import { printPreview } from "./preview.js";
 import { packageJsonHasDeps } from "#shared/presets/scripts/deps.js";
+import { CLI } from "#cli";
 
 export async function modifyScriptPresetMenu(
-    props: ProgramMenuProps,
+    _cli: CLI,
     preset: ScriptPreset,
     existing: boolean = false,
 ) {
@@ -43,6 +44,13 @@ export async function modifyScriptPresetMenu(
                     }, ck.blue),
                     value: "name"
                 } : null,
+                {
+                    name: uiMessage({
+                        "en-US": "✎ Edit alias",
+                        "pt-BR": "✎ Editar alias",
+                    }, ck.blue),
+                    value: "alias"
+                },
                 {
                     name: uiMessage({
                         "en-US": "🗐 Select files",
@@ -111,9 +119,20 @@ export async function modifyScriptPresetMenu(
                 divider();
                 continue;
             }
+            case "alias": {
+                preset.alias = await input(withDefaults({
+                    message: uiMessage({
+                        "en-US": "Preset alias",
+                        "pt-BR": "Alias da predefinição",
+                    }),
+                    required: true,
+                }));
+                divider();
+                continue;
+            }
             case "select": {
                 const filepaths = await glob(["./**"], {
-                    cwd: props.cwd, ignore: ["**/node_modules/**"],
+                    cwd: process.cwd(), ignore: ["**/node_modules/**"],
                     dot: true,
                 });
 
@@ -338,6 +357,5 @@ export async function modifyScriptPresetMenu(
             }
         }
     }
-
     return status;
 }

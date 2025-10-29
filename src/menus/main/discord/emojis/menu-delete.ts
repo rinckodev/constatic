@@ -1,14 +1,14 @@
-import { discordEmojis, divider, log, sleep, uiMessage } from "#helpers";
+import { discordEmojis, divider, log, sleep, uiMessage, withDefaults } from "#helpers";
 import { menus } from "#menus";
-import { withDefaults } from "#prompts";
-import { DiscordBotToken, ProgramMenuProps } from "#types";
+import { DiscordBotToken } from "#types";
 import { checkbox, confirm } from "@inquirer/prompts";
 import ck from "chalk";
 import ora from "ora";
-import { fetchDiscordEmojis } from "./fetch.js";
+import { CLI } from "#cli";
+import { fetchDiscordEmojis } from "#shared/emojis/fetch.js";
 
-export async function discordEmojisDeleteMenu(props: ProgramMenuProps, token: DiscordBotToken) {
-    const emojis = await fetchDiscordEmojis({ props, token });
+export async function discordEmojisDeleteMenu(cli: CLI, token: DiscordBotToken) {
+    const emojis = await fetchDiscordEmojis({ cli, token });
     if (!emojis) return;
 
     const choices = emojis.map((emoji, index) => ({
@@ -36,7 +36,7 @@ export async function discordEmojisDeleteMenu(props: ProgramMenuProps, token: Di
            "pt-BR": "Nenhum emoji selecionado, voltando ao menu de emojis",
         }));
         await sleep(500);
-        menus.discord.emojis.main(props);
+        menus.discord.emojis.main(cli);
         return;
     }
 
@@ -55,7 +55,7 @@ export async function discordEmojisDeleteMenu(props: ProgramMenuProps, token: Di
     }));
 
     if (!proceed) {
-        menus.discord.emojis.main(props, token);
+        menus.discord.emojis.main(cli, token);
         return;
     }
 
@@ -101,6 +101,6 @@ export async function discordEmojisDeleteMenu(props: ProgramMenuProps, token: Di
 
     await sleep(500);
 
-    menus.discord.emojis.main(props, token);
+    menus.discord.emojis.main(cli, token);
 }
 

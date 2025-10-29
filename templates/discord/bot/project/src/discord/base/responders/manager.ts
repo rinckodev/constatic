@@ -29,6 +29,6 @@ export class ResponderManager {
         };
     }
     public getHandler(type: ResponderType, customId: string){
-        return findRoute(this.router, type, this.withLeadingSlash(customId));
+        return findRoute(this.router, type.toUpperCase(), this.withLeadingSlash(customId));
     }
 }

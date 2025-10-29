@@ -1,12 +1,13 @@
 import { commonTexts, divider, log, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
-import { withDefaults } from "#prompts";
-import type { DiscordBotToken, ProgramMenuProps } from "#types";
+import { withDefaults } from "../../../../helpers/prompts.js";
+import type { DiscordBotToken } from "#types";
 import { select } from "@inquirer/prompts";
 import ck from "chalk";
 import { promptToken } from "./actions/prompt.js";
+import { CLI } from "#cli";
 
-export async function presetsTokensEditMenu(props: ProgramMenuProps, tokens: DiscordBotToken[]) {
+export async function presetsTokensEditMenu(cli: CLI, tokens: DiscordBotToken[]) {
     const choices = tokens.map(token => ({
         name: `🤖 ${ck.yellow.underline(token.name)}`,
         value: token.id
@@ -28,7 +29,7 @@ export async function presetsTokensEditMenu(props: ProgramMenuProps, tokens: Dis
 
 
     if (selected === "back") {
-        menus.presets.tokens.main(props);
+        menus.presets.tokens.main(cli);
         return;
     }
 
@@ -36,14 +37,14 @@ export async function presetsTokensEditMenu(props: ProgramMenuProps, tokens: Dis
     if (!result.success) {
         log.error(result.error);
         await sleep(400);
-        menus.presets.tokens.main(props);
+        menus.presets.tokens.main(cli);
         return;
     }
 
     const index = tokens.findIndex(data => data.id === selected);
     tokens[index] = result.data;
 
-    props.conf.set("discord.bot.tokens", tokens);
+    cli.config.set("discord.bot.tokens", tokens);
 
     log.success(uiMessage({
         "en-US": "Token edited successfully!",
@@ -51,5 +52,5 @@ export async function presetsTokensEditMenu(props: ProgramMenuProps, tokens: Dis
     }, ck.green));
 
     await sleep(400);
-    menus.presets.tokens.main(props);
+    menus.presets.tokens.main(cli);
 }

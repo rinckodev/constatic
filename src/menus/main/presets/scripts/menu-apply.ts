@@ -1,17 +1,18 @@
 import { divider, instructions, json, log, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { checkbox } from "@inquirer/prompts";
-import { ProgramMenuProps, ScriptPreset } from "#types";
+import { ScriptPreset } from "#types";
 import ck from "chalk";
-import { withDefaults } from "#prompts";
+import { withDefaults } from "../../../../helpers/prompts.js";
 import path from "node:path";
 import { formatPresets } from "./actions/format.js";
 import { PackageJson } from "pkg-types";
 import { applyScriptPresets } from "#shared/presets/scripts/apply.js";
 import { noSelect } from "./actions/noselect.js";
 import { packageJsonHasDeps } from "#shared/presets/scripts/deps.js";
+import { CLI } from "#cli";
 
-export async function presetsScriptsApplyMenu(props: ProgramMenuProps, presets: ScriptPreset[]) {
+export async function presetsScriptsApplyMenu(cli: CLI, presets: ScriptPreset[]) {
     const selected = await checkbox(withDefaults({
         message: uiMessage({
             "en-US": "Select the presets you want to apply",
@@ -24,7 +25,7 @@ export async function presetsScriptsApplyMenu(props: ProgramMenuProps, presets: 
     divider();
 
     if (selected.length < 1) {
-        await noSelect(props);
+        await noSelect(cli);
         return;
     }
 
@@ -32,9 +33,9 @@ export async function presetsScriptsApplyMenu(props: ProgramMenuProps, presets: 
         preset => selected.includes(preset.id)
     );
 
-    const pkgJsonPath = path.join(props.cwd, "package.json");
+    const pkgJsonPath = path.join(process.cwd(), "package.json");
 
-    const packageJson = await json
+    const pkg = await json
         .read<PackageJson>(pkgJsonPath)
         .catch(() => null);
 
@@ -42,7 +43,7 @@ export async function presetsScriptsApplyMenu(props: ProgramMenuProps, presets: 
         preset => packageJsonHasDeps(preset.packageJson??{})
     );
 
-    if (!packageJson && hasDeps) {
+    if (!pkg && hasDeps) {
         const ref = ck.underline("package.json");
         log.warn(uiMessage({
             "en-US": [
@@ -57,15 +58,13 @@ export async function presetsScriptsApplyMenu(props: ProgramMenuProps, presets: 
         divider();
     }
 
-    await applyScriptPresets({
-        configdir: props.configdir,
-        presets: selectedPresets,
-        packageJson,
-        distPath: props.cwd
+    await applyScriptPresets(cli, {
+        dist: process.cwd(),
+        pkg, presets: selectedPresets,
     });
 
-    if (packageJson) {
-        await json.write(pkgJsonPath, packageJson);
+    if (pkg) {
+        await json.write(pkgJsonPath, pkg);
     }
 
     log.success(uiMessage({
@@ -75,5 +74,5 @@ export async function presetsScriptsApplyMenu(props: ProgramMenuProps, presets: 
     divider();
 
     await sleep(400);
-    menus.presets.scripts.main(props);
+    menus.presets.scripts.main(cli);
 }

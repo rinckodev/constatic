@@ -18,3 +18,7 @@ export const cliLang = {
         currentLang = lang;
     }
 }
+
+export function l<T>(arg: Record<Language, T>){
+    return arg[cliLang.get()];
+}

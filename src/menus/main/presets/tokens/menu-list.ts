@@ -1,10 +1,11 @@
-import type { DiscordBotToken, ProgramMenuProps } from "#types";
+import type { DiscordBotToken } from "#types";
 import { cliTableChars, divider, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import ck from "chalk";
 import Table from "cli-table3";
+import { CLI } from "#cli";
 
-export async function presetsTokensListMenu(props: ProgramMenuProps, tokens: DiscordBotToken[]) {
+export async function presetsTokensListMenu(cli: CLI, tokens: DiscordBotToken[]) {
     const cc = {
         name: uiMessage( 
             { "en-US": "Name", "pt-BR": "Nome", },
@@ -31,5 +32,5 @@ export async function presetsTokensListMenu(props: ProgramMenuProps, tokens: Dis
     divider();
     
     await sleep(500);
-    menus.presets.tokens.main(props);
+    menus.presets.tokens.main(cli);
 }

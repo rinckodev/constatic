@@ -13,17 +13,17 @@
     "start:dev": "node --env-file .env.dev ."
   },
   "dependencies": {
-    "discord.js": "14.22.1",
-    "@magicyan/discord": "1.5.4",
-    "rou3": "0.7.3",
-    "zod": "4.1.11",
+    "@magicyan/discord": "1.6.2",
     "@reliverse/reglob": "1.0.0",
-    "chalk": "5.6.2"
+    "chalk": "5.6.2",
+    "discord.js": "14.24.1",
+    "rou3": "0.7.9",
+    "zod": "4.1.11"
   },
   "devDependencies": {
-    "typescript": "5.9.3",
     "@types/node": "22.16.4",
-    "tsx": "4.19.3"
+    "tsx": "4.19.3",
+    "typescript": "5.9.3"
   },
   "imports": {
     "#env": [

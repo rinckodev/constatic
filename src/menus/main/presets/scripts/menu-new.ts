@@ -1,26 +1,27 @@
 import { copy, divider, log, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
-import { withDefaults } from "#prompts";
-import { ProgramMenuProps, ScriptPreset } from "#types";
+import { withDefaults } from "../../../../helpers/prompts.js";
+import { ScriptPreset } from "#types";
 import { input } from "@inquirer/prompts";
 
 import ck from "chalk";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { modifyScriptPresetMenu } from "./actions/modify.js";
+import { CLI } from "#cli";
 
-export async function presetsScriptsNewMenu(props: ProgramMenuProps) {
-    const presets = props.conf.get("presets.scripts", []);
+export async function presetsScriptsNewMenu(cli: CLI) {
+    const presets = cli.config.get("presets.scripts", []);
     const preset: ScriptPreset = {
         name: "", type: "default",
         id: new Date().getTime().toString(),
         files: []
     };
 
-    const status = await modifyScriptPresetMenu(props, preset);
+    const status = await modifyScriptPresetMenu(cli, preset);
 
     if (status === "cancel") {
-        menus.presets.scripts.main(props);
+        menus.presets.scripts.main(cli);
         return;
     }
 
@@ -33,17 +34,21 @@ export async function presetsScriptsNewMenu(props: ProgramMenuProps) {
     }));
     divider();
     
-    const presetpath = path.join(props.configdir, "presets/scripts", preset.id);
+    const presetpath = path.join(
+        cli.config.dirname, 
+        "presets/scripts", 
+        preset.id
+    );
     await mkdir(presetpath, { recursive: true });
 
     await Promise.all(preset.files.map(
         ({ path: filepath, dist=filepath }) => 
-            copy(path.join(props.cwd, filepath), path.join(presetpath!, dist))
+            copy(path.join(process.cwd(), filepath), path.join(presetpath!, dist))
         .catch(() => null)
     ));
     
     presets.push(preset);
-    props.conf.set("presets.scripts", presets);
+    cli.config.set("presets.scripts", presets);
 
     log.success(uiMessage({
         "en-US": "Preset created successfully!",
@@ -51,5 +56,5 @@ export async function presetsScriptsNewMenu(props: ProgramMenuProps) {
     }, ck.green));
 
     await sleep(400);
-    menus.presets.scripts.main(props);
+    menus.presets.scripts.main(cli);
 }

@@ -40,6 +40,7 @@ export async function baseErrorHandler(error: any, client?: Client){
                 codeBlock("ansi", brBuilder(text)),
                 time(createDate(), "R")
             ]),
+            withComponents: true,
             avatarURL: client?.user?.displayAvatarURL({ size: 512 }),
             username: spaceBuilder(client?.user?.username, "Logs")
         })

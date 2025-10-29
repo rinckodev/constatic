@@ -1,11 +1,11 @@
-import type { ProgramMenuProps } from "#types";
 import { byeMessage, divider, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { select } from "@inquirer/prompts";
 import ck from "chalk";
-import { withDefaults } from "#prompts";
+import { withDefaults } from "../../helpers/prompts.js";
+import { CLI } from "#cli";
 
-export async function mainMenu(props: ProgramMenuProps){
+export async function mainMenu(cli: CLI){
     const menu = await select(withDefaults({
         message: uiMessage({
             "pt-BR": "❑ Menu principal",
@@ -53,19 +53,19 @@ export async function mainMenu(props: ProgramMenuProps){
     
     switch(menu){
         case "discord/bot":{
-            menus.discord.bot(props);
+            menus.discord.bot(cli);
             return;
         }
         case "discord/emojis":{
-            menus.discord.emojis.main(props);
+            menus.discord.emojis.main(cli);
             return;
         }
         case "settings":{
-            menus.settings.main(props);
+            menus.settings.main(cli);
             return;
         }
         case "presets":{
-            menus.presets.main(props);
+            menus.presets.main(cli);
             return;
         }
         case "quit":{

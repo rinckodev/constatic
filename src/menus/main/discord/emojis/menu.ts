@@ -1,14 +1,15 @@
 import { commonTexts, divider, uiMessage } from "#helpers";
 import { menus } from "#menus";
-import { DiscordBotToken, ProgramMenuProps } from "#types";
+import { DiscordBotToken } from "#types";
 import { select } from "@inquirer/prompts";
 import ck from "chalk";
 import { selectDiscordBot } from "./menu-select.js";
-import { withDefaults } from "#prompts";
+import { withDefaults } from "../../../../helpers/prompts.js";
+import { CLI } from "#cli";
 
-export async function discordEmojisMenu(props: ProgramMenuProps, token?: DiscordBotToken){
+export async function discordEmojisMenu(cli: CLI, token?: DiscordBotToken){
     if (!token){
-        await selectDiscordBot(props);
+        await selectDiscordBot(cli);
         return;
     }
     
@@ -64,27 +65,27 @@ export async function discordEmojisMenu(props: ProgramMenuProps, token?: Discord
 
     switch(action){
         case "list":{
-            menus.discord.emojis.list(props, token);
+            menus.discord.emojis.list(cli, token);
             return;
         }
         case "upload":{
-            menus.discord.emojis.upload(props, token);
+            menus.discord.emojis.upload(cli, token);
             return;
         }
         case "delete":{
-            menus.discord.emojis.delete(props, token);
+            menus.discord.emojis.delete(cli, token);
             return;
         }
         case "file":{
-            menus.discord.emojis.file(props, token);
+            menus.discord.emojis.file(cli, token);
             return;
         }
         case "select":{
-            await menus.discord.emojis.select(props);
+            await menus.discord.emojis.select(cli);
             return;
         }
         case "back":{
-            menus.main(props);
+            menus.main(cli);
             return;
         }
     }

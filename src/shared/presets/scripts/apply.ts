@@ -1,24 +1,25 @@
-import type { ProgramMenuProps, ScriptPreset } from "#types";
+import type { ScriptPreset } from "#types";
 import merge from "lodash.merge";
 import { PackageJson } from "pkg-types";
 import path from "node:path";
 import { copy } from "#helpers";
+import { CLI } from "#cli";
 
-interface ApplyScriptPresetsProps extends Pick<ProgramMenuProps, "configdir"> {
+interface ApplyScriptPresetsProps {
     presets: ScriptPreset[];
-    packageJson?: PackageJson | null;
-    distPath: string;
+    dist: string;
+    pkg?: PackageJson | null;
 }
-export async function applyScriptPresets(props: ApplyScriptPresetsProps) {
-    const { configdir, distPath, packageJson, presets } = props;
+export async function applyScriptPresets(cli: CLI, props: ApplyScriptPresetsProps) {
+    const { dist, presets, pkg } = props;
     const promises: Promise<void>[] = [];
     for (const script of presets) {
-        if (packageJson && script.packageJson) {
-            merge(packageJson, script.packageJson);
+        if (pkg && script.packageJson) {
+            merge(pkg, script.packageJson);
         }
         promises.push(...script.files.map(file => copy(
-            path.join(configdir, "presets/scripts", script.id, file.path),
-            path.join(distPath, file.dist ?? file.path),
+            path.join(cli.config.dirname, "presets/scripts", script.id, file.path),
+            path.join(dist, file.dist ?? file.path),
         )))
     }
     await Promise.all(promises).catch(() => null);

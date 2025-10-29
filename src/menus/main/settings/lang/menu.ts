@@ -1,11 +1,12 @@
+import type { CLI } from "#cli";
 import { cliLang, commonTexts, divider, uiMessage } from "#helpers";
 import { menus } from "#menus";
-import { withDefaults } from "#prompts";
-import { Language, ProgramMenuProps } from "#types";
+import { withDefaults } from "../../../../helpers/prompts.js";
+import { Language } from "#types";
 import { select } from "@inquirer/prompts";
 import ck from "chalk";
 
-export async function settingsLangMenu(props: ProgramMenuProps){
+export async function settingsLangMenu(cli: CLI){
     const arg = await select(withDefaults({
         message: uiMessage({
             "en-US": "Change CLI language",
@@ -35,11 +36,11 @@ export async function settingsLangMenu(props: ProgramMenuProps){
     divider();
 
     if (arg === "back"){
-        menus.settings.main(props);
+        menus.settings.main(cli);
         return;
     }
 
     cliLang.set(arg as Language);
-    props.conf.set("lang", arg);
-    menus.settings.lang(props);
+    cli.config.set("lang", arg);
+    menus.settings.lang(cli);
 }

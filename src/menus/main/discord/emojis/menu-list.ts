@@ -1,12 +1,13 @@
 import { cliTableChars, divider, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
-import { DiscordBotToken, ProgramMenuProps } from "#types";
+import { DiscordBotToken } from "#types";
 import ck from "chalk";
 import Table from "cli-table3";
-import { fetchDiscordEmojis } from "./fetch.js";
+import { CLI } from "#cli";
+import { fetchDiscordEmojis } from "#shared/emojis/fetch.js";
 
-export async function discordEmojisListMenu(props: ProgramMenuProps, token: DiscordBotToken){
-    const emojis = await fetchDiscordEmojis({ props, token });
+export async function discordEmojisListMenu(cli: CLI, token: DiscordBotToken){
+    const emojis = await fetchDiscordEmojis({ cli, token });
     if (!emojis) return;
 
     const cc = {
@@ -40,5 +41,5 @@ export async function discordEmojisListMenu(props: ProgramMenuProps, token: Disc
     divider();
     
     await sleep(500);
-    menus.discord.emojis.main(props, token);
+    menus.discord.emojis.main(cli, token);
 }

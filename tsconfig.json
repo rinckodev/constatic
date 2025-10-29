@@ -21,7 +21,9 @@
         "#menus": ["./src/menus/index.js"],
         "#shared/*": ["./src/shared/*"],
         "#lib/*": ["./src/lib/*"],
-        "#types": ["./src/@types/index.js"]
+        "#actions/*": ["./src/actions/*"],
+        "#types": ["./src/@types/index.js"],
+        "#cli": ["./src/cli/index.js"],
       }
     },
     "include": ["src"],

@@ -1,28 +1,29 @@
-import { commonTexts, divider, log, parseEnvFile, sleep, uiMessage } from "#helpers";
+import { CLI } from "#cli";
+import { commonTexts, divider, log, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
-import { withDefaults } from "#prompts";
+import { withDefaults } from "../../../../helpers/prompts.js";
 import { fetchDiscordTokenData } from "#shared/tokens.js";
-import { ProgramMenuProps } from "#types";
 import { select } from "@inquirer/prompts";
 import { glob } from "@reliverse/reglob";
 import ck from "chalk";
 
 type ChoiceData = { name: string, value: string | number };
 
-export async function selectDiscordBot(props: ProgramMenuProps) {
-    const tokens = props.conf.get("discord.bot.tokens", []);
+export async function selectDiscordBot(cli: CLI) {
+    const tokens = cli.config.get("discord.bot.tokens", []);
 
     const choices: ChoiceData[] = tokens.map((token, index) => ({
         name: `${ck.green("●")} ${ck.blue(token.name)}`,
         value: index,
     }));
 
-    const paths = await glob("./.env*", { cwd: props.cwd });
+    const paths = await glob("./.env*", { cwd: process.cwd() });
 
     const envs = await Promise.all(
         paths.map(async filepath => {
-            const vars = await parseEnvFile(filepath);
-            return { name: filepath, vars }
+            const env = cli.createEnvManager(filepath);
+            await env.load();
+            return { name: filepath, vars: env.vars }
         })
     )
         .then(envs => envs.filter(
@@ -60,7 +61,7 @@ export async function selectDiscordBot(props: ProgramMenuProps) {
         log.error(error);
         divider();
         await sleep(400);
-        selectDiscordBot(props);
+        selectDiscordBot(cli);
     }
 
     const fetchTokenOperation = async (token: string) => {
@@ -69,7 +70,7 @@ export async function selectDiscordBot(props: ProgramMenuProps) {
             onTokenNotFound(result.error);
             return;
         }
-        menus.discord.emojis.main(props, result.data);
+        menus.discord.emojis.main(cli, result.data);
     }
 
     if (typeof index === "string") {
@@ -78,7 +79,7 @@ export async function selectDiscordBot(props: ProgramMenuProps) {
     }
 
     if (index === -1) {
-        menus.main(props)
+        menus.main(cli)
         return;
     }
     if (index === -2) {
@@ -88,8 +89,8 @@ export async function selectDiscordBot(props: ProgramMenuProps) {
             onTokenNotFound(result.error);
             return;
         }
-        menus.discord.emojis.main(props, result.data);
+        menus.discord.emojis.main(cli, result.data);
         return;
     }
-    menus.discord.emojis.main(props, tokens[index]);
+    menus.discord.emojis.main(cli, tokens[index]);
 }

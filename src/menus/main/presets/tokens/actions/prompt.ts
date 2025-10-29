@@ -1,13 +1,12 @@
-import type { DiscordBotToken, FetchResult } from "#types";
+import type { DiscordBotToken } from "#types";
 import { uiMessage } from "#helpers";
-import { withDefaults } from "#prompts";
+import { withDefaults } from "../../../../../helpers/prompts.js";
 import { fetchDiscordTokenData } from "#shared/tokens.js";
 import { password } from "@inquirer/prompts";
 import ck from "chalk";
+import { Result } from "#lib/result.js";
 
-type PromptTokenResult = FetchResult<DiscordBotToken>;
-
-export async function promptToken(tokens: DiscordBotToken[]): Promise<PromptTokenResult> {
+export async function promptToken(tokens: DiscordBotToken[]) {
     const token = await password(withDefaults({
         message: uiMessage({
             "en-US": "Insert your discord bot token",
@@ -25,13 +24,10 @@ export async function promptToken(tokens: DiscordBotToken[]): Promise<PromptToke
     const existing = tokens.find(t => t.token === token)
     if (existing) {
         const name = `🤖 ${ck.yellow.underline(existing.name)}`;
-        return {
-            success: false,
-            error: uiMessage({
-                "en-US": `This token is already saved! ${name}`,
-                "pt-BR": `Este token já está salvo! ${name}`,
-            }, ck.red)
-        }
+        return Result.fail(uiMessage({
+            "en-US": `This token is already saved! ${name}`,
+            "pt-BR": `Este token já está salvo! ${name}`,
+        }, ck.red));
     }
 
     return await fetchDiscordTokenData(token);
