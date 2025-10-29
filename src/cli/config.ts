@@ -20,7 +20,6 @@ export class CLIConfig extends Conf<ConfSchema> {
         return path.dirname(this.path);
     }
     public getToken(name: string){
-        return this.get("discord.bot.tokens")
-            .find(t => equalsIgnoringCase(t.name, name));
+        return this.get("discord.bot.tokens", []).find(t => equalsIgnoringCase(t.name, name));
     }
 }
