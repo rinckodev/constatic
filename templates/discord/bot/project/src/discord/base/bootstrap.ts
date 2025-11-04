@@ -1,6 +1,5 @@
 import { env } from "#env";
 import { CustomItents, CustomPartials } from "@magicyan/discord";
-import { glob } from "@reliverse/reglob";
 import ck from "chalk";
 import { Client, ClientOptions, version as djsVersion } from "discord.js";
 import { Constatic } from "./app.js";
@@ -10,6 +9,8 @@ import { BaseCommandHandlers } from "./commands/handlers.js";
 import "./constants.js";
 import { BaseEventHandlers } from "./events/handlers.js";
 import { BaseResponderHandlers } from "./responders/handlers.js";
+import { glob } from "node:fs/promises";
+import { join } from "node:path";
 
 interface BootstrapOptions extends Partial<ClientOptions> {
     meta: ImportMeta;
@@ -77,16 +78,20 @@ export async function bootstrap(options: BootstrapOptions){
     return { client };
 }
 
-async function loadModules(workdir: string, modules: string[] = []){
-    const pattern = "**/*.{js,ts,jsx,tsx}";
-    const files = await glob([
-        `!./discord/index.*`,
-        `!./discord/base/**/*`,
-        `./discord/${pattern}`,
+async function loadModules(workdir: string, modules: string[] = []) {
+    const files = await Array.fromAsync(glob([
+        "./discord/**/*.{js,ts,jsx,tsx}",
         ...modules,
-    ], { absolute: true, cwd: workdir });
-
-    await Promise.all(files.map(path => import(`file://${path}`)))
+    ], {
+        cwd: workdir,
+        exclude: [
+            "./discord/index.*",
+            "./discord/base/**/*"
+        ]
+    }));
+    await Promise.all(files.map(path => 
+        import(`file://${join(workdir, path)}`)
+    ));
 }
 
 function registerErrorHandlers(client?: Client<true>): void {

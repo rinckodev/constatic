@@ -5,4 +5,4 @@ RAM=100
 VERSION=latest
 AUTORESTART=false
 START=bun run start
-AVATAR=https://i.imgur.com/vCmpTqL.png
+AVATAR=https://i.imgur.com/F4QzKsc.png

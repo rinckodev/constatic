@@ -11,7 +11,7 @@ const cliroot = import.meta.dirname
     ? path.join(import.meta.dirname, "..")
     : path.dirname(path.join(fileURLToPath(import.meta.url), ".."));
 
-const REQ_VERSION = "20.12";
+const REQ_VERSION = "22.0";
 
 if (process.versions.node < REQ_VERSION){
     log.error(uiMessage({

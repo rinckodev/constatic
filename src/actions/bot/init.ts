@@ -166,7 +166,12 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
     await envManager.createExample(distJoin(".env.example"));
 
     if (data.install) {
+        generating.text = uiMessage({
+            "en-US": "Installing the dependencies...",
+            "pt-BR": "Instalando as dependências...",
+        });
         const result = await cli.shell.run(distJoin(), "install");
+        generating.stop();
         if (result.success) {
             log.success(uiMessage({
                 "en-US": "✅ Dependencies installed successfully!",
@@ -194,7 +199,6 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
         "pt-BR": "Projeto gerado com sucesso!",
     }));
     divider();
-
 
     if (!isDistRoot) {
         log.custom(ck.green("➞"), uiMessage({
