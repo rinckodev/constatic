@@ -1,8 +1,8 @@
 {
-  "name": "@myorganization/template",
+  "name": "@constatic/template",
   "author": {
-    "url": "https://github.com/myuser",
-    "name": "My User"
+    "url": "https://github.com/rinckodev",
+    "name": "Rincko Dev"
   },
   "repository": {
     "type": "git",
@@ -11,7 +11,7 @@
   },
   "module": "./src/index.ts",
   "devDependencies": {
-    "@myorganization/config": "*",
+    "@constatic/config": "*",
     "typescript": "^5.9.3"
   },
   "exports": {

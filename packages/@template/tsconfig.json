@@ -1,5 +1,5 @@
 {
-  "extends": "@protogun/config/tsconfig",
+  "extends": "@constatic/config/tsconfig",
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist"
