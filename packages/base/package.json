@@ -1,0 +1,40 @@
+{
+  "name": "@constatic/base",
+  "author": {
+    "url": "https://github.com/rinckodev",
+    "name": "Rincko dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rinckodev/constatic",
+    "directory": "packages/base"
+  },
+  "module": "./src/index.ts",
+  "devDependencies": {
+    "@constatic/config": "*",
+    "typescript": "^5.9.3"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist"],
+  "homepage": "",
+  "imports": {
+    "#package": [
+      "./src/index.ts"
+    ]
+  },
+  "scripts": {
+    "typegen": "tsc",
+    "build": "tsup run ./build.ts",
+    "dev": "bun run ./playground/index.ts"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "discord.js": "^14.24.2"
+  }
+}
