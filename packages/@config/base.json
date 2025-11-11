@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "target": "esnext",
+    "module": "nodenext",
+    "moduleDetection": "force",
+
+    "moduleResolution": "nodenext",
+    "verbatimModuleSyntax": true,
+
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    
+    "strict": true,
+    
+    "noImplicitOverride": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  }
+}

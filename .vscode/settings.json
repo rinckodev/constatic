@@ -1,0 +1,12 @@
+{
+    "material-icon-theme.folders.associations": {
+        "@config": "config",
+        "@template": "template",
+    },
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit",
+        "source.sortImports": "explicit",
+        "source.removeUnusedImports": "explicit",
+        "source.addMissingImports.ts": "explicit"
+    }
+}

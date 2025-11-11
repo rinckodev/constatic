@@ -1,0 +1,19 @@
+# dependencies (bun install)
+node_modules
+
+# output
+out
+dist
+build
+*.tgz
+
+# dotenv environment variable files
+.env
+.env.*
+!.env.example
+
+# caches
+.cache
+
+# Finder (MacOS) folder config
+.DS_Store

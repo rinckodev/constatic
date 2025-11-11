@@ -1,0 +1,17 @@
+{
+  "name": "myorganization",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "dev": "bun run --filter=./packages/* dev",
+    "build": "bun run --filter=./packages/* build",
+    "check": "bun run --filter=./packages/* check",
+    "test": "bun run --filter=./packages/* test"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.9.3"
+  }
+}

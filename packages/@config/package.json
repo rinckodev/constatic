@@ -1,0 +1,15 @@
+{
+  "name": "@myorganization/config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    "./build": {
+      "default": "./build.ts"
+    },
+    "./tsconfig": {
+      "default": "./base.json"
+    }
+  }
+}
