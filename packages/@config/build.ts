@@ -1,5 +1,4 @@
 import { $, Glob, type BuildConfig } from "bun";
-import { extname } from "node:path";
 import { styleText } from "node:util";
 
 export async function build() {
@@ -21,30 +20,19 @@ export async function build() {
         external: ["*"],
     } satisfies BuildConfig;
 
-    const results = await Promise.all([
-        Bun.build({
-            ...preset,
-            format: "cjs",
-            naming: "[dir]/[name].cjs",
-        }),
-        Bun.build({ ...preset, format: "esm" }),
-    ]);
+    const result = await Bun.build({ ...preset, format: "esm" });
     
-    for (const result of results) {
-        console.log(result.outputs
-            .map(({ path }) => {
-                const isCJS = extname(path) === ".cjs";
-                const filepath = styleText(["yellowBright"],
-                    path.replace(process.cwd(), "")
-                )
+    console.log(result.outputs
+        .map(({ path }) => {
+            const filepath = styleText(["yellowBright"],
+                path.replace(process.cwd(), "")
+            )
 
-                return `${styleText("green", isCJS ? "CJS" : "ESM")} ${filepath}`
-            })
-            .join("\n")
-        )
-        console.log();
-    }
-
+            return `${styleText("green", "ESM")} ${filepath}`
+        })
+        .join("\n")
+    )
+    console.log();
     console.log(styleText("green", "✔ The project was compiled successfully!"))
 
     await $`bun run typegen`.quiet();
