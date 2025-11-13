@@ -30,11 +30,14 @@
   },
   "scripts": {
     "typegen": "tsc",
-    "build": "tsup run ./build.ts",
+    "build": "bun run ./build.ts",
     "dev": "bun run ./playground/index.ts"
   },
   "type": "module",
   "peerDependencies": {
     "discord.js": "^14.24.2"
+  },
+  "dependencies": {
+    "rou3": "^0.7.10"
   }
 }
