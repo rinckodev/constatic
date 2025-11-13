@@ -1,15 +1,31 @@
-import { Client, IntentsBitField, type ClientOptions } from "discord.js";
+import { Client, type ClientOptions } from "discord.js";
+import { styleText } from "node:util";
+import { BaseCommandHandlers } from "./creators/commands/handlers.js";
 
-export interface CustomClientOptions extends Omit<ClientOptions, "intents"> {
-    intents?: ClientOptions["intents"]
-}
+export interface CustomClientOptions extends Partial<ClientOptions> {}
 
-export function createClient(token: string, options: ClientOptions){
-    const client = new Client({
-        ...options,
-        intents: options.intents ?? IntentsBitField.Flags,
+export function createClient(token: string, options: CustomClientOptions){
+    const client = new Client({ ...options,
+        intents: options.intents??[],
         failIfNotExists: options.failIfNotExists ?? false,
     });
     client.token = token;
+
+    client.on("clientReady", async (client) => {
+        console.log("%s %s %s",
+            styleText("green", "●"),
+            styleText(["greenBright", "underline"], client.user.username),
+            styleText("green", "application is ready!")
+        );
+        await BaseCommandHandlers.register(client);
+    });
+
+    client.on("interactionCreate", async interaction => {
+        if (interaction.isCommand()){
+            await BaseCommandHandlers.onCommand(interaction);
+            return;
+        }
+    })
+
     return client;
 }
