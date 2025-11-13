@@ -12,8 +12,17 @@ type BuildedCommandData = (
 export class CommandManager {
     private readonly collection = new Map<string, Command<unknown, unknown, unknown>>();
     public readonly runners = new Map<string, Runner[]>();
-    public set<T, P, R>(name: string, command: Command<T, P, R>) {
-        this.collection.set(name, command);
+    public set<T, P, R>(command: Command<T, P, R>) {
+        this.collection.set(command.data.name, command);
+        const path = `/${command.data.type}/${command.data.name}`;
+        this.runners.set(path, [command.data.run]);
+
+        if (command.data.autocomplete){
+            this.runners.set(
+                `${path}/autocomplete`,
+                [command.data.autocomplete]
+            );
+        }
     }
     public build() {
         const commands = Array.from(this.collection.values());
@@ -54,7 +63,7 @@ export class CommandManager {
                 typeof option.autocomplete === "function"
             ) {
                 this.runners.set(
-                    `${path}/${option.name}`,
+                    `${path}/autocomplete/${option.name}`,
                     [option.autocomplete]
                 );
             }
@@ -154,5 +163,12 @@ export class CommandManager {
             resolved.push(subcommand);
         }
         return resolved;
+    }
+    public getHandler(type: ApplicationCommandType, ...path: (string | null)[]) {
+        const commandName = path[0];
+        const resolved = `/${type}/${path.filter(p => p !== null).join("/")}`;
+
+        return this.runners.get(resolved)
+            ?? this.runners.get(`/${type}/${commandName}`);
     }
 }
