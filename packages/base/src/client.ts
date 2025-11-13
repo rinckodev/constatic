@@ -1,6 +1,7 @@
 import { Client, type ClientOptions } from "discord.js";
 import { styleText } from "node:util";
 import { BaseCommandHandlers } from "./creators/commands/handlers.js";
+import { BaseResponderHandlers } from "./creators/responders/handlers.js";
 
 export interface CustomClientOptions extends Partial<ClientOptions> {}
 
@@ -21,10 +22,15 @@ export function createClient(token: string, options: CustomClientOptions){
     });
 
     client.on("interactionCreate", async interaction => {
+        if (interaction.isAutocomplete()){
+
+            return;
+        }
         if (interaction.isCommand()){
             await BaseCommandHandlers.onCommand(interaction);
             return;
         }
+        await BaseResponderHandlers.onResponder(interaction);
     })
 
     return client;

@@ -1,41 +1,53 @@
-import type { ApplicationCommandType, PermissionResolvable } from "discord.js";
+import type { ApplicationCommandType, CacheType, PermissionResolvable } from "discord.js";
 import { ConstaticApp, type BaseCommandsConfig } from "../app.js";
 import { Command, type CommandData, type CommandType } from "./commands/command.js";
+import { Responder, type ResponderData, type ResponderType } from "./responders/responder.js";
 
 interface SetupCreatorsOptions {
     commands?: BaseCommandsConfig & {
         defaultMemberPermissions?: PermissionResolvable[];
     };
+    // responders?: Partial<BaseRespondersConfig>;
+    // events?: Partial<BaseEventsConfig>;
 }
 
-export function setupCreators(options: SetupCreatorsOptions = {}){
+export function setupCreators(options: SetupCreatorsOptions = {}) {
     const app = ConstaticApp.getInstance();
-    app.config.commands = { ...options.commands??={} };
-    app.config.commands.guilds??=[];
+    app.config.commands = { ...options.commands ??= {} };
+    app.config.commands.guilds ??= [];
 
-    if (process.env.GUILD_ID?.length){
+    if (process.env.GUILD_ID?.length) {
         app.config.commands.guilds.push(
             process.env.GUILD_ID
         );
     }
-
     return {
         createCommand<
-            T extends CommandType = ApplicationCommandType.ChatInput, 
+            T extends CommandType = ApplicationCommandType.ChatInput,
             P extends boolean = false,
             R = void
-        >(data: CommandData<T, P, R>){
-            const command = new Command<T, P, R>(data);
+        >(data: CommandData<T, P, R>) {
+            const command = new Command(data);
 
             app.commands.set(command);
-            
             return command;
         },
-        createResponder(){
+        createResponder<
+            Path extends string,
+            const Types extends readonly ResponderType[],
+            Parsed,
+            Cache extends CacheType = CacheType,
+        >(data: ResponderData<Path, Types, Parsed, Cache>) {
+            const responder = new Responder(data);
 
+            app.responders.set(responder);
+
+            return responder;
         },
-        createEvent(){
+        createEvent() {
 
         }
     }
 }
+
+export { ResponderType } from "./responders/responder.js";
