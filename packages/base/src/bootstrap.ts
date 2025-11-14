@@ -1,5 +1,6 @@
 import { type Client } from "discord.js";
 import { glob } from "node:fs/promises";
+import { ConstaticApp, type BaseErrorHandler } from "./app.js";
 import { createClient, type CustomClientOptions } from "./client.js";
 import { BaseEventHandlers } from "./creators/events/handlers.js";
 import { ConstaticError } from "./error.js";
@@ -7,7 +8,7 @@ import { ConstaticError } from "./error.js";
 export interface BootstrapOptions extends CustomClientOptions {
     token?: string;
     meta: ImportMeta;
-    errorHandler?(error: Error, client: Client<true>): void;
+    errorHandler?: BaseErrorHandler;
     beforeLoad?(client: Client<boolean>): Promise<void>;
     modules?: string[];
 }
@@ -19,7 +20,19 @@ export async function bootstrap(options: BootstrapOptions) {
         "The application token was not provided!"
     );
 
+    const app = ConstaticApp.getInstance();
+    if (options.errorHandler){
+        app.setErrorHandler(options.errorHandler);
+    }
+
     const client = createClient(token, options);
+
+    process.on("uncaughtException", error => 
+        app.config.errorHandler(error, client)
+    );
+    process.on("unhandledRejection", error => 
+        app.config.errorHandler(error, client)
+    );
 
     if (options.beforeLoad){
         await options.beforeLoad(client);

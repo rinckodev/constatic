@@ -1,4 +1,4 @@
-import type { CommandInteraction } from "discord.js";
+import type { Client, CommandInteraction } from "discord.js";
 import { CommandManager } from "./creators/commands/manager.js";
 import type { EventPropData } from "./creators/events/event.js";
 import { EventManager } from "./creators/events/manager.js";
@@ -24,10 +24,13 @@ export interface BaseEventsConfig {
     onError?(error: unknown, event: EventPropData): void;
 }
 
+export type BaseErrorHandler = (error: Error | unknown, client: Client) => void;
+
 interface BaseConfig {
     commands: BaseCommandsConfig;
     events: BaseEventsConfig;
     responders: BaseRespondersConfig;
+    errorHandler: BaseErrorHandler;
 }
 
 export class ConstaticApp {
@@ -43,10 +46,14 @@ export class ConstaticApp {
         this.config = {
             commands: {},
             responders: {},
-            events: {}
+            events: {},
+            errorHandler(){}
         }
     }
     public static destroy(){
         this["~instance"]=null;
+    }
+    public setErrorHandler(handler: BaseErrorHandler){
+        this.config.errorHandler = handler;
     }
 }
