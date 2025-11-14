@@ -1,6 +1,7 @@
 import { Client, type ClientOptions } from "discord.js";
 import { styleText } from "node:util";
 import { BaseCommandHandlers } from "./creators/commands/handlers.js";
+import { BaseEventHandlers } from "./creators/events/handlers.js";
 import { BaseResponderHandlers } from "./creators/responders/handlers.js";
 
 export interface CustomClientOptions extends Partial<ClientOptions> {}
@@ -19,11 +20,12 @@ export function createClient(token: string, options: CustomClientOptions){
             styleText("green", "application is ready!")
         );
         await BaseCommandHandlers.register(client);
+        await BaseEventHandlers.runReady(client);
     });
 
     client.on("interactionCreate", async interaction => {
         if (interaction.isAutocomplete()){
-
+            await BaseCommandHandlers.onAutocomplete(interaction);
             return;
         }
         if (interaction.isCommand()){
@@ -32,6 +34,5 @@ export function createClient(token: string, options: CustomClientOptions){
         }
         await BaseResponderHandlers.onResponder(interaction);
     })
-
     return client;
 }

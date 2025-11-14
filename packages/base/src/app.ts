@@ -1,8 +1,9 @@
 import type { CommandInteraction } from "discord.js";
 import { CommandManager } from "./creators/commands/manager.js";
+import type { EventPropData } from "./creators/events/event.js";
+import { EventManager } from "./creators/events/manager.js";
 import type { GenericResponderInteraction } from "./creators/responders/handlers.js";
 import { ResponderManager } from "./creators/responders/manager.js";
-import { Router } from "./utils/router.js";
 
 export interface BaseCommandsConfig {
     guilds?: string[];
@@ -18,15 +19,21 @@ export interface BaseRespondersConfig {
     onError?(error: unknown, interaction: GenericResponderInteraction, params: object): void;
 }
 
+export interface BaseEventsConfig {
+    middleware?(event: EventPropData, block: (...tags: string[]) => void): Promise<void>;
+    onError?(error: unknown, event: EventPropData): void;
+}
+
 interface BaseConfig {
     commands: BaseCommandsConfig;
+    events: BaseEventsConfig;
     responders: BaseRespondersConfig;
 }
 
 export class ConstaticApp {
     readonly commands = new CommandManager();
     readonly responders = new ResponderManager();
-    readonly events = new Router();
+    readonly events = new EventManager();
     public readonly config: BaseConfig;
     private static "~instance": ConstaticApp | null = null;
     static getInstance(){
@@ -35,7 +42,8 @@ export class ConstaticApp {
     private constructor(){
         this.config = {
             commands: {},
-            responders: {}
+            responders: {},
+            events: {}
         }
     }
     public static destroy(){

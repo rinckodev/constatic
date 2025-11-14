@@ -5,3 +5,7 @@ export class ConstaticError extends Error {
         super(message);
     }
 }
+
+export class RunBlockError {
+    
+}

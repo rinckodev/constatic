@@ -1,5 +1,6 @@
 {
   "name": "@constatic/base",
+  "version": "0.0.1-beta-01",
   "author": {
     "url": "https://github.com/rinckodev",
     "name": "Rincko dev"
@@ -9,7 +10,7 @@
     "url": "https://github.com/rinckodev/constatic",
     "directory": "packages/base"
   },
-  "module": "./src/index.ts",
+  "module": "./dist/index.js",
   "devDependencies": {
     "@constatic/config": "*",
     "typescript": "^5.9.3"
@@ -17,12 +18,11 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.cjs"
+      "types": "./dist/index.d.ts"
     }
   },
   "files": ["dist"],
-  "homepage": "",
+  "homepage": "https://constatic-docs.vercel.app",
   "imports": {
     "#package": [
       "./src/index.ts"
@@ -38,6 +38,7 @@
     "discord.js": "^14.24.2"
   },
   "dependencies": {
+    "@discordjs/core": "^2.3.0",
     "rou3": "^0.7.10"
   }
 }
