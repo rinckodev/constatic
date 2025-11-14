@@ -155,6 +155,7 @@ class GroupCommandModule<Type, Perm, Return, ModuleReturn> {
     public subcommand(data: SubCommandModuleData<Perm, ModuleReturn>) {
         data.group ??= this.data.name;
         this.command.subcommand(data);
+        return this;
     }
 }
 
@@ -187,5 +188,6 @@ export class Command<Type, Perm, Return> {
         this.modules.push({ ...data, 
             type: ApplicationCommandOptionType.Subcommand
         });
+        return this;
     }
 }

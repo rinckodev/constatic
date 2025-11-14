@@ -1,9 +1,9 @@
-import type { AutocompleteInteraction, CommandInteraction } from "discord.js";
+import type { AutocompleteInteraction, Client, CommandInteraction } from "discord.js";
 import { ConstaticApp } from "../../app.js";
 import { RunBlockError } from "../../error.js";
 
 export abstract class BaseCommandHandlers {
-    static async autocomplete(interaction: AutocompleteInteraction) {
+    static async onAutocomplete(interaction: AutocompleteInteraction) {
         const app = ConstaticApp.getInstance();
         const options = interaction.options;
 
@@ -23,7 +23,7 @@ export abstract class BaseCommandHandlers {
             await interaction.respond(choices.slice(0, 25));
         }
     }
-    static async onCommand(interaction: CommandInteraction){
+    static async onCommand(interaction: CommandInteraction) {
         if (interaction.isPrimaryEntryPointCommand()) return;
         const app = ConstaticApp.getInstance();
         const { middleware, onError, onNotFound } = app.config.commands;
@@ -47,7 +47,7 @@ export abstract class BaseCommandHandlers {
 
         if (!handler) {
             onNotFound?.(interaction);
-            return; 
+            return;
         }
 
         try {
@@ -67,5 +67,28 @@ export abstract class BaseCommandHandlers {
             }
             throw err;
         }
+    }
+    static async register(client: Client<true>) {
+        const app = ConstaticApp.getInstance();
+        
+        const guildList = new Set(app.config.commands.guilds);
+
+        const commands = app.commands.build();
+
+        const promises: Promise<unknown>[] = [];
+        const manager = client.application.commands;
+
+        if (guildList.size >= 1) {
+            const globalCommands = commands.filter(c => c.global);
+            const guildCommands = commands.filter(c => !c.global);
+            for (const id of guildList.values()) {
+                promises.push(manager.set(guildCommands, id))
+            }
+            promises.push(manager.set(globalCommands));
+        } else {
+            promises.push(manager.set(commands));
+        }
+
+        await Promise.all(promises);
     }
 }

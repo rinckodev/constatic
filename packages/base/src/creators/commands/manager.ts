@@ -26,6 +26,7 @@ export class CommandManager {
     }
     public build() {
         const commands = Array.from(this.collection.values());
+
         return commands.map(command => {
             const {
                 options: rawOptions, description,
