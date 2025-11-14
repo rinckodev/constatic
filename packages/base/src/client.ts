@@ -9,11 +9,12 @@ export interface CustomClientOptions extends Partial<ClientOptions> {}
 export function createClient(token: string, options: CustomClientOptions){
     const client = new Client({ ...options,
         intents: options.intents??[],
+        partials: options.partials??[],
         failIfNotExists: options.failIfNotExists ?? false,
     });
     client.token = token;
 
-    client.on("clientReady", async (client) => {
+    client.once("clientReady", async (client) => {
         console.log("%s %s %s",
             styleText("green", "●"),
             styleText(["greenBright", "underline"], client.user.username),

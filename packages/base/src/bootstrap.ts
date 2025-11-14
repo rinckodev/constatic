@@ -1,6 +1,7 @@
 import { type Client } from "discord.js";
 import { glob } from "node:fs/promises";
 import { createClient, type CustomClientOptions } from "./client.js";
+import { BaseEventHandlers } from "./creators/events/handlers.js";
 import { ConstaticError } from "./error.js";
 
 export interface BootstrapOptions extends CustomClientOptions {
@@ -39,7 +40,9 @@ export async function bootstrap(options: BootstrapOptions) {
             }))
     );
     const imports = await Promise.all(promises);
-
+    
+    BaseEventHandlers.register(client);
+    
     client.login();
 
     return { client, imports };
