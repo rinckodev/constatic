@@ -10,6 +10,7 @@ export async function build() {
         .map(ep => styleText("dim", `└─ ${ep}`))
         .join("\n")
     );
+    console.log();
 
     const preset = {
         entrypoints,

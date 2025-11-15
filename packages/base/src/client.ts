@@ -2,7 +2,7 @@ import { Client, type ClientOptions } from "discord.js";
 import { styleText } from "node:util";
 import { ConstaticApp } from "./app.js";
 
-export interface CustomClientOptions extends Partial<ClientOptions> {}
+export type CustomClientOptions = Partial<ClientOptions>;
 
 export function createClient(token: string, options: CustomClientOptions){
     const app = ConstaticApp.getInstance();
@@ -13,7 +13,6 @@ export function createClient(token: string, options: CustomClientOptions){
         failIfNotExists: options.failIfNotExists ?? false,
     });
     client.token = token;
-
     client.once("clientReady", async (client) => {
         console.log("%s %s %s",
             styleText("green", "●"),

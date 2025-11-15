@@ -1,10 +1,12 @@
 import { glob } from "node:fs/promises";
 
 export async function loadModules(meta: ImportMeta, modules: string[] = []) {
-    modules.push("./discord/**/*.{js,ts,jsx,tsx}");
+    const exclude = modules
+        .filter(path => path.startsWith("!"))
+        .map(path => path.slice(1));
 
     const filepaths = await Array.fromAsync(
-        glob(modules, { cwd: meta.dirname })
+        glob(modules, { cwd: meta.dirname, exclude })
     );
     const promises = filepaths.map(filepath =>
         import(meta.resolve(filepath))

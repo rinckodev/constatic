@@ -37,9 +37,11 @@ export async function bootstrap(options: BootstrapOptions) {
         await options.beforeLoad(client);
     }
 
-    const imports = await loadModules(
-        options.meta, options.modules
-    );
+    const imports = await loadModules(options.meta, [
+        "./discord/**/*.{js,ts,jsx,tsx}",
+        "!./discord/index.{js,ts,jsx,tsx}",
+        ...options.modules??[]
+    ]);
     app.intro();
     app.events.register(client);
     
