@@ -1,4 +1,5 @@
 import type { CacheType, MessageComponentInteraction, ModalSubmitInteraction } from "discord.js";
+import { styleText } from "node:util";
 import { Router } from "../../utils/router.js";
 import { BaseManager } from "../manager.js";
 import { ResponderType, type Responder } from "./responder.js";
@@ -18,7 +19,14 @@ export class ResponderManager extends BaseManager {
         const path = responder.data.customId;
         for (const type of new Set(responder.data.types)) {
             this.router.add(type, path, responder);
+            this.logs.push([
+                styleText("greenBright", `▸ ${type}`),
+                styleText("gray", `>`),
+                styleText(["blue", "underline"], path),
+                styleText("green", "✓"),
+            ].join(" "));
         }
+
     }
     public getHandler(type: ResponderType, customId: string) {
         return this.router.find(type, customId);

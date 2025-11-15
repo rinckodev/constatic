@@ -63,6 +63,7 @@ export class ConstaticApp {
         this.config.errorHandler = handler;
     }
     public intro(){
+        console.log();
         console.log("%s %s",
             styleText("blue", "★ Constatic Base"),
             styleText("dim", version),
@@ -74,5 +75,12 @@ export class ConstaticApp {
             styleText("dim", isBun ? Bun.version : process.versions.node)
         );
         console.log();
+    }
+    public printLogs(){
+        console.log([
+            ...this.commands.logs,
+            ...this.responders.logs,
+            ...this.events.logs,
+        ].join("\n"));
     }
 }

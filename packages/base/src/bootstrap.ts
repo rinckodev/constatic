@@ -42,6 +42,7 @@ export async function bootstrap(options: BootstrapOptions) {
         "!./discord/index.{js,ts,jsx,tsx}",
         ...options.modules??[]
     ]);
+    app.printLogs();
     app.intro();
     app.events.register(client);
     

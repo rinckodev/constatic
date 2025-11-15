@@ -1,7 +1,8 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, AutocompleteInteraction, Client, CommandInteraction, type ApplicationCommandOptionData, type ApplicationCommandSubCommandData, type ApplicationCommandSubGroupData, type ChatInputApplicationCommandData, type MessageApplicationCommandData, type UserApplicationCommandData } from "discord.js";
+import { styleText } from "node:util";
 import { RunBlockError } from "../../error.js";
 import { BaseManager } from "../manager.js";
-import type { Command, CommandModule, SlashCommandOptionData } from "./command.js";
+import type { Command, CommandModule, CommandType, SlashCommandOptionData } from "./command.js";
 
 type Runner = Function | null | undefined;
 
@@ -12,7 +13,7 @@ type BuildedCommandData = (
 ) & { global?: boolean };
 
 export class CommandManager extends BaseManager {
-    private get config(){
+    private get config() {
         return this.app.config.commands;
     }
     private readonly collection = new Map<string, Command<unknown, unknown, unknown>>();
@@ -22,12 +23,31 @@ export class CommandManager extends BaseManager {
         const path = `/${command.data.type}/${command.data.name}`;
         this.runners.set(path, [command.data.run]);
 
-        if (command.data.autocomplete){
+        if (command.data.autocomplete) {
             this.runners.set(
                 `${path}/autocomplete`,
                 [command.data.autocomplete]
             );
         }
+        
+        const [icon, label] = this.getTitle(<CommandType>command.data.type);
+
+        this.logs.push([
+            styleText("green", `${icon} ${label}`),
+            styleText("gray", `>`),
+            styleText(["blue", "underline"], command.data.name),
+            styleText("green", "✓"),
+        ].join(" "));
+    }
+    public getTitle(type?: CommandType) {
+        return {
+            [ApplicationCommandType.ChatInput]:
+                ["{/}", "Slash command"],
+            [ApplicationCommandType.User]:
+                ["{☰}", "User context menu"],
+            [ApplicationCommandType.Message]:
+                ["{☰}", "Message context menu"],
+        }[type ?? ApplicationCommandType.ChatInput]
     }
     public build() {
         const commands = Array.from(this.collection.values());
@@ -241,8 +261,7 @@ export class CommandManager extends BaseManager {
         }
     }
     public async register(client: Client<true>) {
-        
-        const guildList = new Set(this.app.config.commands.guilds);
+        const guildList = new Set(this.config.guilds);
 
         const commands = this.build();
 
