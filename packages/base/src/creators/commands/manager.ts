@@ -1,4 +1,6 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, type ApplicationCommandOptionData, type ApplicationCommandSubCommandData, type ApplicationCommandSubGroupData, type ChatInputApplicationCommandData, type MessageApplicationCommandData, type UserApplicationCommandData } from "discord.js";
+import { ApplicationCommandOptionType, ApplicationCommandType, AutocompleteInteraction, Client, CommandInteraction, type ApplicationCommandOptionData, type ApplicationCommandSubCommandData, type ApplicationCommandSubGroupData, type ChatInputApplicationCommandData, type MessageApplicationCommandData, type UserApplicationCommandData } from "discord.js";
+import { RunBlockError } from "../../error.js";
+import { BaseManager } from "../manager.js";
 import type { Command, CommandModule, SlashCommandOptionData } from "./command.js";
 
 type Runner = Function | null | undefined;
@@ -9,7 +11,10 @@ type BuildedCommandData = (
     | ChatInputApplicationCommandData
 ) & { global?: boolean };
 
-export class CommandManager {
+export class CommandManager extends BaseManager {
+    private get config(){
+        return this.app.config.commands;
+    }
     private readonly collection = new Map<string, Command<unknown, unknown, unknown>>();
     public readonly runners = new Map<string, Runner[]>();
     public set<T, P, R>(command: Command<T, P, R>) {
@@ -171,5 +176,90 @@ export class CommandManager {
 
         return this.runners.get(resolved)
             ?? this.runners.get(`/${type}/${commandName}`);
+    }
+    public async onAutocomplete(interaction: AutocompleteInteraction) {
+        const options = interaction.options;
+
+        const handler = this.getHandler(
+            interaction.commandType,
+            interaction.commandName,
+            "autocomplete",
+            options.getSubcommandGroup(false),
+            options.getSubcommand(false),
+            options.getFocused(true).name
+        );
+        if (!handler || !handler[0]) return;
+        const [run] = handler;
+
+        const choices = await run(interaction);
+        if (choices && Array.isArray(choices)) {
+            await interaction.respond(choices.slice(0, 25));
+        }
+    }
+    public async onCommand(interaction: CommandInteraction) {
+        if (interaction.isPrimaryEntryPointCommand()) return;
+        const { middleware, onError, onNotFound } = this.config;
+
+        let isBlock = false;
+        const block = () => isBlock = true;
+        if (middleware) await middleware(interaction, block);
+        if (isBlock) return;
+
+        const path: (string | null)[] = [interaction.commandName];
+        if (interaction.isChatInputCommand()) {
+            path.push(
+                interaction.options.getSubcommandGroup(false),
+                interaction.options.getSubcommand(false)
+            );
+        }
+
+        const handler = this.getHandler(
+            interaction.commandType, ...path
+        );
+
+        if (!handler) {
+            onNotFound?.(interaction);
+            return;
+        }
+
+        try {
+            let result;
+            for (const run of handler.filter(h => h !== null && h !== undefined)) {
+                result = await run.call({
+                    block() {
+                        throw new RunBlockError();
+                    }
+                }, interaction, result);
+            }
+        } catch (err) {
+            if (err instanceof RunBlockError) return;
+            if (onError) {
+                onError(err, interaction);
+                return;
+            }
+            throw err;
+        }
+    }
+    public async register(client: Client<true>) {
+        
+        const guildList = new Set(this.app.config.commands.guilds);
+
+        const commands = this.build();
+
+        const promises: Promise<unknown>[] = [];
+        const manager = client.application.commands;
+
+        if (guildList.size >= 1) {
+            const globalCommands = commands.filter(c => c.global);
+            const guildCommands = commands.filter(c => !c.global);
+            for (const id of guildList.values()) {
+                promises.push(manager.set(guildCommands, id))
+            }
+            promises.push(manager.set(globalCommands));
+        } else {
+            promises.push(manager.set(commands));
+        }
+
+        await Promise.all(promises);
     }
 }

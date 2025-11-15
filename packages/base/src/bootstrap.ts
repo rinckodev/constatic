@@ -1,9 +1,8 @@
 import { type Client } from "discord.js";
-import { glob } from "node:fs/promises";
 import { ConstaticApp, type BaseErrorHandler } from "./app.js";
 import { createClient, type CustomClientOptions } from "./client.js";
-import { BaseEventHandlers } from "./creators/events/handlers.js";
 import { ConstaticError } from "./error.js";
+import { loadModules } from "./modules.js";
 
 export interface BootstrapOptions extends CustomClientOptions {
     token?: string;
@@ -38,23 +37,11 @@ export async function bootstrap(options: BootstrapOptions) {
         await options.beforeLoad(client);
     }
 
-    const modules = [
-        ...options.modules ?? [],
-        "./discord/**/*.{js,ts,jsx,tsx}"
-    ];
-    const filepaths = await Array.fromAsync(
-        glob(modules, { cwd: options.meta.dirname })
+    const imports = await loadModules(
+        options.meta, options.modules
     );
-    const promises = filepaths.map(filepath => 
-        import(options.meta.resolve(filepath))
-            .then(imported => ({
-                module: imported,
-                filepath
-            }))
-    );
-    const imports = await Promise.all(promises);
-    
-    BaseEventHandlers.register(client);
+    app.intro();
+    app.events.register(client);
     
     client.login();
 

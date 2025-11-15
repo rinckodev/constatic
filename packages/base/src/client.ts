@@ -1,12 +1,12 @@
 import { Client, type ClientOptions } from "discord.js";
 import { styleText } from "node:util";
-import { BaseCommandHandlers } from "./creators/commands/handlers.js";
-import { BaseEventHandlers } from "./creators/events/handlers.js";
-import { BaseResponderHandlers } from "./creators/responders/handlers.js";
+import { ConstaticApp } from "./app.js";
 
 export interface CustomClientOptions extends Partial<ClientOptions> {}
 
 export function createClient(token: string, options: CustomClientOptions){
+    const app = ConstaticApp.getInstance();
+    
     const client = new Client({ ...options,
         intents: options.intents??[],
         partials: options.partials??[],
@@ -20,20 +20,20 @@ export function createClient(token: string, options: CustomClientOptions){
             styleText(["greenBright", "underline"], client.user.username),
             styleText("green", "application is ready!")
         );
-        await BaseCommandHandlers.register(client);
-        await BaseEventHandlers.runReady(client);
+        await app.commands.register(client);
+        await app.events.runReady(client);
     });
 
     client.on("interactionCreate", async interaction => {
         if (interaction.isAutocomplete()){
-            await BaseCommandHandlers.onAutocomplete(interaction);
+            await app.commands.onAutocomplete(interaction);
             return;
         }
         if (interaction.isCommand()){
-            await BaseCommandHandlers.onCommand(interaction);
+            await app.commands.onCommand(interaction);
             return;
         }
-        await BaseResponderHandlers.onResponder(interaction);
+        await app.responders.onResponder(interaction);
     })
     return client;
 }

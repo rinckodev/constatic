@@ -1,9 +1,15 @@
+import { version } from "#package";
 import type { Client, CommandInteraction } from "discord.js";
+import { version as djsVersion } from "discord.js";
+import { styleText } from "node:util";
 import { CommandManager } from "./creators/commands/manager.js";
 import type { EventPropData } from "./creators/events/event.js";
 import { EventManager } from "./creators/events/manager.js";
-import type { GenericResponderInteraction } from "./creators/responders/handlers.js";
-import { ResponderManager } from "./creators/responders/manager.js";
+import { ResponderManager, type GenericResponderInteraction } from "./creators/responders/manager.js";
+import { baseErrorHandler } from "./error.js";
+
+declare const Bun: { version: string };
+const isBun = typeof Bun !== "undefined";
 
 export interface BaseCommandsConfig {
     guilds?: string[];
@@ -26,7 +32,7 @@ export interface BaseEventsConfig {
 
 export type BaseErrorHandler = (error: Error | unknown, client: Client) => void;
 
-interface BaseConfig {
+export interface BaseConfig {
     commands: BaseCommandsConfig;
     events: BaseEventsConfig;
     responders: BaseRespondersConfig;
@@ -34,9 +40,9 @@ interface BaseConfig {
 }
 
 export class ConstaticApp {
-    readonly commands = new CommandManager();
-    readonly responders = new ResponderManager();
-    readonly events = new EventManager();
+    readonly commands = new CommandManager(this);
+    readonly responders = new ResponderManager(this);
+    readonly events = new EventManager(this);
     public readonly config: BaseConfig;
     private static "~instance": ConstaticApp | null = null;
     static getInstance(){
@@ -47,7 +53,7 @@ export class ConstaticApp {
             commands: {},
             responders: {},
             events: {},
-            errorHandler(){}
+            errorHandler: baseErrorHandler,
         }
     }
     public static destroy(){
@@ -55,5 +61,18 @@ export class ConstaticApp {
     }
     public setErrorHandler(handler: BaseErrorHandler){
         this.config.errorHandler = handler;
+    }
+    public intro(){
+        console.log("%s %s",
+            styleText("blue", "★ Constatic Base"),
+            styleText("dim", version),
+        );
+        console.log("%s %s | %s %s",
+            styleText("blueBright", "◌ discord.js"),
+            styleText("dim", djsVersion),
+            isBun ? "◌ Bun" : styleText("green", "⬢ Node.js"),
+            styleText("dim", isBun ? Bun.version : process.versions.node)
+        );
+        console.log();
     }
 }
