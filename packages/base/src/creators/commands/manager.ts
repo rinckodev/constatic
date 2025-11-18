@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, AutocompleteInteraction, Client, CommandInteraction, type ApplicationCommandOptionData, type ApplicationCommandSubCommandData, type ApplicationCommandSubGroupData, type ChatInputApplicationCommandData, type MessageApplicationCommandData, type UserApplicationCommandData } from "discord.js";
-import { styleText } from "node:util";
+import { format, styleText } from "node:util";
 import { RunBlockError } from "../../error.js";
 import { BaseManager } from "../manager.js";
 import type { Command, CommandModule, CommandType, SlashCommandOptionData } from "./command.js";
@@ -29,7 +29,7 @@ export class CommandManager extends BaseManager {
                 [command.data.autocomplete]
             );
         }
-        
+
         const [icon, label] = this.getTitle(<CommandType>command.data.type);
 
         this.logs.push([
@@ -268,17 +268,46 @@ export class CommandManager extends BaseManager {
         const promises: Promise<unknown>[] = [];
         const manager = client.application.commands;
 
+        const logs: [size: number, location: string][] = [];
+
+        const setGlobal = (commands: BuildedCommandData[]) => {
+            promises.push(manager.set(commands).then(
+                data => logs.push([
+                    data.size, `${client.user.username} application`,
+                ])
+            ))
+        }
+
         if (guildList.size >= 1) {
-            const globalCommands = commands.filter(c => c.global);
             const guildCommands = commands.filter(c => !c.global);
             for (const id of guildList.values()) {
-                promises.push(manager.set(guildCommands, id))
+                promises.push(manager.set(guildCommands, id)
+                    .then(commands => logs.push([
+                        commands.size, `${id} guild`
+                    ]))
+                );
             }
-            promises.push(manager.set(globalCommands));
+            const globalCommands = commands.filter(c => c.global);
+            if (globalCommands.length >= 1){
+                setGlobal(globalCommands);
+            }
         } else {
-            promises.push(manager.set(commands));
+            setGlobal(commands);
         }
 
         await Promise.all(promises);
+
+        console.log(logs
+            .map(([size, location]) => format(
+                styleText(
+                    "green",
+                    "└ %s command%s registered in %s"
+                ),
+                size,
+                size === 1 ? "" : "s",
+                styleText("greenBright", location)
+            ))
+            .join("\n")
+        )
     }
 }

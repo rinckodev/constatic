@@ -10,6 +10,7 @@ export interface BootstrapOptions extends CustomClientOptions {
     errorHandler?: BaseErrorHandler;
     beforeLoad?(client: Client<boolean>): Promise<void>;
     modules?: string[];
+    loadLogs?: boolean;
 }
 
 export async function bootstrap(options: BootstrapOptions) {
@@ -42,7 +43,9 @@ export async function bootstrap(options: BootstrapOptions) {
         "!./discord/index.{js,ts,jsx,tsx}",
         ...options.modules??[]
     ]);
-    app.printLogs();
+    if (options.loadLogs??true){
+        app.printLogs();
+    }
     app.intro();
     app.events.register(client);
     
