@@ -1,4 +1,4 @@
-import { version } from "#package";
+import { version } from "./version.js";
 import type { Client, CommandInteraction } from "discord.js";
 import { version as djsVersion } from "discord.js";
 import { styleText } from "node:util";
