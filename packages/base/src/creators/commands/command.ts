@@ -79,7 +79,7 @@ export interface GroupOptionData<Perm> extends Omit<BaseOptionData, "required"> 
 
 type CacheMode<Perm> = Perm extends false ? "cached" : CacheType;
 
-interface RunThis {
+interface CommandRunThis {
     /**
      * Blocks the flow of executions
      */
@@ -92,7 +92,7 @@ export type SubCommandModuleData<Perm, Return> =
     Omit<BaseOptionData, "required"> & {
         group?: string;
         run(
-            this: RunThis,
+            this: CommandRunThis,
             interaction: ChatInputCommandInteraction<CacheMode<Perm>>,
             data: ResolveCommandModuleData<Return>
         ): Promise<void>;
@@ -103,7 +103,7 @@ export type SubCommandGroupModuleData<Perm, Return, T> =
     Omit<BaseOptionData, "required"> & {
         options?: Omit<SubCommandOptionData<Perm>, "type">[]
         run?(
-            this: RunThis,
+            this: CommandRunThis,
             interaction: ChatInputCommandInteraction<CacheMode<Perm>>,
             data: ResolveCommandModuleData<Return>
         ): Promise<T>;
@@ -126,7 +126,7 @@ export interface CommandData<T, P, R> extends BaseAppCommandData {
     dmPermission?: P;
     type?: T;
     global?: boolean;
-    run?(this: RunThis, interaction: RunInteraction<T, P>): Promise<R>;
+    run?(this: CommandRunThis, interaction: RunInteraction<T, P>): Promise<R>;
     autocomplete?: AutocompleteRun<string | number, P>;
     options?:
     | SlashCommandPrimitiveOptionData<P>[]

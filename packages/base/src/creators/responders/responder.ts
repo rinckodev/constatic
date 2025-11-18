@@ -1,5 +1,6 @@
 import type { ButtonInteraction, CacheType, ChannelSelectMenuInteraction, MentionableSelectMenuInteraction, ModalMessageModalSubmitInteraction, ModalSubmitInteraction, RoleSelectMenuInteraction, StringSelectMenuInteraction, UserSelectMenuInteraction } from "discord.js";
-import type { InferRouteParams } from "rou3";
+import { type InferRouteParams } from "rou3";
+import type { Prettify } from "../../utils/types.js";
 
 type NotEmptyArray<T> = T extends never[] ? never : T;
 
@@ -12,11 +13,11 @@ type UniqueArray<T> =
     : T
 
 type InArray<T, X> =
-    T extends readonly [X, ...infer _Rest] ? true : 
-    T extends readonly [X] ? true : 
-    T extends readonly [infer _, ...infer Rest] 
-        ? InArray<Rest, X>
-        : false
+    T extends readonly [X, ...infer _Rest] ? true :
+    T extends readonly [X] ? true :
+    T extends readonly [infer _, ...infer Rest]
+    ? InArray<Rest, X>
+    : false
 
 export enum ResponderType {
     Button = "button",
@@ -39,10 +40,6 @@ export type ResponderInteraction<Type extends ResponderType, Cache extends Cache
     [ResponderType.Modal]: ModalSubmitInteraction<Cache>,
     [ResponderType.ModalComponent]: ModalMessageModalSubmitInteraction<Cache>,
 }[Type];
-
-type Prettify<T> = {
-    [K in keyof T]: T[K]
-} & {}
 
 type ResolveParams<Path extends string, Parsed> = Prettify<
     Parsed extends { [x: string | number | symbol]: any }
@@ -75,7 +72,5 @@ export class Responder<
 > {
     constructor(
         public readonly data: ResponderData<Path, Types, Parsed, Cache>
-    ){
-        
-    }
+    ){}
 }
