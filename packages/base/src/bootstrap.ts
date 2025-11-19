@@ -11,10 +11,13 @@ export interface BootstrapOptions extends CustomClientOptions {
     beforeLoad?(client: Client<boolean>): Promise<void>;
     modules?: string[];
     loadLogs?: boolean;
+    env?: Record<string, string|undefined>
 }
 
 export async function bootstrap(options: BootstrapOptions) {
-    const token = options.token ?? process.env.BOT_TOKEN;
+    const token = options.token 
+        ?? options.env?.BOT_TOKEN 
+        ?? process.env?.BOT_TOKEN;
 
     if (!token) throw new ConstaticError(
         "The application token was not provided!"

@@ -1,6 +1,6 @@
 {
   "name": "@constatic/base",
-  "version": "0.0.1-beta.3",
+  "version": "0.0.1-beta.4",
   "description": "",
   "license": "MIT",
   "type": "module",
@@ -18,6 +18,7 @@
   },
   "devDependencies": {
     "@constatic/config": "*",
+    "@standard-schema/spec": "^1.0.0",
     "typescript": "^5.9.3"
   },
   "exports": {
