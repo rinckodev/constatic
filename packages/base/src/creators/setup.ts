@@ -4,7 +4,7 @@ import { Command, type CommandData, type CommandType } from "./commands/command.
 import { Event, type EventData } from "./events/event.js";
 import { Responder, type ResponderData, type ResponderType } from "./responders/responder.js";
 
-interface SetupCreatorsOptions {
+export interface SetupCreatorsOptions {
     commands?: BaseCommandsConfig & {
         defaultMemberPermissions?: PermissionResolvable[];
     };

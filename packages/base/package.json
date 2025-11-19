@@ -1,6 +1,6 @@
 {
   "name": "@constatic/base",
-  "version": "0.0.1-beta.5",
+  "version": "0.0.1-beta.6",
   "description": "",
   "license": "MIT",
   "type": "module",
@@ -25,10 +25,12 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    }
+    },
+    "./tsconfig": "./tsconfig/base.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "tsconfig"
   ],
   "homepage": "https://constatic-docs.vercel.app",
   "imports": {

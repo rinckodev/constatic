@@ -1,0 +1,21 @@
+{
+    "$schema": "https://www.schemastore.org/tsconfig",
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": true,
+		"resolveJsonModule": true,
+		"strict": true,
+        
+		"lib": ["ESNext"],
+		"target": "ESNext",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"noImplicitOverride": true,
+		"noEmitOnError": true,
+	}
+}
