@@ -16,6 +16,8 @@ export function setupCreators(options: SetupCreatorsOptions = {}) {
     const app = ConstaticApp.getInstance();
     app.config.commands = { ...options.commands ??= {} };
     app.config.commands.guilds ??= [];
+    app.config.responders = { ...options.responders ??= {} };
+    app.config.events = { ...options.events ??= {} };
 
     if (process.env.GUILD_ID?.length) {
         app.config.commands.guilds.push(
