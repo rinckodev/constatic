@@ -1,3 +1,3 @@
-import { build } from "@protogun/config/build";
+import { build } from "@constatic/config/build";
 
 await build();
