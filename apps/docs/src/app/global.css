@@ -1,3 +1,48 @@
-@import 'tailwindcss';
-@import 'fumadocs-ui/css/neutral.css';
-@import 'fumadocs-ui/css/preset.css';
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+
+@custom-variant dark (&:is(.dark *));
+
+pre code {
+	font-family: "JetBrains Mono";
+}
+
+@theme {
+	--color-dc-success: hsl(146, 100%, 26%);
+	--color-dc-danger: hsl(355, 65%, 54%);
+	--color-dc-primary: hsl(235, 86%, 65%);
+	--color-dc-secondary: hsl(240, 5%, 17%);
+	--color-dc-secondary-darker: hsl(228, 7%, 14%);
+	--color-dc-border: hsl(240, 5%, 22%);
+	--color-dc-darker: hsl(240, 6%, 15%);
+	--color-dc-info: hsl(207, 100%, 42%);
+}
+
+:root {
+	--color-fd-primary: hsl(222 69% 59%) !important;
+
+	--color-fd-background: hsl(225, 12%, 8%) !important;
+
+	--color-fd-card: hsl(228 12% 9%) !important;
+	--color-fd-card-foreground: hsl(0 0% 98%) !important;
+
+	--color-fd-popover: hsl(228 12% 10%) !important;
+	--color-fd-popover-foreground: hsl(228 8% 68%);
+
+	--color-fd-secondary: hsl(225 12% 10%) !important;
+	--color-fd-secondary-foreground: hsl(0 0% 98%);
+
+	--color-fd-muted: hsl(225 12% 12%) !important;
+	--color-fd-muted-foreground: hsl(228 8% 68%);
+
+	--color-fd-accent: hsl(228 10% 16%) !important;
+	--color-fd-accent-foreground: hsl(0 0% 98%);
+
+	--destructive: hsl(0 62.8% 30.6%);
+	--destructive-foreground: hsl(0 0% 98%);
+
+	--color-fd-border: hsl(230, 7%, 15%) !important;
+	--color-fd-input: hsl(0 0% 14.9%);
+	--color-fd-ring: hsl(0 0% 83.1%);
+}
