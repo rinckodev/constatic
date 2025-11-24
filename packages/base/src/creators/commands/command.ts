@@ -184,7 +184,7 @@ export class Command<Type, Perm, Return> {
             this, data
         );
     }
-    public subcommand<Return>(data: SubCommandModuleData<Perm, Return>) {
+    public subcommand<R = Return>(data: SubCommandModuleData<Perm, R>) {
         this.modules.push({ ...data, 
             type: ApplicationCommandOptionType.Subcommand
         });

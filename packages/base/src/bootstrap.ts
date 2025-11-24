@@ -11,7 +11,7 @@ export interface BootstrapOptions extends CustomClientOptions {
     beforeLoad?(client: Client<boolean>): Promise<void>;
     modules?: string[];
     loadLogs?: boolean;
-    env?: Record<string, string|undefined>
+    env?: Record<string, any>
 }
 
 export async function bootstrap(options: BootstrapOptions) {
