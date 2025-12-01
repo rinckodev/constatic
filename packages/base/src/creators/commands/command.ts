@@ -176,7 +176,7 @@ export class Command<Type, Perm, Return> {
             this.data.name = this.data.name.slice(0, 32);
         }
     }
-    public group<ModuleReturn>(data: SubCommandGroupModuleData<Perm, Return, ModuleReturn>) {
+    public group<ModuleReturn = Return>(data: SubCommandGroupModuleData<Perm, Return, ModuleReturn>) {
         this.modules.push({ ...data, 
             type: ApplicationCommandOptionType.SubcommandGroup
         });

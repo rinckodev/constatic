@@ -1,4 +1,3 @@
-import { version } from "./version.js";
 import type { Client, CommandInteraction } from "discord.js";
 import { version as djsVersion } from "discord.js";
 import { styleText } from "node:util";
@@ -7,6 +6,7 @@ import type { EventPropData } from "./creators/events/event.js";
 import { EventManager } from "./creators/events/manager.js";
 import { ResponderManager, type GenericResponderInteraction } from "./creators/responders/manager.js";
 import { baseErrorHandler } from "./error.js";
+import { version } from "./version.js";
 
 declare const Bun: { version: string };
 const isBun = typeof Bun !== "undefined";
@@ -14,13 +14,13 @@ const isBun = typeof Bun !== "undefined";
 export interface BaseCommandsConfig {
     guilds?: string[];
     verbose?: boolean;
-    middleware?(interaction: CommandInteraction, block: ()=> void): Promise<void>;
+    middleware?(interaction: CommandInteraction, block: () => void): Promise<void>;
     onNotFound?(interaction: CommandInteraction): void;
     onError?(error: unknown, interaction: CommandInteraction): void;
 }
 
 export interface BaseRespondersConfig {
-    middleware?(interaction: GenericResponderInteraction, block: ()=> void, params: object): Promise<void>;
+    middleware?(interaction: GenericResponderInteraction, block: () => void, params: object): Promise<void>;
     onNotFound?(interaction: GenericResponderInteraction): void;
     onError?(error: unknown, interaction: GenericResponderInteraction, params: object): void;
 }
@@ -45,10 +45,10 @@ export class ConstaticApp {
     readonly events = new EventManager(this);
     public readonly config: BaseConfig;
     private static "~instance": ConstaticApp | null = null;
-    static getInstance(){
-        return this["~instance"]??=new ConstaticApp();
+    static getInstance() {
+        return this["~instance"] ??= new ConstaticApp();
     }
-    private constructor(){
+    private constructor() {
         this.config = {
             commands: {},
             responders: {},
@@ -56,13 +56,13 @@ export class ConstaticApp {
             errorHandler: baseErrorHandler,
         }
     }
-    public static destroy(){
-        this["~instance"]=null;
+    public static destroy() {
+        this["~instance"] = null;
     }
-    public setErrorHandler(handler: BaseErrorHandler){
+    public setErrorHandler(handler: BaseErrorHandler) {
         this.config.errorHandler = handler;
     }
-    public intro(){
+    public intro() {
         console.log();
         console.log("%s %s",
             styleText("blue", "★ Constatic Base"),
@@ -76,7 +76,7 @@ export class ConstaticApp {
         );
         console.log();
     }
-    public printLogs(){
+    public printLogs() {
         console.log([
             ...this.commands.logs,
             ...this.responders.logs,
