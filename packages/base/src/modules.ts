@@ -1,5 +1,10 @@
 import { glob } from "node:fs/promises";
-import path from "node:path";
+import { join } from "node:path";
+
+export interface ModuleImported {
+    module: any,
+    filepath: string;
+}
 
 export async function loadModules(meta: ImportMeta, modules: string[] = []) {
     const exclude = modules
@@ -9,12 +14,15 @@ export async function loadModules(meta: ImportMeta, modules: string[] = []) {
     const filepaths = await Array.fromAsync(
         glob(modules, { cwd: meta.dirname, exclude })
     );
-    const promises = filepaths.map(filepath =>
-        import(path.join(meta.dirname, filepath))
-            .then(imported => ({
+
+    const loadModules: ModuleImported[] = [];
+
+    for(const path of filepaths){
+        await import(join(meta.dirname, path))
+            .then(imported => loadModules.push({
                 module: imported,
-                filepath
-            }))
-    );
-    return Promise.all(promises);
+                filepath: path
+            }));
+    }
+    return loadModules;
 }
