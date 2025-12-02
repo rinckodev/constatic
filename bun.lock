@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "constaticorg",
@@ -47,14 +48,13 @@
     },
     "packages/base": {
       "name": "@constatic/base",
-      "version": "0.0.1-beta.6",
+      "version": "0.0.1-beta.12",
       "dependencies": {
         "@discordjs/core": "^2.3.0",
         "rou3": "^0.7.10",
       },
       "devDependencies": {
         "@constatic/config": "*",
-        "@standard-schema/spec": "^1.0.0",
         "typescript": "^5.9.3",
       },
       "peerDependencies": {
