@@ -1,0 +1,142 @@
+---
+title: Atualização 0.7.0 - Gerenciar emojis
+tags: [cli, updates, feats]
+description: Agora você pode gerenciar os emojis da sua aplicação de uma forma muito fácil direto pela CLI
+---
+
+Essa versão adiciona uma nova ferramenta na CLI. Agora é possível gerenciar emojis da sua aplicação de bot sem precisar ir até a aba de emojis no portal do discord.
+
+Comando para executar a CLI
+
+```bash
+npx constatic@latest
+```
+
+O discord sabe que os desenvolvedores querem um recurso bom de ícones customizados para as aplicações de bot, mas o que eles nos deram? Eu vou te mostrar:
+
+- ✅ Enviar emojis direto para aplicação sem precisar de guilda
+- ✅ 2000 espaços de emojis de aplicação
+
+Isso é muito bom, porém recebemos algo muito precário:
+- 😫 No portal só é possível fazer o upload de 1 emoji por vez <span className="text-xs text-muted-foreground">(Imagina enviar 2000 emojis um por um)</span>
+- 😫 Não existe uma opção de compartilhar emojis entre aplicações <span className="text-xs text-muted-foreground">(ferrou o esquema de bot de teste e bot de produção)</span>
+
+Com isso em mente, eu lhe apresento a nova opção da CLI: Gerenciar emojis da aplicação
+
+<ImageZoom src={"/blog/2024-11-28/cli.gif"} width={1000} height={300} alt="cli" unoptimized />
+
+## 📖 Como usar
+
+Primeiro você precisa ter registrado o token de uma aplicação sua nas configurações da CLI.
+
+<Steps>
+  <Step>
+    No menu inicial da cli, acesse `Settings`
+  </Step>
+  <Step>
+    No menu `Settings` acesse `Discord bot tokens`
+  </Step>
+  <Step>
+    Então selecione `Save new token` e cole o token da sua aplicação
+    > Não se preocupe, isso fica salvo apenas na sua máquina.
+  </Step>
+  <Step>
+    Agora você pode acessar o menu `Manage discord emojis` e selecionar sua aplicação lá
+  </Step>
+</Steps>
+
+<ImageZoom src={"/blog/2024-11-28/auth.gif"} width={1000} height={300} alt="auth" unoptimized />
+
+## ⬆️ Enviar emojis
+
+Para enviar emojis é muito simples, selecione a opção `Upload emojis` e informe um caminho relativo para uma pasta com arquivos de imagens dos emojis
+
+<Callout type="hint">
+    Abra o terminal diretamente na pasta de imagens e use "." como caminho para utilizar o mesmo diretório que o terminal está aberto.
+</Callout>
+
+O programa irá buscar por qualquer arquivo na pasta com as extensões **.png**, **.jpeg** e **.gif**
+
+> A busca acontece de maneira recursiva, isso significa que o programa pode encontrar arquivos em subpastas profundas.
+
+Depois de confirmar, você pode escolher o método de sobrescrição:
+
+<Cards className="flex flex-col md:flex-row">
+    <Card className="p-4 w-full"
+        title="✍️ Sobrescrever se existir"
+        description="Caso exista um emoji na aplicação com o mesmo nome do arquivo, ele será sobrescrito"
+    />
+    <Card className="p-4 w-full"
+        title="❔ Perguntar antes de sobrescrever"
+        description="Para cada emoji com o mesmo nome do arquivo será perguntado no terminal se você deseja sobrescrever ou não"
+    />
+    <Card className="p-4 w-full"
+        title="🔏 Pular e não sobrescrever"
+        description="Se já existir um emoji com o mesmo nome do arquivo, este arquivo não será enviado."
+    />
+</Cards>
+
+<ImageZoom src={"/blog/2024-11-28/upload.gif"} width={1000} height={300} alt="upload" unoptimized />
+
+Você pode fazer isso pelo terminal integrado do vscode também, assim você tem maior visibilidade das pastas de imagens e do caminho relativo até elas
+
+<ImageZoom src={"/blog/2024-11-28/onvscode.gif"} width={1000} height={300} alt="upload" unoptimized />
+
+Depois que este processo terminar, todos os emojis enviados já estarão disponíveis para uso!
+
+<ImageZoom src={"/blog/2024-11-28/emojistab.webp"} width={1000} height={300} alt="emojistab" />
+
+## 🗃️ Listar emojis
+
+Seleciona a opção `List emojis`, uma lista dos emojis da sua aplicação será exibida com informações como **tipo**, **id** e **nome** do emoji.
+
+<ImageZoom src={"/blog/2024-11-28/list.gif"} width={1000} height={300} alt="cli" unoptimized />
+
+## 📄 Gerar arquivo de emojis
+
+Para utilizar estes emojis no nosso bot, só precisamos do nome, id e se ele é ou não animado. 
+
+Usando a opção `Gen emoji file`, um arquivo json com todos os emojis estáticos e animados é gerado no caminho informado. Com isso você vai poder importar no seu projeto e utilizar de forma fácil.
+
+Este arquivo vai buscar todos os emojis da aplicação e criar um objeto de chave e valor, onde a chave é o **nome** do emoji e o valor é o id
+
+<Accordions>
+    <Accordion title="Veja como deve se parecer o arquivo json de emojis" id="emojis.json">
+    ```json title="emojis.json"
+    {
+        "static":{
+            "name": "id"
+            // ...
+        },
+        "animated":{
+            "name": "id"
+            // ...
+        }
+    }
+    ```
+    </Accordion>
+</Accordions>
+
+<ImageZoom src={"/blog/2024-11-28/genfile.gif"} width={1000} height={300} alt="cli" unoptimized />
+
+## 🗑️ Excluir todos os emojis
+
+Se você quiser limpar os emojis da sua aplicação, não é necessário deletar um por um.
+
+Usando a opção `Delete all emojis`, todos os emojis da sua aplicação serão deletados rapidamente. Não tenha medo de clicar, você terá que confirmar se quer deletar mesmo.
+
+Isso pode ser útil caso você queira trocar completamente seu pacote de emojis.
+
+## ⭐ Dicas
+
+Com a facilidade de gerar um arquivo de emojis, você pode criar o `emojis.json` e o `emojis.dev.json`, dessa maneira você pode criar uma lógica no seu código para usar os emojis do arquivo `emojis.dev.json` quando estiver desenvolvendo no seu bot de testes, então quando for por para produção, usar o arquivo padrão `emojis.json`.
+
+Muito prático não acha?
+
+## Conclusão
+
+Essa ferramenta acabou de ser lançada, pode haver bugs ou erros inesperados, caso encontre algum, reporte diretamente no discord [Zunder Community](http://discord.gg/tTu8dGN).
+
+---
+
+Novidades, atualizações, alterações, dicas e muito mais será postado neste blog! Se você quiser ser notificado sempre que uma nova postagem for publicada, entre no discord [Zunder Community](http://discord.gg/tTu8dGN) ou Siga [@rinckodev no twitter/x](https://x.com/rinckodev)

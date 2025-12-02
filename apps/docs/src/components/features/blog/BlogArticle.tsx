@@ -1,8 +1,8 @@
 import type { BlogPost } from "@/lib/source";
 import Link from "next/link";
 import { IoFlameSharp } from "react-icons/io5";
-import { BlogTag } from "./BlogTag";
 import { cn } from "fumadocs-ui/utils/cn";
+import { BlogTag } from "./BlogTag";
 
 interface BlogArticleProps {
     post: BlogPost,
@@ -32,7 +32,7 @@ export function BlogArticle({ post, isMostRecent, index }: BlogArticleProps) {
                     "><IoFlameSharp/> Novo</p>} 
                 </div>
                 <time className="text-xs text-muted-foreground">
-                    {new Date(post.data.date ?? post.file.name).toLocaleDateString()}
+                    {new Date(post.data.date ?? post.path).toLocaleDateString()}
                 </time>
             </div>
             {post.data.tags &&

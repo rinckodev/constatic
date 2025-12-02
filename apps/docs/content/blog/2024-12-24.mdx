@@ -1,0 +1,48 @@
+---
+title: Atualização 0.9.0 - ORMs
+tags: [cli, botbase, feats]
+description: Pequena atualizando adicionado predefinições de ORMs
+---
+
+Este recurso de selecionar ORM já estava planejado a um tempo e agora está disponível, no momento só o [Prisma](https://www.prisma.io/) está disponível, mas em breve outros serão adicionados
+
+Comando para executar a CLI
+
+```bash
+npx constatic@latest
+```
+
+## 💎 Predefinições de ORM
+
+Um **ORM (Object-Relational Mapping)** é uma ferramenta que permite interagir com **bancos de dados** relacionais usando **objetos e classes da linguagem de programação**, em vez de escrever diretamente queries SQL. Ele abstrai a comunicação com o banco, facilitando operações como criação, leitura, atualização e exclusão de dados.
+
+No caso do prisma, você pode criar um **Schema** dos seus modelos(tabelas) e utilizar com qualquer banco de dados relacional disponível. Através de métodos como **create**, **findFirst**, **findMany**, **updateMany**, entre outros, você pode facilmente manipular dados no seu banco de dados relacional.
+Escreva seu código e os modelos uma vez e se precisar trocar de banco de dados, basta alterar o provider no `schema.prisma`, tudo continuará funcionando como esperado.
+
+### ➡️ Selecionando predefinição
+
+Ao executar a CLI para gerar um projeto de bot de discord, na parte de selecionar uma predefinição de banco de dados, você pode selecionar o tipo ORM, atualmente contanto apenas com Prisma.
+
+<ImageZoom src={"/blog/2024-12-24/01.svg"} width={1000} height={300} alt="cli" unoptimized />
+
+Depois pode escolher uma predefinição de banco de dados para o ORM
+
+<ImageZoom src={"/blog/2024-12-24/02.svg"} width={1000} height={300} alt="cli" unoptimized />
+
+Estamos usando aqui um recurso do prisma que permite separar os modelos em vários arquivos prisma em uma pasta de schemas dentro da pasta prisma. [Veja o blog deles sobre isso](https://www.prisma.io/blog/organize-your-prisma-schema-with-multi-file-support)
+
+<ImageZoom src={"/blog/2024-12-24/03.svg"} width={1000} height={300} alt="cli" unoptimized />
+
+Essas predefinições vem com modelos simples, mas você pode alterar da forma que quiser, basta ler a documentação do prisma: https://www.prisma.io/docs
+
+## Usando o Prisma
+
+Após gerar o projeto com uma predefinição Prisma, você vai precisar colocar a url do seu banco de dados no arquivo `.env`, já vem com um exemplo. Com seu banco de dados ativo e a url definida corretamente na variavel `DATABASE_URL`, use o comando do prisma `npx prisma migrate dev`, isso vai definir as tabelas no banco de dados e gerar o `@prisma/client` no seu projeto.
+
+## Conclusão
+
+Estes novos recursos da base estão em um estado experimental, pode haver bugs ou erros inesperados, caso encontre algum, reporte diretamente no discord [Zunder Community](http://discord.gg/tTu8dGN).
+
+---
+
+Novidades, atualizações, alterações, dicas e muito mais será postado neste blog! Se você quiser ser notificado sempre que uma nova postagem for publicada, entre no discord [Zunder Community](http://discord.gg/tTu8dGN) ou Siga [@rinckodev no twitter/x](https://x.com/rinckodev)

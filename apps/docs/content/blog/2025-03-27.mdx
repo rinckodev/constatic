@@ -1,0 +1,254 @@
+---
+title: Atualização 1.1.0 - Mais controle e modernidade
+tags: [botbase, cli, updates, feats]
+description: Visual renovado, novas opções e possibilidades
+---
+
+Pequenas adições e algumas mudanças para melhorar o uso de certas funções chegaram nessa atualização, algumas melhorias e correções também estão presentes, confira:
+
+Comando para executar a CLI
+
+```bash
+npx constatic@latest
+```
+
+## Logs no terminal
+
+O estilo das logs foi alterado para ficar mais minimalista e simples, a lib `consola` foi removida da base, agora com um objeto próprio de logs chamado `logger`, você pode exibir logs customizadas no terminal.
+
+<ImageZoom src={"/blog/2025-03-27/logs-comparision.svg"} width={1000} height={300} alt="cli" unoptimized />
+
+Caso queira exibir logs com algumas estilizações, importe o objeto logger de `#settings`:
+
+```ts
+import { logger } from "#settings";
+
+logger.success("Comandos carregados");
+logger.error("Ocorreu um erro ao registrar os comandos");
+logger.warn("Muitos ouvintes criados");
+logger.log("Log comum");
+```
+
+## Opção verbose
+
+Depois de alguns relatos de pessoas dizendo que os comandos não estavam sendo registrados, foi adicionada a opção `verboose` para exibir uma resposta direta da API do discord para que você tenha certeza de que eles foram registrados. Assim é possível concluir que se você não está vendo os comandos do seu bot no discord, o problema está em outro lugar.
+
+```ts title="src/discord/index.ts"
+import { setupCreators } from "#base";
+
+export const { createCommand, createEvent, createResponder } = setupCreators({
+    commands: {
+        verbose: true // [!code highlight] 
+    }
+});
+```
+
+Ativando essa opção, assim que os comandos forem registrados, será exibido no terminal informações sobre eles, como `id`, `aplicação` e `data de criação` do comando:
+
+<ImageZoom src={"/blog/2025-03-27/verbose.svg"} width={1000} height={300} alt="cli" unoptimized />
+
+## Tsup compiler
+
+Agora ao gerar um novo projeto com a CLI, na parte de **Extra features** você pode escolher se deseja adicionar o [Tsup compiler](https://tsup.egoist.dev/).
+A compilação do projeto é feita muito mais rápida do que usando o `tsc` padrão. Mas não há verificação de tipos, então é recomendado usar o script `check` para verificar os tipos.
+```sh
+npm run check
+npm run build
+```
+
+Você pode pensar que isso não faz diferença ou até aumenta o tempo de build, já que o comando check basicamente é o comando de build do tsc mas sem emitir os arquivos, mas você pode usar o comando de check localmente durante o desenvolvimento, porém ao enviar o projeto para hospedagens, instruir que execute apenas o comando de build, pois a verificação de tipos já foi feita localmente, assim tendo um menor gasto de memória ram e menor tempo para iniciar.
+
+## Opções de eventos
+
+Agora você pode definir um **middleware** e um **manipulador de erros** para os eventos. Vamos começar falando do manipulador de erros:
+
+#### Manipulador de erros de eventos 
+
+Na função `setupCreators`, defina uma função que será executada quando ocorrer um erro em algum evento:
+
+```ts
+/* ... */ setupCreators({
+    events: {
+        async onError(error, event){
+            // ...
+        }
+    },
+});
+```
+
+A propriedade `event` é um objeto contendo o nome do evento e os argumentos que ele recebeu:
+
+```ts
+// ...
+if (event.name === "guildMemberUpdate"){
+    const [oldMember, newMember] = event.args;
+    // ...
+    return;
+}
+if (event.name === "guildAuditLogEntryCreate"){
+    const [entry, guild] = event.args;
+    // ...
+    return;
+}
+if (event.name === "messageCreate"){
+    const [message] = event.args;
+    // ...
+    return;
+}
+// ...
+```
+
+<Callout type="info">
+    A tipagem dos argumentos é definida automaticamente após verificar o nome do evento
+</Callout>
+
+Dessa forma você pode criar diversos manipuladores de erros diferentes para vários tipos de eventos.
+
+#### Middleware de eventos
+
+Você pode definir uma função `middleware` que será executada antes da função `run` dos eventos
+
+```ts
+/* ... */ setupCreators({
+    events: {
+        async middleware(event, block){
+            console.log("Evento", event.name, "emitido");
+        }
+    },
+});
+```
+Assim como nos comandos e responders, você pode fazer muita coisa com isso, como exibir logs padronizadas para todos os eventos executados, injetar informações adicionais nos argumentos de eventos específicos, ou até mesmo bloquear a execução com base em checagens.
+
+A função `block` funciona igual nos middlewares de comandos e eventos, mas com uma pequena adição:
+
+No caso dos eventos também é possível passar tags como argumento da função block, dessa maneira, você pode ter 3 eventos do mesmo tipo, por exemplo `messageCreate`, mas bloquear apenas aqueles com as tags previamente definidas:
+
+```ts tab="Eventos"
+createEvent({
+    name: "Morning workflow",
+    event: "messageCreate",
+    tags: ["morning"],
+    async run(message) {
+        // ...
+    },
+});
+
+createEvent({
+    name: "Night workflow",
+    event: "messageCreate",
+    tags: ["night"],
+    async run(message) {
+        // ...
+    },
+});
+
+createEvent({
+    name: "Messages Workflow",
+    event: "messageCreate",
+    async run(message) {
+        // ...
+    },
+});
+```
+```ts tab="Middleware"
+/* ... */ setupCreators({
+    events: {
+        async middleware(event, block){
+            if (event.name === "messageCreate"){
+                if (!isMorning()){
+                    block("morning");
+                    return;
+                }
+                if (!isNight()){
+                    block("night");
+                    return;
+                }
+            }
+        }
+    },
+});
+```
+```ts tab="Funções utilitárias"
+function isMorning(): boolean {
+    const currentHour = new Date().getHours();
+    return currentHour >= 6 && currentHour < 12;
+}
+function isNight(): boolean {
+    const currentHour = new Date().getHours();
+    return currentHour >= 20 || currentHour < 6;
+}
+```
+
+Você pode passar quantas tags quiser para função `block`
+
+```ts
+// ...
+block("morning", "night", "foo", "bar", "baz")
+// ...
+```
+
+Todos os eventos que conter alguma das tags passadas como argumento da função block, não serão executados.
+
+## Opções Autocomplete
+
+Foi adicionado um ajudante para funções que respondem opções `autocomplete`, agora ao invés de usar o método `respond` da interação, e limitar o array de escolhas, você pode apenas retornar o array que a base fará isso para você, veja:
+
+```ts title="command.ts"
+createCommand({
+    // ...
+    async autocomplete(interaction) {
+		const { options, guild } = interaction;
+
+        const focused = options.getFocused();
+        const documents = await db.get(guild.id);
+
+        const filtered = documents.filter(
+            data => data.address.toLowercase().includes(focused.toLowercase())
+        )
+        if (filtered.length < 1) return;
+
+        const choices = filtered.map(data => ({
+			name: data.title, value: data.url
+		}));
+        interaction.respond(choices.slice(0, 25)) // [!code --]
+        return choices; // [!code ++]
+	},
+    // ...
+})
+```
+
+<Callout type="info">
+	Você ainda pode usar o método `respond` da interação se preferir:
+	```ts
+		return choices; // [!code --]
+		interaction.respond(choices.slice(0, 25)) // [!code ++]
+	```
+</Callout>
+
+## Qualidade de vida
+
+A posição dos argumentos da função `middleware` dos `responders` foi alterada para condizer com as outras funções de `middleware`:
+
+```ts
+/* ... */ setupCreators({
+    responders: {
+        async middleware(interaction, params, block){ // [!code --]
+        async middleware(interaction, block, params){ // [!code ++]
+            // ...
+        }
+    },
+});
+```
+- Agora a versão da base quando ela foi gerada é exibida nas logs ao iniciar o bot.
+- O anti-crash que só era ativado após o bot ficar online, agora está ativo desde o início.
+- A lib `@magicyan/discord` foi atualizada para a sua versão mais recente: `1.3.1`.
+- Todas as dependencias no package.json vem com a versão exata (sem o prefixo `^`).
+- Foi adicionada na documentação, informações sobre o função `autocomplete`, opção global dos comandos e de todas as novidades deste blog.
+
+#### Conclusão
+
+Estes novos recursos da base estão em um estado experimental, pode haver bugs ou erros inesperados, caso encontre algum, reporte diretamente no discord [Zunder Community](http://discord.gg/tTu8dGN).
+
+---
+
+Novidades, atualizações, alterações, dicas e muito mais será postado neste blog! Se você quiser ser notificado sempre que uma nova postagem for publicada, entre no discord [Zunder Community](http://discord.gg/tTu8dGN) ou Siga [@rinckodev no twitter/x](https://x.com/rinckodev)

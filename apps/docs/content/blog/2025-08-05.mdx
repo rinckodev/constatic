@@ -1,0 +1,1043 @@
+---
+title: Atualização 1.4.0 - Modularização de comandos
+tags: [cli, updates, feats]
+description: Divida seus comandos gigantes em arquivos diferentes e com segurança de tipo
+---
+import icons from "@lib/icons";
+import { CliCommand } from "@/components/constatic/cli/command";
+
+Finalmente uma solução elegante e segura para o problema do código gigante quando comandos com grupos e sub comandos eram criados. A base também foi simplificada para que as próximas atualizações sejam mais práticas...
+
+Comando para executar a CLI
+
+<CliCommand packageName="constatic@latest" />
+
+# Remoções
+
+A pasta `./src/settings/` não existe mais! Abaixo está uma lista de todos os arquivos que ela abrigava e pra onde eles foram agora:
+
+## env.schema.ts
+
+Esse era o arquivo onde você podia definir o _**schema zod**_ das suas variáveis de ambiente. 
+<Accordions>
+    <Accordion title="Veja como era:">
+    ```ts title="src/settings/env.schema.ts"
+    import { z } from "zod";
+
+    export const envSchema = z.object({
+        BOT_TOKEN: z.string("Discord Bot Token is required").min(1),
+        WEBHOOK_LOGS_URL: z.url().optional()
+    });
+    ```
+    </Accordion>
+</Accordions>
+
+Agora isso foi simplificado, você terá um arquivo `./src/env.ts` (no workdir mesmo) para definir o _**schema**_ das suas variáveis de ambiente e já exportando o objeto `env` validado e transformado:
+
+```ts title="./src/env.ts"
+import { validateEnv } from "#base";
+import { z } from "zod";
+// [!code word:env]
+
+export const env = validateEnv(z.object({
+    BOT_TOKEN: z.string("Discord Bot Token is required").min(1),
+    WEBHOOK_LOGS_URL: z.url().optional()
+}));
+```
+
+## env.validate.ts
+
+Esse arquivo declarava a função `validateEnv` e era importada nos arquivos de `./src/discord/base/`. Mas agora essa função foi movida para `./src/discord/base/` de vez.
+Ela é importada no arquivo `./src/env.ts` para validar e transformar o `process.env`:
+
+```ts title="./src/env.ts"
+// [!code word:validateEnv]
+import { validateEnv } from "#base"; // [!code highlight]
+// ...
+```
+
+## logger.ts
+
+Este arquivo exportava um objeto simples com métodos de log no terminal. Foi movido também para a pasta `./src/discord/base`.
+
+Futuramente receberá novidades...
+
+## error.ts
+
+Declarava uma função para lidar com erros inesperados (famoso anti-crash, porém feito do jeito certo). Também movido para `./src/discord/base`. 
+
+## global.ts
+
+Neste arquivo eram declaradas algumas variaveis globais tipagens específicas, mas agora foi deletado para sempre!
+
+## Objeto settings
+
+Agora um dos mais importantes aqui, que o arquivo index.ts importava o arquivo `settings.json` da raiz do projeto e exportava dessa pasta, para que pudesse ser importado de qualquer lugar facilmente usando o atalho de importação `#settings`. Sem isso você precisaria importar o arquivo json usando caminhos relativos e o atributo de importação toda vez: `import settings from "../../../../settings.json" with { type: "json" }`.
+
+Depois de pensar bastante chegamos a uma conclusão. Faz mais sentido o arquivo se chamar `constants.json`, pois armazena informações estáticas que não serão alteradas em nenhum momento em tempo de execução!
+
+```properties title="./"
+  settings.json # [!code --]
+  constants.json # [!code ++]
+```
+
+E ele estará disponível globalmente com segurança de tipos! Não é necessário importar de nenhum lugar.
+
+```ts
+import { createCommand } from "#base";
+import { createContainer } from "@magicyan/discord";
+import { ApplicationCommandType } from "discord.js";
+import { settings } from "#settings"; // [!code --]
+// [!code word:constants]
+
+createCommand({
+  name: "ping",
+  description: "Responde com pong 🏓",
+  type: ApplicationCommandType.ChatInput,
+  async run(interaction){
+    const container = createContainer({
+      accentColor: settings.colors.success, // [!code --] 
+      accentColor: constants.colors.success, // [!code ++] 
+      components: ["Pong 🏓"]
+    })
+    await interaction.reply({
+      flags: ["Ephemeral", "IsComponentsV2"],
+      components: [container]
+    });
+  }
+});
+```
+
+---
+
+# Função bootstrapp
+
+Algumas propriedades da função bootstrapp foram alteradas e outras removidas.
+
+## modules
+
+A propriedade `directories` foi renomeada para `modules`, agora ao invés de especificar apenas nomes de pastas, você pode definir padrões glob:
+
+```ts
+import { bootstrap } from "#base";
+
+await bootstrap({ 
+    meta: import.meta 
+    directores: ["mycommands", "custom/myevents"], // [!code --]
+    modules: ["./**/*.mod.{ts,js}", "./mycommands/**"] // [!code ++]
+});
+```
+
+<Callout type="danger">
+    Mas um aviso importante sobre essa opção! Tome cuidado para não especificar um padrão que importe tudo do workdir (o diretório de trabalho atual, em desenvolvimento é a pasta src, e em produção é a pasta build) ou da pasta `src/discord/base`. Isso irá causar dependências circulares e por consequência, crashando o projeto.
+    Então evite algo como isso:
+
+    ```ts title="src/index.ts"
+    await bootstrap({ 
+        meta: import.meta,
+        modules: [
+            "./discord/base/**", // [!code --]
+            "./**/*", // [!code --]
+            "./", // [!code --]
+            "." // [!code --]
+        ]
+    });
+    ```
+</Callout>
+
+## whenReady
+
+Se você usava essa opção antes para executar algum código no próprio `ready` da base, precisará alterar o seu código para usar `createEvent` em favor das mudanças ditas logo abaixo:
+
+## Eventos
+
+A forma com que os eventos são registrados e executados foi alterada internamente. 
+
+- Eventos marcados como `once` são deletados da collection de eventos depois de serem executados (faz sentido pois eles só serão executados uma única vez mesmo).
+- Qualquer evento `ready` é automaticamente definido como `once`, pois só será executado uma vez quando o bot iniciar.
+- Todos os eventos `ready` serão executados apenas depois das execuções do evento `ready` da base (que inclui o registro dos comandos).
+
+# Autocomplete
+
+Agora você pode definir uma função autocomplete diretamente na definição da opção! Isso significa que se você tiver muitos grupos e sub comandos, não precisa mais usar vários cases em switchs para descobrir qual opção autocomplete está sendo emitida.
+
+Vamos ver um exemplo simples:
+
+```ts title="mycommand.ts"
+import { createCommand } from "#base";
+import { ytclient } from "#mylib";
+import { ApplicationCommandOptionType } from "discord.js";
+
+createCommand({
+    name: "pesquisar",
+    description: "Comando de pesquisa",
+    options: [
+       {
+          name: "video",
+          description: "Digite algo para pesquisar",
+          type: ApplicationCommandOptionType.String,
+          autocomplete: true // [!code highlight]
+       }
+    ],
+    async autocomplete({ options }){ // [!code highlight]
+        const query = options.getFocused(); // [!code highlight]
+
+        const results = await ytclient // [!code highlight]
+            .search(query, "videos"); // [!code highlight]
+
+        return results.map(video => ({ // [!code highlight]
+            name: `${video.channel.name} | ${video.title}`, // [!code highlight]
+            value: video.id // [!code highlight]
+        })); // [!code highlight]
+    }, // [!code highlight]
+    async run(interaction){
+
+        const videoId = interaction.options.getString("video");
+        
+        // ...
+    }
+});
+```
+
+Acima respondemos uma única opção autocomplete usando a função `autocomplete` no objeto inteiro do comando. Mas agora podemos colocar essa função diretamente na opção:
+
+```ts title="mycommand.ts"
+import { createCommand } from "#base";
+import { ytclient } from "#mylib";
+import { ApplicationCommandOptionType } from "discord.js";
+
+createCommand({
+    name: "pesquisar",
+    description: "Comando de pesquisa",
+    options: [
+       {
+          name: "video",
+          description: "Digite algo para pesquisar",
+          type: ApplicationCommandOptionType.String,
+          autocomplete: true, // [!code --]
+          async autocomplete({ options }){ // [!code ++]
+            const query = options.getFocused(); // [!code ++]
+
+            const results = await ytclient // [!code ++]
+                .search(query, "videos"); // [!code ++]
+
+            return results.map(video => ({ // [!code ++]
+                name: `${video.channel.name} | ${video.title}`, // [!code ++]
+                value: video.id // [!code ++]
+            })); // [!code ++]
+        }, // [!code ++]
+       }
+    ],
+    async autocomplete({ options }){ /* ... */} // [!code --]
+    async run(interaction){
+
+        const videoId = interaction.options.getString("video");
+        
+        // ...
+    }
+});
+```
+
+Vendo um exemplo com uma única opção, não parece ser um recurso tão útil. Mas considere essa situação:
+
+Você criou um comando com vários grupos e sub comandos e muitos deles tem opções autocomplete, o seu handler ficaria parecido com isso:
+
+```ts title="mycommand.ts"
+import { createCommand } from "#base";
+import { ApplicationCommandOptionType } from "discord.js";
+
+createCommand({
+    name: "supercommand",
+    description: "Super comando",
+    options: [
+       {/* ... */},
+       {/* ... */},
+       {/* ... */},
+       {/* ... */},
+       {/* ... */},
+    ],
+    async autocomplete({ options }){
+      const group = options.getSubcommandGroup();
+      const subcommand = options.getSubcommand();
+
+      switch(group){
+        case "a":{
+          switch(subcommand){
+            case "foo": {
+              // ...
+            }
+            case "bar": {
+              // ...
+            }
+            case "baz": {
+              // ...
+            }
+          }
+          return;
+        }
+        case "b":{
+          switch(subcommand){
+            case "foo": {
+              // ...
+            }
+            case "bar": {
+              // ...
+            }
+            case "baz": {
+              // ...
+            }
+          }
+          return;
+        }
+        case "c":{
+          switch(subcommand){
+            case "foo": {
+              // ...
+            }
+            case "bar": {
+              // ...
+            }
+            case "baz": {
+              // ...
+            }
+          }
+          return;
+        }
+        case "d": //...
+        case "e": //...
+        // ...
+      }
+    },
+    async run(interaction){
+      const group = options.getSubcommandGroup();
+      const subcommand = options.getSubcommand();
+
+      switch(group){
+        case "a": // ...
+        // ...
+        // ...
+        // ...
+        // ...
+        // ...
+      }
+    }
+});
+```
+
+Podendo definir a função `autocomplete` diretamente na opção, não é necessário verificar qual grupo e sub comando ela pertence, o handler da base fará isso pra você!
+
+```ts title="mycommand.ts"
+import { createCommand } from "#base";
+import { ytclient } from "#mylib";
+import { ApplicationCommandOptionType } from "discord.js";
+
+createCommand({
+    name: "gerenciar",
+    description: "Comando de gerenciamento",
+    options: [
+       {
+          name: "ranks",
+          description: "Gerencie os ranks do servidor",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "rank",
+              description: "Selecione o rank que deseja",
+              type: ApplicationCommandOptionType.String,
+              async autocomplete({ options }){
+                //...
+              }
+            }
+          ]
+       },
+       {
+          name: "paineis",
+          description: "Gerencie os paineis do servidor",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "painel",
+              description: "Selecione o painel que deseja",
+              type: ApplicationCommandOptionType.String,
+              async autocomplete({ options }){
+                //...
+              }
+            }
+          ]
+       },
+       {
+          name: "webhooks",
+          description: "Gerencie os webhooks do bot",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "webhook",
+              description: "Selecione o webhook criado pelo bot",
+              type: ApplicationCommandOptionType.String,
+              async autocomplete({ options }){bun
+                //...
+              }
+            }
+          ]
+       }
+    ],
+    // ...
+});
+```
+
+# Modularização de comandos
+
+Agora você pode separar os grupos e sub comandos em arquivos diferentes, com tipagem segura e inferida automaticamente! Imagine um comando gigante como este:
+
+```ts
+import { createCommand } from "#base";
+import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
+
+createCommand({
+    name: "gerenciar",
+    description: "Comando de gerenciamento",
+    type: ApplicationCommandType.ChatInput,
+    options: [
+        {
+            name: "cargos",
+            description: "Gerenciar cargos",
+            type: ApplicationCommandOptionType.SubcommandGroup,
+            options: [
+                {
+                    name: "criar",
+                    description: "Criar um novo cargo",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        // ...
+                    ]
+                },
+                {
+                    name: "editar",
+                    description: "Editar um cargo",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        // ...
+                    ]
+                },
+                {
+                    name: "permissões",
+                    description: "Alterar permissões de um cargo",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        // ...
+                    ]
+                },
+                {
+                    name: "deletar",
+                    description: "Deletar um cargo",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        // ...
+                    ]
+                },
+                {
+                    name: "atribuir",
+                    description: "Atribuir um cargo a um membro",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        // ...
+                    ]
+                },
+            ]
+        },
+        {
+            name: "canais",
+            description: "Gerenciar canais",
+            type: ApplicationCommandOptionType.SubcommandGroup,
+            options: [
+                {
+                    name: "criar",
+                    description: "Criar um novo canal",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        // ...
+                    ]
+                },
+                {
+                    name: "editar",
+                    description: "Editar um canal",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        // ...
+                    ]
+                },
+                {
+                    name: "permissões",
+                    description: "Alterar permissões de um canal",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        // ...
+                    ]
+                },
+                {
+                    name: "deletar",
+                    description: "Deletar um canal",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        // ...
+                    ]
+                },
+                {
+                    name: "mover",
+                    description: "Mover um canal de categoria",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        // ...
+                    ]
+                },
+            ]
+        }
+    ],
+    async run(interaction) {
+        const { options } = interaction;
+
+        const group = options.getSubcommandGroup();
+        const subcommand = options.getSubcommand();
+
+        switch (group) {
+            case "cargos": {
+
+                switch (subcommand) {
+                    case "criar": {
+                        // ... +20 linhas de código 
+                        return;
+                    }
+                    case "editar": {
+                        // ... +16 linhas de código 
+                        return;
+                    }
+                    case "permissões": {
+                        // ... +18 linhas de código 
+                        return;
+                    }
+                    case "deletar": {
+                        // ... +10 linhas de código 
+                        return;
+                    }
+                    case "atribuir": {
+                        // ... +22 linhas de código 
+                        return;
+                    }
+                }
+
+                return;
+            }
+            case "canais": {
+                switch (subcommand) {
+                    case "criar": {
+                        // ... +34 linhas de código 
+                        return;
+                    }
+                    case "editar": {
+                        // ... +28 linhas de código
+                        return;
+                    }
+                    case "permissões": {
+                        // ... +45 linhas de código
+                        return;
+                    }
+                    case "deletar": {
+                        // ... +25 linhas de código
+                        return;
+                    }
+                    case "mover": {
+                        // ... +21 linhas de código
+                        return;
+                    }
+                }
+                return;
+            }
+        }
+    }
+});
+```
+
+Para resumir, no servidor você veria os comandos assim:
+
+- /gerenciar cargos criar
+- /gerenciar cargos editar
+- /gerenciar cargos permissões
+- /gerenciar cargos deletar
+- /gerenciar cargos atribuir
+- /gerenciar canais criar
+- /gerenciar canais editar
+- /gerenciar canais permissões
+- /gerenciar canais deletar
+- /gerenciar canais mover
+
+Mas no código... Um único arquivo poderia ultrapassar 1000 linhas de código só pra definir vários sub comandos. Agora com esse novo recurso, você pode dividir o código dos seus sub comandos em arquivos diferentes, com segurança de tipo.
+
+Para começar crie uma pasta exclusiva para o seu comando e crie um arquivo chamado `command.ts` nela:
+
+```json
+  src/
+  ├── discord/
+  │   └── commands/
+  │       ├── manage/ // [!code highlight]
+  │       │   └── command.ts // [!code highlight]
+  │       ├── ping.ts
+  │       └── counter.ts
+  ├── functions/ ...
+  └── index.ts
+```
+
+Neste arquivo `command.ts` declare o seu comando e já exportando como padrão:
+
+```ts title="command.ts"
+import { createCommand } from "#base";
+import { ApplicationCommandType } from "discord.js";
+
+export default createCommand({
+    name: "gerenciar",
+    description: "Comando de gerenciamento",
+    type: ApplicationCommandType.ChatInput,
+    defaultMemberPermissions: ["Administrator"]
+});
+```
+
+<Callout type="info">
+  A partir daqui, os exemplos são relativos a pasta de comandos
+</Callout>
+
+Crie pastas para cada grupo e o arquivo `group.ts` em cada pasta:
+
+```json
+commands/
+ ├── manage/ 
+ │   ├── channels/ // [!code highlight]
+ │   │   └── group.ts // [!code highlight]
+ │   ├── roles/ // [!code highlight]
+ │   │   └── group.ts // [!code highlight]
+ │   └── command.ts
+ ├── ping.ts
+ └── counter.ts
+```
+
+Então em cada arquivo de grupo, importe o comando exportado em `command.ts` e use o método `.group()` para declarar que o seu comando tem um grupo e já exportando isso também:
+
+```ts tab="Cargos" title="roles/group.ts"
+import command from "../command.js";
+
+export default command.group({
+    name: "cargos",
+    description: "Gerenciar cargos",
+});
+```
+```ts tab="Canais" title="channels/group.ts"
+import command from "../command.js";
+
+export default command.group({
+    name: "canais",
+    description: "Gerenciar canais",
+});
+```
+
+Então agora basta criar um arquivo para cada sub comando do grupo em suas respectivas pastas:
+
+```json
+commands/
+ ├── manage/ 
+ │   ├── channels/
+ │   │   ├── create.ts // [!code highlight]
+ │   │   ├── edit.ts // [!code highlight]
+ │   │   ├── permissions.ts // [!code highlight]
+ │   │   ├── delete.ts // [!code highlight]
+ │   │   ├── move.ts // [!code highlight]
+ │   │   └── group.ts
+ │   ├── roles/
+ │   │   ├── create.ts // [!code highlight]
+ │   │   ├── edit.ts // [!code highlight]
+ │   │   ├── permissions.ts // [!code highlight]
+ │   │   ├── delete.ts // [!code highlight]
+ │   │   ├── assign.ts // [!code highlight]
+ │   │   └── group.ts
+ │   └── command.ts
+ ├── ping.ts
+ └── counter.ts
+```
+
+Em cada arquivo você pode importar o grupo do arquivo `group.ts` e definir o sub comando e sua execução:
+
+```ts title="channels/create.ts"
+import group from "./group.js";
+import { ApplicationCommandOptionType } from "discord.js";
+
+export default group.subcommand({
+    name: "criar",
+    description: "Criar um novo canal",
+    options: [
+      {
+        name: "nome",
+        description: "Nome do canal",
+        type: ApplicationCommandOptionType.String,
+        required: true
+      }
+    ],
+    async run(interaction){
+      const { options } = interaction;
+
+      const name = options.getString("nome", true);
+
+      // ...
+    }
+});
+```
+
+Acima temos o exemplo de apenas um sub comando, que é o `/gerenciar canais criar`, mas você pode criar para todos os outros, apenas seguindo a mesma lógica desse!
+
+## Utilidade real
+
+<Callout type="warn">
+  Para os mais críticos que vão dizer que já faziam algo assim antes porém usando funções, saibam de uma coisa: Este projeto é focado em tipagem inferida! Isso significa que as estruturas como `createCommand`, `createResponder` e `createEvent`, são usadas para que você utilizador, não precise ficar escrevendo tipagens o tempo todo.
+
+  E este recurso de modularização infere a tipagem do seu comando automaticamente conforme as opções que você definiu nele! 
+</Callout>
+
+Se antes você fazia algo como isso:
+
+```ts title="create.ts"
+export async function channelCreateSubcommand(
+  interaction: ChatInputCommandInteraction<"cached">
+){
+  // ...
+}
+```
+
+E no seu comando:
+
+```ts
+import { createCommand } from "#base";
+import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
+
+import { channelCreateSubcommand } from "./create.js";
+import { channelEditSubcommand } from "./edit.js";
+import { channelDeleteSubcommand } from "./delete.js";
+// ...
+
+createCommand({
+    name: "canais",
+    description: "Gerenciar canais",
+    type: ApplicationCommandType.ChatInput,
+    options: [
+        {
+            name: "criar",
+            type: ApplicationCommandOptionType.Subcommand,
+            // ...
+        },
+        {
+            name: "editar",
+            type: ApplicationCommandOptionType.Subcommand,
+            // ...
+        },
+        // ...
+    ],
+    async run(interaction) {
+        const { options } = interaction;
+        const subcommand = options.getSubcommand();
+
+        switch (subcommand) {
+            case "criar":{
+                channelCreateSubcommand(interaction);
+                return;
+            }
+            case "editar":{
+                channelEditSubcommand(interaction);
+                return;
+            }
+            case "deletar":{
+                channelDeleteSubcommand(interaction);
+                return;
+            }
+            // ...
+        }
+    }
+});
+```
+
+O seu código ainda podia ficar grande e desorganizado, mas com esse novo recurso a tipagem é inferida automaticamente.
+
+Ao definir `dmPermission` como `true`, o tipo da interação automaticamente:
+
+```ts
+// ./command.ts
+export default createCommand({
+    name: "gerenciar",
+    description: "Comando de gerenciamento",
+    type: ApplicationCommandType.ChatInput,
+    dmPermission: true // [!code ++]
+});
+
+// ./channels/create.ts
+export default group.subcommand({
+    name: "criar",
+    description: "Criar um novo canal",
+    options: [
+      // ..
+    ],
+    async run(interaction){
+      interaction.guild // "Provavelmente null" // [!code highlight]
+      interaction.member // "Provavelmente null" // [!code highlight]
+      // ...
+    }
+});
+```
+
+Isso se reflete na função autocomplete das opções:
+
+```ts
+// ./channels/create.ts
+export default group.subcommand({
+    name: "criar",
+    description: "Criar um novo canal",
+    options: [
+      // ...
+      {
+        name: "rank",
+        description: "Vincular um rank a este canal",
+        async autocomplete(interaction){
+          interaction.guild // "Provavelmente null" // [!code highlight]
+          interaction.member // "Provavelmente null" // [!code highlight]
+          // ...
+        }
+      }
+    ],
+    async run(interaction){
+      interaction.guild // "Provavelmente null" // [!code highlight]
+      interaction.member // "Provavelmente null" // [!code highlight]
+      // ...
+    }
+});
+```
+
+## Transporte de dados
+
+Outra coisa que foi pensado pra esse recurso também é o transporte de dados. Antes usando as estruturas condicionais como **switch**, podíamos obter dados uma única vez que seriam usados em vários sub comandos. Considere esse exemplo:
+
+```ts
+createCommand({
+  // ...
+  async run(interaction) {
+    const { options, guild } = interaction;
+
+    const group = options.getSubcommandGroup();
+    const subcommand = options.getSubcommand();
+
+    switch (group) {
+      case "cargos": {
+        const rolesDocument = await db.roles.get(guild.id); // [!code ++]
+        switch (subcommand) {
+            case "criar": {
+                // ... 
+                rolesDocument.set(/* .. */) // [!code highlight]
+                await rolesDocument.save() // [!code highlight]
+                return;
+            }
+            case "deletar": {
+                // ... 
+                rolesDocument.delete(/* .. */) // [!code highlight]
+                await rolesDocument.save() // [!code highlight]
+                return;
+            }
+            // ...
+          }
+        return;
+      }
+      case "canais": {
+        const channelsDocument = await db.channels.get(guild.id); // [!code ++]
+        switch (subcommand) {
+          case "criar": {
+              // ... 
+              channelsDocument.set(/* .. */) // [!code highlight]
+              await channelsDocument.save() // [!code highlight]
+              return;
+          }
+          case "deletar": {
+              // ... 
+              channelsDocument.delete(/* .. */) // [!code highlight]
+              await channelsDocument.save() // [!code highlight]
+              return;
+          }
+          // ...
+        }
+        return;
+      }
+    }
+  }
+});
+```
+
+Agora com a modularização, se você precisar buscar alguma informação que será usada em todos os sub comandos, para que você não precise executar o mesmo código em cada arquivo, basta usar o `run` do grupo e retornar os dados que você precisar:
+
+```ts tab="Cargos" title="roles/group.ts"
+import command from "../command.js";
+
+export default command.group({
+    name: "cargos",
+    description: "Gerenciar cargos",
+    async run({ guild }){
+      const document = await db.roles.get(guild.id);
+      return document; // [!code ++]
+    }
+});
+```
+```ts tab="Canais" title="channels/group.ts"
+import command from "../command.js";
+
+export default command.group({
+    name: "canais",
+    description: "Gerenciar canais",
+    async run({ guild }){
+      const document = await db.channels.get(guild.id);
+      return document; // [!code ++]
+    }
+});
+```
+
+Então o segundo argumento do seu sub comando será o retorno do `run` do grupo:
+
+```ts tab="Cargos" title="roles/create.ts"
+import group from "./group.js";
+import { ApplicationCommandOptionType } from "discord.js";
+
+export default group.subcommand({
+    name: "criar",
+    description: "Criar um novo cargo",
+    options: [
+      // ...
+    ],
+    // [!code word:document]
+    async run(interaction, document){
+      document // RolesDocument
+      // ...
+    }
+});
+```
+```ts tab="Canais" title="channels/create.ts"
+import group from "./group.js";
+import { ApplicationCommandOptionType } from "discord.js";
+
+export default group.subcommand({
+    name: "criar",
+    description: "Criar um novo canal",
+    options: [
+      // ...
+    ],
+    // [!code word:document]
+    async run(interaction, document){
+      document // ChannelsDocument
+      // ...
+    }
+});
+```
+
+## Fluxo de execução
+
+Desde a declaração do comando até o sub comando, é possível executar códigos entre eles e cada run recebe o retorno do anterior, com excessão do primeiro.
+
+```ts
+import { createCommand } from "#base";
+
+const command = createCommand({
+    name: "foo",
+    async run(){
+        console.log("Comando foo");
+        return "foo";
+    }
+})
+
+const group = command.group({
+    name: "bar",
+    async run(_, data){
+        console.log("Grupo bar");
+        console.log("Recebe", data); // "Recebe foo"
+        return "bar";
+    }
+});
+
+group.subcommand({
+    name: "baz",
+    async run(_, data) {
+        console.log("Sub comando baz do grupo bar");
+        console.log("Recebe", data); // "Recebe bar"
+    },
+});
+```
+
+O `run` do comando é exeutado primeiro, então o retorno dele é passado como segundo argumento para o grupo. O `run` do grupo é executado e o seu retorno é passado para o sub comando:
+
+```json
+Comando
+ └─ "foo" ─> Grupo
+                └─ "bar" ─> Sub command
+
+``` 
+
+<Callout type="warn">
+  Então fique atento ao responder interações entre as funções `run`, pois se você responder a interação no `run` do comando e responder novamente no `run` do sub comando, você receberá um erro do discord! 
+</Callout>
+
+Se você não precisar de nenhuma execução além da do sub comando, não é obrigatório definir funções `run` no comando e no grupo:
+
+```ts
+import { createCommand } from "#base";
+
+const command = createCommand({
+    name: "foo",
+})
+
+const group = command.group({
+    name: "bar",
+});
+
+group.subcommand({
+    name: "baz",
+    async run(interaction) {
+      await interaction.reply("Executando: /foo bar baz");
+      // ...
+    },
+});
+```
+
+<Callout type="warn">
+  Uma última consideração sobre o objeto que o `createCommand` retorna: Você pode definir tanto grupos, quanto sub comandos para o comando:
+  
+   ```ts
+    import { createCommand } from "#base";
+    // [!code word:command]
+
+    const command = createCommand({
+        name: "gerenciar",
+    })
+
+    const group = command.group({
+        name: "canais",
+        options: [
+          {
+            name: "criar",
+            // ...
+          },
+          // ...
+        ]
+    });
+
+    command.subcommand({
+        name: "painel",
+    });
+    ```
+
+    - /gerenciar canais criar
+    - /gerenciar painel
+</Callout>
+
+# Planos futuros
+
+Mais coisas estão sendo estudadas para serem implementadas aos comandos na base, este recurso é só uma introdução e um preparo para as próximas adições...
+
+---
+
+Novidades, atualizações, alterações, dicas e muito mais será postado neste blog! Se você quiser ser notificado sempre que uma nova postagem for publicada, entre no discord [Zunder Community](http://discord.gg/tTu8dGN) ou Siga [@rinckodev no twitter/x](https://x.com/rinckodev)

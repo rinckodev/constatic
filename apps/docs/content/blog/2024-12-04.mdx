@@ -1,0 +1,249 @@
+---
+title: Atualização 0.8.0 - Novo visual e idiomas
+tags: [cli, botbase, updates, feats]
+description: Visual renovado, novo sistema de multi idioma na CLI e manipuladores de erro na base de bots
+---
+
+Essa versão altera o visual da CLI, melhorando em alguns pontos a experiência de utilização e a forma de visualizar as informações
+
+Comando para executar a CLI
+
+```bash
+npx constatic@latest
+```
+
+## 🌐 Sistema multi idioma
+
+Agora nas configurações da CLI, é possível alterar o idioma!
+
+<ImageZoom src={"/blog/2024-12-04/lang.gif"} width={1000} height={300} alt="cli" unoptimized />
+
+> O programa tentará identificar a idioma do seu sistema ao utilizar a CLI pela primeira vez
+
+## 🎨 Novo visual
+
+A CLI teve o seu estilo alterado, mas não é como se ela estivesse completamente diferente, apenas pequenos detalhes mudaram, se você utiliza com frequência já pode ter notado.
+
+### 📚 Mudança de bibliotecas
+
+O pacote de componentes interativos de CLI `@clack/prompts` foi substituído pelo `@inquirer/prompts`. O pacote clack era muito bonito e moderno, contudo, faltavam alguns recursos que deixariam a CLI muito mais intuitíva, então foi decidido que inquirer seria a melhor opção.
+
+<ImageZoom src={"/blog/2024-12-04/mainmenu.svg"} width={1000} height={300} alt="cli" unoptimized />
+
+### 🗒️ Listagem em tabela
+
+A forma como dados listados são exibidos ficou um pouco mais interesssante na forma de uma tabela mais compacta e moderna
+
+<ImageZoom src={"/blog/2024-12-04/list.svg"} width={1000} height={300} alt="cli" unoptimized />
+
+### 🗃️ Multi seleção de itens
+
+Alguns menus onde só era possível selecionar um item, ou selecionar apenas todos os itens de uma vez, agora permite que o usuário marque quais itens ele quer selecionar
+
+<ImageZoom src={"/blog/2024-12-04/select.svg"} width={1000} height={300} alt="cli" unoptimized />
+
+### ⌨️ Verificações de inputs
+
+Alguns inputs agora tem uma verificação de acordo com a sua função, como por exemplo o input de caminho para uma pasta de arquivos de imagem no menu de emojis, o programa irá verificar se o caminho existe antes que você possa enviar.
+
+<ImageZoom src={"/blog/2024-12-04/check.svg"} width={1000} height={300} alt="cli" unoptimized />
+
+### ❇️ Alteração de simbolos
+
+Alguns emojis foram substituídos por caracteres de ícones
+
+<ImageZoom src={"/blog/2024-12-04/options.svg"} width={1000} height={300} alt="cli" unoptimized />
+
+## 🤖 Base de Bot de discord
+
+A base recebeu pequenas adições para se encaixar com a atualização passada da ferramenta de gerenciar emojis da aplicação
+
+### 📑 Arquivos de configurações
+
+Adicionado os arquivos `emojis.json` e `emojis.dev.json` na configuração de **fileNesting** no arquivo de configurações do vscode.
+
+```json title=".vscode/settings.json"
+{
+  // ...
+  "explorer.fileNesting.patterns": {
+    ".env": ".env*",
+    "settings.json": "emojis.json, emojis.dev.json", //[!code ++]
+    "package.json": "*lock.json, *.lock, *lock.yaml, *.lockb, tsconfig.json, .eslintrc.json, .gitignore, .discloudignore, biome.json, .nvmrc"
+  }
+  // ...
+}
+```
+
+Foi adicionado também um atalho de caminho para o arquivo `emojis.json` no `tsconfig.json`
+
+```json title="tsconfig.json"
+{
+	"compilerOptions": {
+        //...
+		"baseUrl": "./src",
+		"paths": {
+			"#database": ["./database/index.ts"],
+			"#base": ["./discord/base/index.ts"],
+			"#functions": ["./functions/index.ts"],
+			"#menus": ["./menus/index.ts"],
+			"#settings": ["./settings/index.ts"],
+			"#tools": ["./tools/index.ts"],
+			"#server": ["./server/index.ts"],
+			"#lib": ["./lib/index.ts"],
+			"#emojis": ["../emojis.json"], // [!code ++]
+			"@discordjs/builders/*": ["ignore"]
+		}
+	},
+  // ...
+}
+```
+
+### ▶️ BootstrapApp
+
+Agora é muito fácil definir um **Manipulador de erros** para [Comandos](/docs/discord/commands) e [Responders](/docs/discord/responders).
+
+```ts title="src/index.ts"
+import { bootstrapApp } from "#base";
+
+await bootstrapApp({ 
+    workdir: import.meta.dirname,
+    commands: {
+        onError(err, interaction){ } // [!code ++]
+    },
+    responders: {
+        onError(err, interaction){ } // [!code ++]
+    }
+});
+```
+
+Você pode criar uma mensagem padrão para qualquer erro inesperado:
+
+```ts title="src/index.ts"
+import { bootstrapApp } from "#base";
+import { log } from "#settings";
+import { InteractionReplyOptions } from "discord.js";
+
+await bootstrapApp({ 
+    workdir: import.meta.dirname,
+    commands: {
+        onError(err, interaction){ // [!code highlight]
+            log.error(err); // [!code highlight]
+            
+            const options = { // [!code highlight]
+                content: "Ocorreu um erro inesperado!" // [!code highlight]
+            } satisfies InteractionReplyOptions; // [!code highlight]
+            
+            interaction.reply(options) // [!code highlight]
+            .catch(() => interaction.followUp(options)); // [!code highlight]
+        } // [!code highlight]
+    }
+});
+```
+
+É recomendado criar uma função separada para melhor organização:
+
+```ts title="src/functions/handlers/errors.ts"
+import { log } from "#settings";
+import { CommandInteraction, InteractionReplyOptions } from "discord.js";
+
+export function commandErrorHandler(err: unknown, interaction: CommandInteraction){
+    log.error(err); 
+            
+    const options = { 
+        content: "Ocorreu um erro inesperado!"
+    } satisfies InteractionReplyOptions; 
+    
+    interaction.reply(options) 
+    .catch(() => interaction.followUp(options)); 
+}
+```
+```ts title="src/index.ts"
+import { bootstrapApp } from "#base";
+import { commandErrorHandler } from "#functions"
+
+await bootstrapApp({ 
+    workdir: import.meta.dirname,
+    commands: {
+        onError: commandErrorHandler
+    }
+});
+```
+
+<Callout type="hint">
+    Você pode lançar erros personalizados dentro dos comandos e responders de uma forma padronizada e tratar todos através do handler de erros
+</Callout>
+
+<Tabs items={["Comando", "Manipulador de erro"]}>
+  <Tab value="Comando" >
+  ```ts title="src/discord/commands/ping.ts"
+  import { Command } from "#base";
+  import { CustomError } from "#functions"; // [!code highlight]
+  import { ApplicationCommandType } from "discord.js";
+
+  new Command({
+    name: "ping",
+    description: "Replies with pong 🏓",
+    type: ApplicationCommandType.ChatInput,
+    run(interaction){
+      const { member } = interaction;
+      if (!member.permissions.has("Administrator")){ // [!code highlight]
+        throw new CustomError({ // [!code highlight]
+          message: "Você não tem permissão para fazer isso!", // [!code highlight]
+        }); // [!code highlight]
+      } // [!code highlight]
+      // Resto do comando ...
+    }
+  });
+  ```
+  </Tab>
+  <Tab value="Manipulador de erro" >
+  ```ts title="src/functions/handlers/error.ts"
+  import { log } from "#settings";
+  import { CommandInteraction, InteractionReplyOptions } from "discord.js";
+
+  export class CustomError extends Error { // [!code highlight]
+      constructor({ message }: { message: string }) { // [!code highlight]
+        super(message); // [!code highlight]
+        this.name = this.constructor.name; // [!code highlight]
+        this.message = message; // [!code highlight]
+      } // [!code highlight]
+  } // [!code highlight]
+
+  export function commandErrorHandler(err: unknown, interaction: CommandInteraction){
+      const send = (options: object) => 
+          interaction.reply(options) 
+          .catch(() => 
+              interaction.followUp(options)
+          );
+
+      if (err instanceof CustomError){ // [!code highlight]
+          const options = { 
+              flags: ["Ephemeral"],
+              content: `>>> Erro no sistema principal: ${err.message}` // [!code highlight]
+          } satisfies InteractionReplyOptions; 
+          
+          send(options);
+          return; // [!code highlight]
+      }
+      log.error(err); 
+              
+      const options = { 
+          flags: ["Ephemeral"],
+          content: "Ocorreu um erro inesperado!"
+      } satisfies InteractionReplyOptions; 
+      
+      send(options);
+  }
+  ```
+  </Tab>
+</Tabs>
+
+Funciona da mesma forma tanto para os Comandos, quanto para os Responders. Agora depende de você criar seus próprios manipuladores de erro do jeito que você achar melhor.
+
+## Conclusão
+
+Estes novos recursos da base estão em um estado experimental, pode haver bugs ou erros inesperados, caso encontre algum, reporte diretamente no discord [Zunder Community](http://discord.gg/tTu8dGN).
+
+---
+
+Novidades, atualizações, alterações, dicas e muito mais será postado neste blog! Se você quiser ser notificado sempre que uma nova postagem for publicada, entre no discord [Zunder Community](http://discord.gg/tTu8dGN) ou Siga [@rinckodev no twitter/x](https://x.com/rinckodev)

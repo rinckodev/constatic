@@ -1,5 +1,6 @@
 import { rehypeCodeDefaultOptions } from "fumadocs-core/mdx-plugins";
 import {
+  defineCollections,
   defineConfig,
   defineDocs,
   frontmatterSchema,
@@ -24,6 +25,15 @@ export const docs = defineDocs({
   meta: {
     schema: metaSchema.extend(withTagSchema),
   },
+});
+
+export const blogCollection = defineCollections({
+  dir: "content/blog",
+  schema: frontmatterSchema.extend({
+    date: z.coerce.date().or(z.date()).optional(),
+    tags: z.array(z.string()).optional(),
+  }),
+  type: "doc"
 });
 
 export default defineConfig({

@@ -76,7 +76,7 @@ export function BlogTag({ tag, className }: BadgeProps) {
         }
   return (
     <div className={cn(
-        `rounded-md text-xs px-2 py-[2px] font-mono
+        `rounded-md text-xs px-2 py-0.5 font-mono
         `, style, className)}>
         {title}
     </div>

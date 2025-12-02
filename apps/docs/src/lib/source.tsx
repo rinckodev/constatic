@@ -1,11 +1,12 @@
-import { docs } from "fumadocs-mdx:collections/server";
 import { type InferPageType, loader } from "fumadocs-core/source";
 import { lucideIconsPlugin } from "fumadocs-core/source/lucide-icons";
+import { toFumadocsSource } from "fumadocs-mdx/runtime/server";
+import { blogCollection, docs } from "fumadocs-mdx:collections/server";
+import { createElement } from "react";
+import { HiMiniSparkles } from "react-icons/hi2";
+import { PiFireSimpleFill, PiMagicWandFill } from "react-icons/pi";
 import { i18n } from "./i18n";
 import icons from "./icons";
-import { createElement } from "react";
-import { PiFireSimpleFill, PiMagicWandFill } from "react-icons/pi";
-import { HiMiniSparkles } from "react-icons/hi2";
 
 const record = [...docs.docs, ...docs.meta]
   .reduce((prev, curr) => ({
@@ -86,3 +87,11 @@ export async function getLLMText(page: InferPageType<typeof source>) {
 
 ${processed}`;
 }
+
+export const blog = loader({
+  baseUrl: "/blog",
+  source: toFumadocsSource(blogCollection, [])
+});
+
+export type BlogPost = NonNullable<ReturnType<typeof blog.getPage>>;
+

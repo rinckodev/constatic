@@ -17,7 +17,7 @@ export function ConstaticFlare({ className }: ConstaticFlareProps){
       before:translate-x-[-30%] before:translate-y-[-30%]
   
       sm:before:w-[140px] sm:before:h-[700px]
-      lg:before:w-[240px] lg:before:h-[700px]`,
+      lg:before:w-60 lg:before:h-[700px]`,
       className
     )}
   />
