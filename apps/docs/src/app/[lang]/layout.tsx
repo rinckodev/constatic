@@ -12,7 +12,7 @@ const inter = Inter({
 const { provider } = defineI18nUI(i18n, {
   translations: {
     en: {
-      displayName: 'English',
+      displayName: "English",
     },
     pt: {
       lastUpdate: "Última atualização",
