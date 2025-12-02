@@ -1,0 +1,16 @@
+export function EnvIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+      color={props.color??"#FBC02D"}
+    >
+      <path
+        d="M11.4287 20.5713H6.85742V29.7139H4.57129V20.5713H0V18.2861H11.4287V20.5713ZM18.2861 29.7139H16V16H18.2861V29.7139ZM32 25.1426H27.4287V29.7139H25.1426V25.1426H20.5713V22.8574H32V25.1426ZM27.4287 18.2861H25.1426V2.28613H27.4287V18.2861ZM6.85742 13.7139H4.57129V2.28613H6.85742V13.7139ZM18.2861 9.14258H22.8574V11.4287H11.4287V9.14258H16V2.28613H18.2861V9.14258Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
