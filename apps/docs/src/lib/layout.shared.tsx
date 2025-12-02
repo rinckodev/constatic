@@ -1,12 +1,14 @@
+import { ConstaticTitle } from "@/components/constatic/title";
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
+import { FaBook } from "react-icons/fa";
+import { FaNewspaper } from "react-icons/fa6";
 import { i18n } from "./i18n";
-import { FaBook, FaNewspaper } from "react-icons/fa";
 
 export function baseOptions(): BaseLayoutProps {
   return {
     i18n,
     nav: {
-      title: "My App",
+      title: <ConstaticTitle />,
     },
     themeSwitch: {
       enabled: false,
