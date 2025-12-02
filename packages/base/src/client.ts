@@ -4,6 +4,15 @@ import { ConstaticApp } from "./app.js";
 
 export type CustomClientOptions = Partial<ClientOptions>;
 
+/**
+ * Creates and configures a Discord.js client instance integrated with ConstaticApp.
+ *
+ * This function initializes a `Client`, assigns the provided bot token, binds
+ * lifecycle events, and automatically wires command handlers, autocomplete
+ * handlers, and general interaction responders from the Constatic framework.
+ *
+ * The client will log a formatted startup message once it becomes ready.
+ */
 export function createClient(token: string, options: CustomClientOptions){
     const app = ConstaticApp.getInstance();
     

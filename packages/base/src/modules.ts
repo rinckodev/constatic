@@ -6,6 +6,10 @@ export interface ModuleImported {
     filepath: string;
 }
 
+/**
+ * Dynamically loads modules using glob patterns, returning each imported module
+ * along with its file path.
+ */
 export async function loadModules(meta: ImportMeta, modules: string[] = []) {
     const exclude = modules
         .filter(path => path.charAt(0) == "!")
