@@ -3,6 +3,7 @@ import Link from "next/link";
 import { IoFlameSharp } from "react-icons/io5";
 import { cn } from "fumadocs-ui/utils/cn";
 import { BlogTag } from "./BlogTag";
+import path from "node:path";
 
 interface BlogArticleProps {
     post: BlogPost,
@@ -10,6 +11,10 @@ interface BlogArticleProps {
     index: number;
 }
 export function BlogArticle({ post, isMostRecent, index }: BlogArticleProps) {
+    const date = new Date(
+        post.data.date ?? 
+        path.basename(post.path, path.extname(post.path))
+    );
     return <Link href={post.url} className="w-full">
         <article
             className={cn(
@@ -32,7 +37,7 @@ export function BlogArticle({ post, isMostRecent, index }: BlogArticleProps) {
                     "><IoFlameSharp/> Novo</p>} 
                 </div>
                 <time className="text-xs text-muted-foreground">
-                    {new Date(post.data.date ?? post.path).toLocaleDateString()}
+                    {date.toLocaleDateString()}
                 </time>
             </div>
             {post.data.tags &&

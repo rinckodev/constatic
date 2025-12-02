@@ -31,11 +31,8 @@ const defaults = {
     star: fa.FaStar,
     bulb: md.MdLightbulb   
 }
-Object.assign(
+export default Object.assign(
     icons, defaults, ti, bs, 
     fa, hi, hi2, ri, io, io5, md, tb, bi, 
     si, pi, cg, gr, fa6, LocalIcons
 );
-
-export default icons;
-

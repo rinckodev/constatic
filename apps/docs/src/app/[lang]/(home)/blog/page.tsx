@@ -10,8 +10,7 @@ export default function Page() {
             new Date(b.data.date ?? path.basename(b.path, path.extname(b.path))).getTime() -
             new Date(a.data.date ?? path.basename(a.path, path.extname(a.path))).getTime(),
         );
-
-    return <div className="container flex flex-col gap-2 px-2 py-4 items-center">
+    return <div className="flex flex-col gap-2 px-4 sm:px-24 py-4 items-center justify-center">
         <div className="flex flex-col gap-2 p-8 border rounded-md w-full">
             <h1 className="flex items-center gap-4 text-4xl font-bold">
                 <FaNewspaper /> Blog
