@@ -1,0 +1,66 @@
+---
+title: Get started
+icon: FaClipboard
+description: Manage CLI script presets
+---
+import { CliCommand } from "@/components/constatic/cli/command";
+import { CliMenus } from "@/components/constatic/cli/menu";
+import icons from "@lib/icons";
+
+Script presets are a simple and easy way to reuse code with the CLI. You can group code files and instructions into a preset and reuse it when generating a new project or even in existing ones. This helps reduce the manual work of copying and pasting files.
+
+# Getting Started
+
+<Steps>
+    <Step>
+        To use this feature, start by running the CLI:
+
+        <CliCommand packageName="constatic@latest" />
+    </Step>
+    <Step>
+        Then, in the main menu, select the `Manage presets` option.
+        <CliMenus.Main lang="en" selected="presets"/>
+    </Step>
+    <Step>
+        After that, select the script presets:
+
+        <CliMenus.Presets lang="en" selected="scripts"/>
+    </Step>
+</Steps>
+
+After that, you'll see the menu where you can create and manage script presets.
+
+## Creating and Managing
+
+<Cards className="lg:grid-cols-2">
+	<Card
+		href="/docs/presets/scripts/new"
+		title="Create Preset"
+		icon={<icons.HiDocumentPlus/>}
+		description="Learn how the preset creation menu works"
+	/>
+	<Card
+		href="/docs/presets/scripts/list"
+		title="List All Presets"
+		icon={<icons.FaRegListAlt/>}
+		description="Check a full list of all your presets and their details"
+	/>
+	<Card
+		href="/docs/presets/scripts/edit"
+		title="Edit Preset"
+		icon={<icons.MdModeEdit/>}
+		description="Edit existing presets by adding or removing files and/or dependencies"
+	/>
+	<Card
+		href="/docs/presets/scripts/apply"
+		title="Apply Presets"
+		icon={<icons.FaFileDownload/>}
+		description="See how to apply your presets to projects"
+	/>
+	<Card
+		href="/docs/presets/scripts/delete"
+		title="Delete Presets"
+		icon={<icons.FaTrashAlt/>}
+		description="Easily delete one or more presets through the CLI"
+	/>
+</Cards>

@@ -1,0 +1,164 @@
+---
+title: MongoDB
+icon: BiLogoMongodb
+description: See how to use the mongodb database preset
+tag: updated
+---
+
+<Callout type="info">
+    You will need to have a MongoDB database to use this preset!
+    If you want to create one in the cloud for free, [follow this guide](/docs/discord/guides/databases/mongodb)
+</Callout>
+
+# Env
+
+The environment variable validation scheme receives a new property, now it is necessary to define the URI of your database in the `MONGO_URI` variable:
+
+```properties title=".env"
+# ...
+MONGO_URI=uri
+# ... 
+```
+
+Here's an example of the format of a MongoDB database URI:
+- `mongodb+srv://<user>:<password>@<database>.subdomain.mongodb.net`
+
+# Estrutura
+
+The structure of this template was made using the [mongoose](https://mongoosejs.com/) library, so to create our data we used [mongoose schemas](https://mongoosejs.com/docs/guide.html#definition)
+
+The `index.ts` file in the `src/database` folder must connect to the database:
+
+```ts title="src/database/index.ts"
+import mongoose, { InferSchemaType, model } from "mongoose";
+import { guildSchema } from "./schemas/guild.js";
+import { memberSchema } from "./schemas/member.js";
+import { logger } from "#base";
+import { env } from "#env";
+import chalk from "chalk";
+
+try {
+   await mongoose.connect(env.MONGO_URI, { dbName: "database" });
+   logger.success(chalk.green("MongoDB connected"));
+} catch(err){
+   logger.error(err);
+   process.exit(1);
+}
+
+export const db = {
+   guilds: model("guild", guildSchema, "guilds"),
+   members: model("member", memberSchema, "members")
+};
+
+export type GuildSchema = InferSchemaType<typeof guildSchema>;
+export type MemberSchema = InferSchemaType<typeof memberSchema>;
+```
+
+The document models are stored in the `db` variable object, that is, for each new document schema that you create, place the model as a property of this variable
+
+So when you need to create, read, update or delete data, simply import the `db` variable from `#database` and use the model methods:
+
+```ts title="src/discord/commands/members.ts"
+import { createCommand } from "#base";
+import { db } from "#database"; //[!code highlight]
+import { ApplicationCommandType } from "discord.js";
+
+createCommand({
+    name: "members",
+    description: "Consultar os documentos de todos os membros",
+    type: ApplicationCommandType.ChatInput,
+    async run(interaction){
+        const documents = await db.members.find(); //[!code highlight]
+
+        for(const doc of documents){
+            console.log(doc.id);
+            console.log(doc.guildId);
+        }
+
+        // ...
+    }
+});
+```
+<Callout type="warn">
+    Always use the `db` variable from the `"#database"` import shortcut, this way the file containing the code that makes the connection to the database is called.
+</Callout>
+
+# Schemas
+
+Create your [mongoose schemas](https://mongoosejs.com/docs/guide.html#definition) in the `src/database/schemas/` folder for better organization. See the example schemas that come by default:
+
+```ts title="src/database/schemas/member.ts" tab="Schema do modelo de membros"
+import { Schema } from "mongoose";
+import { t } from "../utils.js";
+
+export const memberSchema = new Schema(
+    {
+        id: t.string,
+        guildId: t.string,
+        wallet: {
+            coins: { type: Number, default: 0 },
+        }
+    },
+    {
+        statics: {
+            async get(member: { id: string, guild: { id: string } }) {
+                const query = { id: member.id, guildId: member.guild.id };
+                return await this.findOne(query) ?? this.create(query);
+            }
+        }
+    },
+);
+```
+```ts title="src/database/schemas/guild.ts" tab="Schema do modelo de guildas"
+import { Schema } from "mongoose";
+import { t } from "../utils.js";
+
+export const guildSchema = new Schema(
+    {
+        id: t.string,
+        channels: {
+            logs: t.channelInfo,
+            general: t.channelInfo,
+        }
+    },
+    {
+        statics: {
+            async get(id: string) {
+                return await this.findOne({ id }) ?? this.create({ id });
+            }
+        }
+    }
+);
+```
+
+After creating your schema, import it into the `index.ts` file in the `src/database` folder and create a model for it in the `db` variable object:
+
+```ts title="src/database/index.ts"
+// [!code word:model]
+import /* ... */ { /* ... */ model } from "mongoose";
+import { guildSchema } from "./schemas/guild.js";
+import { memberSchema } from "./schemas/member.js";
+
+// ...
+
+export const db = {
+    guilds: model("guild", guildSchema, "guilds"), // [!code highlight]
+    members: model("member", memberSchema, "members") // [!code highlight]
+};
+
+// ...
+```
+
+If you need the types of the document properties, extract the type from the schemas:
+
+```ts title="src/database/index.ts"
+// [!code word:InferSchemaType]
+import /* ... */ { /* ... */ InferSchemaType } from "mongoose";
+import { guildSchema } from "./schemas/guild.js";
+import { memberSchema } from "./schemas/member.js";
+
+// ...
+
+export type GuildSchema = InferSchemaType<typeof guildSchema>;
+export type MemberSchema = InferSchemaType<typeof memberSchema>;
+```

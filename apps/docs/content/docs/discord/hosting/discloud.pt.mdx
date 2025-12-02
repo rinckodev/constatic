@@ -1,0 +1,192 @@
+---
+title: Discloud
+icon: DiscloudWhite
+description: Como hospedar o projeto de bot de discord no serviço de hospedagem Discloud
+---
+import icons from "@lib/icons";
+
+[Discloud](https://discloud.com/) é um serviço de hospedagem de aplicações em nuvem.
+
+# Preparando o projeto
+
+Ao gerar o projeto usando a [CLI](/docs/discord/start), é possível selecionar o recurso `🗐 Arquivos Discloud`, que fará com que os arquivos necessários para enviar sua aplicação para a hospedagem, sejam incluídos no projeto.
+
+<Accordions>
+    <Accordion title="Mas... Se você não marcou essa opção, veja como os arquivos devem ficar">
+
+    <Tabs items={["Node", "Bun"]}>
+        <Tab value="Node">
+            Crie o arquivo `discloud.config` na raiz do projeto.
+            ```properties title="discloud.config"
+            NAME=Awesome Bot
+            TYPE=bot
+            MAIN=build/index.js
+            RAM=100
+            VERSION=latest
+            AUTORESTART=false
+            START=npm run start
+            ```
+            Crie o arquivo `.discloudignore` na raiz do projeto.
+            ```properties title=".discloudignore"
+            # Essential structure
+            # - /build
+            # - /.env
+            # - /.discloudignore
+            # - /discloud.config
+            # - /package.json
+
+            # Ignored structure
+
+            # Folders
+            /.vscode
+            /src
+            /deprecated
+            /discloud
+            /node_modules
+
+            # Files
+            /.env.development
+            /.env.dev
+            /.env.example
+            /.eslintrc.json
+            /.gitignore
+            /tsconfig.json
+            /README.md
+
+            # Extensions
+            *.md
+            *.zip
+            *.exe
+            *.development.json
+            ```
+        </Tab>
+        <Tab value="Bun">
+            Crie o arquivo `Dockerfile` na raiz do projeto.
+            ```dockerfile title="Dockerfile"
+            FROM docker.io/oven/bun:latest
+
+            WORKDIR /app
+
+            COPY package.json package.json
+            COPY bun.lock bun.lock
+
+            RUN bun install
+            COPY . .
+
+            CMD ["bun", "run", "start"]
+            ```
+
+            Crie o arquivo `discloud.config` na raiz do projeto.
+            ```properties title="discloud.config"
+            NAME=Awesome Bun Bot
+            TYPE=bot
+            MAIN=Dockerfile # [!code highlight]
+            RAM=100
+            VERSION=latest
+            AUTORESTART=false
+            START=npm run start
+            ```
+            
+            Crie o arquivo `.discloudignore` na raiz do projeto.
+            ```properties title="discloud.config"
+            # Essential structure
+            # - /src
+            # - /.env
+            # - /.discloudignore
+            # - /discloud.config
+            # - /package.json
+            # - /tsconfig.json
+
+            # Ignored structure
+
+            # Folders
+            /.vscode
+            /deprecated
+            /discloud
+            /node_modules
+            /build
+
+            # Files
+            /.env.development
+            /.env.dev
+            /.env.example
+            /.eslintrc.json
+            /.gitignore
+            /README.md
+
+            # Extensions
+            *.md
+            *.zip
+            *.exe
+            *.development.json
+            ```
+        </Tab>
+    </Tabs>
+    </Accordion>
+</Accordions>
+
+---
+
+# Antes de enviar...
+
+<Tabs items={["Node", "Bun"]}>
+    <Tab value="Node">
+        ### Certifique-se de que o projeto está buildado!
+        
+        Para poder enviar, antes o seu projeto precisa ser buildado usando o comando abaixo:
+        ```bash
+        npm run build
+        ```
+    </Tab>
+    <Tab value="Bun">
+        Execute o script `check` para verificar se não existe algum problema na tipagem:
+        ```bash
+        npm run check
+        ```
+
+        <Callout type="warn">
+            Um projeto Bun não é necessário ser buildado!
+        </Callout>
+    </Tab>
+</Tabs>
+
+No arquivo `discloud.config` você pode definir um nome e um avatar para a sua aplicação na hospedagem se preferir.
+```properties title="discloud.config"
+    NAME=My Awesome Bot
+    AVATAR=https://i.imgur.com/L7Mxhoj.gif
+    # ...
+```
+
+Instale a extensão `discloud` no Visual Studio Code
+
+<ImageZoom src={"/guides/discloud/extension.png"} width={380} height={200} alt="step" />
+
+Clique na aba `discloud` na lateral do Visual Studio Code e coloque <Link href={"https://docs.discloud.com/suporte/comandos/api"}>seu token de api da discloud</Link>.
+Depois basta clicar em `Upload Discloud` na barra inferior do Visual Studio Code.
+<ImageZoom src={"/guides/discloud/upload-button.png"} width={380} height={200} alt="step" />
+
+Se seu projeto não conter nenhum erro, ele será iniciado em alguns instantes
+
+<Callout type="warn">
+    Caso não queira usar a extensão do Visual Studio Code, existem outras [maneiras de hospedar e você pode conferir aqui](https://docs.discloud.com/suporte/hospedar). Apenas lembre-se de seguir as exigências abaixo: 
+
+    <Tabs items={["Node", "Bun"]}>
+        <Tab value="Node">
+            - A pasta que deve ser enviada é a `build`, não `src` ([Por isso é preciso buildar antes](/discord/hosting/discloud#build)). 
+            - Os arquivos e pastas que devem ser enviados são `build`, `.env`, `constants.json`, `package.json` e `discloud.config`
+
+        </Tab>
+        <Tab value="Bun">
+            - A pasta que deve ser enviada é a `src`, não `build` (Por isso não é preciso buildar antes). 
+            - Os arquivos e pastas que devem ser enviados são `src`, `.env`, `constants.json`, `Dockerfile`, `package.json` e `discloud.config`
+
+            <Callout type="warn">
+                Um projeto Bun não é necessário ser buildado!
+            </Callout>
+        </Tab>
+    </Tabs>
+    - Não envie a pasta `node_modules`.
+    - É necessário definir que o script para iniciar seja `npm run start`.
+</Callout>
+
+---

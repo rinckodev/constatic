@@ -1,0 +1,203 @@
+---
+title: Debug
+icon: TiHome
+description: Debug page
+---
+
+import icons from "@lib/icons"
+
+text
+
+# H1 title
+
+## H2 title
+
+### H3 title
+
+#### H4 title
+
+Paragraph
+
+List:
+- Item A
+- Item B
+- Item C
+- Item D
+
+---
+
+<div className="flex flex-col gap-1">
+  <DiscordSlashCommand name="ping" />
+  <DiscordSlashCommand 
+    name="gerenciar"
+    group="canais"
+    subcommand="criar"
+    description="Crie um novo canal do discord"
+    options={[
+      {
+        name: "nome",
+        description: "Digite o novo nome do canal",
+        type: "text"
+      }
+    ]}
+  />
+</div>
+
+```ts title="index.ts"
+console.log("hello world");
+```
+
+```js tab="Exemplo 1" title="index.js"
+console.log("hello world");
+```
+```json tab="Exemplo 2" title="index.json"
+{
+    "hello": "world"
+}
+```
+
+```ts title="index.ts"
+console.log("hello world"); // [!code --]
+console.log("hello world"); // [!code ++]
+console.log("hello world"); // [!code highlight]
+// [!code word:log]
+console.log("hello world"); 
+```
+
+```ts title="index.ts"
+console.log("hello world");
+console.log("hello world"); // [!code focus]
+console.log("hello world");
+console.log("hello world"); 
+```
+
+```properties title=".properties"
+BOT_TOKEN=mytoken
+PORT=3000
+```
+
+
+```ts title="buttons.ts"
+const row = createRow(
+  new ButtonBuilder({
+      customId: "a",
+      label: "Action", 
+      style: ButtonStyle.Success
+  }),
+  new ButtonBuilder({
+      customId: "b",
+      label: "Action", 
+      style: ButtonStyle.Primary
+  }),
+  new ButtonBuilder({
+      customId: "c",
+      label: "Action", 
+      style: ButtonStyle.Secondary
+  }),
+  new ButtonBuilder({
+      customId: "d",
+      label: "Action", 
+      style: ButtonStyle.Danger
+  }),
+  new ButtonBuilder({
+      url: RouteBases.api,
+      label: "Action", 
+      style: ButtonStyle.Link
+  }),
+)
+```
+
+<div className="flex flex-col gap-2">
+<DiscordActionRow>
+  <DiscordButton label="Action" style="success" icon={<icons.IoMdPersonAdd/>} />
+  <DiscordButton label="Action" style="danger" icon={<icons.IoMdPersonAdd/>} />
+  <DiscordButton label="Action" style="primary" icon={<icons.IoMdPersonAdd/>} />
+  <DiscordButton label="Action" style="secondary" icon={<icons.IoMdPersonAdd/>} />
+</DiscordActionRow>
+<DiscordActionRow>
+  <DiscordButton label="Action" style="success" icon={<icons.IoMdPersonAdd/>} disabled />
+  <DiscordButton label="Action" style="danger" icon={<icons.IoMdPersonAdd/>} disabled />
+  <DiscordButton label="Action" style="primary" icon={<icons.IoMdPersonAdd/>} disabled />
+  <DiscordButton label="Action" style="secondary" icon={<icons.IoMdPersonAdd/>} disabled />
+</DiscordActionRow>
+</div>
+
+```bash title="start.sh"
+npm run dev
+```
+
+```dotenv title=".env"
+BOT_TOKEN=mytoken
+PORT=3000
+```
+
+```md title=".env"
+# H1
+
+## H2
+
+List:
+- A
+- B
+- C
+```
+
+```json title="package.json"
+{
+  "name": "new-constatic",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev --turbo",
+    "start": "next start",
+    "postinstall": "fumadocs-mdx"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "^1.3.22",
+    "@ai-sdk/react": "^1.2.12",
+    "@radix-ui/react-accordion": "^1.2.10",
+    "@radix-ui/react-collapsible": "^1.1.10",
+    "@radix-ui/react-dialog": "^1.1.13",
+    "@radix-ui/react-popover": "^1.1.13",
+    "@radix-ui/react-scroll-area": "^1.2.8",
+    "@radix-ui/react-tabs": "^1.1.11",
+    "@shikijs/rehype": "^3.4.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "fumadocs-core": "^15.6.9",
+    "fumadocs-mdx": "^11.7.3",
+    "fumadocs-twoslash": "^3.1.4",
+    "fumadocs-ui": "^15.6.9",
+    "hast": "^1.0.0",
+    "hast-util-to-jsx-runtime": "^2.3.6",
+    "lucide-react": "^0.508.0",
+    "motion": "^12.11.0",
+    "next": "15.3.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-icons": "^5.5.0",
+    "react-medium-image-zoom": "^5.2.14",
+    "rehype-katex": "^7.0.1",
+    "remark": "^15.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0",
+    "remark-rehype": "^11.1.2",
+    "shiki": "^3.4.0",
+    "tailwind-merge": "^3.3.0",
+    "twoslash": "^0.3.1",
+    "zod": "^4.0.15"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.6",
+    "@types/mdx": "^2.0.13",
+    "@types/node": "22.15.3",
+    "@types/react": "^19.1.4",
+    "@types/react-dom": "^19.1.4",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.6",
+    "tw-animate-css": "^1.2.9",
+    "typescript": "^5.8.3"
+  }
+}
+```

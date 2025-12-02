@@ -1,0 +1,36 @@
+---
+title: Comandos
+icon: HiMiniCommandLine
+description: Como criar todos os tipos de comandos do discord
+---
+
+import icons from "@lib/icons";
+
+Os comandos são formas nativas de interagir com bots de Discord. Existem 3 tipos de comandos acessíveis em diferentes interfaces: **A entrada do chat**, o **menu de contexto de uma mensagem** (clicar com o botão direito em uma mensagem) e o **menu de contexto de um usuário** (clicar com o botão direito em um usuário).
+
+Comandos de entrada do chat tem as opções de autocomplete que podem ser respondidas de forma simples usando essa base de bots.
+
+<ImageZoom src={"/commands/commands.png"} alt="image-01" width="900" height="900"/>
+
+Veja abaixo como criar esses comandos e responder as interações:
+
+<Cards className="sm:grid-cols-3">
+    <Card
+    href="/docs/discord/commands/slash"
+    title="Comandos de barra"
+    icon={<icons.RiSlashCommands2/>}
+    description="Comandos executados pelos usuários do bot"
+  />
+  <Card
+    href="/docs/discord/commands/context"
+    title="Menus de contexto"
+    icon={<icons.MdLibraryBooks/>}
+    description="Sâo utilizados em mensagens e em usuários"
+  />
+  <Card
+    href="/docs/discord/commands/autocomplete"
+    title="Opções autocomplete"
+    icon={<icons.MdAutoFixHigh/>}
+    description="Uma forma de exibir escolhas pra uma opção dinamicamente"
+  />
+</Cards>

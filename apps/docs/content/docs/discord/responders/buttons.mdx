@@ -1,0 +1,36 @@
+---
+title: Buttons
+icon: MdOutlineRadioButtonChecked
+description: how to reply discord buttons
+---
+
+Reply to a button by setting the `Responder` type to button.
+
+```ts title="command.ts"
+const row = createRow(
+    new ButtonBuilder({
+        customId: "/confirm/button", 
+        label: "Confirm", 
+        style: ButtonStyle.Success
+    })
+);
+await interaction.reply({ 
+    flags: ["Ephemeral"], 
+    components: [row] 
+});
+```
+
+```ts title="responder.ts"
+createResponder({
+    customId: "/confirm/button",
+    // [!code word:Button]
+    types: [ResponderType.Button], cache: "cached",
+    async run(interaction) {
+        interaction.update({ 
+            flags: ["Ephemeral"], 
+            content: "Confirmed", 
+            components: []
+        });
+    },
+});
+```

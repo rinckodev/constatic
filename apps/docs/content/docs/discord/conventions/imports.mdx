@@ -1,0 +1,90 @@
+---
+title: Imports
+icon: FaFileImport
+description: Import alias for better code organization
+---
+
+## Import Shortcuts
+
+In this project, you will find the [Node.js feature](https://nodejs.org/api/packages.html#subpath-imports) called **import alias**.  
+You can import anything using alias in `package.json`.
+
+<Accordions>
+  <Accordion title="See how it looks in package.json and tsconfig.json">
+    These are some alias that are already defined when the project is generated:
+    
+    ```json title="package.json"
+    {
+      "name": "awesome-bot-base",
+      "type": "module",
+      "main": "build/index.js",
+      // ...
+      "imports": {
+        "#env": ["./build/env.js"],
+        "#base": ["./build/discord/base/index.js"],
+        "#functions": ["./build/functions/index.js"],
+        "#database": ["./build/database/index.js"],
+        "#server": ["./build/server/index.js"],
+        "#menus": ["./build/menus/index.js"],
+        "#tools": ["./build/tools/index.js"],
+        "#lib/*": ["./build/lib/*"]
+      }
+    }
+    ```
+    
+    ```json title="tsconfig.json"
+    {
+      "compilerOptions": {
+        // ...
+        "baseUrl": "./src",
+        "paths": {
+          "#env": ["./env.ts"],
+          "#base": ["./discord/base/index.ts"],
+          "#functions": ["./functions/index.ts"],
+          "#database": ["./database/index.ts"],
+          "#server": ["./server/index.ts"],
+          "#menus": ["./menus/index.ts"],
+          "#tools": ["./tools/index.ts"],
+          "#lib/*": ["./lib/*"],
+          "#emojis": ["../emojis.json"],
+          "#types/*": ["./@types/*"],
+        },
+      }
+      // ...
+    }
+    ```
+  </Accordion>
+</Accordions>
+
+With this, you can export everything from an `index` file of these alias and easily import it anywhere in your code. See the example below:
+
+Let's export this simple function from the functions folder:
+
+
+```ts title="src/functions/math.ts"
+export function sum(a: number, b: number){
+  return a + b;
+}
+```
+
+<span>Export it in the `index` file of the functions folder, as defined in the package.json and tsconfig.json files.</span>
+
+```ts title="src/functions/index.ts"
+export * from "./math.js"
+```
+
+Note that since this project uses the `module` type, we need to add the `.js` extension at the end.
+With this, we can easily import this function in any file, regardless of its depth in our code.
+```ts title="src/discord/commands/admin/context/test.ts"
+import { sum } from "#functions"
+```
+
+Without this, it would be necessary to use a relative path. See how it would look:
+
+```ts title="src/discord/commands/admin/context/test.ts"
+import { sum } from "../../../../../functions/math.js"
+```
+
+In summary, import shortcuts make it easier to import anything and make the code more readable and organized.
+
+---

@@ -1,0 +1,6 @@
+{
+    "title": "Responders",
+    "defaultOpen": true,
+    "icon": "BsFillReplyFill",
+    "pages": ["buttons", "selects", "modals", "params"]
+}

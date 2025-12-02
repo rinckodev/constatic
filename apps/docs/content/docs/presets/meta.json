@@ -1,0 +1,8 @@
+{
+    "title": "Presets",
+    "icon": "HiTemplate",
+    "pages": [
+        "tokens",
+        "scripts"
+    ]
+}

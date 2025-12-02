@@ -1,0 +1,164 @@
+---
+title: MongoDB
+icon: BiLogoMongodb
+description: Veja como usar a predefinição de banco de dados MongoDB
+tag: updated
+---
+
+<Callout type="info">
+    Você vai precisar ter um banco de dados MongoDB para utilizar esta predefinição!
+    Caso queira criar um na nuvem de forma gratuita, [siga este guia](/docs/discord/guides/databases/mongodb)
+</Callout>
+
+# Env
+
+O esquema de validação das variáveis de ambiente recebe uma nova propriedade, agora é necessário definir a URI do seu banco de dados na variável `MONGO_URI`:
+
+```properties title=".env"
+# ...
+MONGO_URI=uri
+# ... 
+```
+
+Veja um exemplo do formato de uma URI de banco de dados MongoDB:
+- `mongodb+srv://<user>:<password>@<database>.subdomain.mongodb.net`
+
+# Estrutura
+
+A estrutura desta predefinição foi feita usando a biblioteca [mongoose](https://mongoosejs.com/), então para criar nossos dados utilizamos [schemas mongoose](https://mongoosejs.com/docs/guide.html#definition)
+
+O arquivo `index.ts` da pasta `src/database` deve fazer a conexão com o banco de dados:
+
+```ts title="src/database/index.ts"
+import mongoose, { InferSchemaType, model } from "mongoose";
+import { guildSchema } from "./schemas/guild.js";
+import { memberSchema } from "./schemas/member.js";
+import { logger } from "#base";
+import { env } from "#env";
+import chalk from "chalk";
+
+try {
+   await mongoose.connect(env.MONGO_URI, { dbName: "database" });
+   logger.success(chalk.green("MongoDB connected"));
+} catch(err){
+   logger.error(err);
+   process.exit(1);
+}
+
+export const db = {
+   guilds: model("guild", guildSchema, "guilds"),
+   members: model("member", memberSchema, "members")
+};
+
+export type GuildSchema = InferSchemaType<typeof guildSchema>;
+export type MemberSchema = InferSchemaType<typeof memberSchema>;
+```
+
+Os modelos dos documentos ficam no objeto da variável `db`, ou seja, para cada novo schema de documento que você criar, coloque o modelo como uma propriedade desta variável
+
+Assim quando você precisar criar, ler, atualizar ou deletar dados, basta importar a variável `db` de `#database` e utilizar os métodos do modelo:
+
+```ts title="src/discord/commands/members.ts"
+import { createCommand } from "#base";
+import { db } from "#database"; //[!code highlight]
+import { ApplicationCommandType } from "discord.js";
+
+createCommand({
+    name: "members",
+    description: "Consultar os documentos de todos os membros",
+    type: ApplicationCommandType.ChatInput,
+    async run(interaction){
+        const documents = await db.members.find(); //[!code highlight]
+
+        for(const doc of documents){
+            console.log(doc.id);
+            console.log(doc.guildId);
+        }
+
+        // ...
+    }
+});
+```
+<Callout type="warn">
+    Sempre use a variável `db` do atalho de importação `"#database"`, dessa forma o arquivo que contém o código que faz a conexão com o banco de dados é chamado.
+</Callout>
+
+# Schemas
+
+Crie seus [schemas mongoose](https://mongoosejs.com/docs/guide.html#definition) na pasta `src/database/schemas/` para uma melhor organização. Veja os schemas de exemplo que vem por padrão:
+
+```ts title="src/database/schemas/member.ts" tab="Schema do modelo de membros"
+import { Schema } from "mongoose";
+import { t } from "../utils.js";
+
+export const memberSchema = new Schema(
+    {
+        id: t.string,
+        guildId: t.string,
+        wallet: {
+            coins: { type: Number, default: 0 },
+        }
+    },
+    {
+        statics: {
+            async get(member: { id: string, guild: { id: string } }) {
+                const query = { id: member.id, guildId: member.guild.id };
+                return await this.findOne(query) ?? this.create(query);
+            }
+        }
+    },
+);
+```
+```ts title="src/database/schemas/guild.ts" tab="Schema do modelo de guildas"
+import { Schema } from "mongoose";
+import { t } from "../utils.js";
+
+export const guildSchema = new Schema(
+    {
+        id: t.string,
+        channels: {
+            logs: t.channelInfo,
+            general: t.channelInfo,
+        }
+    },
+    {
+        statics: {
+            async get(id: string) {
+                return await this.findOne({ id }) ?? this.create({ id });
+            }
+        }
+    }
+);
+```
+
+Depois de criar seu schema, importe ele no arquivo `index.ts` da pasta `src/database` e crie um modelo pra ele no objeto da variável `db`:
+
+```ts title="src/database/index.ts"
+// [!code word:model]
+import /* ... */ { /* ... */ model } from "mongoose";
+import { guildSchema } from "./schemas/guild.js";
+import { memberSchema } from "./schemas/member.js";
+
+// ...
+
+export const db = {
+    guilds: model("guild", guildSchema, "guilds"), // [!code highlight]
+    members: model("member", memberSchema, "members") // [!code highlight]
+};
+
+// ...
+```
+
+Se precisar dos tipos das propriedades dos documentos, extraia o tipo dos schemas:
+
+```ts title="src/database/index.ts"
+// [!code word:InferSchemaType]
+import /* ... */ { /* ... */ InferSchemaType } from "mongoose";
+import { guildSchema } from "./schemas/guild.js";
+import { memberSchema } from "./schemas/member.js";
+
+// ...
+
+export type GuildSchema = InferSchemaType<typeof guildSchema>;
+export type MemberSchema = InferSchemaType<typeof memberSchema>;
+```

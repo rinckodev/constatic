@@ -1,0 +1,112 @@
+---
+title: Constants
+icon: MdOutlineLibraryBooks
+description: Useful global variables for discord bot development
+---
+
+When generating the project, the `constants.json` file already comes with some information defined in it:
+
+```json title="constants.json"
+{
+  "colors": {
+    "default": "#2B2D31",
+
+    "primary": "#3b82f6",
+    "secondary": "#4f545c",
+    "success": "#22c55e",
+    "danger": "#ED4245",
+    "warning": "#fbbd23",
+
+    "azoxo": "#5865F2",
+    "green": "#57F287",
+    "yellow": "#FEE75C",
+    "fuchsia": "#EB459E",
+    "magic": "#c026d3",
+
+    "developer": "#3e70dd",
+    "balance": "#45ddc0",
+    "brilliance": "#f07d5f",
+    "nitro": "#ff6bfa",
+    "bravery": "#9c84ef"
+  }
+}
+```
+
+<Callout type="info">
+  In the code, this information can be accessed via the global variable `constants`.
+
+  There's no need to import this variable from anywhere! It's registered at the beginning of the project:
+
+  ```ts
+  import { createCommand } from "#base";
+  import { createContainer } from "@magicyan/discord";
+  import { ApplicationCommandType } from "discord.js";
+
+  // [!code word:constants]
+  createCommand({
+    name: "ping",
+    description: "Replies with pong 🏓",
+    type: ApplicationCommandType.ChatInput,
+    async run(interaction){
+      const container = createContainer({
+        accentColor: constants.colors.success, // [!code ++]
+        components: ["Pong 🏓"]
+      })
+      await interaction.reply({
+        flags: ["Ephemeral", "IsComponentsV2"],
+        components: [container]
+      });
+    }
+  });
+  ```
+</Callout>
+
+You can add whatever information you want, remembering that this is static information.
+
+```json title="constants.json"
+{
+  "colors": {
+    // ...
+  },
+  "images":{ // [!code ++]
+    "avatar":{  // [!code ++]
+      "defaultbot": "https://i.imgur.com/vCmpTqL.png"  // [!code ++]
+      //...  // [!code ++]
+    } // [!code ++]
+  }  // [!code ++]
+}
+```
+
+You can access type-safely in your code:
+
+  ```ts
+  import { createCommand } from "#base";
+  import { createContainer, createThumbArea } from "@magicyan/discord";
+  import { ApplicationCommandType } from "discord.js";
+
+  // [!code word:constants]
+  createCommand({
+    name: "info",
+    description: "Bot information",
+    type: ApplicationCommandType.ChatInput,
+    async run(interaction){
+      const { colors, images } = constants;
+
+      const container = createContainer({
+        accentColor: colors.azoxo, // [!code ++]
+        components: [
+          createThumbArea({
+            content: "## Bot information",
+            thumbnail: images.avatar.defaultbot
+          })
+          // ...
+        ]
+      });
+      
+      await interaction.reply({
+        flags: ["Ephemeral", "IsComponentsV2"],
+        components: [container]
+      });
+    }
+  });
+  ```

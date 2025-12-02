@@ -1,0 +1,426 @@
+---
+title: Criadores
+icon: MdFactory
+description: Principais estruturas da base para criação de comandos e sistemas
+---
+import icons from "@lib/icons";
+
+Nesta base, para criar comandos e sistemas você deve utilizar as funções criadoras, que são `createCommand`, `createEvent` e `createResponder`.
+
+Ao executar essas funções passando os dados da estruturas respectivas, elas serão criadas e registradas.
+
+Você pode definir algumas opções no arquivo `index` da pasta `discord`, veja:
+
+```ts title="src/discord/index.ts"
+// [!code word:setupCreators]
+export const { createCommand, createEvent, createResponder } = setupCreators();
+```
+
+Essa função recebe opções e retorna os criadores de comandos, eventos e responders para você utilizar. Exportando já esse retorno você pode importar eles a qualquer momento pelo atalho da base:
+```ts
+import { createCommand, createEvent, createResponder } from "#base";
+```
+
+## Opções de comandos [#command-options]
+
+Você pode definir algumas opções de comandos na função `setupCreators`:
+
+<Tabs updateAnchor items={["Permissões padrões", "Guildas", "middleware", "onError", "onNotFound", "verbose"]}>
+  <Tab id="commands-default-permissions" value="Permissões padrões">
+    Defina quais serão as permissões padrões de todos os comandos, caso não seja definida nenhuma com a opção `defaultMemberPermissions` (É o mesmo array de permissões do comando).
+
+    ```ts
+    /* ... */ setupCreators({
+        commands: {
+            defaultMemberPermissions: ["SendMessages", "Connect"]
+        },
+    });
+    ```
+    Dessa forma, ao criar um comando e não definir nenhuma permissão padrão de membro, o que você definiu na função `setupCreators`, será o padrão de todos os comandos.
+
+    ```ts title="command.ts"
+    createCommand({
+        name: "ping",
+        description: "Responde com pong",
+        type: ApplicationCommandType.ChatInput,
+        // defaultMemberPermissions: [] <-- Não foi definido!
+        // Mas por padrão será registrado na aplicação com ["SendMessages", "Connect"]
+        async run(interaction){
+            // ...
+        }
+    })
+    ```
+  </Tab>
+  <Tab id="commands-guilds" value="Guildas">
+    Você pode definir vários IDs de guildas que deseja registrar os comandos do seu bot com a opção `guilds`.
+
+    ```ts
+    import { env } from "#env";
+
+    /* ... */ setupCreators({
+        commands: {
+            guilds: [env.MAIN_GUILD_ID, "537817462272557057"]
+        },
+    });
+    ```
+    Assim, ao invés de registrar os comandos globalmente na aplicação, eles serão registrados apenas nas guildas, cujo os ids foram passados para essa opção.
+  </Tab>
+  <Tab value="middleware">
+    Você pode definir uma função `middleware` que será executada antes da função `run` dos comandos
+
+    ```ts
+    /* ... */ setupCreators({
+        commands: {
+            async middleware(interaction){
+                console.log("Comando executado:", interaction.commandName);
+            }
+        },
+    });
+    ```
+    Você pode fazer muita coisa com isso, como exibir logs padronizados para todos os comandos executados, injetar informações adicionais na interação, ou até mesmo bloquear a execução com base em checagens.
+
+    Você pode executar a função `block` para bloquear a execução dos comandos.
+
+    ```ts
+    /* ... */ setupCreators({
+        commands: {
+            async middleware(interaction, block){
+                if (blockedUsers.includes(interaction.user.id)){
+                    interaction.reply({ content: "Você não pode usar nenhum comando!" });
+                    block();
+                    return;
+                }
+            }
+        },
+    });
+    ```
+  </Tab>
+  <Tab value="onError">
+    É possível definir um manipulador de erros customizado para comandos com a função `onError`
+
+    ```ts
+    /* ... */ setupCreators({
+        commands: {
+            async onError(error, interaction){
+                // ...
+            }
+        },
+    });
+    ```
+    Você pode verificar qual é o tipo de erro e escolher entre enviar ou não, mensagens customizadas.
+    
+    <Callout type="danger">
+        É extremamente importante usar `await` em Promises quando o seu run for `async`, para que o manipulador de erros de comandos possa capturar corretamente.
+    </Callout>
+
+    ```ts
+    // [!code word:await]
+    createCommand({
+        name: "ping",
+        description: "Responde com pong",
+        async run(interaction){
+            await interaction.deferReply({ flags: ["Ephemeral"], });
+
+            const data = await dbOperation();
+
+            await interaction.editReply({ content: `Dados: ${data.toString()}` });
+        }
+    })
+    ```
+  </Tab>
+  <Tab value="onNotFound">
+    Se por algum motivo não for encontrado nenhum manipulador para o comando, a função `onNotFound` será chamada.
+
+    ```ts
+    /* ... */ setupCreators({
+        commands: {
+            async onNotFound(interaction){
+                interaction.reply({ flags: ["Ephemeral"],, 
+                    content: "Comando não encontrado. Contate a equipe!"
+                });
+            }
+        },
+    });
+    ```
+  </Tab>
+  <Tab value="verbose">
+    Essa opção faz com que as logs de registro de comandos sejam mais detalhadas, dessa maneira você pode ter certeza de que seus comandos foram registrados pois isso exibe a resposta direta da api
+
+    ```ts
+    /* ... */ setupCreators({
+        commands: {
+            verboose: true
+        },
+    });
+    ```
+
+    Veja o exemplo abaixo com os comandos que vem por padrão:
+    ```bash
+    ● Awes online ✓
+    └ 2 commands successfully registered globally!
+      └ {/} 1342179401697333281 CREATED ping > Awes application > created at: 1:01:45 PM
+      └ {/} 1342179401252470856 CREATED counter > Awes application > created at: 1:01:45 PM
+    ```
+
+    A resposta exibe o id do comando na aplicação ou guilda, o nome dele e o horario em que foi criado
+  </Tab>
+</Tabs>
+
+## Opções de Responders [#responder-options]
+
+Você pode definir algumas opções de responders na função `setupCreators`:
+
+<Tabs items={["middleware", "onError", "onNotFound"]}>
+  <Tab value="middleware">
+    Você pode definir uma função `middleware` que será executada antes da função `run` dos responders
+
+    ```ts
+    /* ... */ setupCreators({
+        responders: {
+            async middleware(interaction, _block, params){
+                console.log("Comando executado:", interaction.customId);
+                console.log("Parâmetros:", params);
+            }
+        },
+    });
+    ```
+    Assim como nos comandos, você pode fazer muita coisa com isso, como exibir logs padronizados para todos os responders executados, injetar informações adicionais na interação, ou até mesmo bloquear a execução com base em checagens.
+
+    Você pode executar a função `block` para bloquear a execução dos responders.
+
+    ```ts
+    /* ... */ setupCreators({
+        responders: {
+            async middleware(interaction, block){
+                if (interaction.isButton() && blockedUsers.includes(interaction.user.id)){
+                    interaction.reply({ content: "Você não pode clicar em nenhum botão!" });
+                    block();
+                    return;
+                }
+            }
+        },
+    });
+    ```
+  </Tab>
+  <Tab value="onError">
+    É possível definir um manipulador de erros customizado para responders com a função `onError`
+
+    ```ts
+    /* ... */ setupCreators({
+        commands: {
+            async onError(error, interaction){
+                // ...
+            }
+        },
+    });
+    ```
+    Você pode verificar qual é o tipo de erro e escolher entre enviar ou não, mensagens customizadas.
+    
+    <Callout type="danger">
+        É extremamente importante usar `await` em Promises quando o seu run for `async`, para que o manipulador de erros de responders possa capturar corretamente.
+    </Callout>
+
+    ```ts
+    // [!code word:await]
+    createResponder({
+        customId: "data/refresh",
+        types: [ResponderType.Button], cache: "cached",
+        async run(interaction){
+            await interaction.deferUpdate();
+
+            const data = await dbOperation();
+
+            await interaction.followUp({ 
+                flags: ["Ephemeral"],, content: `Dados: ${data.toString()}` 
+            });
+        }
+    })
+    ```
+  </Tab>
+  <Tab value="onNotFound">
+    Se não for encontrado nenhum manipulador para o componente ou modal, a função `onNotFound` será chamada.
+
+    ```ts
+    /* ... */ setupCreators({
+        responders: {
+            async onNotFound(interaction){
+                interaction.reply({ flags: ["Ephemeral"],, 
+                    content: "Isso não foi configurado ainda. Contate a equipe!"
+                });
+            }
+        },
+    });
+    ```
+    <Callout type="danger">
+        Tome cuidado! Se você usar coletores de componentes ou modais em algum comando, essa função ainda será chamada, pois ela busca um manipulador criado com a função `createResponder`. Então é importante verificar se a interação já foi respondida ou aguardar um pequeno tempo antes de responder de fato.
+    </Callout>
+  </Tab>
+</Tabs>
+
+## Opções de Eventos [#event-options]
+
+Você pode definir algumas opções de eventos na função `setupCreators`:
+
+<Tabs items={["middleware", "onError"]}>
+  <Tab value="middleware">
+    Você pode definir uma função `middleware` que será executada antes da função `run` dos eventos
+
+    ```ts
+    /* ... */ setupCreators({
+        events: {
+            async middleware(event){
+                console.log("Evento", event.name, "emitido");
+            }
+        },
+    });
+    ```
+    Assim como nos comandos e responders, você pode fazer muita coisa com isso, como exibir logs padronizados para todos os eventos executados, injetar informações adicionais nos argumentos de eventos específicos, ou até mesmo bloquear a execução com base em checagens.
+
+    <Callout type="info">
+        No primeiro argumento, é recebido um objeto com os dados do evento, onde `name` é o nome do evento emitido e `args` são os argumentos desse evento, então verificando qual é o nome do evento, a tipagem dos argumentos é definida automaticamente:
+        ```ts
+        /* ... */ setupCreators({
+            events: {
+                async middleware(event) {
+                    if (event.name === "guildMemberUpdate"){
+                        const [oldMember, newMember] = event.args;
+                        // ...
+                        return;
+                    }
+                    if (event.name === "guildAuditLogEntryCreate"){
+                        const [entry, guild] = event.args;
+                        // ...
+                        return;
+                    }
+                    if (event.name === "messageCreate"){
+                        const [message] = event.args;
+                        // ...
+                        return;
+                    }
+                },
+            },
+        });
+        ```
+    </Callout>
+
+    Você pode executar a função `block` para bloquear a execução dos eventos.
+
+    ```ts
+    /* ... */ setupCreators({
+        events: {
+            async middleware(event, block){
+                if (event.name === "messageDelete"){
+                    const [message] = event.args;
+                    if (message.inGuild() && message.author.id == message.guild.id){
+                        block();
+                        return;
+                    }
+                }
+            }
+        },
+    });
+    ```
+    No caso dos eventos também é possível passar tags como argumento da função block, dessa maneira, você pode ter 3 eventos do mesmo tipo, por exemplo `messageCreate`, mas bloquear apenas aqueles com as tags previamente definidas:
+
+    ```ts tab="Eventos"
+    createEvent({
+        name: "Morning workflow",
+        event: "messageCreate",
+        tags: ["morning"],
+        async run(message) {
+            // ...
+        },
+    });
+
+    createEvent({
+        name: "Night workflow",
+        event: "messageCreate",
+        tags: ["night"],
+        async run(message) {
+            // ...
+        },
+    });
+
+    createEvent({
+        name: "Messages Workflow",
+        event: "messageCreate",
+        async run(message) {
+            // ...
+        },
+    });
+    ```
+    ```ts tab="Middleware"
+    /* ... */ setupCreators({
+        events: {
+            async middleware(event, block){
+                if (event.name === "messageCreate"){
+                    if (!isMorning()){
+                        block("morning");
+                        return;
+                    }
+                    if (!isNight()){
+                        block("night");
+                        return;
+                    }
+                }
+            }
+        },
+    });
+    ```
+    ```ts tab="Funções utilitárias"
+    function isMorning(): boolean {
+        const currentHour = new Date().getHours();
+        return currentHour >= 6 && currentHour < 12;
+    }
+    function isNight(): boolean {
+        const currentHour = new Date().getHours();
+        return currentHour >= 20 || currentHour < 6;
+    }
+    ```
+
+    Você pode passar quantas tags quiser para função `block`
+
+    ```ts
+    // ...
+    block("morning", "night", "foo", "bar", "baz")
+    // ...
+    ```
+
+    Todos os eventos que conter alguma das tags passadas como argumento da função block, não serão executados 
+
+  </Tab>
+  <Tab value="onError">
+    É possível definir um manipulador de erros customizado para eventos com a função `onError`
+
+    ```ts
+    /* ... */ setupCreators({
+        events: {
+            async onError(error, event){
+                // ...
+            }
+        },
+    });
+    ```
+    Você pode verificar qual é o tipo de erro e escolher entre enviar ou não, mensagens customizadas.
+    
+    <Callout type="danger">
+        É extremamente importante usar `await` em Promises quando o seu run for `async`, para que o manipulador de erros de eventos possa capturar corretamente.
+    </Callout>
+
+    ```ts
+    // [!code word:await]
+    createEvent({
+        name: "Register workflow",
+        event: "guildMemberAdd",
+        async run(member) {
+            const document = await db.members.create({
+                id: member.id,
+                username: member.user.username,
+                guildId: member.guild.id
+            });
+            // ...
+        },
+    })
+    ```
+  </Tab>
+</Tabs>

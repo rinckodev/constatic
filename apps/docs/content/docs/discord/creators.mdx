@@ -1,0 +1,428 @@
+---
+title: Creators
+icon: MdFactory
+description: Main base structures for creating commands and systems
+---
+import icons from "@lib/icons";
+
+On this base, to create commands and systems you must use the creator functions, which are `createCommand`, `createEvent` and `createResponder`.
+
+When executing these functions passing the data of the respective structures, they will be created and registered.
+
+You can set some options in the `index` file of the `discord` folder, see:
+
+```ts title="src/discord/index.ts"
+// [!code word:setupCreators]
+export const { createCommand, createEvent, createResponder } = setupCreators();
+```
+
+This function receives options and returns the creators of commands, events and responders for you to use. By exporting this return you can import them at any time using the base import alias:
+
+```ts
+import { createCommand, createEvent, createResponder } from "#base";
+```
+
+## Command Options [#command-options]
+
+You can set some command options in the `setupCreators` function:
+
+<Tabs items={["Default permissions", "Guilds", "middleware", "onError", "onNotFound"]}>
+  <Tab id="commands-default-permissions" value="Default permissions">
+    Set what the default permissions will be for all commands, if none are defined with the `defaultMemberPermissions` option (It is the same permissions array as the command).
+
+    ```ts
+    /* ... */ setupCreators({
+        commands: {
+            defaultMemberPermissions: ["SendMessages", "Connect"]
+        },
+    });
+    ```
+    This way, when you create a command and do not set any default member permissions, what you set in the `setupCreators` function will be the default for all commands.
+
+    ```ts title="command.ts"
+    createCommand({
+        name: "ping",
+        description: "Responde com pong",
+        type: ApplicationCommandType.ChatInput,
+        // defaultMemberPermissions: [] <-- Not set!
+        // But by default it will be registered in the application with ["SendMessages", "Connect"]
+        async run(interaction){
+            // ...
+        }
+    })
+    ```
+  </Tab>
+  <Tab id="commands-guilds" value="Guilds">
+    You can set multiple guild IDs that you want to register your bot's commands with the `guilds` option.
+
+    ```ts
+    import { env } from "#env";
+
+    /* ... */ setupCreators({
+        commands: {
+            guilds: [env.MAIN_GUILD_ID, "537817462272557057"]
+        },
+    });
+    ```
+    So, instead of registering the commands globally in the application, they will be registered only in the guilds, whose IDs were passed to this option.
+  </Tab>
+  <Tab value="middleware">
+    You can set a `middleware` function that will be executed before the commands` run function
+
+    ```ts
+    /* ... */ setupCreators({
+        commands: {
+            async middleware(interaction){
+                console.log("Command executed:", interaction.commandName);
+            }
+        },
+    });
+    ```
+    You can do a lot with this, such as displaying standardized logs for all executed commands, injecting additional information into the interaction, or even blocking execution based on checks.
+
+    You can call the `block` function to block the execution of commands.
+
+    ```ts
+    /* ... */ setupCreators({
+        commands: {
+            async middleware(interaction, block){
+                if (blockedUsers.includes(interaction.user.id)){
+                    interaction.reply({ content: "You cannot use any commands!" });
+                    block();
+                    return;
+                }
+            }
+        },
+    });
+    ```
+  </Tab>
+  <Tab value="onError">
+    It is possible to set a custom error handler for commands with the `onError` function
+
+    ```ts
+    /* ... */ setupCreators({
+        commands: {
+            async onError(error, interaction){
+                // ...
+            }
+        },
+    });
+    ```
+    You can check what type of error it is and choose whether or not to send custom messages.
+    
+    <Callout type="danger">
+        It is extremely important to use `await` on Promises when their run is `async`, so that the command error handler can catch it correctly.
+    </Callout>
+
+    ```ts
+    // [!code word:await]
+    createCommand({
+        name: "ping",
+        description: "Replies with pong",
+        async run(interaction){
+            await interaction.deferReply({ flags: ["Ephemeral"], });
+
+            const data = await dbOperation();
+
+            await interaction.editReply({ content: `Data: ${data.toString()}` });
+        }
+    })
+    ```
+  </Tab>
+  <Tab value="onNotFound">
+    If for some reason no handler is found for the command, the `onNotFound` function will be called.
+
+    ```ts
+    /* ... */ setupCreators({
+        commands: {
+            async onNotFound(interaction){
+                interaction.reply({ flags: ["Ephemeral"],, 
+                    content: "Command not found. Contact the team!"
+                });
+            }
+        },
+    });
+    ```
+  </Tab>
+  <Tab value="verbose">
+    This option makes the command logs more detailed, this way you can be sure that your commands were registered as it displays the direct response from the API.
+
+    ```ts
+    /* ... */ setupCreators({
+        commands: {
+            verboose: true
+        },
+    });
+    ```
+
+    See the example below with the commands that come by default:
+    ```bash
+    ● Awes online ✓
+    └ 2 commands successfully registered globally!
+      └ {/} 1342179401697333281 CREATED ping > Awes application > created at: 1:01:45 PM
+      └ {/} 1342179401252470856 CREATED counter > Awes application > created at: 1:01:45 PM
+    ```
+
+    The response displays the command ID in the application or guild, its name and the time it was created.
+  </Tab>
+</Tabs>
+
+## Responder Options [#responder-options]
+
+You can set some responder options in the `setupCreators` function:
+
+<Tabs items={["middleware", "onError", "onNotFound"]}>
+  <Tab value="middleware">
+    You can set a `middleware` function that will be executed before the responders` run function
+
+    ```ts
+    /* ... */ setupCreators({
+        responders: {
+            async middleware(interaction, params){
+                console.log("Comand executed:", interaction.customId);
+                console.log("Params:", params);
+            }
+        },
+    });
+    ```
+    Just like with commands, you can do a lot with this, such as displaying standardized logs for all executed responders, injecting additional information into the interaction, or even blocking execution based on checks.
+
+    You can run the `block` function to block responders from executing.
+
+    ```ts
+    /* ... */ setupCreators({
+        responders: {
+            async middleware(interaction, _params, block){
+                if (interaction.isButton() && blockedUsers.includes(interaction.user.id)){
+                    interaction.reply({ content: "You can't click any buttons!" });
+                    block();
+                    return;
+                }
+            }
+        },
+    });
+    ```
+  </Tab>
+  <Tab value="onError">
+    It is possible to set a custom error handler to respond with the `onError` function.
+
+    ```ts
+    /* ... */ setupCreators({
+        commands: {
+            async onError(error, interaction){
+                // ...
+            }
+        },
+    });
+    ```
+    You can check what type of error it is and choose whether or not to send custom messages.
+    
+    <Callout type="danger">
+        It is extremely important to use `await` on Promises when their run is `async`, so that the responder error handler can catch it correctly.
+    </Callout>
+
+    ```ts
+    // [!code word:await]
+    createResponder({
+        customId: "data/refresh",
+        types: [ResponderType.Button], cache: "cached",
+        async run(interaction){
+            await interaction.deferUpdate();
+
+            const data = await dbOperation();
+
+            await interaction.followUp({ 
+                flags: ["Ephemeral"],, content: `Dados: ${data.toString()}` 
+            });
+        }
+    })
+    ```
+  </Tab>
+  <Tab value="onNotFound">
+    If no handler is found for the component or modal, the `onNotFound` function will be called.
+
+    ```ts
+    /* ... */ setupCreators({
+        responders: {
+            async onNotFound(interaction){
+                interaction.reply({ flags: ["Ephemeral"],, 
+                    content: "This has not been set up yet. Contact the team!"
+                });
+            }
+        },
+    });
+    ```
+    <Callout type="danger">
+        Be careful! If you use component collectors or modals in any command, this function will still be called, as it looks for a handler created with the `createResponder` function. So it is important to check if the interaction has already been responded to or wait a short time before actually responding.
+    </Callout>
+  </Tab>
+</Tabs>
+
+## Event options [#event-options]
+
+You can set some event options in the `setupCreators` function:
+
+<Tabs items={["middleware", "onError"]}>
+  <Tab value="middleware">
+    You can set a `middleware` function that will be executed before the events `run` function
+
+    ```ts
+    /* ... */ setupCreators({
+        events: {
+            async middleware(event){
+                console.log("Event", event.name);
+            }
+        },
+    });
+    ```
+    As with commands and responders, you can do a lot with this, such as displaying standardized logs for all executed events, injecting additional information into the arguments of specific events, or even blocking execution based on checks.
+
+    <Callout type="info">
+        In the first argument, an object with the event data is received, where `name` is the name of the event emitted and `args` are the arguments of that event, so checking what the name of the event is, the typing of the arguments is automatically defined:
+        ```ts
+        /* ... */ setupCreators({
+            events: {
+                async middleware(event) {
+                    if (event.name === "guildMemberUpdate"){
+                        const [oldMember, newMember] = event.args;
+                        // ...
+                        return;
+                    }
+                    if (event.name === "guildAuditLogEntryCreate"){
+                        const [entry, guild] = event.args;
+                        // ...
+                        return;
+                    }
+                    if (event.name === "messageCreate"){
+                        const [message] = event.args;
+                        // ...
+                        return;
+                    }
+                },
+            },
+        });
+        ```
+    </Callout>
+
+    You can run the `block` function to block the execution of events.
+
+    ```ts
+    /* ... */ setupCreators({
+        responders: {
+            async middleware(event, block){
+                if (event.name === "messageDelete"){
+                    const [message] = event.args;
+                    if (message.inGuild() && message.author.id == message.guild.id){
+                        block();
+                        return;
+                    }
+                }
+            }
+        },
+    });
+    ```
+
+    In the case of events, it is also possible to pass tags as arguments to the block function. This way, you can have 3 events of the same type, for example `messageCreate`, but block only those with the previously defined tags:
+
+    ```ts tab="Events"
+    createEvent({
+        name: "Morning workflow",
+        event: "messageCreate",
+        tags: ["morning"],
+        async run(message) {
+            // ...
+        },
+    });
+
+    createEvent({
+        name: "Night workflow",
+        event: "messageCreate",
+        tags: ["night"],
+        async run(message) {
+            // ...
+        },
+    });
+
+    createEvent({
+        name: "Messages Workflow",
+        event: "messageCreate",
+        async run(message) {
+            // ...
+        },
+    });
+    ```
+    ```ts tab="Middleware"
+    /* ... */ setupCreators({
+        events: {
+            async middleware(event, block){
+                if (event.name === "messageCreate"){
+                    if (!isMorning()){
+                        block("morning");
+                        return;
+                    }
+                    if (!isNight()){
+                        block("night");
+                        return;
+                    }
+                }
+            }
+        },
+    });
+    ```
+    ```ts tab="Utility functions"
+    function isMorning(): boolean {
+        const currentHour = new Date().getHours();
+        return currentHour >= 6 && currentHour < 12;
+    }
+    function isNight(): boolean {
+        const currentHour = new Date().getHours();
+        return currentHour >= 20 || currentHour < 6;
+    }
+    ```
+
+    You can pass as many tags as you want to the block function.
+
+    ```ts
+    // ...
+    block("morning", "night", "foo", "bar", "baz")
+    // ...
+    ```
+
+    All events that contain any of the tags passed as arguments to the block function will not be executed.
+
+  </Tab>
+  <Tab value="onError">
+    It is possible to set a custom error handler for events with the `onError` function
+
+    ```ts
+    /* ... */ setupCreators({
+        events: {
+            async onError(error, interaction){
+                // ...
+            }
+        },
+    });
+    ```
+    You can check what type of error it is and choose whether or not to send custom messages.
+    
+    <Callout type="danger">
+        It is extremely important to use `await` on Promises when their run is `async`, so that the event error handler can catch it correctly.
+    </Callout>
+
+    ```ts
+    // [!code word:await]
+    createEvent({
+        name: "Register workflow",
+        event: "guildMemberAdd",
+        async run(member) {
+            const document = await db.members.create({
+                id: member.id,
+                username: member.user.username,
+                guildId: member.guild.id
+            });
+            // ...
+        },
+    })
+    ```
+  </Tab>
+</Tabs>

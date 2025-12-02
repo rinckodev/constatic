@@ -1,0 +1,97 @@
+---
+title: Começando
+icon: FaClipboard
+description: Primeiros passos para iniciar um novo projeto de bot de discord
+---
+import icons from "@lib/icons";
+import { CliCommand } from "@/components/constatic/cli/command";
+
+## Requisitos
+
+<Callout type="warn">
+  É preciso seguir estes requisitos antes de começar
+  - Um editor de código (de preferência o [Visual Studio Code](https://code.visualstudio.com/))
+  - É necessário [NodeJs](https://nodejs.org/) 20.11 ou maior instalado (ou [Bun](https://bun.sh/))
+  - Conhecimento básico de lógica de programação
+  - Conhecimento básico de [javascript](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript) e [typescript](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html)
+  - Conhecimento básico de [discord.js](https://discordjs.guide/)
+</Callout>
+
+## Gerando o projeto
+
+Para iniciar um novo projeto de bot de discord você pode utilizar a CLI.
+
+<Steps>
+  <Step>
+    Crie uma nova pasta para o seu projeto e abra ela no seu terminal
+  </Step>
+  <Step>
+  Use o comando abaixo para iniciar a CLI
+  <CliCommand packageName="constatic@latest" />
+  </Step>
+  <Step>
+    Selecione a primeira opção: `Iniciar projeto de bot de discord`
+  </Step>
+  <Step>
+  Serão feitas algumas perguntas para preparar o seu projeto:
+  ```md
+  - Nome do projeto (caminho para a pasta)
+  - Banco de dados (opcional)
+  - Recursos extras (opcional)
+  - Instalar dependências (opcional)
+  ```
+  </Step>
+  <Step>
+    Depois que responder tudo, seu projeto será gerado e você já pode começar a desenvolver.
+  </Step>
+</Steps>
+
+## Configurando o projeto
+
+Com o projeto gerado, coloque o token do seu bot no arquivo `.env` que está na raiz do projeto
+<Callout type="info">
+    [Veja como criar uma aplicação de bot e obter o token no portal de desenvolvedor do discord](/docs/discord/guides/application)
+</Callout>
+
+```properties title=".env"
+BOT_TOKEN=seutoken
+```
+
+Depois de colocar o token você pode executar o projeto em desenvolvido utilizando o comando abaixo
+
+```bash
+npm run dev
+```
+
+Após isso o seu bot deverá ficar online e você já pode começar o desenvolvimento!
+
+## Desenvolvendo seu bot
+
+Veja abaixo alguns conceitos dessa base de bots que você pode utilizar para construir bots modernos
+
+<Cards>
+  <Card
+    href="/docs/discord/commands"
+    title="Comandos"
+    icon={<icons.HiMiniCommandLine/>}
+    description="São essenciais em qualquer bot para permitir que os usuários executem ações e recebam mensagens"
+  />
+  <Card
+    href="/docs/discord/events"
+    title="Eventos"
+    icon={<icons.RiCalendarEventFill/>}
+    description="São úteis para executar código quando determinadas ações ocorrem no seu bot"
+  />
+  <Card
+    href="/docs/discord/responders"
+    title="Responders"
+    icon={<icons.BsFillReplyFill/>}
+    description="É uma estrutura exclusiva desse projeto que permite o bot responder componentes e modais fixos"
+  />
+  <Card
+    href="/docs/discord/presets/databases"
+    title="Banco de dados"
+    icon={<icons.FaDatabase/>}
+    description="Veja como criar e configurar banco de dados em projetos criados com essa base"
+  />
+</Cards>

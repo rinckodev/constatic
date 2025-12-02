@@ -1,0 +1,64 @@
+---
+title: Começando
+icon: FaClipboard
+description: Como utilizar a ferramenta de emojis da CLI Constatic
+---
+import { CliCommand } from "@/components/constatic/cli/command";
+import { CliMenus } from "@/components/constatic/cli/menu";
+import icons from "@lib/icons";
+
+# Introdução
+
+A ferramenta de emojis da CLI serve para gerenciar emojis de uma aplicação de bot de discord de uma maneira mais fácil do que usando o portal do discord.
+
+Com essa ferramenta você pode:
+- 📂 Enviar imagens de um diretório e subpastas para criar emojis da aplicação
+- 📋 Listar todos os emojis existentes
+- 🔄 Atualizar os emojis de forma simples
+- 🗑️ Excluir emojis selecionados ou todos os emojis de uma vez
+- 📝 Gerar um arquivo json com todos os nomes e ids dos emojis para usar facilmente no seu projeto
+
+# Começando
+
+Para usar este recurso comece executando a CLI:
+
+<CliCommand packageName="constatic@latest" />
+
+Então no menu principal selecione a opção `Gerenciar emojis do discord`.
+<CliMenus.Main lang="pt" selected="emojis"/>
+
+Antes de acessar o menu de emojis, é necessário selecionar uma aplicação.
+Você pode fazer isso algumas formas:
+
+- Selecionando uma aplicação salva no menu de [predefinições de tokens](/docs/presets/tokens)
+- Selecionando o token em algum dos arquivos .env detecados na raiz de onde a CLI foi executada.
+- Inserindo o token manualmente através da opção `Nova aplicação temporária`
+
+Após isso você verá o menu com todas as opções para gerenciar os emojis da sua aplicação, confira como usar cada opção:
+
+<Cards className="lg:grid-cols-2">
+	<Card
+		href="/docs/emojis/upload"
+		title="Enviando emojis"
+		icon={<icons.HiUpload/>}
+		description="Veja como enviar imagens para criar emojis da aplicação de maneira simples"
+	/>
+	<Card
+		href="/docs/emojis/list"
+		title="Listando emojis"
+		icon={<icons.FaRegListAlt/>}
+		description="Liste todos os emojis da sua aplicação para conferir suas informações"
+	/>
+	<Card
+		href="/docs/emojis/file"
+		title="Arquivo de emojis"
+		icon={<icons.FaFileDownload/>}
+		description="Gere um arquivo json com todos os emojis prontos para serem usados no seu projeto"
+	/>
+	<Card
+		href="/docs/emojis/delete"
+		title="Deletando emojis"
+		icon={<icons.FaTrashAlt/>}
+		description="Exclua emojis selecionados ou todos os emojis de uma vez"
+	/>
+</Cards>

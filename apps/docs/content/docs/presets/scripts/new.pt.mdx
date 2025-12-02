@@ -1,0 +1,122 @@
+---
+title: Criar
+icon: HiDocumentPlus
+description: Criar nova predefinição de script
+---
+import icons from "@lib/icons";
+import { CliMenus } from "@/components/constatic/cli/menu";
+
+# Criando nova predefinição de script
+
+<Callout type="warn">
+    É recomendado executar a CLI na raiz de um projeto que contenha os arquivos já estruturados da forma que você deseja que fique na predefinição
+</Callout>
+
+Depois de [acessar o menu de predefinições de scripts](/docs/presets/scripts/start) você pode selecionar a opção para criar uma nova:
+
+<CliMenus.Scripts lang="pt" selected="new"/>
+
+## Adicionar arquivos
+
+Você pode adicionar arquivos à sua predefinição selecionado a opção `Adicionar arquivos`:
+
+<CliMenus.ModifyScript lang="pt" selected={["files"]} hidden={["rm", "uninstall"]}/>
+
+<Callout type="warn">
+    Serão exibidos todos os arquivos a partir do diretório onde a CLI foi executada
+</Callout>
+
+No menu que será exibido com os arquivos você pode pesquisar por um arquivo específico apenas digitando. Para selecionar/desselecionar pressiona a tecla `tab` e confirme com a tecla `Enter`.
+
+<Accordions>
+    <Accordion title="Entenda como os arquivos serão armazenados" id="overwrite">
+    Supondo que você execute a CLI na raiz de um projeto como este:
+    ```md
+    src/
+    ├── discord/ ...
+    ├── functions/
+    │   └── utils/
+    │       ├── emojis.ts
+    │       └── res.ts
+    ├── tools/
+    │   └── canvas/
+    │       └── card.ts
+    ├── env.ts
+    └── index.ts
+    ```
+
+    Você poderá selecionar todos os arquivos nesse diretório e em subpastas.
+    Ao selecionar arquivos, eles serão armazenados em uma pasta de configurações da CLI com a mesma estrutura em que foram selecionados.
+    Então se você selecionar estes dois arquivos:
+    | | |
+    | -- | ---- |
+    | `res.ts` | `src/functions/utils/res.ts`|
+    | `card.ts` | `src/tools/canvas/card.ts` |
+
+    Os arquivos serão armazenados dessa forma:
+     ```md
+    src/
+    ├── functions/
+    │   └── utils/
+    │       └── res.ts
+    └── tools/
+         └── canvas/
+             └── card.ts
+    ```
+
+    Então quando essa predefinição for aplicada, os arquivos serão copiados nesse mesmo formato a partir do diretório em que a CLI está sendo executada.
+    </Accordion>
+</Accordions>
+
+## Remover arquivos
+
+Com arquivos já selecionados na predefinição, a opção `Remover arquivos irá aparecer` e você pode selecionar ela para selecionar os arquivos que deseja remover:
+
+<CliMenus.ModifyScript lang="pt" selected={["rm"]} hidden={["uninstall"]}/>
+
+Caso você se arrependa de algum arquivo você poderá selecionar ele para ser removido.
+
+## Adicionar dependências
+
+Se os arquivos que você selecionou precisam de dependências, você pode adicionar com a opção `Adicionar dependências`:
+
+<CliMenus.ModifyScript lang="pt" selected={["deps"]} hidden={["uninstall"]}/>
+
+Você poderá digitar o nome de uma dependência para adicionar à predefinição
+
+<Callout type="info">
+    Você pode adicionar uma dependência com uma versão específica, basta usar a mesma sintaxe de instalação de dependências:
+    Tendo como exemplo a lib fasitfy:
+    - Instale uma major version com `@x`: `fastify@5`
+    - Instale uma minor version com `@x.x`: `fastify@4.28`
+    - Instale uma versão específica com `@x.x.x`: `fastify@3.25.2`
+</Callout>
+
+Depois você pode selecionar se quer adicionar como dependência de produção ou desenvolvimento:
+
+| Tipo de dependência | Propriedade no package.json |
+| -- | ---- |
+| Dependência de produção | `dependencies` |
+| Dependência de desenvolvimento | `devDependencies` |
+
+## Remover dependências
+
+Você pode remover dependências que foram adicionadas anteriormente com a opção `Remover dependências`:
+
+<CliMenus.ModifyScript lang="pt" selected={["uninstall"]} />
+
+## Previsualizar
+
+Você pode ver como está ficando a estrutura da sua predefinição de script usando a opção `Previsualizar`:
+
+<CliMenus.ModifyScript lang="pt" selected={["preview"]} />
+
+Será exibido no terminal a estrutura dos arquivos e dependências da predefinição
+
+## Salvar
+
+Depois de construir a sua predefinição de script basta salvar para poder reutilizar mais tarde usando a opção `Salvar`:
+
+<CliMenus.ModifyScript lang="pt" selected={["save"]} />
+
+Será solicitado que você insira um nome para a predefinição. Coloque um nome curto e claro que seja bom para indentificar o conteúdo da predefinição (Utilize emojis se quiser).

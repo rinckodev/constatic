@@ -1,0 +1,11 @@
+{
+    "title": "Emoji tool",
+    "icon": "FaTools",
+    "pages": [
+        "start",
+        "upload",
+        "list",
+        "file",
+        "delete"
+    ]
+}

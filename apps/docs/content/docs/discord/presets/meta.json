@@ -1,0 +1,9 @@
+{
+    "title": "Presets",
+    "icon": "PiBlueprintFill",
+    "defaultOpen": true,
+    "pages": [
+        "databases",
+        "servers"
+    ]
+}

@@ -1,0 +1,320 @@
+---
+title: Params
+icon: PiBracketsCurlyFill
+description: Transform customId of components and modals into http routes with parameters
+---
+
+import icons from "@lib/icons";
+
+## What are CustomID params?
+
+Let's go a little beyond the conventional, on this base a resource present in several API server tools was implemented to allow more advanced systems to be developed more easily.
+
+Just like in http routes, we can pass parameters to the `customIds` of buttons, select menus and modals. See how simple it is:
+
+First let's create a user context command:
+```ts title="src/discord/commands/context/manage.ts"
+
+createCommand({
+    name: "Manage",
+    type: ApplicationCommandType.User,
+    async run(interaction){
+        const { targetUser } = interaction;
+
+        const embed = new EmbedBuilder({ description: `Manage ${targetUser}` });
+        const row = createRow(
+            new ButtonBuilder({ 
+                customId: `/manage/user/${targetUser.id}/kick`, 
+                label: "Kick", style: ButtonStyle.Secondary 
+            }),
+            new ButtonBuilder({ 
+                customId: `/manage/user/${targetUser.id}/ban`, 
+                label: "Ban", style: ButtonStyle.Danger 
+            }),
+            new ButtonBuilder({ 
+                customId: `/manage/user/${targetUser.id}/timeout`, 
+                label: "Timeout", style: ButtonStyle.Danger 
+            }),
+            new ButtonBuilder({ 
+                customId: `/manage/user/${targetUser.id}/alert`, 
+                label: "Alert", style: ButtonStyle.Primary 
+            })
+        );
+
+        interaction.reply({ flags: ["Ephemeral"], embeds: [embed], components: [row] });
+    }
+});
+```
+
+<Accordions>
+    <Accordion title="Note that the customId of all buttons has a similarity, both follow a pattern, where each segment is separated by / (slash)">
+    ```ts
+    // ...
+    // [!code word:/]
+    new ButtonBuilder({ 
+        customId: `/manage/user/${targetUser.id}/kick`,  // [!code highlight]
+        label: "Kick", style: ButtonStyle.Secondary 
+    }),
+    new ButtonBuilder({ 
+        customId: `/manage/user/${targetUser.id}/ban`, // [!code highlight]
+        label: "Ban", style: ButtonStyle.Danger 
+    }),
+    new ButtonBuilder({ 
+        customId: `/manage/user/${targetUser.id}/timeout`, // [!code highlight]
+        label: "Timeout", style: ButtonStyle.Danger 
+    }),
+    new ButtonBuilder({ 
+        customId: `/manage/user/${targetUser.id}/alert`, // [!code highlight]
+        label: "Alert", style: ButtonStyle.Primary 
+    })
+    // ...
+    ```
+    </Accordion>
+</Accordions>
+
+With this we can create a `Responder` that expects any button component that follows this pattern in the customId.
+
+It should start with `/manage/user` and then have two more parameter segments separated by `/` and starting with `:`, where the first will be the user id and the second will be an action.
+
+<Callout type="info">
+    It would look like this: `/manage/user/:userId/:action`
+</Callout>
+
+So we can define this pattern and any button where the customId follows it, will be responded by the defined function. You can get the parameters in the second argument of the function.
+
+
+```ts title="src/discord/responders/manage.ts"
+// Dynamic button component function
+createResponder({
+    customId: "/manage/user/:userId/:action",
+    types: [ComponentType.Button], cache: "cached",
+    async run(interaction, params) {
+        const { action, userId } = params;
+        const targetMember = await interaction.guild.members.fetch(userId);
+
+        switch(action){
+            case "kick": {
+                targetMember.kick();
+                // do things ...
+                break;
+            }
+            case "ban": {
+                targetMember.ban();
+                // do things ...
+                break;
+            }
+            case "timeout": {
+                targetMember.timeout(60000);
+                // do things ...
+                break;
+            }
+            case "alert": {
+                targetMember.send({ /* ... */ });
+                // do things ...
+                break;
+            }
+        }
+    },
+});
+```
+
+<Callout type="danger">
+    You can use this feature with any type of `Responder`, but don't forget that discord has a 100 character limit on customIds.
+</Callout>
+
+## Transforming CustomID parameters
+
+The `createResponder` function has an option where you can specify a way to transform the parameters object, which initially has both keys and values that are just strings. Check it out:
+
+<Tabs items={["Simple Transformation", "Transforming Dates", "Optional Transformation", "Zod Schema"]}>
+  <Tab value="Simple Transformation">
+    Transform the `value` parameter into a number, so you can use numeric functions
+
+    ```ts title="Botão"
+    new Button({
+        customId: "/count/1",
+        label: "Count", 
+        style: ButtonStyle.Primary 
+    })
+    ```
+    ```ts title="Responder"
+    createResponder({
+        customId: "/count/:value", cache: "cached",
+        types: [ComponentType.Button],
+        parse: params => ({ // [!code highlight]
+            value: Number.parseInt(params.value) // [!code highlight]
+        }), // [!code highlight]
+        async run(interaction, { value }) {
+            console.log(value + 1); // 2
+            console.log(value.toFixed(2)); // "1.00"
+        }
+    });
+    ```
+  </Tab>
+  <Tab value="Transforming Dates">
+    You can pass ISO string dates as well:
+
+    ```ts title="Botão"
+    new Button({
+        customId:`/remind/${new Date().toISOString()}`
+        // customId: `remind/2025-1-2T22:04:53.523Z`,
+        label: "Remind", 
+        style: ButtonStyle.Success 
+    });
+    ```
+    ```ts title="Responder"
+    createResponder({
+        customId: "/remind/:date", cache: "cached",
+        types: [ComponentType.Button],
+        parse: params => ({ // [!code highlight]
+            date: new Date(params.date) // [!code highlight]
+        }), // [!code highlight]
+        async run(interaction, { date }) {
+            console.log(date.getHours()) 
+            console.log(date.getMinutes())
+            console.log(date.getMonth());
+        }
+    });
+    ```
+  </Tab>
+  <Tab value="Optional Transformation">
+    You don't need to specify all the parameter properties, let's assume you only want to transform one property and keep everything else as string:
+
+    ```ts title="Botão"
+    new Button({
+        customId:`/embeds/1/title/create`
+        label: "Create", 
+        style: ButtonStyle.Success 
+    });
+    ```
+    ```ts title="Responder"
+    createResponder({
+        customId: "/embeds/:index/:menu/:action", cache: "cached",
+        types: [ComponentType.Button],
+        parse: params => ({ // [!code highlight]
+            ...params, // [!code highlight]
+            index: Number.parseInt(params.index) // [!code highlight]
+        }), // [!code highlight]
+        async run(interaction, { index, menu, action }) {
+            const embed = embeds[index];
+
+            switch(menu){
+                // ...
+            }
+        }
+    });
+    ```
+  </Tab>
+  <Tab value="Zod Schema">
+    For larger customIds you can use a scheme from the zod lib, which already comes in the base dependencies:
+
+    ```ts title="Botão"
+    new Button({
+        customId:`/menus/${user.id}/channels/create`
+        label: "Create new channel", 
+        style: ButtonStyle.Success 
+    });
+    ```
+    ```ts title="Responder"
+    import { z } from "zod"; // [!code highlight]
+
+    createResponder({
+        customId: "/menus/:userId/:menu/:action",
+        types: [ResponderType.Button], cache: "cached",
+        parse: z.object({ // [!code highlight]
+            userId: z.string(), // [!code highlight]
+            menu: z.enum(["channels", "roles", "parents"]), // [!code highlight]
+            action: z.enum(["create", "updated", "delete"]) // [!code highlight]
+        }).parse, // [!code highlight]
+        async run(interaction, { menu, action, userId }) {
+            menu // "channels" | "roles" | "parents"
+            action // "create" | "updated" | "delete"
+        },
+    })
+    ```
+  </Tab>
+</Tabs>
+
+## Wildcards
+
+You can also use wildcards if you want to respond to routes with more or less segments.
+
+<Tabs items={["Using wildcard", "Named wildcard", "Transforming wildcard"]}>
+  <Tab value="Using wildcard">
+    Use `**` to represent any pattern of segments after the `/` (slash)
+    
+    ```md title="CustomIds that will be responded to"
+    - "/giveway"
+    - "/giveway/users"
+    - "/giveway/gifts/nitro"
+    - "/giveway/gifts/account/creator/expiresAt"
+    ```
+
+    ```ts title="Responder"
+    createResponder({
+        customId: "/giveway/**", cache: "cached",
+        types: [ComponentType.Button],
+        async run(interaction, { _ }) {
+            // /giveway _: ""
+            // /giveway/users _: "users"
+            // /giveway/gifts/nitro _:"gifts/nitro"
+            // /giveway/gifts/account/creator/expiresAt _:"gifts/account/creator/expiresAt"
+        }
+    });
+    ```
+  </Tab>
+  <Tab value="Named wildcard">
+    Give a name to the wildcard instead of `_`, use `:` to define a name:
+    
+    ```md title="CustomIds that will be responded to"
+    - "/giveway/users"
+    - "/giveway/gifts/nitro"
+    - "/giveway/gifts/account/creator/expiresAt"
+    ```
+
+    ```ts title="Responder"
+    createResponder({
+        customId: "/giveway/**:args", cache: "cached",
+        types: [ComponentType.Button],
+        async run(interaction, { args }) {
+            // /giveway/users args: "users"
+            // /giveway/gifts/nitro args:"gifts/nitro"
+            // /giveway/gifts/account/creator/expiresAt args:"gifts/account/creator/expiresAt"
+        }
+    });
+    ```
+    <Callout type="warn">
+        By defining a name for the wildcard, it now becomes mandatory for the customId to have one more segment, that is, it will not respond to just `giveway`, only `giveway/args...`.
+    </Callout>
+  </Tab>
+  <Tab value="Transforming wildcard">
+    You can use the `parse` method to transform the wildcard into whatever you want, for example an array.
+    
+    ```md title="CustomIds that will be responded to"
+    - "/giveway"
+    - "/giveway/users"
+    - "/giveway/gifts/nitro"
+    - "/giveway/gifts/account/creator/expiresAt"
+    ```
+
+    ```ts title="Responder"
+    createResponder({
+        customId: "/giveway/**", cache: "cached",
+        types: [ComponentType.Button],
+        parse: params => ({
+            args: params._.split("/").filter(Boolean)
+        }),
+        async run(interaction, { args }) {
+            // /giveway args: []
+            // /giveway/users args: ["users"]
+            // /giveway/gifts/nitro args: ["gifts", "nitro"]
+            // /giveway/gifts/account/creator/expiresAt args: ["gifts", "account", "creator", "expiresAt"]
+        }
+    });
+    ```
+  </Tab>
+</Tabs>
+
+<Callout type="info">
+    The examples on this page were all with buttons, but this feature can be used with any type of responder!
+</Callout>

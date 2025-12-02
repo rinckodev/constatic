@@ -1,0 +1,66 @@
+---
+title: Começando
+icon: FaClipboard
+description: Gerencie predefinições de scripts na CLI
+---
+import { CliCommand } from "@/components/constatic/cli/command";
+import { CliMenus } from "@/components/constatic/cli/menu";
+import icons from "@lib/icons";
+
+As predefinições de scripts são uma forma de reutilizar código de forma fácil e simples com a CLI. Você pode agrupar arquivos de código e instruções em uma predefinição e reutilizar ao gerar um novo projeto ou gerar em projetos já existentes. Dessa forma o trabalho manual de copiar e colar arquivos é reduzido.
+
+# Começando
+
+<Steps>
+    <Step>
+        Para usar este recurso comece executando a CLI:
+
+        <CliCommand packageName="constatic@latest" />
+    </Step>
+    <Step>
+        Então no menu principal selecione a opção `Gerenciar predefinições`.
+        <CliMenus.Main lang="pt" selected="presets"/>
+    </Step>
+    <Step>
+        Depois disse selecione as predefinições de scripts:
+
+        <CliMenus.Presets lang="pt" selected="scripts"/>
+    </Step>
+</Steps>
+
+Depois disso você verá o menu onde poderá criar e gerenciar predefinições de scripts
+
+## Criando e gerenciando
+
+<Cards className="lg:grid-cols-2">
+	<Card
+		href="/docs/presets/scripts/new"
+		title="Criar predefinição"
+		icon={<icons.HiDocumentPlus/>}
+		description="Aprenda como funciona o menu de criação de predefinição"
+	/>
+	<Card
+		href="/docs/presets/scripts/list"
+		title="Listar todas as predefinições"
+		icon={<icons.FaRegListAlt/>}
+		description="Confira uma listagem de todas as predefinições e informações sobre elas"
+	/>
+	<Card
+		href="/docs/presets/scripts/edit"
+		title="Editar predefinição"
+		icon={<icons.MdModeEdit/>}
+		description="Editar predefinições existentes, adicionando ou removendo arquivos e/ou dependenências"
+	/>
+	<Card
+		href="/docs/presets/scripts/apply"
+		title="Aplicar predefinições"
+		icon={<icons.FaFileDownload/>}
+		description="Veja como aplicar suas predefinições em projetos"
+	/>
+	<Card
+		href="/docs/presets/scripts/delete"
+		title="Excluir predefinições"
+		icon={<icons.FaTrashAlt/>}
+		description="Exclua facilmente uma ou várias predefinições na CLI"
+	/>
+</Cards>

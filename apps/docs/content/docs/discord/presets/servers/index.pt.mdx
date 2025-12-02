@@ -1,0 +1,32 @@
+---
+title: Servidores API
+icon: FaGlobe
+description: Guia de utilização das predefinições de servidor API da Constatic Base
+---
+import { CliMenus } from "@/components/constatic/cli/menu";
+import icons from "@lib/icons";
+
+Um servidor de API (Interface de Programação de Aplicações) é um sistema que expõe dados e funcionalidades de uma aplicação por meio de endpoints acessíveis através de requisições HTTP, permitindo que diferentes sistemas, como aplicativos web, mobile ou de terceiros, se comuniquem e utilizem esses recursos de forma segura e eficiente.
+
+Usando a [CLI para gerar seu projeto](/docs/discord/start), é possível selecionar uma predefinição de servidores de API.
+
+<CliMenus.Servers lang="pt" />
+
+O servidor API das predefinições vai estar na pasta `server` dentro de `src`
+
+As predefinições disponíveis são:
+
+<Cards className="lg:grid-cols-3">
+    <Card
+        href="/docs/discord/presets/servers/fastify"
+        title="Fastify"
+        icon={<icons.SiFastify/>}
+        description="Veja como é a estrutura da predefinição de servidor fastify"
+    />
+    <Card
+	    href="/docs/discord/presets/servers/express"
+        title="Express"
+        icon={<icons.SiExpress/>}
+        description="Veja como é a estrutura da predefinição de servidor express"
+    />
+</Cards>

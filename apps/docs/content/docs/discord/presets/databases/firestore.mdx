@@ -1,0 +1,201 @@
+---
+title: Firestore
+icon: BiLogoFirebase
+description: See how to use the firestore database preset
+---
+
+<Callout type="info">
+    You will need to have a Firestore database to use this preset!
+    If you want to create one in the cloud for free, [follow this guide](/docs/discord/guides/databases/firestore)
+</Callout>
+
+# Env
+
+The environment variables validation scheme receives a new property, now it is necessary to define the file path of your firebase account in the `FIREBASE_PATH` variable:
+
+```properties title=".env"
+# ...
+FIREBASE_PATH=./firebase.json
+# ... 
+```
+
+Veja um exemplo do arquivo `firebase.json` do banco de dados Firestore:
+```json title="firebase.json"
+{
+    "type": "type",
+    "project_id": "project_id",
+    "private_key_id": "private_key_id",
+    "private_key": "private_key",
+    "client_email": "private_key",
+    "client_id": "private_key",
+    "auth_uri": "private_key",
+    "token_uri": "private_key",
+    "auth_provider_x509_cert_url": "private_key",
+    "client_x509_cert_url": "private_key"
+}
+```
+
+Below, check out the presets according to the library used:
+
+<Tabs items={["Typesaurus", "Firelord"]}>
+    <Tab value="Typesaurus">
+        # Typesaurus
+
+        ## Estrutura
+
+        The structure of this template was made using the [typesaurs](https://typesaurus.com/) library, so to create our data we used [typesaurus schemas](https://typesaurus.com/get-started/schema/)
+
+        The `index.ts` file in the `src/database` folder must connect to the database:
+
+        ```ts title="src/database/index.ts"
+        import firebase from "firebase-admin";
+        import { MemberDocument } from "./documents/MemberDocument.js";
+        import { GuildDocument } from "./documents/GuildDocument.js";
+        import { schema, Typesaurus } from "typesaurus";
+        import { logger } from "#base";
+        import { env } from "#env";
+        import path from "node:path";
+        import chalk from "chalk";
+        import fs from "node:fs";
+
+        const firebaseAccountPath = rootTo(env.FIREBASE_PATH);
+
+        if (!fs.existsSync(firebaseAccountPath)){
+            const filename = chalk.yellow(`"${path.basename(firebaseAccountPath)}"`);
+            const text = chalk.red(`The ${filename} file was not found in ${__rootname}`);
+            logger.error(text);
+            process.exit(0);
+        }
+
+        const firebaseAccount: firebase.ServiceAccount = JSON.parse(
+            fs.readFileSync(firebaseAccountPath, { encoding: "utf-8" })
+        );
+
+
+        firebase.initializeApp({ credential: firebase.credential.cert(firebaseAccount) });
+
+        export const db = schema(({ collection }) => ({
+            guilds: collection<GuildDocument>().sub({
+                members: collection<MemberDocument>()
+            })
+        }));
+
+        export type DatabaseSchema = Typesaurus.Schema<typeof db>;
+        export type MemberSchema = DatabaseSchema["guilds"]["sub"]["members"]["Data"];
+        export type GuildSchema = DatabaseSchema["guilds"]["Data"];
+
+        export * from "./functions/guilds.js";
+        export * from "./functions/members.js";
+        ```
+
+        Document collections are stored in the `db` variable object, that is, for each new document schema you create, place the collection as a property of this variable or as a sub-property of an existing one.
+
+        So when you need to create, read, update or delete data, just import the `db` variable from `#database` and use the collection methods:
+
+        Check the library documentation for best usage:
+        https://typesaurus.com/get-started/
+
+        <Callout type="warn">
+            Always use the `db` variable from the `"#database"` import shortcut, this way the file containing the code that makes the connection to the database is called.
+        </Callout>
+
+        ## Interfaces
+
+        To have autocomplete of properties in the db variable when creating collections, it is necessary to pass data interfaces in the generic collections, you can create the interfaces of your collections in the `src/databases/documents` folder
+
+        ```ts title="src/database/documents/member.ts" tab="Interface da coleção de membros"
+        interface MemberDocument {
+            wallet?: {
+                coins?: number;
+            }
+        }
+
+        export { MemberDocument };
+        ```
+        ```ts title="src/database/documents/guild.ts" tab="Interface da coleção de guildas"
+        type ChannelInfo = {
+            id: string;
+            url: string;
+        }
+
+        interface GuildDocument {
+            channels?: {
+                logs?: ChannelInfo
+            }
+        }
+
+        export { GuildDocument };
+        ```
+
+        After creating your interface, import it into the `index.ts` file in the `src/database` folder and create a collection passing it as generic:
+
+        ```ts title="src/database/index.ts"
+        // [!code word:collection]
+        import { MemberDocument } from "./documents/MemberDocument.js";
+        import { GuildDocument } from "./documents/GuildDocument.js";
+        import { schema } from "typesaurus";
+
+        export const db = schema(({ collection }) => ({
+            guilds: collection<GuildDocument>().sub({ // [!code highlight]
+                members: collection<MemberDocument>() // [!code highlight]
+            })
+        }));
+        ```
+    </Tab>
+    <Tab value="Firelord">
+        # Firelord
+
+        ## Estrutura
+
+        The structure of this template was made using the [firelord](https://firelordjs.com/installation) library, so to create our data we used [firelord functions](https://firelordjs.com/quick_start_admin)
+
+        The `index.ts` file in the `src/database` folder must connect to the database:
+
+        ```ts title="src/database/index.ts"
+        import fs from "node:fs";
+        import chalk from "chalk";
+        import { logger } from "#base";
+        import { env } from "#env";
+        import path from "node:path";
+
+        const firebaseAccountPath = rootTo(env.FIREBASE_PATH);
+
+        if (!fs.existsSync(firebaseAccountPath)){
+            const filename = chalk.yellow(`"${path.basename(firebaseAccountPath)}"`);
+            const text = chalk.red(`The ${filename} file was not found in ${__rootname}`);
+            logger.error(text);
+            process.exit(0);
+        }
+
+        const firebaseAccount = JSON.parse(
+            fs.readFileSync(firebaseAccountPath, { encoding: "utf-8" })
+        );
+
+        import { getFirelord, getFirestore } from "firelord";
+        import { cert, initializeApp } from "firebase-admin/app";
+
+        import { GuildDocument } from "./documents/GuildDocument.js";
+        import { MemberDocument } from "./documents/MemberDocument.js";
+
+        const app = getFirestore(initializeApp({ credential: cert(firebaseAccount) })); 
+
+        export const db = {
+            guildsRef: getFirelord<GuildDocument>(app, "guilds"),
+            membersRef: getFirelord<MemberDocument>(app, "guilds", "members"),
+            guilds(id: string){
+                return this.guildsRef.doc(id);
+            },
+            members(member: { guild: { id: string }, id: string }){
+                return this.membersRef.doc(member.guild.id, member.id);
+            }
+        };
+        ```
+
+        Document models are stored in the `db` variable object, that is, for each new document schema you create, place the model as a property of this variable.
+
+        So when you need to create, read, update or delete data, just import the `db` variable from `#database` and use the model methods:
+
+        Check the library documentation for best usage:
+        https://firelordjs.com/quick_start_admin
+    </Tab>
+</Tabs>

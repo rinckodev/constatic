@@ -1,0 +1,83 @@
+---
+title: MongoDB
+icon: BiLogoMongodb
+description: Guia para criar um novo banco de dados mongodb
+---
+
+# Criando um banco de dados MongoDB
+
+Acesse https://www.mongodb.com/pt-br e faça login (ou registre-se)
+
+<ImageZoom src={"/mongodb/step-01.png"} width={500} height={500} alt="step-01"/>
+
+Você deve ser enviado para a página inicial. Se não, clique na logo Atlhas no topo da página. Depois disso clique em `Novo projeto` para criar um novo projeto.
+
+<ImageZoom src={"/mongodb/step-02.png"} width={500} height={500} alt="step-02"/>
+
+Insira o nome que você deseja e clique em `próximo`.
+
+<ImageZoom src={"/mongodb/step-03.png"} width={500} height={500} alt="step-03"/>
+
+Você verá essa tela, então clique em `Criar projeto`.
+
+<ImageZoom src={"/mongodb/step-04.png"} width={500} height={500} alt="step-04"/>
+
+Você será redirecionado para a tela inicial do seu projeto. Inicialmente você não terá nada, então clique em `Criar`.
+
+<ImageZoom src={"/mongodb/step-05.png"} width={500} height={500} alt="step-05"/>
+
+Escolha o plano gratuito `M0`.
+
+<ImageZoom src={"/mongodb/step-06.png"} width={500} height={500} alt="step-06"/>
+
+Escolha o provedor que você deseja, então selecione a região (é recomendado escolher a região mais próxima da sua aplicação).
+Coloque o nome que você preferir para o cluster.
+
+<ImageZoom src={"/mongodb/step-07.png"} width={500} height={500} alt="step-07"/>
+
+Na parte de baixo da página clique em `Criar`.
+
+<ImageZoom src={"/mongodb/step-08.png"} width={500} height={500} alt="step-08"/>
+
+<Callout type="warn">
+  Essa etapa é muito importante
+</Callout>
+
+Crie um usuário que poderá acessar o banco de dados! Defina o nome que você quiser e a senha (é recomendado clicar em `gerar a senha automaticamente`).
+
+<Callout type="warn">
+    Clique em copiar essa senha e salve ela para usar mais tarde.
+</Callout>
+
+<ImageZoom src={"/mongodb/step-09.png"} width={500} height={500} alt="step-09"/>
+
+Adicione um endereço ip e clique em `adicionar`.
+Adicionando o ip `0.0.0.0/0` permitirá que um bot hospedado em qualquer lugar se conecte com o banco de dados.
+
+Por último clique em `finalizar e fechar`.
+
+<ImageZoom src={"/mongodb/step-10.png"} width={500} height={500} alt="step-10"/>
+
+Clique em `conectar`
+
+<ImageZoom src={"/mongodb/step-11.png"} width={500} height={500} alt="step-11"/>
+
+Então selecione `drivers`.
+
+<ImageZoom src={"/mongodb/step-12.png"} width={500} height={500} alt="step-12"/>
+
+Clique para copiar a `URI` do seu banco de dados.
+
+<ImageZoom src={"/mongodb/step-13.png"} width={500} height={500} alt="step-13"/>
+
+<Callout>
+    Note que logo abaixo diz para substituir `<password>` com a senha que você definiu para o seu usuário.
+
+    - mongodb+srv://root:`<password>`@cluster0.doy8zej.mon...
+    - mongodb+srv://root:`T8g4Hrlqi7LUK0XG`@cluster0.doy8zej.mon...
+</Callout>
+
+Com a URI do seu banco de dados em mãos, você pode usá-la no seu projeto para conectar.
+Defina ela no arquivo `.env`.
+
+<ImageZoom src={"/mongodb/step-14.png"} width={500} height={500} alt="step-14"/>

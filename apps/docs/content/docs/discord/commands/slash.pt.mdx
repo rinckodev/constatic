@@ -1,0 +1,138 @@
+---
+title: Commandos de barra
+icon: RiSlashCommands2
+description: Como criar comandos de barra do discord
+---
+import icons from "@lib/icons";
+
+# Criando comandos de barra
+
+<Callout type="success">
+    É possível definir algumas opções para os comandos na função `setupCreators`!
+
+    [Veja mais detalhes na página sobre as funções criadoras](/docs/discord/creators#command-options)
+</Callout>
+
+Antes de tudo, importe a função `createCommand` da base e `ApplicationCommandType` do `discord.js`
+
+```ts title="ping.ts"
+import { createCommand } from "#base"
+import { ApplicationCommandType } from "discord.js";
+```
+
+<Callout type="info">
+    Veja [convenções](/docs/discord/conventions/structure#pasta-discord) para criar seus comandos
+</Callout>
+
+Para criar um comando de barra, você tem que definir o `nome`, a `descrição` e o `tipo`
+
+```ts title="ping.ts"
+createCommand({
+    name: "ping",
+    description: "Responde com pong",
+    type: ApplicationCommandType.ChatInput,
+    async run(interaction) {
+        await interaction.reply({ 
+            flags: ["Ephemeral"], 
+            content: "Pong" 
+        });
+    },
+});
+```
+<Callout type="danger">
+    Nomes de comandos de barra (`/`) e de opções de comandos não podem ser strings vazias, não podem conter caractéres especiais, letras maiúsculas ou espaços
+</Callout>
+
+# Definindo opções de comando
+
+Você pode definir `opções`, `sub comandos` e `grupos` também.
+```ts title="manage.ts"
+import { createCommand } from "#base";
+import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
+
+createCommand({
+    name: "gerenciar",
+    description: "Comando de gerenciar",
+    type: ApplicationCommandType.ChatInput,
+    options: [ // [!code highlight]
+        { // [!code highlight]
+            name: "usuários", // [!code highlight] 
+            description: "Gerenciar usuários", // [!code highlight]
+            type: ApplicationCommandOptionType.Subcommand // [!code highlight]
+            options: [ // [!code highlight]
+                { // [!code highlight] 
+                    name: "usuário", // [!code highlight]
+                    description: "Selecione o usuário", // [!code highlight]
+                    type: ApplicationCommandOptionType.User // [!code highlight]
+                    required // [!code highlight]
+                } // [!code highlight]
+            ], // [!code highlight]
+        } // [!code highlight]
+    ], // [!code highlight]
+    async run(interaction) {
+        const { options } = interaction;
+
+        switch(options.getSubcommand(true)){
+            case "usuários":{
+                const user = options.getUser("usuário", true);
+                await interaction.reply({ 
+                    flags: ["Ephemeral"], 
+                    content: `${user} managed` 
+                })
+                return;
+            }
+        }
+    },
+});
+```
+
+# Global
+
+A opção `global` nos comandos é útil quando você quer que o comando seja registrado na aplicação ao invés da guilda. Só é necessário quando IDs de guildas são definidos na função [setupCreators](/docs/discord/creators/#commandoptions)
+
+O código abaixo faz com que os comandos sejam registrados apenas nas guildas válidas listadas no array:
+```ts title="src/discord/index.ts"
+import { setupCreators } from "#base";
+import { env } from "#env";
+
+export const { createCommand, createEvent, createResponder } = setupCreators({
+    commands: {
+        guilds: [
+            env.MAIN_GUILD_ID,
+            env.DEV_GUILD_ID,
+            env.TEST_GUILD_ID,
+        ]
+    }
+});
+```
+
+Agora veja este código onde alguns comandos são criados:
+
+```ts
+createCommand({
+	name: "configurações",
+	description: "Comando de configurações do servidor",
+	async run(interaction){
+		// ...
+	}
+});
+
+createCommand({
+	name: "gerenciar",
+	description: "Comando para gerenciar membros, canais e cargos",
+	async run(interaction){
+		// ...
+	}
+});
+
+createCommand({
+	name: "informações",
+	description: "Exibe informações do bot",
+	global: true, // [!code highlight]
+	async run(interaction){
+		// ...
+	}
+});
+```
+
+Os comandos `configurações` e `gerenciar` serão registrados nas guildas definidas na função `setupCreators`, mas o comando `informações` será registrado globalmente na aplicação, assim estando disponível em qualquer guilda.

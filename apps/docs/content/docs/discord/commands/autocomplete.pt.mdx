@@ -1,0 +1,325 @@
+---
+title: Autocomplete
+icon: MdAutoFixHigh
+description: Como criar comandos de autocomplete do discord
+---
+
+# O que é autocomplete?
+
+Imagine que você queira fornecer escolhas para uma opção de um comando mas de forma dinâmica, por exemplo um comando para pesquisar vídeos no youtube. Você pode usar a opção `autocomplete`, assim com base no que o usuário digitar nessa opção, você pode fazer buscas em APIs e retornar uma lista de escolhas.
+
+# Criando uma opção autocomplete
+
+<Callout type="warn">
+    É preciso ter um [comando de barra](/docs/discord/commands/slash) para criar uma opção autocomplete
+</Callout>
+
+Apenas opções do tipo **String**, **Number** e **Integer** podem ser autocomplete. Para isso basta definir a propriedade `autocomplete` como verdadeira no objeto da opção no seu comando:
+
+```ts title="command.ts"
+createCommand({
+  	name: "busca",
+	description: "Comando de busca",
+	type: ApplicationCommandType.ChatInput,
+	options: [
+		{
+			name: "termo",
+			description: "termo",
+			type: ApplicationCommandOptionType.String,
+			autocomplete: true, // [!code ++]
+			required,
+		}
+	],
+	// ...
+});
+```
+
+# Respondendo a opção autocomplete
+
+Quando o usuário digitar algo na opção do comando lá no discord, o evento **interactionCreate** é emitido com uma interação autocomplete. Você pode responder ela no comando dessa forma:
+
+```ts title="command.ts"
+createCommand({
+  	name: "busca",
+	description: "Comando de busca",
+	type: ApplicationCommandType.ChatInput,
+	options: [
+		{
+			name: "termo",
+			description: "termo",
+			type: ApplicationCommandOptionType.String,
+			autocomplete: true,
+			required,
+		}
+	],
+	// [!code word:autocomplete]
+	async autocomplete(interaction) { // [!code ++]
+		const focused = interaction.options.getFocused(); // [!code ++]
+		const results = await searchData(focused); // [!code ++]
+		if (results.length < 1) return; // [!code ++]
+		const choices = results.map(data => ({ // [!code ++]
+			name: data.title, value: data.url // [!code ++]
+		})); // [!code ++]
+		return choices; // [!code ++]
+	},
+	// ...
+});
+```
+
+Essa função irá retornar uma **lista de escolhas** que o usuário poderá escolher na opção! Para obter a opção escolhida quando o comando for enviado, pegue a opção pelo nome dela:
+
+```ts title="command.ts"
+createCommand({
+  	name: "busca",
+	description: "Comando de busca",
+	type: ApplicationCommandType.ChatInput,
+	options: [
+		{
+			name: "termo",
+			autocomplete: true,
+			// **
+		}
+	],
+	async autocomplete(interaction) {
+		// **
+	},
+	async run(interaction){ 
+		const { options } = interaction;
+
+		const query = options.getString("termo", true); // [!code ++]
+		
+		interaction.reply({ flags: ["Ephemeral"], content: query });
+	}
+});
+```
+
+<Callout type="info">
+ 	Note que você pode apenas retornar as opções, pois o manipulador de comandos autocomplete irá automaticamente limitar os itens do array em `25`
+	
+	```ts
+	// ...
+	return choices; // [!code highlight]
+	// ...
+	```
+</Callout>
+
+Se você tiver uma grande quantidade de itens, use o autocomplete para tentar encontrá-los
+
+```ts title="command.ts"
+createCommand({
+    // ...
+    async autocomplete(interaction) {
+		const { options, guild } = interaction;
+
+        const focused = options.getFocused();
+        const documents = await db.get(guild.id);
+
+        const filtered = documents.filter(
+            data => data.address.toLowercase().includes(focused.toLowercase())
+        )
+        if (filtered.length < 1) return;
+        return filtered.map(data => ({
+			name: data.title, value: data.url
+		}));
+	},
+    // ...
+})
+```
+
+<Callout type="info">
+	Se você preferir, pode usar o método `respond` da interação como faria normalmente:
+	```ts
+	return choices; // [!code --]
+	interaction.respond(choices.slice(0, 25)) // [!code ++]
+	```
+</Callout>
+
+# Múltiplas opções autocomplete
+
+Se você tiver muitas opções autocomplete no seu comando, será necessário verificar qual é a opção para poder responder ela corretamente. Considere essas opções:
+
+```ts title="command.ts"
+import { createCommand } from "#base";
+import { includesIgnoreCase } from "@magicyan/discord";
+import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
+import { fetchWithCache } from "#functions";
+import { env } from "#env";
+
+createCommand({
+    name: "search",
+    description: "app command",
+    type: ApplicationCommandType.ChatInput,
+    options: [
+        {
+            name: "application",
+            description: "your custom application",
+            type: ApplicationCommandOptionType.String,
+            required: true,
+            autocomplete: true,
+        },
+        {
+            name: "video",
+            description: "video name, description or tags",
+            type: ApplicationCommandOptionType.String,
+            required: true,
+            autocomplete: true,
+        },
+        {
+            name: "subscriptor",
+            description: "select the subscriptor",
+            type: ApplicationCommandOptionType.String,
+            required: true,
+            autocomplete: true,
+        },
+    ],
+    // ...
+});
+```
+
+Cada uma delas recebe escolhas diferentes, então você teria que fazer algo como isso:
+
+```ts title="command.ts"
+createCommand({
+    name: "search",
+    description: "app command",
+    type: ApplicationCommandType.ChatInput,
+    options: [
+        // ...
+    ],
+    async autocomplete({ options }) {
+        const { name, value } = options.getFocused(true);
+
+        switch (name) {
+            case "application": {
+                const apps = await fetchWithCache({
+					url: `${env.API_URL}/apps`
+					seconds: 30
+				});
+
+                return apps
+                    .filter(app => includesIgnoreCase(app.name, value))
+                    .map(app => ({
+                        name: app.name,
+                        value: app.id
+                    }));
+            }
+            case "video": {
+                const appId = options.getString("application", true);
+                const app = await fetchWithCache({ 
+					url: `${env.API_URL}/apps/${appId}`,
+					seconds: 50 
+				});
+
+                return app.videos
+                    .filter(video =>
+                        includesIgnoreCase(video.title, value) ||
+                        includesIgnoreCase(video.description, value) ||
+                        video.tags.includes(value)
+                    )
+                    .map(video => ({
+                        name: video.title,
+                        value: video.id
+                    }));
+            }
+            default: {
+                const videoId = options.getString("video", true);
+                const video = await fetchWithCache({ 
+					url: `${env.API_URL}/videos/${videoId}`,
+					seconds: 50
+				});
+
+                return video.subscriptors
+                    .filter(sub => includesIgnoreCase(sub.name, value))
+                    .map(sub => ({
+                        name: sub.title,
+                        value: sub.id
+                    }));
+            }
+        }
+    }
+});
+```
+
+Você pode preferir utilizar um recurso exclusivo dessa base para responder as interações autocomplete diretamente no objeto da opção.
+
+Ao invés de definir um boleano verdadeiro, você pode definir diretamente a função que responde aquela opção, assim não é necessário verificar qual é a opção autocomplete, pois o manipulador já fará isso pra você:
+
+```ts title="command.ts"
+import { createCommand } from "#base";
+import { includesIgnoreCase } from "@magicyan/discord";
+import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
+import { fetchWithCache } from "#functions";
+import { env } from "#env";
+
+createCommand({
+    name: "search",
+    description: "app command",
+    type: ApplicationCommandType.ChatInput,
+    options: [
+        {
+            name: "application",
+            description: "your custom application",
+            type: ApplicationCommandOptionType.String,
+            required: true,
+            async autocomplete({ options }){ // [!code ++]
+                const apps = await fetchWithCache({  // [!code ++]
+					url: `${env.API_URL}/apps`, // [!code ++]
+					seconds: 30  // [!code ++]
+				}); // [!code ++]
+                return apps // [!code ++]
+                    .filter(app => includesIgnoreCase(app.name, options.getFocused())) // [!code ++]
+                    .map(app => ({ // [!code ++]
+                        name: app.name, // [!code ++]
+                        value: app.id // [!code ++]
+                    })); // [!code ++]
+			}  // [!code ++]
+        },
+        {
+            name: "video",
+            description: "video name, description or tags",
+            type: ApplicationCommandOptionType.String,
+            required: true,
+            async autocomplete(){  // [!code ++]
+                const appId = options.getString("application", true);   // [!code ++]
+                const app = await fetchWithCache({  // [!code ++]
+					url: `${env.API_URL}/apps/${appId}`  // [!code ++]
+					seconds: 50   // [!code ++]
+				});  // [!code ++]
+				const query = options.getFocused();  // [!code ++]
+                return app.videos  // [!code ++]
+                    .filter(video =>  // [!code ++]
+                        includesIgnoreCase(video.title, query) ||  // [!code ++]
+                        includesIgnoreCase(video.description, query) ||  // [!code ++]
+                        video.tags.includes(query)  // [!code ++]
+                    )  // [!code ++]
+                    .map(video => ({  // [!code ++]
+                        name: video.title,  // [!code ++]
+                        value: video.id  // [!code ++]
+                    })); // [!code ++]		
+			}  // [!code ++]
+        },
+        {
+            name: "subscriptor",
+            description: "select the subscriptor",
+            type: ApplicationCommandOptionType.String,
+            required: true,
+            async autocomplete(){  // [!code ++]
+                const videoId = options.getString("video", true);  // [!code ++]
+                const video = await fetchWithCache({ // [!code ++]
+					url: `${env.API_URL}/videos/${videoId}` // [!code ++]
+					seconds: 50 // [!code ++]
+				});  // [!code ++]
+                return video.subscriptors  // [!code ++]
+                    .filter(sub => includesIgnoreCase(sub.name, options.getFocused()))  // [!code ++]
+                    .map(sub => ({  // [!code ++]
+                        name: sub.title,  // [!code ++]
+                        value: sub.id  // [!code ++]
+                    }));  // [!code ++]				
+			}  // [!code ++]
+        },
+    ],
+	async autocomplete({ options }){ // [!code --]
+    // ... // [!code --]
+	} // [!code --]
+});
+```

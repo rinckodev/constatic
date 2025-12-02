@@ -1,0 +1,54 @@
+---
+title: Menu de contexto
+icon: MdLibraryBooks
+description: Como criar comandos de menu de contexto do discord
+---
+
+## Criando menus de contexto
+
+<Callout type="success">
+    É possível definir algumas opções para os comandos na função `setupCreators`!
+
+    [Veja mais detalhes na página sobre as funções criadoras](/docs/discord/creators#command-options)
+</Callout>
+
+Menus de contexto não tem descrição e o nome desses comandos pode conter letras maíusculas e espaços.
+
+<Tabs items={["Menu de contexto de usuário", "Menu de contexto de mensagem"]}>
+  <Tab value="Menu de contexto de usuário">
+    Para criar um comando de menu de contexto de usuário, você precisa definir `name` e `type`.
+
+    ```ts
+    createCommand({
+        name: "Perfil",
+        type: ApplicationCommandType.User,
+        async run(interaction) {
+            const { targetUser } = interaction;
+            
+            await interaction.reply({ 
+              flags: ["Ephemeral"], 
+              content: `${targetUser}"s profile` 
+            });
+        },
+    });
+    ```
+  </Tab>
+  <Tab value="Menu de contexto de mensagem">
+    Para criar um comando de menu de contexto de mensagem, você precisa definir `name` e `type`.
+
+    ```ts
+    createCommand({
+        name: "Dar olá",
+        type: ApplicationCommandType.Message,
+        async run(interaction) {
+            const { targetMessage } = interaction;
+            
+            await interaction.deferReply({ 
+              flags: ["Ephemeral"], 
+            });
+            await targetMessage.reply("Olá!");
+        },
+    });
+    ```
+  </Tab>
+</Tabs>

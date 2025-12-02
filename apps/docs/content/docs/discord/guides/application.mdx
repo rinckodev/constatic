@@ -1,0 +1,41 @@
+---
+title: Bot application
+icon: FaRobot
+description: How to create a discord bot application, enable intents and get token
+---
+
+This is a simple guide on how to create an application to develop discord bots
+
+<Steps>
+  <Step>
+    You need to set up a discord bot application through the discord website.
+
+    First access https://discord.com/developers/applications
+  </Step>
+  <Step>
+    Create a new application
+    <ImageZoom src={"/guides/application/step-01.png"} width={600} height={600} alt="setp-01" />
+  </Step>
+  <Step>
+    Set the application name and click create
+    <ImageZoom src={"/guides/application/step-02.png"} width={600} height={600} alt="setp-02" />
+  </Step>
+  <Step>
+    Enable intents
+    <ImageZoom src={"/guides/application/step-03.png"} width={600} height={600} alt="setp-03" />
+  </Step>
+  <Step>
+    Your bot's token will be revealed when you open the "Reset Token" button and confirm.
+    <ImageZoom src={"/guides/application/step-04.png"} width={600} height={600} alt="setp-04" />
+    Copy the token and paste it into the `.env` file
+    ```yml title=".env"
+    BOT_TOKEN=yourtoken
+    ```
+  </Step>
+  <Step>
+    To invite the bot to the server, click on the OAuth2 tab and then on URL Generator.
+Check the "bot" and "application.commands" scopes. Check admin permission. A url will be generated below, just access it to choose the server you want the bot to enter.
+    <ImageZoom src={"/guides/application/step-05.png"} width={600} height={600} alt="setp-05" />
+    <ImageZoom src={"/guides/application/step-06.png"} width={600} height={600} alt="setp-06" />
+  </Step>
+</Steps>

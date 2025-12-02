@@ -1,0 +1,84 @@
+---
+title: Importações
+icon: FaFileImport
+description: Atalhos de importação para melhor organização de código
+---
+
+## Atalhos de importações
+
+Neste projeto você encontra o [recurso do NodeJs](https://nodejs.org/api/packages.html#subpath-imports) chamado **atalhos de importação**. 
+Você pode importar qualquer coisa utilizando atalhos nomeados no `package.json`
+
+<Accordions>
+  <Accordion title="Veja como fica no package.json e o tsconfig.json">
+    Esses são alguns atalhos que já vem definidos quando o projeto é gerado
+    
+    ```json title="package.json"
+    {
+      "name": "awesome-bot-base",
+      "type": "module",
+      "main": "build/index.js",
+      // ...
+      "imports": {
+        "#env": ["./build/env.js"],
+        "#base": ["./build/discord/base/index.js"],
+        "#functions": ["./build/functions/index.js"],
+        "#database": ["./build/database/index.js"],
+        "#server": ["./build/server/index.js"],
+        "#menus": ["./build/menus/index.js"],
+        "#tools": ["./build/tools/index.js"],
+        "#lib/*": ["./build/lib/*"]
+      }
+    }
+    ```
+    
+    ```json title="tsconfig.json"
+    {
+      "compilerOptions": {
+        // ...
+        "baseUrl": "./src",
+        "paths": {
+          "#env": ["./env.ts"],
+          "#base": ["./discord/base/index.ts"],
+          "#functions": ["./functions/index.ts"],
+          "#database": ["./database/index.ts"],
+          "#server": ["./server/index.ts"],
+          "#menus": ["./menus/index.ts"],
+          "#tools": ["./tools/index.ts"],
+          "#lib/*": ["./lib/*"],
+          "#emojis": ["../emojis.json"],
+          "#types/*": ["./@types/*"],
+        },
+      }
+      // ...
+    }
+    ```
+  </Accordion>
+</Accordions>
+
+Com isso você pode exportar tudo de um arquivo `index` desses atalhos e importar facilmente em qualquer lugar no seu código. Veja o exemplo abaixo:
+
+Vamos exportar essa função simples da pasta de funções
+```ts title="src/functions/math.ts"
+export function sum(a: number, b: number){
+  return a + b;
+}
+```
+Exporte ela no arquivo `index` da pasta de funções, que está definido nos arquivos package.json e tsconfig.json
+
+```ts title="src/functions/index.ts"
+export * from "./math.js"
+```
+Veja que como este projeto utiliza o tipo `module` precisamos colocar a extensão `.js` no final.
+Com isso podemos importar essa função facilmente em um arquivo de qualquer profundidade no nosso código
+```ts title="src/discord/commands/admin/context/test.ts"
+import { sum } from "#functions"
+```
+Sem isso seria necessário usar um caminho relativo. Veja como ficaria
+```ts title="src/discord/commands/admin/context/test.ts"
+import { sum } from "../../../../../functions/math.js"
+```
+
+Resumindo, os atalhos de importações facilitam a importação de qualquer coisa e deixa o código mais legível e organizado.
+
+---

@@ -1,0 +1,64 @@
+---
+title: Tokens
+icon: IoMdKey
+description: Store your applications' tokens
+---
+import icons from "@lib/icons";
+import { CliMenus } from "@/components/constatic/cli/menu";
+import { CliCommand } from "@/components/constatic/cli/command";
+
+# Discord Tokens
+
+You can store Discord bot application tokens in the CLI to use later in other features. For example:
+
+- When [generating a Discord bot project](docs/discord/start), if you have saved tokens, an option to select one of those tokens will appear. If you choose one, it will be automatically inserted into the `.env` file.
+- Selecting an application to manage emojis in the [CLI emoji tool](docs/emojis/start)
+
+<Callout type="danger">
+    Your tokens are safe! The CLI does not send any data to the internet — all data saved by the CLI remains on your system only. But be cautious when using this feature in public cloud environments like Replit, for example, as CLI data is publicly exposed to everyone.
+</Callout>
+
+# Getting Started
+
+Run the CLI:
+
+<CliCommand packageName="constatic@latest" />
+
+Then access the presets menu:
+
+<CliMenus.Main lang="en" selected="presets" />
+
+Next, access the Token Presets menu:
+
+<CliMenus.Presets lang="en" selected="tokens" />
+---
+
+# New Token
+
+Select the `New token` option to store a bot application token.
+<CliMenus.Tokens lang="en" selected="new" />
+
+When you enter your application’s token, the CLI will query the Discord API to retrieve the application’s data. If successful, the token will be stored.
+
+# List Tokens
+
+You can list all stored tokens using the `List tokens` option.
+<CliMenus.Tokens lang="en" selected="list" />
+
+For security reasons, only the application names will be displayed in the terminal.
+
+# Edit Tokens
+
+You can edit a token using the `Edit token` option.
+
+<CliMenus.Tokens lang="en" selected="edit" />
+
+If you’ve regenerated a token in the Discord Developer Portal, you can update it in the CLI with this option — just re-enter the token.
+
+# Delete Tokens
+
+You can delete multiple tokens at once using the `Delete tokens` option.
+
+<CliMenus.Tokens lang="en" selected="delete" />
+
+You can delete saved tokens if you’ve regenerated them in the Discord Portal or simply don’t want them stored in the CLI anymore. With the `Delete tokens` option, just select the tokens you want to remove (press `space` to select individually or press `A` to select all) and delete them.

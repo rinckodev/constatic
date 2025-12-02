@@ -1,0 +1,64 @@
+---
+title: Get started
+icon: FaClipboard
+description: How to use the Constatic CLI emoji tool
+---
+import { CliCommand } from "@/components/constatic/cli/command";
+import { CliMenus } from "@/components/constatic/cli/menu";
+import icons from "@lib/icons";
+
+# Introduction
+
+The CLI emoji tool is used to manage emojis for a discord bot application in an easier way than using the discord portal.
+
+With this tool you can:
+- 📂 Upload images from a directory and subfolders to create emojis for the application
+- 📋 List all existing emojis
+- 🔄 Update emojis easily
+- 🗑️ Delete selected emojis or all emojis at once
+- 📝 Generate a json file with all emoji names and ids to easily use in your project
+
+# Getting started
+
+To use this feature, start by running the CLI:
+
+<CliCommand packageName="constatic@latest" />
+
+Then in the main menu select the option `Manage discord emojis`.
+
+<CliMenus.Main lang="en" selected="emojis"/>
+
+Before accessing the emoji menu, you need to select an application. You can do this a few ways:
+
+- Selecting a saved application in the [token presets](/docs/presets/tokens) menu
+- Selecting the token in one of the .env files detected in the root from where the CLI was executed.
+- Inserting the token manually through the `New temporary application` option
+
+After that, you will see the menu with all the options to manage your application's emojis. Check out how to use each option:
+
+<Cards className="lg:grid-cols-2">
+	<Card
+		href="/docs/emojis/upload"
+		title="Sending emojis"
+		icon={<icons.HiUpload/>}
+		description="See how to send images to create application emojis in a simple way"
+	/>
+	<Card
+		href="/docs/emojis/list"
+		title="Listing emojis"
+		icon={<icons.FaRegListAlt/>}
+		description="List all the emojis in your application to check their information"
+	/>
+	<Card
+		href="/docs/emojis/file"
+		title="Emojis file"
+		icon={<icons.FaFileDownload/>}
+		description="Generate a json file with all emojis ready to be used in your project"
+	/>
+	<Card
+		href="/docs/emojis/delete"
+		title="Deleting emojis"
+		icon={<icons.FaTrashAlt/>}
+		description="Delete selected emojis or all emojis at once"
+	/>
+</Cards>

@@ -1,0 +1,11 @@
+{
+    "title": "Ferramenta de emojis",
+    "icon": "FaTools",
+    "pages": [
+        "start",
+        "upload",
+        "list",
+        "file",
+        "delete"
+    ]
+}

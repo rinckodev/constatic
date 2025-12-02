@@ -1,13 +1,121 @@
 ---
-title: Hello World
-description: Your first document
+title: Home
+icon: TiHome
+description: Constatic Documentation home
+---
+import icons from "@lib/icons";
+
+## Welcome to the Constatic documentation.
+
+Here you will be able to understand how to use the CLI generated discord bot base created by [Rincko Dev](https://github.com/rinckodev) to develop modern bots.
+
 ---
 
-Welcome to the docs! You can start writing documents in `/content/docs`.
+## Discord Bot Base
 
-## What is Next?
-
-<Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.dev" />
+<Cards className="lg:grid-cols-3">
+	<Card
+		href="/docs/discord/start"
+		title="Get started"
+		icon={<icons.FaClipboard/>}
+		description="See how to start a new project with this base"
+	/>
+	<Card
+		href="/docs/discord/conventions"
+		title="Conventions"
+		icon={<icons.FaHandshake/>}
+		description="Understand the conventions of this project for development"
+	/>
+	<Card
+		href="/docs/discord/commands"
+		title="Commands"
+		icon={<icons.HiMiniCommandLine/>}
+		description="See how to create and reply discord commands"
+	/>
+	<Card
+		href="/docs/discord/responders"
+		title="Responders"
+		icon={<icons.BsFillReplyFill/>}
+		description="Get to know this awesome feature of this base to reply modals and components"
+	/>
+	<Card
+		href="/docs/discord/events"
+		title="Events"
+		icon={<icons.RiCalendarEventFill/>}
+		description="See how events work on this base and how to create listeners"
+	/>
+	<Card
+		href="/docs/discord/presets/databases"
+		title="Databases"
+		icon={<icons.FaDatabase/>}
+		description="See how to integrate databases in the project"
+	/>
+	<Card
+		href="/docs/discord/presets/servers"
+		title="API Servers"
+		icon={<icons.FaGlobe/>}
+		description="See how to integrate API Servers in the project"
+	/>
 </Cards>
+
+---
+
+## Emoji tool
+
+<Cards className="lg:grid-cols-2">
+	<Card
+		href="/docs/emojis/upload"
+		title="Sending emojis"
+		icon={<icons.HiUpload/>}
+		description="See how to send images to create emojis for your application in a simple way"
+	/>
+	<Card
+		href="/docs/emojis/list"
+		title="Listing emojis"
+		icon={<icons.FaRegListAlt/>}
+		description="List all the emojis in your application to check their information"
+	/>
+	<Card
+		href="/docs/emojis/file"
+		title="Emojis file"
+		icon={<icons.FaFileDownload/>}
+		description="Generate a json file with all the emojis ready to be used in your project"
+	/>
+	<Card
+		href="/docs/emojis/delete"
+		title="Deleting emojis"
+		icon={<icons.FaTrashAlt/>}
+		description="Delete selected emojis or all emojis at once"
+	/>
+</Cards>
+---
+
+## Presets
+
+<Cards className="lg:grid-cols-2">
+	<Card
+		href="/docs/presets/tokens"
+		title="Tokens"
+		icon={<icons.IoMdKey/>}
+		description="Store and manage discord application tokens"
+	/>
+	<Card
+		href="/docs/presets/scripts/start"
+		title="Language"
+		icon={<icons.PiFilesFill/>}
+		description="Create and manage script presets in the CLI"
+	/>
+</Cards>
+---
+
+## CLI Settings
+
+<Cards className="lg:grid-cols-2">
+	<Card
+		href="/docs/settings/language"
+		title="Language"
+		icon={<icons.IoLanguage/>}
+		description="Change the CLI language to your preference"
+	/>
+</Cards>
+---

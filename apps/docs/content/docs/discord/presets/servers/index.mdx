@@ -1,0 +1,32 @@
+---
+title: API Servers
+icon: FaGlobe
+description: Usage guide for Constatic Base API Server Presets
+---
+import { CliMenus } from "@/components/constatic/cli/menu";
+import icons from "@lib/icons";
+
+An API (Application Programming Interface) server is a system that exposes data and functionality of an application through endpoints accessible through HTTP requests, allowing different systems, such as web, mobile, or third-party applications, to communicate and use these resources securely and efficiently.
+
+Using the [CLI to generate your project](/docs/discord/start), you can select a server API preset.
+
+<CliMenus.Servers lang="pt" />
+
+The preset API server will be in the `server` folder inside `src`.
+
+The available presets are:
+
+<Cards className="lg:grid-cols-3">
+    <Card
+        href="/docs/discord/presets/servers/fastify"
+        title="Fastify"
+        icon={<icons.SiFastify/>}
+        description="See the structure of the fastify server preset"
+    />
+    <Card
+	    href="/docs/discord/presets/servers/express"
+        title="Express"
+        icon={<icons.SiExpress/>}
+        description="See the structure of the express server preset"
+    />
+</Cards>

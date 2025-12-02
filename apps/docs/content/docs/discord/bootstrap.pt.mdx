@@ -1,0 +1,93 @@
+---
+title: Bootstrap
+icon: FaPowerOff
+description: Função inicial do projeto de bot de discord
+---
+import icons from "@lib/icons";
+
+## Ponto de entrada
+
+O arquivo `index.ts` da pasta `src` é o ponto de entrada deste projeto, é nele que a função `bootstrap` é executada para ligar a aplicação de bot de discord.
+
+```ts title="src/index.ts"
+import { bootstrap } from "#base";
+
+await bootstrap({ meta: import.meta });
+```
+
+Neste tópico você vai conferir algumas opções interessantes dessa função.
+
+---
+
+### Meta
+
+Essa opção deve receber o import.meta do arquivo atual, ao executar o projeto em desenvolvimento, o diretório de import.meta será `src`, mas quando o projeto for buildado ele será `build`.
+Essa opção é importante para que os arquivos da pasta discord possam ser importados antes do bot iniciar.
+
+### Modules
+
+Você pode passar um array de [padrões glob](https://en.wikipedia.org/wiki/Glob_(programming)) relativos à pasta atual. Todos os arquivos arquivos e diretórios encontrados neste padrão, serão importados antes do bot iniciar.
+
+```ts title="src/index.ts"
+await bootstrap({ 
+    meta: import.meta,
+    modules: [
+        "./MyCommands/**", 
+        "./alt/events", 
+        "./tools/**/*.mod.{ts,js}"
+    ]
+});
+```
+
+Com isso você pode criar `comandos`, `eventos` e `responders` dentro desses diretórios e eles serão carregados antes do bot iniciar.
+
+<Callout type="info">
+    Também tem a possibilidade de carregar arquivos com _side effects_, assim podendo registrar variáveis globais, alterar protótipos de objetos existentes e entre outros.
+</Callout>
+
+<Callout type="danger">
+    Mas um aviso importante sobre essa opção! Tome cuidado para não especificar um padrão que importe tudo do workdir (o diretório de trabalho atual, em desenvolvimento é a pasta src, e em produção é a pasta build) ou da pasta `src/discord/base`. Isso irá causar dependências circulares e por consequência, crashando o projeto.
+    Então evite algo como isso:
+
+    ```ts title="src/index.ts"
+    await bootstrap({ 
+        meta: import.meta,
+        modules: [
+            "./discord/base/**", // [!code --]
+            "./**/*", // [!code --]
+            "./", // [!code --]
+            "." // [!code --]
+        ]
+    });
+    ```
+</Callout>
+
+---
+
+### Logs de carregamento (loadLogs)
+
+É possível desabilitar as logs de carregamento das estruturas dessa base definindo `falso` na opção `loadLogs` da função `bootstrap`.
+
+```ts title="src/index.ts"
+await bootstrap({ 
+    meta: import.meta,
+    loadLogs: false
+});
+```
+
+---
+
+### Antes de carregar (beforeLoad)
+
+Você você pode executar um código antes dos diretórios serem carregados e recebe o `client` antes de ficar online (ready).
+
+```ts title="src/index.ts"
+await bootstrap({ 
+    meta: import.meta,
+    async beforeLoad(client) {
+        console.log(client.application); // null;
+        console.log("Isso ocorre antes do carregamento dos diretórios")
+    },
+});
+```
+---

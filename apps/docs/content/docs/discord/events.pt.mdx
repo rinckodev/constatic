@@ -1,0 +1,44 @@
+---
+title: Eventos
+icon: RiCalendarEventFill
+description: Como criar listeners de eventos do discord
+---
+
+## Criando funções para ouvintes de eventos
+
+<Callout type="success">
+    É possível definir algumas opções para os eventos na função `setupCreators`!
+
+    [Veja mais detalhes na página sobre as funções criadoras](/docs/discord/creators#event-options)
+</Callout>
+
+Para criar uma função para um ouvinte de evento do discord, use a função `createEvent`
+
+Primeiro faça a importação da base
+```ts title="src/events/myevent.ts"
+import { createEvent } from "#base";
+```
+
+Use a propriedade `name` para criar um identificador personalizado para o seu evento, depois defina qual evento do discord você espera usando a propriedade `event`.
+```ts
+import { createEvent } from "#base";
+
+createEvent({
+    name: "Message edit logs",
+    event: "messageUpdate",
+    async run(oldMessage, newMessage) {
+        console.log("Message edited at:", newMessage.editedAt?.toDateString());
+        console.log("Author", newMessage.author?.displayName);
+        console.log("Old message content: ", oldMessage.content);
+        console.log("New message content:", newMessage.content);   
+    }
+});
+```
+
+Todos os eventos do discord são tipados pela propriedade `event`, quando escolher um evento, o método run será tipado automaticamente com todos os argumentos que esse evento recebe.
+
+<Callout type="warn">
+    Se você criar funções para o evento `ready` do discord, elas só serão executadas após o evento ready principal do bot, incluíndo as execuções do evento principal.
+
+    O evento `ready` é definido como `once` automaticamente, dessa maneira a função é deletada após ser executada, assim garantido uma execução única.
+</Callout>

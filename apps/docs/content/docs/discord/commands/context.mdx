@@ -1,0 +1,54 @@
+---
+title: Context menu
+icon: MdLibraryBooks
+description: How to create discord context menu commands
+---
+
+## Creating context menus
+
+<Callout type="success">
+    You can set some command options in the `setupCreators` function!
+
+    [See more details on the creator functions page](/docs/discord/creators#command-options)
+</Callout>
+
+Context menus do not have a description and the name of these commands can contain capital letters and spaces.
+
+<Tabs items={["User context menu", "Message context menu"]}>
+  <Tab value="User context menu">
+    To create a user context menu command, you need to set `name` and `type`.
+
+    ```ts
+    createCommand({
+        name: "Profile",
+        type: ApplicationCommandType.User,
+        async run(interaction) {
+            const { targetUser } = interaction;
+            
+            await interaction.reply({ 
+              flags: ["Ephemeral"], 
+              content: `${targetUser}"s profile` 
+            });
+        },
+    });
+    ```
+  </Tab>
+  <Tab value="Message context menu">
+    To create a message context menu command, you need to set `name` and `type`.
+
+    ```ts
+    createCommand({
+        name: "Reply",
+        type: ApplicationCommandType.Message,
+        async run(interaction) {
+            const { targetMessage } = interaction;
+            
+            await interaction.deferReply({ 
+              flags: ["Ephemeral"]
+            });
+            await targetMessage.reply("Hi!");
+        },
+    });
+    ```
+  </Tab>
+</Tabs>

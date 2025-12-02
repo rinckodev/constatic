@@ -1,0 +1,52 @@
+---
+title: Estrutura
+icon: FaFolder
+description: Como as pastas do projeto são estruturadas
+---
+
+import { BaseStructure } from "@/components/constatic/structure/BaseStructure";
+import icons from "@lib/icons";
+
+## Estrutura de pastas
+
+Se você seguir a estrutura estabelecida por este projeto, ficará muito fácil de obter suporte em qualquer lugar, sem contar que o seu código vai ficar organizado e também muito semântico.
+
+Veja abaixo uma visão geral sobre como o projeto vem estruturado
+
+<BaseStructure/>
+
+_Todas as pastas a seguir ficam dentro de `src`_
+
+### Pasta discord
+As estruturas dessa base como as funções `createCommand`, `createEvent` e `createResponder` precisam estar em um arquivo que é importado antes do bot ligar, e tudo o que estiver na pasta `src/discord` e suas sub pastas serão importados antes do bot iniciar, assim carregando todas as estruturas 
+
+<Cards>
+  <Card
+    title="Comandos"
+    icon={<icons.HiMiniCommandLine/>}
+    description="Crie todos os seus comandos no diretório src/discord/commands"
+  />
+  <Card
+    title="Eventos"
+    icon={<icons.RiCalendarEventFill/>}
+    description="Crie todos os seus eventos no diretório src/discord/events"
+  />
+  <Card
+    title="Responders"
+    icon={<icons.BsFillReplyFill/>}
+    description="Crie todos os seus responders no diretório src/discord/responders"
+  />
+  <Card
+    title="Funções"
+    icon={<icons.TbMathFunction/>}
+    description="Crie todas as suas funções no diretório src/functions"
+  />
+</Cards>
+
+### Pasta database
+Nessa pasta fica toda a configuração e modelos do banco de dados escolhido na geração do projeto. [Veja mais aqui](/discord/databases)
+
+### Pasta server
+É aqui onde é inciado o servidor de requisições http escolhido na geração do projeto. [Veja mais aqui](/discord/servers)
+
+---

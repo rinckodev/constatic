@@ -1,0 +1,84 @@
+---
+title: Troubleshooting
+icon: MdError
+description: Here's how to troubleshoot some known errors when trying to use the CLI and Constatic Base
+---
+
+<Callout type="warn">
+    First of all, make sure you meet some requirements to use this project:
+    - You need [NodeJs](https://nodejs.org/) 20.11 or higher installed (or [Bun](https://bun.sh/))
+    - Basic knowledge of programming logic
+    - Basic knowledge of [javascript](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript) and [typescript](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html)
+    - Basic knowledge of [discord.js](https://discordjs.guide/)
+</Callout>
+
+If you are experiencing any of the errors listed below, here are some solutions you can try:
+
+- [ENOENT: no such file or directory, lstat "C:\Users\...\AppData\Roaming\npm"](/docs/discord/troubleshooting#npmfolder)
+- [Script execution has been disabled on this system](/docs/discord/troubleshooting#psscripts)
+- [Slash (/) commands do not appear on the server](/docs/discord/troubleshooting#slashnotappear)
+- [Used disallowed intents](/docs/discord/troubleshooting#disallowedintents)
+- [Cannot find module](/docs/discord/troubleshooting#cannotfindmodule)
+
+## ENOENT: no such file or directory, lstat "C:\Users\...\AppData\Roaming\npm" [#npmfolder]
+
+When trying to run the CLI with the `npx constatic` command, if NodeJs doesn't find the npm folder on your computer, you'll see this error:
+
+<ImageZoom src={"/troubleshooting/npmfolder.svg"} width={1000} height={300} alt="auth" unoptimized />
+
+The solution is as simple as possible, just create the folder, the error itself already indicates the expected location: `C:\Users\YOURUSER\Roaming\npm`
+
+Then navigate to your user's Roaming folder. The easiest way is to open the run command `Win + R`, type `%appdata%` and click OK.
+
+When opening this directory, create a folder called `npm` and that's it!
+
+---
+
+## Script execution has been disabled on this system [#psscripts]
+
+This occurs when you try to run a powershell script and the script execution policy does not allow it on your system.
+
+Open the start menu and search for `Powershell` (a program like any other), run it to open the powershell terminal and run the command below to change the script execution policy:
+
+```ps
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+Restart the terminal you used to try to run the CLI with `npx constatic` and run it again.
+
+---
+
+## Slash (/) commands do not appear on the server [#slashnotappear]
+
+You started the project, the terminal showed that the commands were registered, but when you try to use them on the server, they do not appear?
+
+Just restart your client (your discord application) to refresh the cache. On your computer, just press the shortcut `CTRL + R` and on your phone, close the application and open it again.
+
+<Callout type="info">
+    You can make sure that the commands have been registered in the application by going to the server settings `>` integrations `>` your application and you will see all the commands there.
+</Callout>
+
+This happens when the commands are registered in the bot application, if you choose to [register the commands by guild](/docs/discord/creators/#commandoptions), they will be updated instantly.
+
+---
+
+## Used disallowed intents [#disallowedintents]
+
+If you just started your application in the terminal and received this error from discord, it means that you have not enabled intents in the discord developer portal, [access this mini guide and complete step 4](/docs/discord/guides/application)
+
+---
+## Cannot find module [#cannotfindmodule]
+
+This error usually occurs when an import statement does not find the corresponding module, we will talk about two types of modules:
+
+- Internal and external modules: They can be native libraries such as `node:fs`, `node:path` or external ones such as `discord.js`, `chalk`.
+
+- Local modules: Which are files in your project, such as `./index.js`, `../../main.js`, `./functions/math.js`.
+
+If this error occurs displaying the name of a library, you probably misspelled the name or it is not installed as a dependency.
+
+Now if the error is displaying a path to a file, it is very likely that you specified the wrong path or incorrectly.
+
+<Callout type="danger">
+    The only valid file paths are relative paths (starting with `.`) or import paths (starting with `#`). If your path does not start with either of these, it is not a valid file path!
+</Callout>

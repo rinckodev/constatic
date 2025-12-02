@@ -1,0 +1,50 @@
+---
+title: Structure
+icon: FaFolder
+description: How project folders are structured
+---
+import { BaseStructure } from "@/components/constatic/structure/BaseStructure";
+import icons from "@lib/icons";
+
+
+## Folder Structure
+
+If you follow the structure established by this project, it will be very easy to get support anywhere, not to mention that your code will be organized and highly semantic.
+
+Below is an overview of how the project is structured:  
+
+<BaseStructure/>
+
+_All the following folders are located inside `src`_
+
+### Discord Folder
+The structures of this base, such as the functions `createCommand`, `createEvent`, and `createResponder`, need to be in a file that is imported before the bot starts. Everything in the `src/discord` folder and its subfolders will be imported before the bot starts, thus loading all the structures.
+
+<Cards>
+  <Card
+    title="Commands"
+    icon={<icons.HiMiniCommandLine/>}
+    description="Create all your commands in the src/discord/commands directory"
+  />
+  <Card
+    title="Events"
+    icon={<icons.RiCalendarEventFill/>}
+    description="Create all your events in the src/discord/events directory"
+  />
+  <Card
+    title="Responders"
+    icon={<icons.BsFillReplyFill/>}
+    description="Create all your responders in the src/discord/responders directory"
+  />
+  <Card
+    title="Functions"
+    icon={<icons.TbMathFunction/>}
+    description="Create all your functions in the src/functions directory"
+  />
+</Cards>
+
+### Database Folder
+This folder contains all the configuration and models for the database chosen during the project's setup. [Learn more here](/discord/databases)
+
+### Server Folder
+This is where the HTTP request server chosen during the project's setup is initialized. [Learn more here](/discord/servers)

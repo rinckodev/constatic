@@ -1,0 +1,41 @@
+---
+title: ES6 Modules
+icon: FaNodeJs
+description: Entenda como o ES6 Modules funciona
+---
+
+## ES6 Modules
+
+<Callout type="warn">
+  Essa base usa o `"type": "module"` no **package.json**. É importando lembrar de usar a extensão `.js` quando importar arquivos de caminhos relativos (mesmo que sejam arquivos typescript).
+</Callout>
+
+Se você exportar uma função de algum arquivo typescript
+```ts title="src/functions/math/mycustumfunc.ts"
+export function sum(a: number, b: number){
+    return a + b;
+}
+```
+Faça a importação colocando a extensão `.js` no final
+```ts title="src/functions/index.ts"
+import { sum } from "./math/mycustumfunc.js"
+```
+
+Também podemos usar a palavra chave `await` no nível superior do código
+
+```ts title="hello.ts"
+import { setTimeout } from "node:timers/promises"
+
+console.log("Hello");
+await setTimeout(4000);
+console.log("World");
+```
+
+Se por algum motivo precisar de importações dinâmicas, você pode utilizar `import` como uma função no código:
+```ts title="handler.ts"
+async function handle(path: string){
+  const module = await import(path);
+  // ...
+}
+```
+---

@@ -1,0 +1,63 @@
+---
+title: Tokens
+icon: IoMdKey
+description: Armazene os tokens das suas aplicações
+---
+import icons from "@lib/icons";
+import { CliMenus } from "@/components/constatic/cli/menu";
+import { CliCommand } from "@/components/constatic/cli/command";
+
+# Tokens de discord
+
+Você pode armanzear tokens de aplicações de bot de discord na CLI para poder utilizar mais tarde em outros locais. Por exemplo:
+
+- Ao [gerar um projeto de bot de discord](docs/discord/start), caso você tenha tokens salvos, uma opção para você escolher um destes tokens será exibida. Se você escolher algum, ele será inserido automaticamente no arquivo `.env`
+- Selecionar aplicação para gerenciar emojis na [ferramenta de emojis da CLI](docs/emojis/start)
+
+<Callout type="danger">
+    Os seus tokens estão seguros! A CLI não envia nenhuma informação para a internet, todos os dados salvos na CLI ficam apenas no seu sistema. Mas tenha cuidado ao usar este recurso em ambientes de núvem públicos como o Replit por exemplo, pois os dados de CLIs ficam expostos publicamente para todos.
+</Callout>
+
+# Começando
+
+Execute a CLI:
+<CliCommand packageName="constatic@latest" />
+
+Então acesse o menu de predefinições:
+
+<CliMenus.Main lang="pt" selected="presets"/>
+
+Depois acesse o menu de Predefinições de tokens
+
+<CliMenus.Presets lang="pt" selected="tokens" />
+---
+
+# Novo token
+
+Selecione a opção `Novo token` para armazenar o token de uma aplicação. 
+<CliMenus.Tokens lang="pt" selected="new" />
+
+Ao inserir o token da sua aplicação, a CLI irá buscar as informações dela na API do discord, caso encontre o token será armazenado.
+
+# Listar tokens
+
+Você pode listar todos os tokens armazenado com a opção `Listar tokens`. 
+<CliMenus.Tokens lang="pt" selected="list" />
+
+Por motivos de segurança apenas o nome das aplicações serão exibidos no terminal.
+
+# Editar tokens
+
+Você pode editar um token com a opção `Editar token`.
+
+<CliMenus.Tokens lang="pt" selected="edit" />
+
+Se você redefiniu um token no portal do discord pode atualizar ele na CLI com essa opção, basta inserir o token novamente.
+
+# Excluir tokens
+
+Você pode deletar diversos tokens de uma vez com a opção `Excluir tokens`.
+
+<CliMenus.Tokens lang="pt" selected="delete" />
+
+É possível deletar tokens salvos se você tiver redefinido no portal do discord ou apenas não quer mais na CLI. Com a opção `Deletar tokens` basta selecionar os tokens que deseja (pressionando `espaço` para selecionar um ou a tecla `A` para selecionar todos) e deletar.

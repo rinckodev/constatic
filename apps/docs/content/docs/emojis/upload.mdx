@@ -1,0 +1,98 @@
+---
+title: Upload emojis
+icon: HiUpload
+description: Upload images to create application emojis in a practical way
+---
+import icons from "@lib/icons";
+
+<Callout type="info">
+To access this option you must have selected an existing application or previously entered an application token. [See more details here](/docs/emojis/start)
+</Callout>
+
+# Upload emojis
+
+By selecting the `Upload` option in the emoji tool menu, you can pass a path relative to where the CLI was run, to a folder of image files. The CLI will then filter all image files that meet the requirements to become emojis:
+
+- File type: JPEG, PNG, GIF, WEBP, AVIF
+- Maximum file size: 256 KB
+- Recommended dimensions: 128 x 128
+- Naming: Emoji names must be at least 2 characters long and can only contain alphanumeric characters and underscores.
+
+# Path to images
+
+The CLI will ask you to enter the path, so it is recommended that you run it with the terminal open in the images folder:
+
+Consider this example folder:
+```md
+icons/
+├── dashboard/
+│   ├── home.png
+│   ├── settings.jpg
+│   ├── stats.gif
+│   └── users.png
+├── economy/
+│   ├── coin.png
+│   ├── wallet.jpg
+│   ├── shop.gif
+│   └── bank.png
+└── navigation/
+    ├── arrow_left.png
+    ├── arrow_right.jpg
+    ├── menu.gif
+    └── close.png
+```
+
+Running the CLI with the terminal open in the `icons` folder, you can pass the relative path to the folders that contain images that will become emojis:
+
+```md
+Provide the image directory path
+> ./economy
+```
+
+This way the CLI will get the files `coin.png`, `wallet.jpg`, `shop.gif` and `bank.png`. They will be sent to the discord API to create emojis for the selected application.
+
+Or if you prefer to send all the images from all the subfolders you can specify the current directory:
+
+```md
+Provide the image directory path
+> ./
+```
+
+This way the CLI will search for images in all folders and subfolders of this directory.
+
+<Callout type="warn">
+    The file name will become the name of the emoji, so consider naming the files according to the discord requirements stated at the beginning of this page and also giving unique names to each image file in different folders.
+</Callout>
+
+# Overwriting methods
+
+If your application already has emojis, it is possible that some of them have the same name as the new ones you are uploading. With this in mind, you can choose from 3 overwriting methods:
+
+<div className="flex flex-col gap-2">
+    <Accordions>
+        <Accordion title="✍️ Overwrite if existing" id="overwrite">
+        If there is an emoji in the application with the same name as the file, it will be overwritten immediately
+        </Accordion>
+    </Accordions>
+    <Accordions>
+        <Accordion title="❔ Ask before overwriting" id="ask">
+        For each emoji with the same name as the file, the terminal will ask you whether you want to overwrite it or not, then you must confirm or decline
+        </Accordion>
+    </Accordions>
+    <Accordions>
+        <Accordion title="🔏 Skip and do not overwrite" id="skip">
+        If there is already an emoji with the same name as the file, this file will not be sent and the existing emoji will be kept.
+        </Accordion>
+    </Accordions>
+</div>
+
+After selecting one of the methods, the emoji sending process will begin. They will be sent one by one to the Discord API to avoid **Rate Limit Abuse**, so you will have to wait for the process to complete.
+
+When the process is complete, all emojis will be available in your application and ready to use.
+
+<Card
+    href="/docs/emojis/file"
+    title="Emoji file"
+    icon={<icons.FaFileDownload/>}
+    description="See how to generate a json file containing all the emoji names and IDs to easily use in your project"
+/>

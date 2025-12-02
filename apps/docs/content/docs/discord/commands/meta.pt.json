@@ -1,0 +1,12 @@
+{
+    "title": "Comandos",
+    "defaultOpen": true,
+    "icon": "HiMiniCommandLine",
+    "pages": [
+        "commands", 
+        "slash", 
+        "modularization",
+        "context", 
+        "autocomplete"
+    ]
+}

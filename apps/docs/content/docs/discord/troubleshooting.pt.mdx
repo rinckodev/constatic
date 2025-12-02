@@ -1,0 +1,84 @@
+---
+title: Solução de problemas
+icon: MdError
+description: Veja como solucionar alguns erros conhecidos ao tentar usar a CLI e o Constatic Base
+---
+
+<Callout type="warn">
+    Antes de tudo, certifique-se de que cumpriu alguns requisitos para utilizar este projeto:
+    - É necessário [NodeJs](https://nodejs.org/) 20.11 ou maior instalado (ou [Bun](https://bun.sh/))
+    - Conhecimento básico de lógica de programação
+    - Conhecimento básico de [javascript](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript) e [typescript](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html)
+    - Conhecimento básico de [discord.js](https://discordjs.guide/)
+</Callout>
+
+Se você estiver enfrentando algum erro listado abaixo, confira algumas soluções que você pode tentar:
+
+- [ENOENT: no such file or directory, lstat "C:\Users\...\AppData\Roaming\npm"](/docs/discord/troubleshooting#pt-npmfolder)
+- [Execução de scripts foi desabilitada neste sistema](/docs/discord/troubleshooting#pt-psscripts)
+- [Comandos de barra (/) não aparecem no servidor](/docs/discord/troubleshooting#pt-slashnotappear)
+- [Used disallowed intents](/docs/discord/troubleshooting#pt-disallowedintents)
+- [Cannot find module](/docs/discord/troubleshooting#pt-cannotfindmodule)
+
+## ENOENT: no such file or directory, lstat "C:\Users\...\AppData\Roaming\npm" [#pt-npmfolder]
+
+Ao tentar executar a CLI com o comando `npx constatic`, se o NodeJs não encontrar a pasta npm no seu computador, você verá este erro:
+
+<ImageZoom src={"/troubleshooting/npmfolder.svg"} width={1000} height={300} alt="auth" unoptimized />
+
+A solução é a mais simples possível, basta criar a pasta, no próprio erro ele já indica o local esperado: `C:\Users\SEUUSUARIO\Roaming\npm`
+
+Então navegue até a pasta Roaming do seu usuário. A forma mais fácil é abrindo o executar `Win + R`, digitando `%appdata%` e clicando em OK.
+
+Ao abrir esse diretório, crie uma pasta chamada `npm` e está resolvido!
+
+---
+
+## Execução de scripts foi desabilitada neste sistema [#pt-psscripts]
+
+Ocorre no quando você tenta executar um script powershell e a política de execução de scripts não permite isso no seu sistema.
+
+Abra o menu inicial e procure `Powershell` (um programa como qualquer outro), execute para abrir o terminal powershell e execute o comando abaixo para alterar a política de execução de scripts:
+
+```ps
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+Reinicie o terminal que você usou para tentar executar a CLI com `npx constatic` e execute novamente.
+
+---
+
+## Comandos de barra (/) não aparecem no servidor [#pt-slashnotappear]
+
+Você iniciou o projeto, o terminal exibiu que os comandos foram registrados, mas ao tentar utilizar eles no servidor, eles não aparecem?
+
+Apenas reinicie o seu cliente (seu aplicativo do discord) para atualizar o cache. No computador basta pressionar o atalho `CTRL + R` e no celular feche o aplicativo e abra novamente.
+
+<Callout type="info">
+    Você pode ter certeza de que os comandos foram registrados na aplicação indo nas configurações do servidor `>` itegrações `>` sua aplicação e você verá todos os comandos lá.
+</Callout>
+
+Isso ocorre quando os comandos são registrados na aplicação do bot, se você optar por [registrar os comandos por guilda](/docs/discord/creators/#commandoptions), eles serão atualizados instantâneamente.
+
+---
+
+## Used disallowed intents [#pt-disallowedintents]
+
+Se você acabou de iniciar a sua aplicação no terminal e recebeu este erro do discord, significa que você não ativou os intents no portal de desenvolvedores do discord, [acesse este mini guia e complete a etapa 4](/docs/discord/guides/application)
+
+---
+
+## Cannot find module [#pt-cannotfindmodule]
+
+Este erro geralmente ocorre quando uma instrução de importação não encontra o módulo correspondente, vamos falar sobre dois tipos de módulos:
+
+- Módulos internos e externos: Podem ser bibliotecas nativas como `node:fs`, `node:path` ou externas como `discord.js`, `chalk`.
+- Módulos locais: Que são arquivos no seu projeto, como `./index.js`, `../../main.js`, `./functions/math.js`.
+
+Se este erro ocorre exibindo o nome de alguma biblioteca, você provavelmente escreveu o nome errado ou ela não está instalada como um dependência.
+
+Agora se o erro está exibindo um caminho para um arquivo, é muito provável que você especificou o caminho errado ou de forma incorreta.
+
+<Callout type="danger">
+    Os únicos caminhos de arquivo válidos são os relativos (que começam com `.`) ou atalhos de importação (que começam com `#`). Se o seu caminho não começa com nenhum dos dois, não é um caminho de arquivo válido!
+</Callout>

@@ -1,0 +1,98 @@
+---
+title: Enviando emojis
+icon: HiUpload
+description: Envie imagens para criar emojis da aplicação de forma prática
+---
+import icons from "@lib/icons";
+
+<Callout type="info">
+    Para ter acesso a essa opção você precisa ter selecionado uma aplicação existente ou inserido um token de aplicação anteriormente. [Confira com mais detalhes aqui](/docs/emojis/start)
+</Callout>
+
+# Enviando emojis
+
+Selecionando a opção `Enviar` no menu da ferramenta de emojis, você pode passar um caminho relativo ao local onde a CLI foi executada, para uma pasta de arquivos de imagens. Então a CLI irá filtrar todos os arquivos de imagem que satisfaçam os requisitos para se tornarem emojis:
+
+- Tipo de arquivo: JPEG, PNG, GIF, WEBP, AVIF
+- Tamanho máximo do arquivo: 256 KB
+- Dimensões recomendadas: 128 x 128
+- Nomenclatura: Os nomes dos emojis devem ter pelo menos 2 caracteres e podem conter apenas caracteres alfanuméricos e underlines.
+
+# Caminho para as imagens
+
+A CLI pedirá para informar o caminho, então é recomendado que você execute com o terminal aberto já na pasta das imagens:
+
+Considere este exemplo de pasta:
+```md
+icons/
+├── dashboard/
+│   ├── home.png
+│   ├── settings.jpg
+│   ├── stats.gif
+│   └── users.png
+├── economy/
+│   ├── coin.png
+│   ├── wallet.jpg
+│   ├── shop.gif
+│   └── bank.png
+└── navigation/
+    ├── arrow_left.png
+    ├── arrow_right.jpg
+    ├── menu.gif
+    └── close.png
+```
+
+Executando a CLI com o terminal aberto na pasta `icons`, você pode passar o caminho relativo para as pastas que contém imagens que vão se tornar emojis:
+
+```md
+Informe o caminho diretório de imagens
+> ./economy
+```
+
+Assim a CLI irá pegar os arquivos `coin.png`, `wallet.jpg`,`shop.gif` e`bank.png`. Eles serão enviados para a API do discord para criar emojis da aplicação selecionada.
+
+Ou se preferir enviar todas as imagens de todas as subpastas você pode informar o diretório atual:
+
+```md
+Informe o caminho diretório de imagens
+> ./
+```
+
+Assim a CLI buscará imagens em todas as pastas e subpastas deste diretório.
+
+<Callout type="warn">
+    O nome do arquivo se tornará o nome do emoji, então considere nomear os arquivos de acordo com os requisitos do discord ditos no início dessa página e também dar nomes únicos para cada arquivo de imagem em pastas diferentes.
+</Callout>
+
+# Métodos de sobrescrição
+
+Caso a sua aplicação já tenha emojis, é possível que alguns deles tenham o mesmo nome dos novos que você está enviando. Pensando nisso, você pode escolher 3 métodos de sobrescrição:
+
+<div className="flex flex-col gap-2">
+    <Accordions>
+        <Accordion title="✍️ Sobrescrever se existir" id="overwrite">
+        Caso exista um emoji na aplicação com o mesmo nome do arquivo, ele será sobrescrito imediatamente
+        </Accordion>
+    </Accordions>
+    <Accordions>
+        <Accordion title="❔ Perguntar antes de sobrescrever" id="ask">
+        Para cada emoji com o mesmo nome do arquivo será perguntado no terminal se você deseja sobrescrever ou não, então você deve confirmar ou recusar
+        </Accordion>
+    </Accordions>
+    <Accordions>
+        <Accordion title="🔏 Pular e não sobrescrever" id="skip">
+        Se já existir um emoji com o mesmo nome do arquivo, este arquivo não será enviado e o emoji já existente será mantido.
+        </Accordion>
+    </Accordions>
+</div>
+
+Após selecionar um dos métodos, o processo de envio dos emojis será iniciado. Eles serão enviados um por um para a API do discord para evitar **Rate Limit Abuse**, então você terá que esperar o processo ser concluído.
+
+Quando o processo for concluído, todos os emojis estarão disponíveis na sua aplicação e prontos para uso.
+
+<Card
+    href="/docs/emojis/file"
+    title="Arquivo de emojis"
+    icon={<icons.FaFileDownload/>}
+    description="Veja como gerar um arquivo json contendo todos os nomes e IDs do emojis para utilizar facilmente no seu projeto"
+/>

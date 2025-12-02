@@ -1,0 +1,20 @@
+---
+title: Databases
+icon: FaDatabase
+description: Database guides
+---
+
+A database is a system that stores and organizes information in a structured manner, enabling the efficient creation, reading, updating, and deletion of this data. It is essential for managing large volumes of information, facilitating data access and manipulation for applications and users.
+
+Using the [CLI to generate your project](/docs/discord/start), you can select a database preset.
+
+<ImageZoom src={"/guides/cli/bot-db.svg"} alt="Init discord bot" width="400" height="400" />
+
+In most presets, the chosen database integration is in the `database` folder within `src`.
+
+The available presets are:
+
+- MongoDB (mongoose) - [See the guide](/docs/discord/databases/mongodb)
+- Firestore (typesaurus) [See the guide](/docs/discord/databases/firestore)
+- Firestore (firelord) [See the guide](/docs/discord/databases/firestore)
+- QuickDB (better-sqlite3)

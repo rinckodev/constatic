@@ -1,4 +1,4 @@
-import { getPageImage, source } from "@/lib/source";
+import { getPageImage, source } from "@lib/source";
 import { generate as DefaultImage } from "fumadocs-ui/og";
 import { notFound } from "next/navigation";
 import { ImageResponse } from "next/og";

@@ -1,0 +1,58 @@
+---
+title: Databases
+icon: FaDatabase
+description: Database guides
+---
+import icons from "@/lib/icons";
+import { CliMenus } from "@/components/constatic/cli/menu";
+
+A database is a system that stores and organizes information in a structured manner, enabling the efficient creation, reading, updating, and deletion of this data. It is essential for managing large volumes of information, facilitating data access and manipulation for applications and users.
+
+Using the [CLI to generate your project](/docs/discord/start), you can select a database preset.
+
+The second question will ask you to choose a database preset:
+
+<CliMenus.Databases lang="pt" />
+
+If you don't want any database or want to create the code from scratch just choose "none"
+
+See below how to use each preset, conventions and best practices for each one:
+
+<Cards className="lg:grid-cols-3">
+    <Card
+		  href="/docs/discord/presets/databases/mongodb"
+      title="MongoDb"
+      icon={<icons.BiLogoMongodb/>}
+      description="See what the mongodb database preset structure looks like"
+    />
+    <Card
+		  href="/docs/discord/presets/databases/firestore"
+      title="Firestore"
+      icon={<icons.BiLogoFirebase/>}
+      description="See what the firestore database preset structure looks like"
+    />
+    {/* <Card
+		  href="/docs/discord/presets/databases/quickdb"
+      title="QuickDb"
+      icon={<icons.BiSolidCube/>}
+      description="See what the quickdb database preset structure looks like"
+    />
+    <Card
+		  href="/docs/discord/presets/databases/mysql"
+      title="MySQL"
+      icon={<icons.GrMysql/>}
+      description="See what the mysql database preset structure looks like"
+    />
+    <Card
+      href="/docs/discord/presets/databases/mariadb"
+      title="MariaDb"
+      icon={<icons.SiMariadb/>}
+      description="See what the mariadb database preset structure looks like"
+    />
+    <Card
+		  href="/docs/discord/presets/databases/prisma"
+      title="Prisma"
+      icon={<icons.SiPrisma/>}
+      description="See what the prisma database preset structure looks like"
+    /> */}
+</Cards>

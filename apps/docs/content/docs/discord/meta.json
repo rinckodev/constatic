@@ -1,0 +1,18 @@
+{
+    "title": "Discord Bot Base",
+    "icon": "BsBoxSeamFill",
+    "defaultOpen": true,
+    "pages": [
+        "start", 
+        "troubleshooting",
+        "conventions", 
+        "bootstrap",
+        "creators",
+        "commands",  
+        "responders", 
+        "events",
+        "presets",
+        "hosting",
+        "guides"
+    ]
+}

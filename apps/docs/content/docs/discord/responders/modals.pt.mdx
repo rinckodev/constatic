@@ -1,0 +1,129 @@
+---
+title: Modais
+icon: RiMenuFill
+description: Como responder modais do discord com a estrutura Responder
+---
+
+## Criando Responder para modais
+
+Abaixo você pode ver um trecho de código respondendo a interação de um comando exibindo um modal:
+
+```ts title="command.ts"
+import { createModalFields } from "@magicyan/discord";
+
+// ...
+interaction.showModal({
+    customId: "/form/modal",
+    title: "Formulário",
+    components: createModalFields({
+        name:{
+            label: "Qual é o seu nome?",
+            style: TextInputStyle.Short
+        },
+        age:{
+            label: "Qual é a sua idade?",
+            style: TextInputStyle.Short
+        },
+    })
+});
+// ...
+```
+
+Para responder um modal com o `Responder`, adicione nos tipos o `ResponderType.Modal`:
+
+```ts title="responder.ts"
+createResponder({
+    customId: "/form/modal",
+    // [!code word:Modal]
+    types: [ResponderType.Modal], cache: "cached",
+    async run(interaction) {
+        const { fields, member } = interaction;
+        const name = fields.getTextInputValue("name");
+        const age = fields.getTextInputValue("age");
+
+        await registerMember(member, { name, age }); // Função de exemplo
+
+        interaction.reply({ flags: ["Ephemeral"], content: `Registrado como ${name}` });
+    },
+});
+```
+
+Se o modal for exibido a partir de um componente:
+```ts title="responder.ts"
+createResponder({
+    customId: "/open/form",
+    // [!code word:Modal]
+    types: [ResponderType.Button], cache: "cached",
+    async run(interaction) {
+        await interaction.showModal({
+            customId: "/form/modal",
+            title: "Formulário",
+            components: createModalFields({
+                name:{
+                    label: "Qual é o seu nome?",
+                    style: TextInputStyle.Short
+                },
+                age:{
+                    label: "Qual é a sua idade?",
+                    style: TextInputStyle.Short
+                },
+            })
+        });
+    },
+});
+```
+
+Você pode usar o tipo `ResponderType.ModalComponent`:
+```ts title="responder.ts"
+createResponder({
+    customId: "/form/modal",
+    // [!code word:ModalComponent]
+    types: [ResponderType.ModalComponent], cache: "cached",
+    async run(interaction) {
+        // ...
+    },
+});
+```
+
+<Callout type="info">
+    Se você criar um código que possa exibir o mesmo modal tanto a partir de um comando quanto a partir de um componente, basta incluir os dois tipos no array de tipos do Responder:
+    ```ts tab="Comando"
+    import { myCustomModals } from "#modals" // Exemplo
+
+    createCommand({
+        name: "formulário",
+        async run(interaction) {
+            await interaction.showModal(
+                myCustomModals.formModal()
+            );
+        },
+    });
+    ```
+    ```ts tab="Componente"
+    import { myCustomModals } from "#modals" // Exemplo
+
+    createResponder({
+        customId: "/open/form",
+        types: [ResponderType.Button], cache: "cached",
+        async run(interaction) {
+            await interaction.showModal(
+                myCustomModals.formModal()
+            );
+        },
+    });
+    ```
+    ```ts title="responder.ts"
+    createResponder({
+        customId: "/form/modal",
+        types: [
+        // [!code word:Modal:1]
+            ResponderType.Modal,
+        // [!code word:ModalComponent]
+            ResponderType.ModalComponent
+        ], cache: "cached",
+        async run(interaction) {
+            // ...
+        },
+    });
+    ```
+</Callout>

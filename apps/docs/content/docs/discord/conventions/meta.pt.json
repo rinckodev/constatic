@@ -1,0 +1,12 @@
+{
+    "title": "Convenções",
+    "icon": "FaHandshake",
+    "pages": [
+        "structure",
+        "es6",
+        "intents",
+        "imports",  
+        "env", 
+        "constants"
+    ]
+}

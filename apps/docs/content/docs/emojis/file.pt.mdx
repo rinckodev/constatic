@@ -1,0 +1,64 @@
+---
+title: Arquivo de emojis
+icon: FaFileDownload
+description: Gere um arquivo json contendo as informações de todos os emojis da sua aplicação
+
+---
+import icons from "@lib/icons";
+
+<Callout type="info">
+    Para ter acesso a essa opção você precisa ter selecionado uma aplicação existente ou inserido um token de aplicação anteriormente. [Confira com mais detalhes aqui](/docs/emojis/start)
+</Callout>
+
+# Arquivo de emojis
+
+Com a opção `Gerar arquivo de emojis` você pode obter um arquivo json com todos os nomes e IDs dos emojis da sua aplicação para que você possa utilizar nos textos e componentes do seu projeto de bot através de funções utilitárias.
+
+Você poderá informar o nome e caminho do arquivo (Por padrão será `emojis.json`). Mas você pode escolher outro nome para o arquivo como `emojis.dev.json` ou até mesmo passar o caminho para alguma pasta `./assets/emojis.json`.
+
+Logo em seguida você poderá escolher o modo que os emojis serão listados no arquivo
+- IDs - Os valores de todas as propriedades são apenas os IDs dos emojis
+- URLs - Os valores de todas as propriedades são as URLs cdn dos emojis
+
+<Card> 
+    O exemplo abaixo ilustra como é o arquivo de emojis gerado (Nomes e IDs fictícios).
+
+    ```json title="emojis.json" tab="IDs"
+    {
+        "animated": {
+            "bell": "1069586362549927988",
+            "celebration": "1069586365649391617",
+            "dots": "1069586367612321792",
+            "fatal": "1069586369831243858",
+            "refresh": "1069586371079069010"
+        },
+        "static":{
+            "users": "1069586386985812032",
+            "danger": "1069586628910270884",
+            "info": "1069586629894869037",
+            "success": "1069586631614529566",
+            "warning": "1069586632520503411",
+            
+        }
+    }
+    ```
+    ```json title="emojis.json" tab="URLs"
+    {
+        "animated": {
+            "bell": "https://cdn.discordapp.com/emojis/1069586362549927988.gif",
+            "celebration": "https://cdn.discordapp.com/emojis/1069586365649391617.gif",
+            "dots": "https://cdn.discordapp.com/emojis/1069586367612321792.gif",
+            "fatal": "https://cdn.discordapp.com/emojis/1069586369831243858.gif",
+            "refresh": "https://cdn.discordapp.com/emojis/1069586371079069010.gif"
+        },
+        "static":{
+            "users": "https://cdn.discordapp.com/emojis/1069586386985812032.png",
+            "danger": "https://cdn.discordapp.com/emojis/1069586628910270884.png",
+            "info": "https://cdn.discordapp.com/emojis/1069586629894869037.png",
+            "success": "https://cdn.discordapp.com/emojis/1069586631614529566.png",
+            "warning": "https://cdn.discordapp.com/emojis/1069586632520503411.png",
+            
+        }
+    }
+    ```
+</Card>

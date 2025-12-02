@@ -1,0 +1,114 @@
+---
+title: Select menu
+icon: HiOutlineSelector
+description: How to reply discord select menus
+---
+
+## Creating a Responder for a Selection Menu
+
+It is possible to create a `Responder` that can accept several types of select menus, see an example:
+
+```ts title="command.ts"
+// ...
+const row = createRow(
+    new StringSelectMenuBuilder({
+        customId: "/select/fruits",
+        placeholder: "Select fruits",
+        options: [
+            { emoji: "🍎", label: "Apple", value: "apple" },
+            { emoji: "🍉", label: "Melon", value: "melon" },
+            { emoji: "🍊", label: "Orange", value: "orange" }
+        ]
+    })
+);
+await interaction.reply({ 
+    flags: ["Ephemeral"], 
+    components: [row] 
+});
+// ...
+```
+Above is the code to send a common selection menu as a response to a command. Just below you can see a `Responder` with `ResponderType.StringSelect` in the types, so that the `run` function of this Responder will be executed when someone selects from this selection menu:
+
+```ts title="responder.ts"
+createResponder({
+    customId: "/select/fruits",
+    // [!code word:StringSelect]
+    types: [ResponderType.StringSelect], cache: "cached",
+    async run(interaction) {
+        const selected = interaction.values[0];
+        await interaction.update({ 
+            flags: ["Ephemeral"], 
+            content: `${selected} Selected`, 
+            components: [] 
+        });
+    },
+});
+```
+
+You can combine several different types of select menus:
+
+```ts title="responder.ts"
+createResponder({
+    customId: "/ban/user", cache: "cached",
+    types: [
+        ResponderType.StringSelect,
+        ResponderType.UserSelect,
+    ],
+    async run(interaction) {
+        const { guild, values: [selected] } = interaction;
+
+        await interaction.update({});
+
+        if (interaction.isUserSelectMenu()){
+            const member = guild.members.get(selected);
+            await member.ban(); 
+        } else {
+            const member = guild.members.cache
+                .find(m => m.user.username === selected);
+            await member.ban(); 
+        }
+
+        await interaction.editReply({ 
+            flags: ["Ephemeral"], 
+            content: `${userMention(selected)} was banned!`, 
+            components: []
+        });
+    },
+});
+```
+
+Below are all the types of select menus:
+
+| Select Menu | ResponderType |
+| - | - |
+| Strings | `ResponderType.StringSelect` |
+| Users | `ResponderType.UserSelect` |
+| Channels | `ResponderType.ChannelSelect` |
+| Roles | `ResponderType.RoleSelect` |
+| Mentions | `ResponderType.MentionableSelect` |
+
+It is possible to combine with any type, this way you can have a button, a select menu and a modal with the same customId and they will all be answered in this function, just do the checks:
+
+```ts title="responder.ts"
+createResponder({
+    customId: "/menus/main", cache: "cached",
+    types: [
+        ResponderType.Button,
+        ResponderType.StringSelect,
+        ResponderType.ModalComponent,
+    ],
+    async run(interaction) {
+        switch (true) {
+            case interaction.isButton():
+                console.log("Botão")
+                return;
+            case interaction.isStringSelect():
+                console.log("Menu de seleção", interaction.values);
+                return;
+            default:
+                console.log("Modal", interaction.fields);
+                return;
+        }
+    },
+});
+```

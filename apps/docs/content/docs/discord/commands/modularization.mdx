@@ -1,0 +1,840 @@
+---
+title: Modularization
+icon: FaFolderTree
+description: Como criar comandos de barra do discord
+---
+import icons from "@lib/icons";
+import { TsIcon } from "@public/icons/files";
+
+<Callout type="warn">
+    This is a unique feature of [slash commands!](/docs/discord/commands/slash)
+</Callout>
+
+# How to Modularize
+
+As we develop systems for our bot, more commands will be needed. The best way to keep commands intuitive is to use groups and subcommands, but this can cause minor problems in the code. See the example below:
+
+```ts title="src/discord/commands/manage.ts"
+import { createCommand } from "#base";
+import { ApplicationCommandOptionType, CategoryChannelType, ChannelType, codeBlock, PermissionFlagsBits, PermissionsString } from "discord.js";
+
+const guildChannelTypes = [
+    ChannelType.GuildAnnouncement,
+    ChannelType.GuildForum,
+    ChannelType.GuildText,
+    ChannelType.GuildVoice,
+] as const;
+
+createCommand({
+    name: "manage",
+    description: "Manage command",
+    defaultMemberPermissions: ["Administrator"],
+    dmPermission: false,
+    options: [
+        {
+            name: "roles",
+            description: "Manage roles",
+            type: ApplicationCommandOptionType.SubcommandGroup,
+            options: [
+                {
+                    name: "create",
+                    description: "Create new role",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: "name",
+                            description: "Role name",
+                            type: ApplicationCommandOptionType.String,
+                            required: true,
+                        },
+                    ],
+                },
+                {
+                    name: "permissions",
+                    description: "Change role permissions",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: "role",
+                            description: "Select the role",
+                            type: ApplicationCommandOptionType.Role,
+                            required: true,
+                        },
+                        {
+                            name: "action",
+                            description: "Select the action",
+                            type: ApplicationCommandOptionType.String,
+                            choices: [
+                                { name: "Add", value: "add" },
+                                { name: "Remove", value: "remove" },
+                            ],
+                            required: true,
+                        },
+                        {
+                            name: "permission",
+                            description: "Select the permission",
+                            type: ApplicationCommandOptionType.String,
+                            choices: Object.keys(PermissionFlagsBits)
+                                .map(value => ({ name: value, value })),
+                            required: true,
+                        },
+                    ],
+                },
+                {
+                    name: "delete",
+                    description: "Delete a role",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: "role",
+                            description: "Select the role",
+                            type: ApplicationCommandOptionType.Role,
+                            required: true,
+                        },
+                    ],
+                }
+            ]
+        },
+        {
+            name: "channels",
+            description: "Manage channels",
+            type: ApplicationCommandOptionType.SubcommandGroup,
+            options: [
+                {
+                    name: "create",
+                    description: "Create new channel",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: "name",
+                            description: "Channel name",
+                            type: ApplicationCommandOptionType.String,
+                            required: true,
+                        },
+                        {
+                            name: "category",
+                            description: "Select a channel category",
+                            type: ApplicationCommandOptionType.Channel,
+                            channelTypes: [ChannelType.GuildCategory]
+                        },
+                        {
+                            name: "type",
+                            type: ApplicationCommandOptionType.Integer,
+                            choices: [
+                                { name: "Text", value: ChannelType.GuildText },
+                                { name: "Announcement", value: ChannelType.GuildAnnouncement },
+                                { name: "Forum", value: ChannelType.GuildForum },
+                                { name: "Voice", value: ChannelType.GuildVoice },
+                            ]
+                        }
+                    ],
+                },
+                {
+                    name: "move",
+                    description: "Change channel category",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: "channel",
+                            description: "Select the channel",
+                            type: ApplicationCommandOptionType.Channel,
+                            channelTypes: guildChannelTypes,
+                            required: true,
+                        },
+                        {
+                            name: "category",
+                            description: "Select the new category",
+                            type: ApplicationCommandOptionType.Channel,
+                            channelTypes: [ChannelType.GuildCategory],
+                            required: true,
+                        },
+                    ],
+                },
+                {
+                    name: "delete",
+                    description: "Delete a channel",
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: "channel",
+                            description: "Select the channel",
+                            type: ApplicationCommandOptionType.Channel,
+                            channelTypes: guildChannelTypes,
+                            required: true,
+                        },
+                    ],
+                }
+            ]
+        }
+    ],
+    async run(interaction) {
+        const { options, guild } = interaction;
+
+        const group = options.getSubcommandGroup();
+        const subcommand = options.getSubcommand();
+
+        switch (group) {
+            case "roles": {
+                switch (subcommand) {
+                    case "create": {
+                        const name = options.getString("name", true);
+
+                        await interaction.reply({
+                            flags: ["Ephemeral"],
+                            content: "Creating role..."
+                        });
+
+                        await guild.roles.create({ name })
+                            .then(role => interaction.editReply({
+                                content: `Role created ${role}`
+                            }))
+                            .catch(err => interaction.editReply({
+                                content: `Error: ${codeBlock(err)}`
+                            }));
+                        return;
+                    }
+                    case "permissions": {
+                        const role = options.getRole("role", true);
+                        const action = options.getString("action", true) as "add" | "remove";
+                        const permission = options.getString("permission") as PermissionsString;
+
+                        await interaction.reply({
+                            flags: ["Ephemeral"],
+                            content: "Update permissions..."
+                        });
+
+                        const permissions = role.permissions[action](permission).toArray();
+
+                        role.edit({ permissions })
+                            .then(role => interaction.editReply({
+                                content: `${action} permissions: ${role}`
+                            }))
+                            .catch(err => interaction.editReply({
+                                content: `Error: ${codeBlock(err)}`
+                            }));
+                        return;
+                    }
+                    case "delete": {
+                        const role = options.getRole("role", true);
+
+                        await interaction.reply({
+                            flags: ["Ephemeral"],
+                            content: "Deleting role..."
+                        });
+
+                        await role.delete()
+                            .then(() => interaction.editReply({
+                                content: "Channel deleted!"
+                            }))
+                            .catch(err => interaction.editReply({
+                                content: `Error: ${codeBlock(err)}`
+                            }));
+                        return;
+                    }
+                }
+                return;
+            }
+            case "channels": {
+                switch (subcommand) {
+                    case "create": {
+                        const name = options.getString("name", true);
+                        const parent = options.getChannel("category", false, [ChannelType.GuildCategory]);
+                        const type = options.getInteger("type") as CategoryChannelType;
+
+                        await interaction.reply({
+                            flags: ["Ephemeral"],
+                            content: "Creating channel..."
+                        });
+
+                        await guild.channels.create({ name, type, parent })
+                            .then(channel => interaction.editReply({
+                                content: `Channel created ${channel.url}`
+                            }))
+                            .catch(err => interaction.editReply({
+                                content: `Error: ${codeBlock(err)}`
+                            }));
+                        return;
+                    }
+                    case "move": {
+                        const channel = options.getChannel("channel", true, guildChannelTypes);
+                        const parent = options.getChannel("category", true, [ChannelType.GuildCategory]);
+
+                        await interaction.reply({
+                            flags: ["Ephemeral"],
+                            content: "Moving channel..."
+                        });
+
+                        await channel.setParent(parent)
+                            .then(channel => interaction.editReply({
+                                content: `Channel moved ${channel.url}`
+                            }))
+                            .catch(err => interaction.editReply({
+                                content: `Error: ${codeBlock(err)}`
+                            }));
+                        return;
+                    }
+                    case "delete": {
+                        const channel = options.getChannel("channel", true, guildChannelTypes);
+
+                        await interaction.reply({
+                            flags: ["Ephemeral"],
+                            content: "Deleting channel..."
+                        });
+
+                        await channel.delete()
+                            .then(() => interaction.editReply({
+                                content: "Channel deleted!"
+                            }))
+                            .catch(err => interaction.editReply({
+                                content: `Error: ${codeBlock(err)}`
+                            }));
+                        return;
+                    }
+                }
+                return;
+            }
+        }
+    },
+});
+```
+
+<Callout type="warn">
+    Even though it's quite simple, this command has over 200 lines of code. Imagine a real command with more complexity, checks, transformations, and interactivity—it would be much larger. This could be detrimental over time if you want to maintain your project and keep updating it.
+</Callout>
+
+The `createCommand` function returns a `CommandInstance` that contains two special methods: `group` and `subcommand`. As you can imagine, this is used to create groups and subcommands:
+
+```ts title="src/discord/commands/manage.ts"
+const command = createCommand({
+    /* ... */                     
+});
+
+command.group({
+    /* ... */
+})
+
+command.subcommand({
+    /* ... */
+})
+```
+
+With that in mind, let's break that giant command down and separate it into different files:
+
+<Callout type="hint">
+    It's recommended to create a dedicated folder for your giant command! In this example, we'll create the **manage** folder. The path in the project would be `./src/discord/commands/manage/`
+
+    <Files>
+        <Folder name="src" defaultOpen>
+            <Folder name="discord" defaultOpen>
+                <Folder name="commands" defaultOpen>
+                    <Folder name="manage" defaultOpen>
+                        <File name="command.ts" icon={<TsIcon />}/>
+                    </Folder>
+                </Folder>
+            </Folder>
+        </Folder>
+    </Files>
+</Callout>
+
+```ts title="src/discord/commands/manage/command.ts"
+import { createCommand } from "#base";
+
+export default createCommand({
+    name: "manage",
+    description: "Manage command",
+    defaultMemberPermissions: ["Administrator"],
+    dmPermission: false,
+});
+```
+
+Now, within the **manage** folder, we'll create other folders for the subcommand groups. The structure should look something like this:
+
+<Files>
+    <Folder name="manage" defaultOpen>
+        <Folder name="channels" defaultOpen>
+            <File name="create.ts" icon={<TsIcon />}/>
+            <File name="delete.ts" icon={<TsIcon />}/>
+            <File name="group.ts" icon={<TsIcon />}/>
+            <File name="move.ts" icon={<TsIcon />}/>
+        </Folder>
+        <Folder name="roles" defaultOpen>
+            <File name="create.ts" icon={<TsIcon />}/>
+            <File name="delete.ts" icon={<TsIcon />}/>
+            <File name="group.ts" icon={<TsIcon />}/>
+            <File name="permissions.ts" icon={<TsIcon />}/>
+        </Folder>
+        <File name="command.ts" icon={<TsIcon />}/>
+    </Folder>
+</Files>
+ 
+Since we exported the return of the `createCommando` function using `export default`, we can import it into the `group.ts` files in the **channels** and **roles** folders to define the subcommand groups:
+
+<Tabs items={["channels", "roles"]}>
+    <Tab value="channels">
+        ```ts title="manage/channels/group.ts"
+        import { ChannelType } from "discord.js";
+        import command from "../command.js";
+        
+        // [!code word:guildChannelTypes]
+        export const guildChannelTypes = [ // [!code highlight]
+            ChannelType.GuildAnnouncement,  // [!code highlight]
+            ChannelType.GuildForum,  // [!code highlight]
+            ChannelType.GuildText,  // [!code highlight]
+            ChannelType.GuildVoice,  // [!code highlight]
+        ] as const;  // [!code highlight]
+
+        export default command.group({
+            name: "channels",
+            description: "Manage channels",
+        });
+        ```
+
+        We can export variables that will be used in the sub commands of this group as well.
+    </Tab>
+    <Tab value="roles">
+        ```ts title="manage/roles/group.ts"
+        import command from "../command.js";
+
+        export default command.group({
+            name: "roles",
+            description: "Manage roles"
+        });
+        ```
+    </Tab>
+</Tabs>
+
+Now just create a file for each sub command and your code will be modularized:
+
+<Tabs items={["channels", "roles"]}>
+    <Tab value="channels">
+        Sub commands for the **channels** group:
+        <Tabs items={["create", "delete", "move"]}>
+            <Tab value="create">
+            ```ts title="manage/channels/create.ts"
+            import { ApplicationCommandOptionType, CategoryChannelType, ChannelType, codeBlock } from "discord.js";
+            import group from "./group.js";
+
+            group.subcommand({
+                name: "create",
+                description: "Create new channel",
+                options: [
+                    {
+                        name: "name",
+                        description: "Channel name",
+                        type: ApplicationCommandOptionType.String,
+                        required: true,
+                    },
+                    {
+                        name: "category",
+                        description: "Select a channel category",
+                        type: ApplicationCommandOptionType.Channel,
+                        channelTypes: [ChannelType.GuildCategory]
+                    },
+                    {
+                        name: "type",
+                        type: ApplicationCommandOptionType.Integer,
+                        choices: [
+                            { name: "Text", value: ChannelType.GuildText },
+                            { name: "Announcement", value: ChannelType.GuildAnnouncement },
+                            { name: "Forum", value: ChannelType.GuildForum },
+                            { name: "Voice", value: ChannelType.GuildVoice },
+                        ]
+                    }
+                ],
+                async run(interaction) {
+                    const { options, guild } = interaction;
+
+                    const name = options.getString("name", true);
+                    const parent = options.getChannel("category", false, [ChannelType.GuildCategory]);
+                    const type = options.getInteger("type") as CategoryChannelType;
+
+                    await interaction.reply({
+                        flags: ["Ephemeral"],
+                        content: "Creating channel..."
+                    });
+
+                    await guild.channels.create({ name, type, parent })
+                        .then(channel => interaction.editReply({
+                            content: `Channel created ${channel.url}`
+                        }))
+                        .catch(err => interaction.editReply({
+                            content: `Error: ${codeBlock(err)}`
+                        }));
+                },
+            })
+            ```
+            </Tab>
+            <Tab value="delete">
+            ```ts title="manage/channels/delete.ts"
+            import { ApplicationCommandOptionType, codeBlock } from "discord.js";
+            import group, { guildChannelTypes } from "./group.js";
+
+            group.subcommand({
+                name: "delete",
+                description: "Delete a channel",
+                options: [
+                    {
+                        name: "channel",
+                        description: "Select the channel",
+                        type: ApplicationCommandOptionType.Channel,
+                        channelTypes: guildChannelTypes,
+                        required: true,
+                    },
+                ],
+                async run(interaction) {
+                    const { options } = interaction;
+
+                    const channel = options.getChannel("channel", true, guildChannelTypes);
+
+                    await interaction.reply({
+                        flags: ["Ephemeral"],
+                        content: "Deleting channel..."
+                    });
+
+                    await channel.delete()
+                        .then(() => interaction.editReply({
+                            content: "Channel deleted!"
+                        }))
+                        .catch(err => interaction.editReply({
+                            content: `Error: ${codeBlock(err)}`
+                        }));
+                },
+            })
+            ```
+            </Tab>
+            <Tab value="move">
+            ```ts title="manage/channels/move.ts"
+            import { ApplicationCommandOptionType, ChannelType, codeBlock } from "discord.js";
+            import group, { guildChannelTypes } from "./group.js";
+
+            group.subcommand({
+                name: "move",
+                description: "Change channel category",
+                options: [
+                    {
+                        name: "channel",
+                        description: "Select the channel",
+                        type: ApplicationCommandOptionType.Channel,
+                        channelTypes: guildChannelTypes,
+                        required: true,
+                    },
+                    {
+                        name: "category",
+                        description: "Select the new category",
+                        type: ApplicationCommandOptionType.Channel,
+                        channelTypes: [ChannelType.GuildCategory],
+                        required: true,
+                    },
+                ],
+                async run(interaction) {
+                    const { options } = interaction;
+
+                    const channel = options.getChannel("channel", true, guildChannelTypes);
+                    const parent = options.getChannel("category", true, [ChannelType.GuildCategory]);
+
+                    await interaction.reply({
+                        flags: ["Ephemeral"],
+                        content: "Moving channel..."
+                    });
+
+                    await channel.setParent(parent)
+                        .then(channel => interaction.editReply({
+                            content: `Channel moved ${channel.url}`
+                        }))
+                        .catch(err => interaction.editReply({
+                            content: `Error: ${codeBlock(err)}`
+                        }));
+                },
+            })
+            ```
+            </Tab>
+        </Tabs>
+    </Tab>
+    <Tab value="roles">
+        Sub commands for the **roles** group:
+        <Tabs items={["create", "delete", "permissions"]}>
+            <Tab value="create">
+            ```ts title="manage/roles/create.ts"
+            import { ApplicationCommandOptionType, codeBlock } from "discord.js";
+            import group from "./group.js";
+
+            group.subcommand({
+                name: "create",
+                description: "Create new role",
+                options: [
+                    {
+                        name: "name",
+                        description: "Role name",
+                        type: ApplicationCommandOptionType.String,
+                        required: true,
+                    },
+                ],
+                async run(interaction) {
+                    const { options, guild } = interaction;
+
+                    const name = options.getString("name", true);
+
+                    await interaction.reply({
+                        flags: ["Ephemeral"],
+                        content: "Creating role..."
+                    });
+
+                    await guild.roles.create({ name })
+                        .then(role => interaction.editReply({
+                            content: `Role created ${role}`
+                        }))
+                        .catch(err => interaction.editReply({
+                            content: `Error: ${codeBlock(err)}`
+                        }));
+                },
+            })
+            ```
+            </Tab>
+            <Tab value="delete">
+            ```ts title="manage/roles/delete.ts"
+            import { ApplicationCommandOptionType, codeBlock } from "discord.js";
+            import group from "./group.js";
+
+            group.subcommand({
+                name: "delete",
+                description: "Delete a role",
+                options: [
+                    {
+                        name: "role",
+                        description: "Select the role",
+                        type: ApplicationCommandOptionType.Role,
+                        required: true,
+                    },
+                ],
+                async run(interaction) {
+                    const { options } = interaction;
+
+                    const role = options.getRole("role", true);
+
+                    await interaction.reply({
+                        flags: ["Ephemeral"],
+                        content: "Deleting role..."
+                    });
+
+                    await role.delete()
+                        .then(() => interaction.editReply({
+                            content: "Channel deleted!"
+                        }))
+                        .catch(err => interaction.editReply({
+                            content: `Error: ${codeBlock(err)}`
+                        }));
+                },
+            })
+            ```
+            </Tab>
+            <Tab value="permissions">
+            ```ts title="manage/roles/permissions.ts"
+            import { ApplicationCommandOptionType, codeBlock, PermissionFlagsBits, PermissionsString } from "discord.js";
+            import group from "./group.js";
+
+            group.subcommand({
+                name: "permissions",
+                description: "Change role permissions",
+                options: [
+                    {
+                        name: "role",
+                        description: "Select the role",
+                        type: ApplicationCommandOptionType.Role,
+                        required: true,
+                    },
+                    {
+                        name: "action",
+                        description: "Select the action",
+                        type: ApplicationCommandOptionType.String,
+                        choices: [
+                            { name: "Add", value: "add" },
+                            { name: "Remove", value: "remove" },
+                        ],
+                        required: true,
+                    },
+                    {
+                        name: "permission",
+                        description: "Select the permission",
+                        type: ApplicationCommandOptionType.String,
+                        choices: Object.keys(PermissionFlagsBits)
+                            .map(value => ({ name: value, value })),
+                        required: true,
+                    },
+                ],
+                async run(interaction) {
+                    const { options } = interaction;
+
+                    const role = options.getRole("role", true);
+                    const action = options.getString("action", true) as "add" | "remove";
+                    const permission = options.getString("permission") as PermissionsString;
+
+                    await interaction.reply({
+                        flags: ["Ephemeral"],
+                        content: "Update permissions..."
+                    });
+
+                    const permissions = role.permissions[action](permission).toArray();
+
+                    role.edit({ permissions })
+                        .then(role => interaction.editReply({
+                            content: `${action} permissions: ${role}`
+                        }))
+                        .catch(err => interaction.editReply({
+                            content: `Error: ${codeBlock(err)}`
+                        }));
+                },
+            })
+            ```
+            </Tab>
+        </Tabs>
+    </Tab>
+</Tabs>
+
+# Data Transport
+
+You can transport data between groups and subcommands simply by returning them in each **run** function. Let's look at a simple example:
+
+```ts title="store/command.ts"
+import { createCommand } from "#base";
+import { db } from "#database";
+
+export default createCommand({
+    name: "store",
+    async run(interaction) {
+        const { guild } = interaction;
+
+        await interaction.deferReply({ flags: ["Ephemeral"] });
+
+        const storeData = await db.store.findOne({ // [!code highlight]
+            guildId: guild.id // [!code highlight]
+        }); // [!code highlight]
+
+        return storeData // StoreDocument
+    },
+});
+```
+
+Above, we have something like a database query to get the document from our store system. When we return something within `run`, it will be passed as the second argument to `run` of the groups and subcommands, all with automatically inferred typing!
+
+```ts tab="setup" title="store/setup.ts"
+import command from "./command.js";
+import { codeBlock } from "discord.js";
+
+// [!code word:data]
+command.subcommand({
+    name: "setup",
+    async run(interaction, data /* StoreDocument */) {
+        const { channelId, description } = data; // [!code highlight]
+        
+        const channel = await interaction.guild.channels
+            .fetch(channelId)
+            .catch(() => null);
+
+        if (!channel || !channel.isSendable()) {
+            await interaction.editReply("Store channel not found");
+            return;
+        }
+
+        const message = await channel.send({ content: description })
+            .catch(err => {
+                interaction.editReply({
+                    content: `Unable to setup store: ${codeBlock(err)}`
+                });
+                return null;
+            });
+
+        if (!message) return;
+
+        data.set("panelMessageURL", message.url);
+        await data.save();
+    },
+});
+```
+```ts tab="close" title="store/close.ts"
+import { getMessageURLInfo } from "@magicyan/discord";
+import command from "./command.js";
+// [!code word:data]
+
+command.subcommand({
+    name: "close",
+    async run(interaction, data /* StoreDocument */) {
+        const { panelMessageURL } = data; // [!code highlight]
+
+        const messageInfo = getMessageURLInfo(panelMessageURL);
+
+        if (!messageInfo.messageId) {
+            await interaction.editReply("Message not found");
+            return;
+        }
+
+        const message = await interaction.guild.channels
+            .fetch(messageInfo.channelId)
+            .then(channel => channel?.isSendable()
+                ? channel.messages.fetch(messageInfo.messageId)
+                : null
+            )
+            .catch(() => null);
+
+        if (!message) {
+            await interaction.editReply("Store panel message not found!");
+            return;
+        }
+
+        await message.delete();
+
+        await interaction.editReply("Store panel message deleted!");
+
+        data.set("isOpen", false);
+        data.delete("panelMessageURL", null);
+        await data.save();
+    },
+});
+```
+
+If you have groups it is possible to transform or send new data to the sub commands
+
+<Steps>
+    <Step>
+    ```ts title="command.ts"
+    export default createCommand({
+        /* ... */
+        async run(){
+            // ...
+            return "Constatic";  // [!code highlight]
+        }
+    })
+    ``` 
+    </Step>
+    <Step>
+    ```ts title="group.ts"
+    import command from "./command.js";
+
+    export default command.group({
+        /* ... */
+        async run(_, text /* string */){ // [!code highlight]
+            // ...
+
+            console.log(text) 
+            // "Constatic"
+
+            return text.split("");
+        }
+    })
+    ```
+    </Step>
+    <Step>
+    ```ts title="subcommand.ts"
+    import group from "./command.js";
+
+    group.subcommand({
+        /* ... */
+        async run(_, words /* string[] */){ // [!code highlight]
+            // ...
+            console.log(worlds) 
+            // ['C', 'o', 'n', 's', 't', 'a', 't', 'i', 'c']
+        }
+    })
+    ```
+    </Step>
+</Steps>
+

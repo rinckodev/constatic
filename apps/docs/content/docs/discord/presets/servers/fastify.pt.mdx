@@ -1,0 +1,103 @@
+---
+title: Fastify
+icon: SiFastify
+---
+import icons from "@lib/icons";
+
+A predefinição de servidor de API usando fastify já vem com algumas configurações para facilitar o desenvolvimento. Veja abaixo o que você precisa saber para utilizar:
+
+<Callout type="warn">
+    É necessário conhecer o framework fastify para utilizar da melhor forma, leia a documentação: https://fastify.dev/
+</Callout>
+
+## Iniciar o servidor
+
+O arquivo que contém o código para iniciar o servidor fica localizado em `src/server/index.ts`. O servidor só será iniciado depois que o bot estiver pronto! Então um evento `ready` do bot é usado para iniciar o servidor, confira:
+
+```ts title="src/server/index.ts"
+import { createEvent, logger } from "#base";
+import { env } from "#env";
+import cors from "@fastify/cors";
+import ck from "chalk";
+import fastify from "fastify";
+import { registerRoutes } from "./routes/index.js";
+
+const app = fastify();
+app.register(cors, { origin: "*" });
+
+createEvent({
+    name: "Start Fastify Server",
+    event: "ready", once: true,
+    async run(client) {
+        registerRoutes(app, client);
+
+        const port = env.SERVER_PORT ?? 3000;
+
+        await app.listen({ port, host: "0.0.0.0" })
+        .then(() => {
+            logger.log(ck.green(
+                `● ${ck.underline("Fastify")} server listening on port ${port}`
+            ));
+        })
+        .catch(err => {
+            logger.error(err);
+            process.exit(1);
+        });
+    },
+});
+```
+
+Dessa forma basta importar este arquivo em `src/index.ts` que o evento será registrado:
+
+```ts title="src/index.ts"
+import { bootstrap } from "#base";
+import "#server";
+
+await bootstrapApp({ meta: import.meta });
+```
+
+Então o servidor fastify irá iniciar logo após o bot ficar online, assim tendo `Client<true>` (instância de Client quando já está online) para poder ser usado nas rotas.
+
+## Variáveis de ambiente
+
+O schema zod para validar o env é alterado para permitir novas variávies de ambiente
+
+```ts title="src/env.ts"
+import { validateEnv } from "#base";
+import { z } from "zod";
+
+export const env = validateEnv(z.object({
+    BOT_TOKEN: z.string("Discord Bot Token is required").min(1),
+    WEBHOOK_LOGS_URL: z.url().optional(),
+    SERVER_PORT: z.coerce.number().optional(), // [!code highlight]
+}));
+```
+
+Isso significa que você pode alterar a **porta** do servidor fasitfy usando essa variável no arquivo `.env`
+
+```properties title=".env"
+BOT_TOKEN=yourtoken
+SERVER_PORT=8080
+```
+
+## Cors
+
+Nesta predefinição, o plugin de cors já vem instalado e com uma configuração básica:
+
+```ts title="src/server/index.ts"
+import { createEvent, logger } from "#base";
+import { env } from "#env";
+import cors from "@fastify/cors";
+import ck from "chalk";
+import fastify from "fastify";
+import { registerRoutes } from "./routes/index.js";
+// ...
+
+app.register(cors, { origin: "*" }); // [!code highlight]
+
+// ...
+```
+
+<Callout type="info">
+    Leia a documentação completa do plugin para entender os melhores casos de uso: https://github.com/fastify/fastify-cors
+</Callout>

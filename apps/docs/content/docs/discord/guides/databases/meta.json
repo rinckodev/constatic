@@ -1,0 +1,6 @@
+{
+    "title": "Databases",
+    "icon": "FaDatabase",
+    "defaultOpen": false,
+    "pages": ["mongodb", "firestore"]
+}

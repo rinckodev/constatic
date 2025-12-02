@@ -1,0 +1,48 @@
+---
+title: PM2
+icon: SiPm2
+description: Como hospedar o projeto de bot de discord usando pm2
+---
+import icons from "@lib/icons";
+
+O PM2 é um gerenciador de processos daemon que ajudará você a gerenciar e manter sua aplicação online.
+
+Para começar instale o pm2 globamente:
+```bash
+npm install -g pm2
+```
+
+Crie um arquivo na raiz do projeto para iniciar o script `start`. Nomeie de `pm2.start.mjs`:
+```js title="pm2.start.mjs"
+import { exec } from "node:child_process";
+exec("npm run start", { windowsHide: true });
+```
+<Accordions>
+    <Accordion title="Certifique-se de que o projeto está buildado">
+    Para poder executar, antes o seu projeto precisa ser buildado usando o comando abaixo:
+    ```bash
+    npm run build
+    ```
+    </Accordion>
+</Accordions>
+
+Então você pode iniciar sua aplicação usando este comando:
+```bash
+pm2 start --name my-bot ./pm2.start.mjs
+```
+<Callout type="info">
+    Você pode definir um nome customizado para o seu processo usando a flag `--name`
+</Callout>
+
+Pronto, sua aplicação será executada em segundo plano na maquina.
+
+Abaixo estão alguns comandos úteis que você pode usar para gerenciar seu processo:
+| Comando | Uso | Descrição |
+| -       |  -   |    -      |
+| list |`pm2 list` | Exibe todas os processos registrados |
+| stop    | `pm2 stop my-bot` | Para o processo da sua aplicação |
+| restart |`pm2 restart my-bot` | Reinicia o processo da sua aplicação |
+| logs |`pm2 logs my-bot` | Exibe as logs do processo da sua aplicação |
+| delete |`pm2 delete my-bot` | Deleta o processo da sua aplicação |
+
+---

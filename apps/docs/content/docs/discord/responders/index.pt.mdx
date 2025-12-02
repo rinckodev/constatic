@@ -1,0 +1,63 @@
+---
+title: Responders
+icon: BsFillReplyFill
+description: Entenda o que são Responders e como eles funcionam
+---
+
+<Callout type="success">
+    É possível definir algumas opções para os Responders na função `setupCreators`!
+
+    [Veja mais detalhes na página sobre as funções criadoras](/docs/discord/creators#responder-options)
+</Callout>
+
+## O que são Responders?
+
+A função `createResponder` é poderosa para lidar com diferentes tipos de interações do discord. Com ela podemos responder botões, menus de seleção e modais, ou todos ao mesmo tempo.
+
+Para criar um `Responder` é preciso importar a função e o enum da base
+```ts title="responder.ts"
+import { createResponder, ResponderType } from "#base";
+```
+Veja um simples exemplo abaixo, vamos enviar um botão através de um comando e responder ele usando a função `createResponder`
+
+```ts title="command.ts"
+import { createCommand } from "#base";
+import { createRow } from "@magicyan/discord";
+import { ApplicationCommandType, ButtonBuilder, ButtonStyle } from "discord.js";
+
+createCommand({
+    name: "ping",
+    description: "Comando de ping",
+    dmPermission: false,
+    type: ApplicationCommandType.ChatInput,
+    async run(interaction){
+        const row = createRow(
+            new ButtonBuilder({
+                customId: "/ping/button",
+                label: "Ping", 
+                style: ButtonStyle.Success
+            })
+        );
+        interaction.reply({ flags: ["Ephemeral"], components: [row] });
+    }
+});
+```
+```ts title="responder.ts"
+import { createResponder, ResponderType } from "#base";
+
+createResponder({
+    customId: "/ping/button",
+    types: [ResponderType.Button], cache: "cached",
+    async run(interaction) {
+        interaction.reply({ flags: ["Ephemeral"], content: "pong" });
+    },
+});
+```
+
+Dessa forma estamos respondendo a um componente de botão fixo em uma mensagem onde o customId é `/ping/button`, então qualquer botão que nosso bot enviar que tiver esse customId, será respondido por essa função definida no `run` do nosso `Responder`.
+
+<Callout type="warn">
+    Note que criamos um customId que começa com `/` (barra). Nessa base, todos os componentes e modais que forem manipulados nos **Responders**, devem ter o customId iniciado com `/` (barra), pois o manipulador trata os **Responders** como rotas HTTP, assim como você pode ver [nesta página](/docs/discord/responders/params).
+</Callout>
+
+Os `Responders` usam o evento `interactionCreate`, o que significa que mesmo que o bot reinicie, se alguém usar esse botão novamente, ele ainda será respondido com a função definida. O mesmo ocorre para menus de seleção e modais

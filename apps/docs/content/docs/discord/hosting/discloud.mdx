@@ -1,0 +1,191 @@
+---
+title: Discloud
+icon: DiscloudWhite
+description: How to host discord bot project on discloud hosting
+---
+import icons from "@lib/icons";
+
+[Discloud](https://discloud.com/) is a cloud application hosting service.
+
+# Preparing the project
+
+When generating the project using the [CLI](/docs/discord/start), you can select the `🗐 Discloud Files` feature, which will include the files needed to upload your application to the hosting in the project.
+
+<Accordions>
+    <Accordion title="But... If you didn't check this option, here's how the files should look">
+
+    <Tabs items={["Node", "Bun"]}>
+        <Tab value="Node">
+            Create the `discloud.config` file in the project root.
+            ```properties title="discloud.config"
+            NAME=Awesome Bot
+            TYPE=bot
+            MAIN=build/index.js
+            RAM=100
+            VERSION=latest
+            AUTORESTART=false
+            START=npm run start
+            ```
+            Create the `.discloudignore` file in the project root.
+            ```properties title=".discloudignore"
+            # Essential structure
+            # - /build
+            # - /.env
+            # - /.discloudignore
+            # - /discloud.config
+            # - /package.json
+
+            # Ignored structure
+
+            # Folders
+            /.vscode
+            /src
+            /deprecated
+            /discloud
+            /node_modules
+
+            # Files
+            /.env.development
+            /.env.dev
+            /.env.example
+            /.eslintrc.json
+            /.gitignore
+            /tsconfig.json
+            /README.md
+
+            # Extensions
+            *.md
+            *.zip
+            *.exe
+            *.development.json
+            ```
+        </Tab>
+        <Tab value="Bun">
+            Create the `Dockerfile` file in the project root.
+            ```dockerfile title="Dockerfile"
+            FROM docker.io/oven/bun:latest
+
+            WORKDIR /app
+
+            COPY package.json package.json
+            COPY bun.lock bun.lock
+
+            RUN bun install
+            COPY . .
+
+            CMD ["bun", "run", "start"]
+            ```
+
+            Create the `discloud.config` file in the project root.
+            ```properties title="discloud.config"
+            NAME=Awesome Bun Bot
+            TYPE=bot
+            MAIN=Dockerfile # [!code highlight]
+            RAM=100
+            VERSION=latest
+            AUTORESTART=false
+            START=npm run start
+            ```
+            
+            Create the `.discloudignore` file in the project root.
+            ```properties title="discloud.config"
+            # Essential structure
+            # - /src
+            # - /.env
+            # - /.discloudignore
+            # - /discloud.config
+            # - /package.json
+            # - /tsconfig.json
+
+            # Ignored structure
+
+            # Folders
+            /.vscode
+            /deprecated
+            /discloud
+            /node_modules
+            /build
+
+            # Files
+            /.env.development
+            /.env.dev
+            /.env.example
+            /.eslintrc.json
+            /.gitignore
+            /README.md
+
+            # Extensions
+            *.md
+            *.zip
+            *.exe
+            *.development.json
+            ```
+        </Tab>
+    </Tabs>
+    </Accordion>
+</Accordions>
+
+# Before uploading...
+
+<Tabs items={["Node", "Bun"]}>
+    <Tab value="Node">
+        ### Make sure the project is builded!
+
+        To upload, your project must first be builded using the command below:
+        ```bash
+        npm run build
+        ```
+    </Tab>
+    <Tab value="Bun">
+        Run the `check` script to verify that there are no typing errors:
+        ```bash
+        npm run check
+        ```
+
+        <Callout type="warn">
+            A Bun project does not need to be builded!
+        </Callout>
+    </Tab>
+</Tabs>
+
+In the `discloud.config` file you can set a name and an avatar for your application on the hosting if you prefer.
+```yml title="discloud.config"
+    NAME=My Awesome Bot
+    AVATAR=https://i.imgur.com/L7Mxhoj.gif
+    # ...
+```
+
+Install the `discloud` extension in Visual Studio Code
+
+<ImageZoom src={"/guides/discloud/extension.png"} width={380} height={200} alt="step" />
+
+Click on the `discloud` tab on the sidebar of Visual Studio Code e place <Link href={"https://docs.discloud.com/suporte/comandos/api"}>your discloud api token</Link>.
+Then just click on `Upload Discloud` in the bottom bar of Visual Studio Code.
+<ImageZoom src={"/guides/discloud/upload-button.png"} width={380} height={200} alt="step" />
+
+If your project does not contain any errors, it will start in a few moments.
+
+<Callout type="warn">
+    If you don't want to use the Visual Studio Code extension, there are other [ways to host and you can check them out here](https://docs.discloud.com/suporte/hospedar). Just remember to follow the requirements below:
+
+    <Tabs items={["Node", "Bun"]}>
+        <Tab value="Node">
+            - The folder that must be uploaded is `build`, not `src` ([That's why you need to build first](/discord/hosting/discloud#build)).
+            - The files and folders that must be uploaded are `build`, `.env`, `constants.json`, `package.json`, and `discloud.config`
+
+        </Tab>
+        <Tab value="Bun">
+            - The folder that must be uploaded is `src`, not `build` (so there's no need to build first).
+            - The files and folders that must be uploaded are `src`, `.env`, `constants.json`, `Dockerfile`, `package.json`, and `discloud.config`
+
+            <Callout type="warn">
+                A Bun project doesn't need to be builded!
+            </Callout>
+        </Tab>
+    </Tabs>
+    
+    - Do not send the `node_modules` folder.
+    - It is necessary to set that the script to start is `npm run start`.
+</Callout>
+
+---

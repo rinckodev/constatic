@@ -1,0 +1,21 @@
+---
+title: Banco de dados
+icon: FaDatabase
+description: Guias de banco de dados
+---
+
+Um banco de dados é um sistema que armazena e organiza informações de maneira estruturada, permitindo a criação, leitura, atualização e exclusão desses dados de forma eficiente. Ele é essencial para gerenciar grandes volumes de informações, facilitando o acesso e a manipulação de dados por aplicações e usuários.
+
+Usando a [CLI para gerar seu projeto](/docs/discord/start), é possível selecionar uma predefinição de banco de dados.
+
+<ImageZoom src={"/guides/cli/bot-db.svg"} alt="Init discord bot" width="400" height="400" />
+
+
+Na maioria das predefinições a integração com o banco de dados escolhida fica na pasta `database` dentro de `src`.
+
+As predefinições disponíveis são:
+
+- MongoDB (mongoose) - [Veja o guia](/docs/discord/databases/mongodb)
+- Firestore (typesaurus) [Veja o guia](/docs/discord/databases/firestore)
+- Firestore (firelord) [Veja o guia](/docs/discord/databases/firestore)
+- QuickDB (better-sqlite3)

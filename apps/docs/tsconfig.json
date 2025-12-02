@@ -26,6 +26,9 @@
       "@public/*": [
         "./public/*"
       ],
+      "@lib/*": [
+        "./src/lib/*"
+      ],
       "fumadocs-mdx:collections/*": [
         "./.source/*"
       ]
@@ -42,7 +45,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
-  ],
+, "src/lib/source.tsx"  ],
   "exclude": [
     "node_modules"
   ]

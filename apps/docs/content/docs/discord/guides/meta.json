@@ -1,0 +1,9 @@
+{
+    "title": "Guides",
+    "icon": "FaBook",
+    "defaultOpen": false,
+    "pages": [
+        "application",
+        "databases"
+    ]
+}

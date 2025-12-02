@@ -1,0 +1,141 @@
+---
+title: Slash
+icon: RiSlashCommands2
+description: How to create discord slash commands
+---
+import icons from "@lib/icons";
+
+# Creating slash commands
+
+<Callout type="success">
+    You can set some command options in the `setupCreators` function!
+
+    [See more details on the creator functions page](/docs/discord/creators#command-options)
+</Callout>
+
+First of all, import the `createCommand` function from base and `ApplicationCommandType` from `discord.js`
+
+```ts
+import { Command } from "#base";
+import { ApplicationCommandType } from "discord.js";
+```
+
+<Callout type="info">
+    See [conventions](/docs/discord/conventions/structure) to create your commands
+</Callout>
+
+To create a slash command, you need to set `name`, `description` and `type`.
+
+```ts title="hello.ts"
+createCommand({
+    name: "ping",
+    description: "Replies with pong",
+    type: ApplicationCommandType.ChatInput,
+    async run(interaction) {
+        await interaction.reply({ 
+            flags: ["Ephemeral"], 
+            content: "Pong" 
+        });
+    },
+});
+```
+
+<Callout type="danger">
+    Slash command (`/`) names cannot be empty, cannot contain special characters, capital letters or spaces
+</Callout>
+
+# Set slash command options
+
+You can set options, subcommands and groups too
+```ts title="manage.ts"
+import { createCommand } from "#base";
+import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
+
+createCommand({
+    name: "manage",
+    description: "Manage command",
+    type: ApplicationCommandType.ChatInput,
+    options: [ // [!code highlight]
+        { // [!code highlight]
+            name: "users", // [!code highlight] 
+            description: "Manage users command", // [!code highlight]
+            type: ApplicationCommandOptionType.Subcommand // [!code highlight]
+            options: [ // [!code highlight]
+                { // [!code highlight]
+                    name: "user", // [!code highlight]
+                    description: "user", // [!code highlight]
+                    type: ApplicationCommandOptionType.User // [!code highlight]
+                    required // [!code highlight]
+                } // [!code highlight]
+            ], // [!code highlight]
+        } // [!code highlight]
+    ], // [!code highlight]
+    async run(interaction) {
+        const { options } = interaction;
+
+        switch(options.getSubcommand(true)){
+            case "users":{
+                const user = options.getUser("user", true);
+                await interaction.reply({ 
+                    flags: ["Ephemeral"], 
+                    content: `${user} managed` 
+                });
+                return;
+            }
+        }
+    },
+});
+```
+
+# Global
+
+The `global` option in commands is useful when you want the command to be registered to the application rather than the guild. It is only needed when guild IDs are set in the [setupCreators](/docs/discord/creators/#commandoptions) function.
+
+The code below causes commands to be registered only to the valid guilds listed in the array:
+```ts title="src/discord/index.ts"
+import { setupCreators } from "#base";
+import { env } from "#env";
+
+export const { createCommand, createEvent, createResponder } = setupCreators({
+    commands: {
+        guilds: [
+            env.MAIN_GUILD_ID,
+            env.DEV_GUILD_ID,
+            env.TEST_GUILD_ID,
+        ]
+    }
+});
+```
+
+Now look at this code where some commands are created:
+
+```ts
+createCommand({
+    name: "settings",
+    description: "Server settings command",
+    async run(interaction){
+    // ...
+    }
+});
+
+createCommand({
+    name: "manage",
+    description: "Command to manage members, channels and roles",
+    async run(interaction){
+    // ...
+    }
+});
+
+createCommand({
+    name: "information",
+    description: "Displays bot information",
+    global: true, // [!code highlight]
+    async run(interaction){
+    // ...
+    }
+});
+```
+
+The `settings` and `manage` commands will be registered in the guilds defined in the `setupCreators` function, but the `information` command will be registered globally in the application, thus being available in any guild.
+
+# Modularization

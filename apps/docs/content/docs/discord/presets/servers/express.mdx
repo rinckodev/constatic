@@ -1,0 +1,95 @@
+---
+title: ExpressJs
+icon: SiExpress
+---
+import icons from "@lib/icons";
+
+The API server preset using ExpressJs comes pre-configured to simplify development. Here's what you need to know to get started:
+
+<Callout type="warn">
+    Knowledge of the ExpressJs framework is essential for optimal use. Read the documentation: https://expressjs.com/
+</Callout>
+
+## Starting the Server
+
+The file containing the code to start the server is located in `src/server/index.ts`. The server will only start after the bot is ready! Therefore, a `ready` event from the bot is used to start the server. See:
+
+```ts title="src/server/index.ts"
+import { createEvent, logger } from "#base";
+import { env } from "#env";
+import express from "express";
+import cors from "cors";
+import ck from "chalk";
+import { registerRoutes } from "./routes/index.js";
+
+const app = express();
+app.use(express.json(), cors());
+
+createEvent({
+    name: "Start Express Server",
+    event: "ready", once: true,
+    async run(client) {
+        registerRoutes(app, client);
+
+        const port = env.SERVER_PORT ?? 3000;
+
+        app.listen(port, "0.0.0.0", () => {
+            logger.log(ck.green(`● ${ck.underline("Express")} server listening on port ${port}`));
+        });
+    },
+});
+```
+
+This way, simply import this file in `src/index.ts` and the event will be registered:
+
+```ts title="src/index.ts"
+import { bootstrap } from "#base";
+import "#server";
+
+await bootstrapApp({ meta: import.meta });
+```
+
+The express server will then start immediately after the bot comes online, thus having `Client<true>` (Client instance when already online) to be used in routes.
+
+## Environment Variables
+
+The zod schema for validating the env has been changed to allow new environment variables.
+
+```ts title="src/env.ts"
+import { validateEnv } from "#base";
+import { z } from "zod";
+
+export const env = validateEnv(z.object({
+    BOT_TOKEN: z.string("Discord Bot Token is required").min(1),
+    WEBHOOK_LOGS_URL: z.url().optional(),
+    SERVER_PORT: z.coerce.number().optional(), // [!code highlight]
+}));
+```
+This means you can change the **port** of the express server using this variable in the `.env` file
+
+```properties title=".env"
+BOT_TOKEN=yourtoken
+SERVER_PORT=8080
+```
+
+## Cors
+
+In this preset, the cors plugin is already installed and has a basic configuration:
+
+```ts title="src/server/index.ts"
+import { createEvent, logger } from "#base";
+import { env } from "#env";
+import express from "express";
+import cors from "cors";
+import ck from "chalk";
+import { registerRoutes } from "./routes/index.js";
+// ...
+
+app.use(express.json(), cors()); // [!code highlight]
+
+// ...
+```
+
+<Callout type="info">
+    Read the full plugin documentation to understand the best use cases: https://github.com/expressjs/cors
+</Callout>

@@ -1,0 +1,122 @@
+---
+title: Create
+icon: HiDocumentPlus
+description: Create new script preset
+---
+import icons from "@lib/icons";
+import { CliMenus } from "@/components/constatic/cli/menu";
+
+# Creating a New Script Preset
+
+<Callout type="warn">
+    It's recommended to run the CLI from the root of a project that already contains the files structured the way you want them to be in the preset.
+</Callout>
+
+After [accessing the script presets menu](/docs/presets/scripts/start), you can select the option to create a new preset:
+
+<CliMenus.Scripts lang="en" selected="new" />
+
+## Add Files
+
+You can add files to your preset by selecting the `Add files` option:
+
+<CliMenus.ModifyScript lang="en" selected={["files"]} hidden={["rm", "uninstall"]} />
+
+<Callout type="warn">
+    All files starting from the directory where the CLI was executed will be displayed
+</Callout>
+
+In the menu that appears with the files, you can search for a specific file by simply typing. To select/deselect a file, press the `Tab` key and confirm with the `Enter` key.
+
+<Accordions>
+    <Accordion title="Understand how files are stored" id="overwrite">
+    Let's say you run the CLI at the root of a project like this:
+    ```md
+    src/
+    ├── discord/ ...
+    ├── functions/
+    │   └── utils/
+    │       ├── emojis.ts
+    │       └── res.ts
+    ├── tools/
+    │   └── canvas/
+    │       └── card.ts
+    ├── env.ts
+    └── index.ts
+    ```
+
+    You’ll be able to select any file in this directory and its subfolders.  
+    Once selected, the files will be stored in the CLI’s config folder with the same structure they were selected in.  
+    So if you select these two files:
+    | | |
+    | -- | ---- |
+    | `res.ts` | `src/functions/utils/res.ts` |
+    | `card.ts` | `src/tools/canvas/card.ts` |
+
+    They will be stored like this:
+    ```md
+    src/
+    ├── functions/
+    │   └── utils/
+    │       └── res.ts
+    └── tools/
+         └── canvas/
+             └── card.ts
+    ```
+
+    When this preset is later applied, the files will be copied in the same structure, starting from the directory where the CLI is being executed.
+    </Accordion>
+</Accordions>
+
+## Remove Files
+
+If you’ve already added files to the preset, the `Remove files` option will appear. You can use it to select which files to remove:
+
+<CliMenus.ModifyScript lang="en" selected={["rm"]} hidden={["uninstall"]} />
+
+If you change your mind about a file, you can select it for removal.
+
+## Add Dependencies
+
+If the files you've selected require dependencies, you can add them using the `Add dependencies` option:
+
+<CliMenus.ModifyScript lang="en" selected={["deps"]} hidden={["uninstall"]} />
+
+You’ll be able to type the name of a dependency to add it to the preset.
+
+<Callout type="info">
+    You can add a dependency with a specific version using the same syntax as npm:
+    Using the Fastify library as an example:
+    - Install a major version: `fastify@5`
+    - Install a minor version: `fastify@4.28`
+    - Install a specific version: `fastify@3.25.2`
+</Callout>
+
+Then, you can choose whether to add it as a production or development dependency:
+
+| Dependency Type | Property in package.json |
+| -- | ---- |
+| Production dependency | `dependencies` |
+| Development dependency | `devDependencies` |
+
+## Remove Dependencies
+
+You can remove previously added dependencies using the `Remove dependencies` option:
+
+<CliMenus.ModifyScript lang="en" selected={["uninstall"]} />
+
+## Preview
+
+You can preview the structure of your script preset using the `Preview` option:
+
+<CliMenus.ModifyScript lang="en" selected={["preview"]} />
+
+The terminal will display the file and dependency structure of the preset.
+
+## Save
+
+Once you’ve finished building your script preset, save it using the `Save` option:
+
+<CliMenus.ModifyScript lang="en" selected={["save"]} />
+
+You’ll be asked to enter a name for the preset. Choose a short and clear name that helps identify its contents (you can use emojis if you'd like).

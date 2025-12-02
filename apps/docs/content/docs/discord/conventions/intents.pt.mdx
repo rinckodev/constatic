@@ -1,0 +1,55 @@
+---
+title: Intents
+icon: BsFillChatRightDotsFill
+description: Intents de bot de discord utilizando a Constatic Base
+---
+
+Os `intents` foram introduzidos pelo Discord para que os desenvolvedores de bots possam escolher quais eventos seu bot recebe com base em quais dados ele precisa para funcionar. Para que um determinado evento seja emitido, um determinado intent relacionado precisa ser habilitado.
+
+Por exemplo, um dos eventos mais utilizados em bots de discord é o `guildMemberAdd`, este evento é emitido quando um membro se junta à guilda, mas é necessário definir o intent `GuildMembers` para que o evento seja emitido.
+
+Ao gerar este projeto, por padrão todos os intents são habilitados no `Client`. Veja abaixo como seria um código simples sem utilizar a Constatic Base:
+
+```ts title="src/index.ts"
+import { Client } from "discord.js";
+
+const client = new Client({ // [!code word:intents]
+    intents: [
+        "GuildMembers",
+        "MessageContent",
+        "Guilds",
+        "GuildBans",
+        "GuildPresences",
+        // ...
+    ]
+});
+```
+Mas não é necessário definir nenhum intent, pois por padrão, todos já estão habilitados:
+
+```ts title="src/index.ts"
+import { bootstrap } from "#base";
+
+await bootstrap({ meta: import.meta });
+```
+
+<Callout type="warn">
+    Sabendo disso, você precisa ter [habilitado todos os intents para a sua aplicação de bot no portal de desenvolvedores do discord](/docs/discord/guides/application). 
+</Callout>
+
+Porém se você quiser definir apenas intents específicos, como no caso de um bot público que você não queira habilitar o intent de `MessageContent`, basta utilizar a propriedade `intents` da função `bootstrap`, ela é a mesma das opções do `Client`;
+
+```ts title="src/index.ts"
+import { bootstrap } from "#base";
+
+await bootstrap({ // [!code word:intents]
+    meta: import.meta,
+    intents: [
+        "Guilds",
+        "GuildWebhooks",
+        "GuildBans",
+        // ...
+    ]    
+});
+```
+
+---
