@@ -66,19 +66,20 @@ interface BadgeProps {
     className?: string;
 }
 export function BlogTag({ tag, className }: BadgeProps) {
-    const { style, title } = tag in blogTags 
+    const { style, title } = tag in blogTags
         ? blogTags[tag as BlogTags]
         : {
-            title: tag,  
+            title: tag,
             style: `border dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-500 dark:hover:bg-neutral-800
             border-neutral-400 bg-neutral-500 text-neutral-900 hover:bg-neutral-400
             `
         }
-  return (
-    <div className={cn(
-        `rounded-md text-xs px-2 py-0.5 font-mono
-        `, style, className)}>
-        {title}
-    </div>
-  )
+    return (
+        <div className={cn(
+            `rounded-md text-xs px-2 py-0.5 font-mono`,
+            style, className
+        )}>
+            {title}
+        </div>
+    )
 }

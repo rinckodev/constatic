@@ -10,32 +10,6 @@ export function BaseStructure() {
         </Folder>
         <Folder name="src">
             <Folder name="discord">
-                <Folder name="base">
-                    <Folder name="commands">
-                        <File name="handlers.ts" icon={<TsIcon />} />
-                        <File name="manager.ts" icon={<TsIcon />} />
-                        <File name="types.ts" icon={<TsIcon />} />
-                    </Folder>
-                    <Folder name="events">
-                        <File name="handlers.ts" icon={<TsIcon />} />
-                        <File name="manager.ts" icon={<TsIcon />} />
-                        <File name="types.ts" icon={<TsIcon />} />
-                    </Folder>
-                    <Folder name="responders">
-                        <File name="handlers.ts" icon={<TsIcon />} />
-                        <File name="manager.ts" icon={<TsIcon />} />
-                        <File name="types.ts" icon={<TsIcon />} />
-                    </Folder>
-                    <File name="app.ts" icon={<TsIcon />} />
-                    <File name="base.env.ts" icon={<TsIcon />} />
-                    <File name="base.error.ts" icon={<TsIcon />} />
-                    <File name="base.logger.ts" icon={<TsIcon />} />
-                    <File name="base.version.ts" icon={<TsIcon />} />
-                    <File name="bootstrap.ts" icon={<TsIcon />} />
-                    <File name="constants.ts" icon={<TsIcon />} />
-                    <File name="creators.ts" icon={<TsIcon />} />
-                    <File name="index.ts" icon={<TsIcon />} />
-                </Folder>
                 <Folder name="commands">
                     <Folder name="public">
                         <File name="counter.ts" icon={<TsIcon />} />
@@ -43,9 +17,6 @@ export function BaseStructure() {
                     </Folder>
                 </Folder>
                 <Folder name="events">
-                    <Folder name="commom">
-                        <File name="error.ts" icon={<TsIcon />} />
-                    </Folder>
                 </Folder>
                 <Folder name="responders">
                     <Folder name="buttons">
@@ -57,6 +28,7 @@ export function BaseStructure() {
             <Folder name="functions">
                 <File name="index.ts" icon={<TsIcon />} />
             </Folder>
+            <File name="constants.ts" icon={<TsIcon />} />
             <File name="env.ts" icon={<TsIcon />} />
             <File name="index.ts" icon={<TsIcon />} />
         </Folder>

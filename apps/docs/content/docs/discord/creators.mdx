@@ -13,6 +13,8 @@ You can set some options in the `index` file of the `discord` folder, see:
 
 ```ts title="src/discord/index.ts"
 // [!code word:setupCreators]
+import { setupCreators } from "@constatic/base";
+
 export const { createCommand, createEvent, createResponder } = setupCreators();
 ```
 

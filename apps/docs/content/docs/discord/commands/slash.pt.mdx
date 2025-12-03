@@ -92,7 +92,7 @@ A opção `global` nos comandos é útil quando você quer que o comando seja re
 
 O código abaixo faz com que os comandos sejam registrados apenas nas guildas válidas listadas no array:
 ```ts title="src/discord/index.ts"
-import { setupCreators } from "#base";
+import { setupCreators } from "@constatic/base";
 import { env } from "#env";
 
 export const { createCommand, createEvent, createResponder } = setupCreators({

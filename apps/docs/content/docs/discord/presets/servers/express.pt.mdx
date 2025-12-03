@@ -15,7 +15,7 @@ A predefinição de servidor de API usando ExpressJs já vem com algumas configu
 O arquivo que contém o código para iniciar o servidor fica localizado em `src/server/index.ts`. O servidor só será iniciado depois que o bot estiver pronto! Então um evento `ready` do bot é usado para iniciar o servidor, confira:
 
 ```ts title="src/server/index.ts"
-import { createEvent, logger } from "#base";
+import { createEvent } from "#base";
 import { env } from "#env";
 import express from "express";
 import cors from "cors";
@@ -27,14 +27,14 @@ app.use(express.json(), cors());
 
 createEvent({
     name: "Start Express Server",
-    event: "ready", once: true,
+    event: "clientReady", once: true,
     async run(client) {
         registerRoutes(app, client);
 
         const port = env.SERVER_PORT ?? 3000;
 
         app.listen(port, "0.0.0.0", () => {
-            logger.log(ck.green(`● ${ck.underline("Express")} server listening on port ${port}`));
+            console.log(ck.green(`● ${ck.underline("Express")} server listening on port ${port}`));
         });
     },
 });
@@ -43,7 +43,7 @@ createEvent({
 Dessa forma basta importar este arquivo em `src/index.ts` que o evento será registrado:
 
 ```ts title="src/index.ts"
-import { bootstrap } from "#base";
+import { bootstrap } from "@constatic/base";
 import "#server";
 
 await bootstrapApp({ meta: import.meta });
@@ -56,10 +56,10 @@ Então o servidor express irá iniciar logo após o bot ficar online, assim tend
 O schema zod para validar o env é alterado para permitir novas variávies de ambiente
 
 ```ts title="src/env.ts"
-import { validateEnv } from "#base";
+import { validateEnv } from "@constatic/base";
 import { z } from "zod";
 
-export const env = validateEnv(z.object({
+export const env = await validateEnv(z.object({
     BOT_TOKEN: z.string("Discord Bot Token is required").min(1),
     WEBHOOK_LOGS_URL: z.url().optional(),
     SERVER_PORT: z.coerce.number().optional(), // [!code highlight]

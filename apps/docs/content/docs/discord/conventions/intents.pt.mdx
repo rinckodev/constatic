@@ -27,9 +27,10 @@ const client = new Client({ // [!code word:intents]
 Mas não é necessário definir nenhum intent, pois por padrão, todos já estão habilitados:
 
 ```ts title="src/index.ts"
-import { bootstrap } from "#base";
+import { env } from "#env";
+import { bootstrap } from "@constatic/base";
 
-await bootstrap({ meta: import.meta });
+await bootstrap({ meta: import.meta, env });
 ```
 
 <Callout type="warn">
@@ -39,10 +40,11 @@ await bootstrap({ meta: import.meta });
 Porém se você quiser definir apenas intents específicos, como no caso de um bot público que você não queira habilitar o intent de `MessageContent`, basta utilizar a propriedade `intents` da função `bootstrap`, ela é a mesma das opções do `Client`;
 
 ```ts title="src/index.ts"
-import { bootstrap } from "#base";
+import { env } from "#env";
+import { bootstrap } from "@constatic/base";
 
 await bootstrap({ // [!code word:intents]
-    meta: import.meta,
+    meta: import.meta, env,
     intents: [
         "Guilds",
         "GuildWebhooks",

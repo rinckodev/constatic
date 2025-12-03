@@ -10,7 +10,7 @@ import icons from "@lib/icons";
 The `index.ts` file in the `src` folder is the entry point of this project, it is where the `bootstrap` function is executed to connect the discord bot application.
 
 ```ts title="src/index.ts"
-import { bootstrap } from "#base";
+import { bootstrap } from "@constatic/base";
 
 await bootstrap({ meta: import.meta });
 ```
@@ -81,7 +81,7 @@ await bootstrap({
 You can run code before the directories are loaded. Receive the `client` not ready yet.
 
 ```ts title="src/index.ts"
-await bootstrapApp({ 
+await bootstrap({ 
     meta: import.meta,
     beforeLoad() {
         console.log(client.application) // null;

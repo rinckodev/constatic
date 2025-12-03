@@ -93,7 +93,7 @@ The `global` option in commands is useful when you want the command to be regist
 
 The code below causes commands to be registered only to the valid guilds listed in the array:
 ```ts title="src/discord/index.ts"
-import { setupCreators } from "#base";
+import { setupCreators } from "@constatic/base";
 import { env } from "#env";
 
 export const { createCommand, createEvent, createResponder } = setupCreators({

@@ -21,7 +21,7 @@ Você pode importar qualquer coisa utilizando atalhos nomeados no `package.json`
       // ...
       "imports": {
         "#env": ["./build/env.js"],
-        "#base": ["./build/discord/base/index.js"],
+        "#base": ["./build/discord/index.js"],
         "#functions": ["./build/functions/index.js"],
         "#database": ["./build/database/index.js"],
         "#server": ["./build/server/index.js"],
@@ -36,18 +36,17 @@ Você pode importar qualquer coisa utilizando atalhos nomeados no `package.json`
     {
       "compilerOptions": {
         // ...
-        "baseUrl": "./src",
         "paths": {
-          "#env": ["./env.ts"],
-          "#base": ["./discord/base/index.ts"],
-          "#functions": ["./functions/index.ts"],
-          "#database": ["./database/index.ts"],
-          "#server": ["./server/index.ts"],
-          "#menus": ["./menus/index.ts"],
-          "#tools": ["./tools/index.ts"],
-          "#lib/*": ["./lib/*"],
-          "#emojis": ["../emojis.json"],
-          "#types/*": ["./@types/*"],
+          "#env": ["./src/env.ts"],
+          "#base": ["./src/discord/index.ts"],
+          "#functions": ["./src/functions/index.ts"],
+          "#database": ["./src/database/index.ts"],
+          "#server": ["./src/server/index.ts"],
+          "#menus": ["./src/menus/index.ts"],
+          "#tools": ["./src/tools/index.ts"],
+          "#lib/*": ["./src/lib/*"],
+          "#emojis": ["./emojis.json"],
+          "#types/*": ["./src/@types/*"],
         },
       }
       // ...

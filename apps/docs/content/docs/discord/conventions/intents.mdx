@@ -28,18 +28,20 @@ const client = new Client({ // [!code word:intents]
 But it is not necessary to set any intent, because by default, they are all already enabled:
 
 ```ts title="src/index.ts"
-import { bootstrap } from "#base";
+import { env } from "#env";
+import { bootstrap } from "@constatic/base";
 
-await bootstrap({ meta: import.meta });
+await bootstrap({ meta: import.meta, env });
 ```
 
 However, if you want to set only specific intents, as in the case of a public bot where you do not want to enable the `MessageContent` intent, simply use the `intents` property of the `bootstrap` function, it is the same as the `Client` options:
 
 ```ts title="src/index.ts"
-import { bootstrap } from "#base";
+import { env } from "#env";
+import { bootstrap } from "@constatic/base";
 
 await bootstrap({ // [!code word:intents]
-    meta: import.meta,
+    meta: import.meta, env
     intents: [
         "Guilds",
         "GuildWebhooks",

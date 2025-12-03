@@ -15,7 +15,7 @@ The API server preset using ExpressJs comes pre-configured to simplify developme
 The file containing the code to start the server is located in `src/server/index.ts`. The server will only start after the bot is ready! Therefore, a `ready` event from the bot is used to start the server. See:
 
 ```ts title="src/server/index.ts"
-import { createEvent, logger } from "#base";
+import { createEvent } from "#base";
 import { env } from "#env";
 import express from "express";
 import cors from "cors";
@@ -27,14 +27,14 @@ app.use(express.json(), cors());
 
 createEvent({
     name: "Start Express Server",
-    event: "ready", once: true,
+    event: "clientReady", once: true,
     async run(client) {
         registerRoutes(app, client);
 
         const port = env.SERVER_PORT ?? 3000;
 
         app.listen(port, "0.0.0.0", () => {
-            logger.log(ck.green(`● ${ck.underline("Express")} server listening on port ${port}`));
+            console.log(ck.green(`● ${ck.underline("Express")} server listening on port ${port}`));
         });
     },
 });
@@ -56,10 +56,10 @@ The express server will then start immediately after the bot comes online, thus 
 The zod schema for validating the env has been changed to allow new environment variables.
 
 ```ts title="src/env.ts"
-import { validateEnv } from "#base";
+import { validateEnv } from "@constatic/base";
 import { z } from "zod";
 
-export const env = validateEnv(z.object({
+export const env = await validateEnv(z.object({
     BOT_TOKEN: z.string("Discord Bot Token is required").min(1),
     WEBHOOK_LOGS_URL: z.url().optional(),
     SERVER_PORT: z.coerce.number().optional(), // [!code highlight]

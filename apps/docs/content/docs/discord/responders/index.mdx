@@ -17,7 +17,8 @@ The `createResponder` function is powerful for handling different types of disco
 To create a `Responder` you need to import the function and the enum from base
 
 ```ts title="responder.ts"
-import { Responder, ResponderType } from "#base";
+import { createResponder } from "#base";
+import { ResponderType } from "@constatic/base";
 ```
 See a simple example below, let's send a button through a command and respond to it using the `createResponder` function
 
@@ -42,6 +43,10 @@ createCommand({
         interaction.reply({ flags: ["Ephemeral"], components: [row] });
     }
 });
+```
+```ts title="responder.ts"
+import { createResponder } from "#base";
+import { ResponderType } from "@constatic/base";
 
 createResponder({
     customId: "/ping/button",

@@ -13,6 +13,8 @@ Você pode definir algumas opções no arquivo `index` da pasta `discord`, veja:
 
 ```ts title="src/discord/index.ts"
 // [!code word:setupCreators]
+import { setupCreators } from "@constatic/base";
+
 export const { createCommand, createEvent, createResponder } = setupCreators();
 ```
 

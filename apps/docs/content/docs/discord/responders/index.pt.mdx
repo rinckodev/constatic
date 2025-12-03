@@ -14,9 +14,10 @@ description: Entenda o que são Responders e como eles funcionam
 
 A função `createResponder` é poderosa para lidar com diferentes tipos de interações do discord. Com ela podemos responder botões, menus de seleção e modais, ou todos ao mesmo tempo.
 
-Para criar um `Responder` é preciso importar a função e o enum da base
+Para criar um `Responder` é preciso importar a função e o enum
 ```ts title="responder.ts"
-import { createResponder, ResponderType } from "#base";
+import { createResponder } from "#base";
+import { ResponderType } from "@constatic/base";
 ```
 Veja um simples exemplo abaixo, vamos enviar um botão através de um comando e responder ele usando a função `createResponder`
 
@@ -43,7 +44,8 @@ createCommand({
 });
 ```
 ```ts title="responder.ts"
-import { createResponder, ResponderType } from "#base";
+import { createResponder } from "#base";
+import { ResponderType } from "@constatic/base";
 
 createResponder({
     customId: "/ping/button",

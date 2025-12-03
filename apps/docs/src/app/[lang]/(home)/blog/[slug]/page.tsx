@@ -12,7 +12,7 @@ export default async function Page(props: PageProps<"/[lang]/blog/[slug]">) {
     if (!page) notFound();
 
     return <main className="flex flex-col gap-4 px-2 lg:px-12 py-6">
-        <div className="container rounded-xl px-8 py-4 border">
+        <div className="rounded-xl px-8 py-4 border">
             <h1 className="mb-2 text-3xl font-bold darK:text-white">
                 {page.data.title}
             </h1>
@@ -24,7 +24,7 @@ export default async function Page(props: PageProps<"/[lang]/blog/[slug]">) {
             }
             <Link href="/blog" className={buttonVariants({ size: "sm", color: "secondary" })}>Voltar</Link>
         </div>
-        <article className="container flex flex-col-reverse md:flex-row gap-2">
+        <article className="flex flex-col-reverse md:flex-row gap-2">
             <div className="prose min-w-0 flex-1">
                 <page.data.body components={getMDXComponents()} />
             </div>

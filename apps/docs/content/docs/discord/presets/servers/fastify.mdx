@@ -15,7 +15,7 @@ The API server preset using Fastify comes pre-configured to simplify development
 The file containing the code to start the server is located in `src/server/index.ts`. The server will only start after the bot is ready! Therefore, a `ready` event from the bot is used to start the server. See:
 
 ```ts title="src/server/index.ts"
-import { createEvent, logger } from "#base";
+import { createEvent } from "#base";
 import { env } from "#env";
 import cors from "@fastify/cors";
 import ck from "chalk";
@@ -27,7 +27,7 @@ app.register(cors, { origin: "*" });
 
 createEvent({
     name: "Start Fastify Server",
-    event: "ready", once: true,
+    event: "clientReady", once: true,
     async run(client) {
         registerRoutes(app, client);
 
@@ -35,12 +35,12 @@ createEvent({
 
         await app.listen({ port, host: "0.0.0.0" })
         .then(() => {
-            logger.log(ck.green(
+            console.log(ck.green(
                 `● ${ck.underline("Fastify")} server listening on port ${port}`
             ));
         })
         .catch(err => {
-            logger.error(err);
+            console.error(err);
             process.exit(1);
         });
     },
@@ -50,10 +50,10 @@ createEvent({
 This way, just import this file in `src/index.ts` and the event will be recorded:
 
 ```ts title="src/index.ts"
-import { bootstrap } from "#base";
+import { bootstrap } from "@constatic/base";
 import "#server";
 
-await bootstrapApp({ meta: import.meta });
+await bootstrap({ meta: import.meta });
 ```
 
 Then the fastify server will start right after the bot goes online, thus having `Client<true>` (Client instance when it is already online) to be used in the routes.
@@ -63,10 +63,10 @@ Then the fastify server will start right after the bot goes online, thus having 
 The Zod schema for environment validation is adjusted to allow new environment variables:
 
 ```ts title="src/env.ts"
-import { validateEnv } from "#base";
+import { validateEnv } from "@constatic/base";
 import { z } from "zod";
 
-export const env = validateEnv(z.object({
+export const env = await validateEnv(z.object({
     BOT_TOKEN: z.string("Discord Bot Token is required").min(1),
     WEBHOOK_LOGS_URL: z.url().optional(),
     SERVER_PORT: z.coerce.number().optional(), // [!code highlight]
@@ -85,7 +85,7 @@ SERVER_PORT=8080
 In this preset, the cors plugin is already installed and has a basic configuration:
 
 ```ts title="src/server/index.ts"
-import { createEvent, logger } from "#base";
+import { createEvent } from "#base";
 import { env } from "#env";
 import cors from "@fastify/cors";
 import ck from "chalk";
