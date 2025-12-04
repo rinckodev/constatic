@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "rinckodev.constatic-theme",
+        "rinckodev.discordjsv14ts",
+        "PKief.material-icon-theme",
+        "ms-vscode.vscode-typescript-next",
+        "naumovs.color-highlight",
+        "usernamehw.errorlens"
+    ]
+}

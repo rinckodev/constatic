@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+      // "noEmit": true,
+      "module": "NodeNext",
+      "target": "ESNext",
+      "moduleResolution": "NodeNext",
+      "resolveJsonModule": true,
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+
+      "rootDir": "src",
+      "outDir": "build",
+      "emitDeclarationOnly": false,
+
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "paths": {
+        "#helpers": ["./src/helpers/index.js"],
+        "#prompts": ["./src/helpers/helper.prompts.js"],
+        "#menus": ["./src/menus/index.js"],
+        "#shared/*": ["./src/shared/*"],
+        "#lib/*": ["./src/lib/*"],
+        "#actions/*": ["./src/actions/*"],
+        "#types": ["./src/@types/index.js"],
+        "#cli": ["./src/cli/index.js"],
+      }
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "deprecated", "dist", "build"],
+  }

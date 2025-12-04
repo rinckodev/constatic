@@ -1,0 +1,17 @@
+{
+    "main": "src/index.ts",
+    "scripts": {
+      "check": "tsc --noEmit && echo ✔ Ok",
+      "build": "tsc",
+      "dev": "bun --env-file=.env ./src/index.ts",
+      "dev:dev": "bun --env-file=.env.dev ./src/index.ts",
+      "watch": "bun --watch --env-file=.env ./src/index.ts",
+      "watch:dev": "bun --watch --env-file=.env.dev ./src/index.ts",
+      "start": "bun --env-file=.env .",
+      "start:dev": "bun --env-file=.env.dev ."
+    },
+    "devDependencies": {
+      "@types/bun": "^1.2.10",
+      "typescript": "5.7.2"
+    }
+  }

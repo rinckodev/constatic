@@ -1,0 +1,290 @@
+{
+  "presets": {
+    "databases": {
+      "mongoose": {
+        "name": "MongoDb 🍃",
+        "icon": "☵",
+        "hint": "mongoose",
+        "path": "mongoose",
+        "env": [
+          [
+            "MONGO_URI",
+            "z.string(\"MongoDb URI is required\").min(1)"
+          ],
+          [
+            "DATABASE_NAME",
+            "z.string().optional()",
+            "database"
+          ]
+        ],
+        "packageJson": {
+          "dependencies": {
+            "mongoose": "8.3.1"
+          }
+        },
+        "isORM": false
+      },
+      "typesaurus": {
+        "name": "Firestore 🦕",
+        "icon": "☵",
+        "hint": "typesaurus",
+        "path": "typesaurus",
+        "env": [
+          [
+            "FIREBASE_PATH",
+            "z.string(\"Firebase account path is required\").min(1)",
+            "./firebase.json"
+          ]
+        ],
+        "isORM": false,
+        "packageJson": {
+          "dependencies": {
+            "firebase-admin": "12.0.0",
+            "typesaurus": "10.1.0"
+          }
+        }
+      },
+      "firelord": {
+        "name": "Firestore 🔥",
+        "icon": "☵",
+        "hint": "firelord",
+        "path": "firelord",
+        "env": [
+          [
+            "FIREBASE_PATH",
+            "z.string(\"Firebase account path is required\").min(1)",
+            "./firebase.json"
+          ]
+        ],
+        "isORM": false,
+        "packageJson": {
+          "dependencies": {
+            "firebase-admin": "13.4.0",
+            "typesaurus": "10.7.0"
+          }
+        }
+      },
+      "mysql": {
+        "name": "MySQL 🐬",
+        "icon": "☷",
+        "hint": "mysql2",
+        "path": "mysql",
+        "env": [
+          [
+            "MYSQL_USER",
+            "z.string().min(1)"
+          ],
+          [
+            "MYSQL_PASSWORD",
+            "z.string().min(1)"
+          ],
+          [
+            "MYSQL_HOST",
+            "z.string().min(1)"
+          ],
+          [
+            "MYSQL_PORT",
+            "z.coerce.number().min(1)",
+            "3306"
+          ],
+          [
+            "MYSQL_DATABASE",
+            "z.string().min(1)"
+          ]
+        ],
+        "isORM": false,
+        "packageJson": {
+          "dependencies": {
+            "mysql2": "3.12.0"
+          }
+        }
+      },
+      "mariadb": {
+        "name": "MariaDb 🦭",
+        "icon": "☷",
+        "hint": "mariadb",
+        "path": "mariadb",
+        "env": [
+          [
+            "MARIADB_USER",
+            "z.string().min(1)"
+          ],
+          [
+            "MARIADB_PASSWORD",
+            "z.string().min(1)"
+          ],
+          [
+            "MARIADB_HOST",
+            "z.string().min(1)"
+          ],
+          [
+            "MARIADB_PORT",
+            "z.coerce.number().min(1)",
+            "3306"
+          ],
+          [
+            "MARIADB_DATABASE",
+            "z.string().min(1)"
+          ]
+        ],
+        "isORM": false,
+        "packageJson": {
+          "dependencies": {
+            "mariadb": "3.4.0"
+          }
+        }
+      },
+      "prisma-mysql": {
+        "name": "Prisma MySQL 🐬",
+        "icon": "◭",
+        "hint": "prisma",
+        "path": "prisma/mysql",
+        "env": [
+          [
+            "DATABASE_URL",
+            "z.url(\"Database URL is required\").min(1)",
+            "mysql://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
+          ]
+        ],
+        "isORM": true,
+        "packageJson": {
+          "scripts": {
+            "prestart": "prisma migrate deploy",
+            "postinstall": "prisma generate"
+          },
+          "devDependencies": {
+            "prisma": "6.14.0"
+          }
+        }
+      },
+      "prisma-postgres": {
+        "name": "Prisma PostgreSQL 🐘",
+        "icon": "◭",
+        "hint": "prisma",
+        "path": "prisma/postgres",
+        "env": [
+          [
+            "DATABASE_URL",
+            "z.url(\"Database URL is required\").min(1)",
+            "postgresql://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
+          ]
+        ],
+        "isORM": true,
+        "packageJson": {
+          "scripts": {
+            "prestart": "prisma migrate deploy",
+            "postinstall": "prisma generate"
+          },
+          "devDependencies": {
+            "prisma": "6.14.0"
+          }
+        }
+      },
+      "prisma-mongodb": {
+        "name": "Prisma MongoDB 🍃",
+        "icon": "◭",
+        "hint": "prisma",
+        "path": "prisma/mongodb",
+        "env": [
+          [
+            "DATABASE_URL",
+            "z.url(\"Database URL is required\").min(1)",
+            "mongodb://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
+          ]
+        ],
+        "isORM": false,
+        "packageJson": {
+          "scripts": {
+            "prestart": "prisma migrate deploy",
+            "postinstall": "prisma generate"
+          },
+          "devDependencies": {
+            "prisma": "6.14.0"
+          }
+        }
+      }
+    },
+    "servers": {
+      "fastify": {
+        "name": "Fastify",
+        "icon": "🐅",
+        "hint": "fastify",
+        "path": "fastify",
+        "env": [
+          [
+            "SERVER_PORT",
+            "z.coerce.number().min(1).optional()",
+            "8080"
+          ]
+        ],
+        "packageJson": {
+          "dependencies": {
+            "http-status-codes": "2.3.0",
+            "fastify": "5.0.0",
+            "@fastify/cors": "10.0.1"
+          }
+        }
+      },
+      "express": {
+        "name": "ExpressJS",
+        "icon": "🦎",
+        "hint": "express",
+        "path": "express",
+        "env": [
+          [
+            "SERVER_PORT",
+            "z.coerce.number().min(1).optional()",
+            "8080"
+          ]
+        ],
+        "packageJson": {
+          "dependencies": {
+            "http-status-codes": "2.3.0",
+            "express": "4.19.2",
+            "cors": "2.8.5"
+          },
+          "devDependencies": {
+            "@types/cors": "2.8.17",
+            "@types/express": "4.17.21"
+          }
+        }
+      },
+      "elysia": {
+        "name": "elysia",
+        "icon": "🦊",
+        "hint": "elysia",
+        "path": "elysia",
+        "disabled": true,
+        "env": [
+          [
+            "SERVER_PORT",
+            "z.coerce.number().min(1).optional()",
+            "8080"
+          ]
+        ],
+        "packageJson": {
+          "dependencies": {},
+          "devDependencies": {}
+        }
+      },
+      "hono": {
+        "name": "Hono",
+        "icon": "🔥",
+        "hint": "hono",
+        "path": "hono",
+        "disabled": true,
+        "env": [
+          [
+            "SERVER_PORT",
+            "z.coerce.number().min(1).optional()",
+            "8080"
+          ]
+        ],
+        "packageJson": {
+          "dependencies": {},
+          "devDependencies": {}
+        }
+      }
+    }
+  }
+}

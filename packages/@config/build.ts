@@ -1,7 +1,10 @@
 import { $, Glob, type BuildConfig } from "bun";
 import { styleText } from "node:util";
 
-export async function build() {
+interface BuildOptions {
+    disableTypes?: boolean;
+}
+export async function build(options: BuildOptions = {}) {
     const entrypoints = await Array.fromAsync(
         new Glob("./src/**/*.ts").scan()
     );
@@ -36,7 +39,8 @@ export async function build() {
     console.log();
     console.log(styleText("green", "✔ The project was compiled successfully!"))
 
-    await $`bun run typegen`.quiet();
-
-    console.log(styleText("blue", "✔ DTS generated successfully!"));
+    if (!(options.disableTypes??false)){
+        await $`bun run typegen`.quiet();
+        console.log(styleText("blue", "✔ DTS generated successfully!"));
+    }
 }
