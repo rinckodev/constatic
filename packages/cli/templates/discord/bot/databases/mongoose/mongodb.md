@@ -1,1 +1,0 @@
-https://constatic-docs.vercel.app/docs/discord/presets/databases/mongodb

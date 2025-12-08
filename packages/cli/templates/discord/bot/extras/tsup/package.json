@@ -1,8 +1,0 @@
-{
-    "scripts":{
-        "build": "tsup"
-    },
-    "devDependencies": {
-        "tsup": "^8.3.5"
-    }
-}
