@@ -1,4 +1,4 @@
-import { Client, Collection } from "discord.js";
+import { Client, Collection, type ClientEventTypes } from "discord.js";
 import { BaseManager } from "../manager.js";
 import type { ClientEventKey, Event, EventPropData, EventsCollection, GenericEventArgs } from "./event.js";
 
@@ -54,7 +54,7 @@ export class EventManager extends BaseManager {
         );
 
         for (const [key, events] of collection.entries()) {
-            client.on(key, (...args) => {
+            client.on(key, (...args: ClientEventTypes[keyof ClientEventTypes]) => {
                 Promise.all(Array.from(events.values()).map(event =>
                     this.onEvent(event, args)
                 ))

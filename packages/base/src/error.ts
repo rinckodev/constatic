@@ -1,4 +1,4 @@
-import { Client, codeBlock, TextDisplayBuilder, time, WebhookClient } from "discord.js";
+import { Client, codeBlock, TextDisplayBuilder, time, parseWebhookURL, REST, Routes } from "discord.js";
 import console from "node:console";
 import { styleText } from "node:util";
 
@@ -10,7 +10,7 @@ export class ConstaticError extends Error {
     }
 }
 
-export class RunBlockError {}
+export class RunBlockError { }
 
 export async function baseErrorHandler(error: any, client?: Client) {
     if (client?.user) console.log(client.user.displayName);
@@ -38,12 +38,17 @@ export async function baseErrorHandler(error: any, client?: Client) {
 
     const url = process.env.WEBHOOK_LOGS_URL;
     if (!url) return;
+    const data = parseWebhookURL(url)
+    if (!data) return;
+
+    const rest = new REST();
+    if (process.env.BOT_TOKEN) rest.setToken(process.env.BOT_TOKEN);
+
 
     try {
-        const webhook = new WebhookClient({ url });
         const username = client?.user?.username;
-        await webhook
-            .send({
+        rest.post(Routes.webhook(data.id, data.token), {
+            body: {
                 flags: ["IsComponentsV2"],
                 components: [
                     new TextDisplayBuilder({
@@ -56,7 +61,8 @@ export async function baseErrorHandler(error: any, client?: Client) {
                 withComponents: true,
                 avatarURL: client?.user?.displayAvatarURL({ size: 512 }),
                 username: username ? `${username} logs` : "Logs"
-            })
+            }
+        })
             .catch(console.error);
     } catch {
         console.log();

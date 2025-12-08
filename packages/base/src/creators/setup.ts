@@ -1,4 +1,4 @@
-import type { ApplicationCommandType, CacheType, ClientEvents, PermissionResolvable } from "discord.js";
+import { ApplicationCommandType, InteractionContextType, type CacheType, type ClientEventTypes, type PermissionResolvable } from "discord.js";
 import { ConstaticApp, type BaseCommandsConfig, type BaseEventsConfig, type BaseRespondersConfig } from "../app.js";
 import { Command, type CommandData, type CommandType } from "./commands/command.js";
 import { Event, type EventData } from "./events/event.js";
@@ -49,9 +49,9 @@ export function setupCreators(options: SetupCreatorsOptions = {}) {
     return {
         createCommand<
             T extends CommandType = ApplicationCommandType.ChatInput,
-            P extends boolean = false,
+            const C extends readonly InteractionContextType[] = [InteractionContextType.Guild],
             R = void
-        >(data: CommandData<T, P, R>): Command<T, P, R> {
+        >(data: CommandData<T, C, R>): Command<T, C, R> {
             if (options.commands?.defaultMemberPermissions){
                 data.defaultMemberPermissions??=options.commands
                     .defaultMemberPermissions;
@@ -61,7 +61,7 @@ export function setupCreators(options: SetupCreatorsOptions = {}) {
             return command;
         },
         createEvent: function <
-            EventName extends keyof ClientEvents
+            EventName extends keyof ClientEventTypes
         >(data: EventData<EventName>) {
             if (data.event === "clientReady") {
                 data.once = true;

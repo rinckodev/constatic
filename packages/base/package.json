@@ -44,10 +44,9 @@
     "dev": "bun run ./playground/index.ts"
   },
   "peerDependencies": {
-    "discord.js": "^14.24.2"
+    "discord.js": "^15.0.0-dev.1765065716-5e6bd4b3d"
   },
   "dependencies": {
-    "@discordjs/core": "^2.3.0",
     "rou3": "^0.7.10"
   }
 }

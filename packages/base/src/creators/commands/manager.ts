@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, AutocompleteInteraction, Client, CommandInteraction, type ApplicationCommandOptionData, type ApplicationCommandSubCommandData, type ApplicationCommandSubGroupData, type ChatInputApplicationCommandData, type MessageApplicationCommandData, type UserApplicationCommandData } from "discord.js";
+import { ApplicationCommandOptionType, ApplicationCommandType, AutocompleteInteraction, Client, CommandInteraction, InteractionContextType, type ApplicationCommandOptionData, type ApplicationCommandSubCommandData, type ApplicationCommandSubGroupData, type ChatInputApplicationCommandData, type MessageApplicationCommandData, type UserApplicationCommandData } from "discord.js";
 import { format, styleText } from "node:util";
 import { RunBlockError } from "../../error.js";
 import { BaseManager } from "../manager.js";
@@ -16,9 +16,9 @@ export class CommandManager extends BaseManager {
     private get config() {
         return this.app.config.commands;
     }
-    private readonly collection = new Map<string, Command<unknown, unknown, unknown>>();
+    private readonly collection = new Map<string, Command<unknown, readonly InteractionContextType[], unknown>>();
     public readonly runners = new Map<string, Runner[]>();
-    public set<T, P, R>(command: Command<T, P, R>) {
+    public set<T, C extends readonly InteractionContextType[], R>(command: Command<T, C, R>) {
         this.collection.set(command.data.name, command);
         const path = `/${command.data.type}/${command.data.name}`;
         this.runners.set(path, [command.data.run]);
@@ -206,7 +206,7 @@ export class CommandManager extends BaseManager {
             "autocomplete",
             options.getSubcommandGroup(false),
             options.getSubcommand(false),
-            options.getFocused(true).name
+            options.getFocused().name
         );
         if (!handler || !handler[0]) return;
         const [run] = handler;
