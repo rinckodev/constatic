@@ -50,7 +50,7 @@ export async function mainMenu(cli: CLI){
         ]
     }));
     divider();
-    
+
     switch(menu){
         case "discord/bot":{
             menus.discord.bot(cli);
