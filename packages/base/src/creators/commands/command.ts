@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, AutocompleteInteraction, ChatInputCommandInteraction, InteractionContextType, MessageContextMenuCommandInteraction, UserContextMenuCommandInteraction, type ApplicationCommandOptionAllowedChannelType, type ApplicationCommandOptionChoiceData, type BaseApplicationCommandData, type CacheType, type LocalizationMap } from "discord.js";
+import { ApplicationCommandOptionType, ApplicationCommandType, AutocompleteInteraction, ChatInputCommandInteraction, InteractionContextType, MessageContextMenuCommandInteraction, UserContextMenuCommandInteraction, type ApplicationCommandOptionAllowedChannelTypes, type ApplicationCommandOptionChoiceData, type BaseApplicationCommandData, type CacheType, type LocalizationMap } from "discord.js";
 
 export type CommandType = Exclude<
     ApplicationCommandType,
@@ -50,7 +50,7 @@ interface NumberOptionData<Contexts> extends
 
 interface ChannelOptionData extends BaseOptionData {
     type: ApplicationCommandOptionType.Channel
-    channelTypes?: readonly ApplicationCommandOptionAllowedChannelType[]
+    channelTypes?: readonly ApplicationCommandOptionAllowedChannelTypes[]
 }
 interface CommonOptionData extends BaseOptionData {
     type:

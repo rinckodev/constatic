@@ -206,7 +206,7 @@ export class CommandManager extends BaseManager {
             "autocomplete",
             options.getSubcommandGroup(false),
             options.getSubcommand(false),
-            options.getFocused().name
+            options.getFocused(true).name
         );
         if (!handler || !handler[0]) return;
         const [run] = handler;

@@ -1,11 +1,11 @@
-import type { ClientEventTypes } from "discord.js";
+import type { ClientEvents } from "discord.js";
 
-export type ClientEventKey = keyof ClientEventTypes;
+export type ClientEventKey = keyof ClientEvents;
 
 export type EventPropData = {
     [Key in ClientEventKey]: {
         name: Key;
-        args: ClientEventTypes[Key]
+        args: ClientEvents[Key]
     }
 }[ClientEventKey]
 
@@ -14,7 +14,7 @@ export interface EventData<EventName extends ClientEventKey> {
     event: EventName; 
     once?: boolean; 
     tags?: string[];
-    run(this: void, ...args: ClientEventTypes[EventName]): Promise<void>;
+    run(this: void, ...args: ClientEvents[EventName]): Promise<void>;
 }
 
 export class Event<EventName extends ClientEventKey> {
@@ -23,6 +23,6 @@ export class Event<EventName extends ClientEventKey> {
     ){}
 }
 
-export type GenericEventArgs = ClientEventTypes[ClientEventKey];
+export type GenericEventArgs = ClientEvents[ClientEventKey];
 export type EventsCollection = Map<string, Event<ClientEventKey>>;
 

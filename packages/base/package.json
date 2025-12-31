@@ -44,9 +44,10 @@
     "dev": "bun run ./playground/index.ts"
   },
   "peerDependencies": {
-    "discord.js": "^15.0.0-dev.1765065716-5e6bd4b3d"
+    "discord.js": "^14.25.1"
   },
   "dependencies": {
-    "rou3": "^0.7.10"
+    "rou3": "^0.7.10",
+    "tinyglobby": "^0.2.15"
   }
 }

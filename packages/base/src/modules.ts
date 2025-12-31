@@ -1,5 +1,5 @@
-import { glob } from "node:fs/promises";
 import { join } from "node:path";
+import { glob } from "tinyglobby";
 
 export interface ModuleImported {
     module: any,
@@ -11,13 +11,11 @@ export interface ModuleImported {
  * along with its file path.
  */
 export async function loadModules(meta: ImportMeta, modules: string[] = []) {
-    const exclude = modules
+    const ignore = modules
         .filter(path => path.charAt(0) == "!")
         .map(path => path.slice(1));
 
-    const filepaths = await Array.fromAsync(
-        glob(modules, { cwd: meta.dirname, exclude })
-    );
+    const filepaths = await glob(modules, { cwd: meta.dirname, ignore })
 
     const loadModules: ModuleImported[] = [];
 
