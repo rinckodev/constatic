@@ -11,16 +11,15 @@ import {
   useMemo,
   useState,
 } from "react";
-import * as Unstyled from "./tabs.unstyled";
-import { cn } from "fumadocs-ui/utils/cn";
+import { cn } from "../lib/cn";
+import * as Unstyled from "./ui/tabs";
 
 type CollectionKey = string | symbol;
 
-export interface TabsProps
-  extends Omit<
-    ComponentProps<typeof Unstyled.Tabs>,
-    "value" | "onValueChange"
-  > {
+export interface TabsProps extends Omit<
+  ComponentProps<typeof Unstyled.Tabs>,
+  "value" | "onValueChange"
+> {
   /**
    * Use simple mode instead of advanced usage as documented in https://radix-ui.com/primitives/docs/components/tabs.
    */
@@ -73,7 +72,7 @@ export const TabsTrigger = React.forwardRef<
     ref={ref}
     {...props}
     className={cn(
-      "inline-flex hover:cursor-pointer items-center gap-2 whitespace-nowrap text-fd-muted-foreground border-b border-transparent py-2 text-sm font-medium transition-colors [&_svg]:size-4 hover:text-fd-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-fd-primary data-[state=active]:text-fd-primary",
+      "inline-flex items-center gap-2 whitespace-nowrap text-fd-muted-foreground border-b border-transparent py-2 text-sm font-medium transition-colors [&_svg]:size-4 hover:text-fd-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-fd-primary data-[state=active]:text-fd-primary",
       props.className,
     )}
   />
@@ -108,9 +107,7 @@ export function Tabs({
     >
       {items && (
         <TabsList>
-          {label && (
-            <span className="text-sm font-medium my-auto me-auto">{label}</span>
-          )}
+          {label && <span className="text-sm font-medium my-auto me-auto">{label}</span>}
           {items.map((item) => (
             <TabsTrigger key={item} value={escapeValue(item)}>
               {item}
@@ -118,17 +115,14 @@ export function Tabs({
           ))}
         </TabsList>
       )}
-      <TabsContext.Provider
-        value={useMemo(() => ({ items, collection }), [collection, items])}
-      >
+      <TabsContext.Provider value={useMemo(() => ({ items, collection }), [collection, items])}>
         {props.children}
       </TabsContext.Provider>
     </Unstyled.Tabs>
   );
 }
 
-export interface TabProps
-  extends Omit<ComponentProps<typeof Unstyled.TabsContent>, "value"> {
+export interface TabProps extends Omit<ComponentProps<typeof Unstyled.TabsContent>, "value"> {
   /**
    * Value of tab, detect from index if unspecified.
    */
@@ -163,7 +157,7 @@ export function TabsContent({
       value={value}
       forceMount
       className={cn(
-        "p-4 text-[15px] bg-fd-background outline-none prose-no-margin data-[state=inactive]:hidden [&>figure:only-child]:-m-4 [&>figure:only-child]:border-none",
+        "p-4 text-[0.9375rem] bg-fd-background rounded-xl outline-none prose-no-margin data-[state=inactive]:hidden [&>figure:only-child]:-m-4 [&>figure:only-child]:border-none",
         className,
       )}
       {...props}

@@ -1,4 +1,6 @@
+import BlogPostDate from "@/components/blog/BlogPostDate";
 import { BlogTag } from "@/components/blog/BlogTag";
+import { getPostDate } from "@/components/blog/date";
 import { buttonVariants } from "@/components/ui/button";
 import { blog } from "@/lib/source";
 import { getMDXComponents } from "@/mdx-components";
@@ -29,11 +31,7 @@ export default async function Page(props: PageProps<"/[lang]/blog/[slug]">) {
                 <page.data.body components={getMDXComponents()} />
             </div>
             <div className="flex flex-col gap-4 md:border-l md:p-4 text-sm lg:w-[250px]">
-                <div>
-                    <p className="font-medium text-muted-foreground">
-                        {new Date(page.data.date ?? page.path).toLocaleDateString()}
-                    </p>
-                </div>
+                <BlogPostDate date={getPostDate(page)} />
                 <InlineTOC items={page.data.toc} defaultOpen />
             </div>
         </article>

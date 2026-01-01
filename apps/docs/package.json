@@ -10,16 +10,20 @@
     "postinstall": "fumadocs-mdx"
   },
   "dependencies": {
+    "@radix-ui/react-collapsible": "^1.1.12",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "class-variance-authority": "^0.7.1",
     "fumadocs-core": "16.2.1",
     "fumadocs-mdx": "14.0.4",
     "fumadocs-twoslash": "^3.1.10",
     "fumadocs-ui": "16.2.1",
-    "lucide-react": "^0.555.0",
-    "next": "16.0.7",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "lucide-react": "^0.562.0",
+    "next": "16.1.1",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "react-icons": "^5.5.0",
-    "zod": "^4.1.13"
+    "tailwind-merge": "^3.4.0",
+    "zod": "^4.3.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.16",
