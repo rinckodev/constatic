@@ -1,17 +1,19 @@
-# 🧩 Monorepo Template — Bun + TypeScript
+![Constatic banner](assets/banner.png)
 
-> A modern and lightweight **monorepo template** powered by [Bun](https://bun.sh) and **TypeScript**.  
-> Designed for building, developing, and maintaining multiple libraries in a single repository — fast and clean.
+Tools for developing modern Discord bot applications.
 
----
+[📚 See the documentation](https://constatic-docs.vercel.app)
 
-## 🚀 Features
+## Packages
+- `@constatic/base` ([source](./packages/base)) - Base with structures and functions for creating modern Discord applications.
 
-- ⚡️ **Bun** as runtime, package manager, and bundler  
-- 🧱 **TypeScript** support with shared configurations  
-- 📦 **Workspaces** setup for multiple packages in `packages/`  
-- 🧩 Simple and scalable project structure  
-- 🧹 Unified build and test scripts (`bun run`)  
-- ✅ Built-in testing with `bun test`  
+## Tools
+
+- `Constatic CLI` ([srouce](./tools/cli))
+- `Constatic vscode theme` ([srouce](./tools/theme))
 
 ---
+
+## Links
+- [Documentation](https://constatic-docs.vercel.app) ([source](./apps/docs))
+- [Supporter server](http://discord.gg/tTu8dGN)

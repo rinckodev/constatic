@@ -3,6 +3,7 @@ import { styleText } from "node:util";
 
 interface BuildOptions {
     disableTypes?: boolean;
+    outdir?: string
 }
 export async function build(options: BuildOptions = {}) {
     const entrypoints = await Array.fromAsync(
@@ -18,7 +19,7 @@ export async function build(options: BuildOptions = {}) {
     const preset = {
         entrypoints,
         root: "./src",
-        outdir: "dist",
+        outdir: options.outdir || "dist",
         target: "node",
         splitting: false,
         external: ["*"],
