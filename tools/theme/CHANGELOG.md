@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.1.4]
+- Add static property color
+- Adjust mdx colors
+
 ## [0.1.3]
 - Organize scopes
 - Change markdown colors

@@ -79,9 +79,9 @@
 		{
 			"scope": [
 				// ---
-				"meta.paragraph.markdown",
-				"string.other.link.description.markdown",
-				"string.other.link.title.markdown",
+				"meta.paragraph",
+				"string.other.link.description",
+				"string.other.link.title",
 			],
 			"settings": {
 				"foreground": "#BDBDBD"
@@ -295,8 +295,12 @@
 			},
 			"scope": [
 				"punctuation.definition.link",
+				"string.other.begin.link.mdx",
+				"string.other.begin.mdx",
+				"string.other.end.mdx",
 				"punctuation.definition.metadata",
 				"markup.underline.link",
+				"string.other.link.destination.mdx",
 				"variable.key.dotenv",
 				"meta.link.email.lt-gt.markdown"
 			],
@@ -315,12 +319,10 @@
 				"constant.language.null",
 				"constant.other.enum",
 				// ---
-				"entity.name.section.markdown",
-				"entity.name.section.mdx",
+				"entity.name.section",
 				"entity.name.tag",
 				"entity.name.tag.html",
 				"entity.name.tag.localname",
-				"entity.name.tag.localname.xml",
 				"entity.name.tag.yaml",
 				// ---
 				"keyword.other",
@@ -338,8 +340,7 @@
 				"keyword.other.definition.ini",
 				// ---
 				"punctuation.definition.block.tag",
-				"punctuation.definition.heading.markdown",
-				"punctuation.definition.heading.mdx",
+				"punctuation.definition.heading",
 				"punctuation.definition.inline.tag",
 				"punctuation.definition.template-expression",
 				"punctuation.definition.template-expression.begin",
@@ -453,6 +454,7 @@
 	],
 	"semanticHighlighting": true,
 	"semanticTokenColors": {
+		"property.static": "#4FC1FF",
 		"method.static": "#FFC66D",
 		"method": "#DCDCAA",
 		"function": "#DCDCAA",
