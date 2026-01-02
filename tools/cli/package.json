@@ -1,6 +1,6 @@
 {
   "name": "constatic",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Constatic is a CLI for creating and managing modern TypeScript projects, providing an organized structure and features that streamline development.",
   "main": "build/index.js",
   "type": "module",
