@@ -9,8 +9,8 @@ Tools for developing modern Discord bot applications.
 
 ## Tools
 
-- `Constatic CLI` ([srouce](./tools/cli))
-- `Constatic vscode theme` ([srouce](./tools/theme))
+- `Constatic CLI` ([source](./tools/cli))
+- `Constatic vscode theme` ([source](./tools/theme))
 
 ---
 
