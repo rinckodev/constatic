@@ -1,0 +1,28 @@
+{
+	"extends": "@constatic/base/tsconfig",
+	"compilerOptions": {
+
+		// Output Options
+		"outDir": "./build",
+		"rootDir": "./src",
+
+		// Path mapping Options
+		"paths": {
+			"#env": ["./src/env.ts"],
+			"#base": ["./src/discord/index.ts"],
+			"#functions": ["./src/functions/index.ts"],
+			"#database": ["./src/database/index.ts"],
+			"#server": ["./src/server/index.ts"],
+			"#menus": ["./src/menus/index.ts"],
+			"#tools": ["./src/tools/index.ts"],
+			"#lib/*": ["./src/lib/*"],
+			"#shared/*": ["./src/shared/*"],
+			"#types/*": ["./src/@types/*"],
+			"#emojis": ["./emojis.json"],
+		}
+	},
+	
+	// Include and Exclude Options
+	"include": ["src"],
+	"exclude": ["node_modules"]
+}

@@ -1,0 +1,25 @@
+model Guild {
+    oid      String         @id @default(auto()) @map("_id") @db.ObjectId
+    id       String         @unique
+    channels GuildChannel[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    members Member[]
+
+    @@map("guilds")
+}
+
+model GuildChannel {
+    oid String @id @default(auto()) @map("_id") @db.ObjectId
+
+    name String
+    id   String
+    url  String
+
+    guild   Guild  @relation(fields: [guildId], references: [id])
+    guildId String
+
+    @@map("guild_channels")
+}

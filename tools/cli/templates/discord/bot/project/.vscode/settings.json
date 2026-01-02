@@ -1,0 +1,67 @@
+{
+  "material-icon-theme.folders.associations": {
+    "discord": "Client",
+    "system": "Ci",
+    "modals": "Content",
+    "menus": "layout",
+    "forms": "custom",
+    "experimental": "Test",
+    "deprecated": "Archive",
+    "development": "Test",
+    "dev": "Test",
+    "production": "Dist",
+    "staff": "Admin",
+    "protection": "Guard",
+    "presets": "Template",
+    "default": "Project",
+    "playground": "typescript",
+    "firestore": "Firebase",
+    "mongodb": "Database",
+    "mysql": "Database",
+    "quickdb": "Json",
+    "responders": "Meta",
+    "procedures": "CI"
+  },
+  "material-icon-theme.files.associations": {
+    "firebase.development.json": "Firebase",
+    "firebase.example.json": "Firebase",
+    "settings.json": "Raml",
+    "config.json": "Raml",
+    "*.lang.json": "i18n",
+    "lang.json": "i18n",
+    "gitignore": "Git",
+  },
+  "material-icon-theme.folders.customClones": [{
+      "name": "discord",
+      "base": "vm",
+      "color": "indigo-500",
+      "folderNames": ["discord"]
+  }],
+  "material-icon-theme.files.customClones": [{
+      "name": "constants",
+      "base": "lib",
+      "color": "blue-600",
+      "fileNames": ["constants.json"]
+  }],
+  "material-icon-theme.folders.theme": "specific",
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    ".env": ".env*",
+    "README.md": "*.md",
+    "discloud.config": ".discloudignore",
+    "constants.json": "emojis.json, emojis.dev.json",
+    "package.json": "*lock.json, *.lock, *lock.yaml, *.lockb, *config.json, *config.ts, .eslintrc.json, .gitignore, biome.json, .nvmrc"
+  },
+  "typescript.suggest.autoImports": true,
+  "window.title": "${rootName}${separator}",
+  "files.autoSave": "afterDelay",
+  "typescript.experimental.expandableHover": true,
+  "files.readonlyInclude": {
+    "src/discord/base/**": true
+  },
+  "editor.codeActionsOnSave": {
+    "source.addMissingImports.ts": "explicit",
+    "source.organizeImports": "explicit",
+    "source.removeUnusedImports": "explicit"
+  }
+}

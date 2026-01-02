@@ -1,0 +1,12 @@
+{
+	"UI Text":{
+		"scope": "typescript",
+		"prefix": "ui.message",
+		"body": [
+			"uiMessage({",
+			"   \"en-US\": \"\",",
+			"   \"pt-BR\": \"\",",
+			"})",
+		]
+	}
+}

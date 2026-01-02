@@ -1,0 +1,8 @@
+NAME=Awesome Bot
+TYPE=bot
+MAIN=build/index.js
+RAM=100
+VERSION=latest
+AUTORESTART=false
+START=npm run start
+AVATAR=https://i.imgur.com/F4QzKsc.png

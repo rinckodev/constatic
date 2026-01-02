@@ -1,0 +1,123 @@
+{
+  "name": "constatic",
+  "version": "1.5.0",
+  "description": "Constatic is a CLI for creating and managing modern TypeScript projects, providing an organized structure and features that streamline development.",
+  "main": "build/index.js",
+  "type": "module",
+  "bin": {
+    "constatic": "build/index.js"
+  },
+  "scripts": {
+    "build": "bun run ./build.ts",
+    "link": "npm unlink constatic && npm link",
+    "predev": "rm -rf playground && mkdir playground",
+    "dev": "bun run build && cd playground && zsh -ic 'constatic-dev'",
+    "check": "tsc --noEmit"
+  },
+  "keywords": [
+    "discord",
+    "discord bot",
+    "bots",
+    "bot",
+    "auth bot",
+    "oauth2",
+    "oauth2 bot",
+    "oauth2 discord",
+    "typesafe",
+    "typescript",
+    "components",
+    "commands",
+    "events",
+    "discord.js",
+    "discordjs",
+    "buttons",
+    "modals",
+    "select menus",
+    "dropdown",
+    "handler",
+    "command handler",
+    "event handler",
+    "boilerplate",
+    "bot boilerplate",
+    "CLI",
+    "cli",
+    "prompts",
+    "prompt",
+    "database",
+    "databases",
+    "mongodb",
+    "mysql",
+    "mariadb",
+    "prisma",
+    "postgres",
+    "sql",
+    "nosql",
+    "zod",
+    "fastify",
+    "express"
+  ],
+  "homepage": "https://github.com/rinckodev/constatic/tools/cli#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rinckodev/constatic",
+    "directory": "tools/cli"
+  },
+  "author": {
+    "name": "Rincko Dev",
+    "url": "https://github.com/rinckodev"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@constatic/config": "*",
+    "@types/cross-spawn": "^6.0.6",
+    "@types/fs-extra": "^11.0.4",
+    "@types/lodash.merge": "^4.6.9",
+    "@types/node": "^22.19.2",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^7.10.1",
+    "chalk": "5.3.0",
+    "citty": "^0.1.6",
+    "cli-table3": "^0.6.5",
+    "conf": "12.0.0",
+    "cross-spawn": "^7.0.6",
+    "fs-extra": "11.2.0",
+    "inquirer-select-pro": "^1.0.0-alpha.9",
+    "lodash.merge": "^4.6.2",
+    "ora": "^8.2.0",
+    "pkg-types": "^1.3.1",
+    "ts-morph": "^26.0.0"
+  },
+  "imports": {
+    "#helpers": [
+      "./build/helpers/index.js"
+    ],
+    "#prompts": [
+      "./build/helpers/helper.prompts.js"
+    ],
+    "#menus": [
+      "./build/menus/index.js"
+    ],
+    "#shared/*": [
+      "./build/shared/*"
+    ],
+    "#lib/*": [
+      "./build/lib/*"
+    ],
+    "#actions/*": [
+      "./build/actions/*"
+    ],
+    "#types": [
+      "./build/types/index.js"
+    ],
+    "#cli": [
+      "./build/cli/index.js"
+    ]
+  },
+  "engines": {
+    "node": ">=20.11.0"
+  }
+}
