@@ -1,17 +1,17 @@
+import { actions } from "#actions/index.js";
+import { type CLI } from "#cli";
 import { byeMessage, divider, getCdPath, json, log, modifyObjArg, toNpmName, uiMessage } from "#helpers";
+import { KeyValueFile } from "#lib/kvf.js";
+import { applyScriptPresets } from "#shared/presets/scripts/apply.js";
+import type { EnvVarData } from "#types";
 import ck from "chalk";
+import { copy } from "fs-extra";
 import merge from "lodash.merge";
 import { cp, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import ora from "ora";
 import { readPackageJSON } from "pkg-types";
 import { Project, SourceFile } from "ts-morph";
-import { type CLI } from "#cli";
-import type { EnvVarData } from "#types";
-import { copy } from "fs-extra";
-import { applyScriptPresets } from "#shared/presets/scripts/apply.js";
-import { actions } from "#actions/index.js";
-import { KeyValueFile } from "#lib/kvf.js";
 
 export interface InitBotActionData {
     dist: string;
@@ -54,7 +54,6 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
 
     const envFile = new KeyValueFile(distJoin("./.env"));
     await envFile.read();
-    // const envManager = new EnvManager(distJoin("./.env"));
 
     generating.text = uiMessage({
         "en-US": "Creating environment variables manager",
@@ -268,7 +267,7 @@ export async function updateEnv(
     schema: EnvVarData[]
 ) {
     await modifyObjArg({
-        callname: "z.object",
+        callname: "z.looseObject",
         source: sourceFile,
         modify: arg => arg.addPropertyAssignments(schema.map(
             ([name, initializer]) => ({ name, initializer })
