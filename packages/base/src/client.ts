@@ -1,8 +1,16 @@
-import { Client, type ClientOptions } from "discord.js";
+import { Client, IntentsBitField, Partials, type ClientOptions } from "discord.js";
 import { styleText } from "node:util";
 import { ConstaticApp } from "./app.js";
 
 export type CustomClientOptions = Partial<ClientOptions>;
+
+const defaultIntents = Object
+    .values(IntentsBitField.Flags)
+    .filter(t => typeof t !== "string");
+
+const defaultPartials = Object
+    .values(Partials)
+    .filter(t => typeof t !== "string");
 
 /**
  * Creates and configures a Discord.js client instance integrated with ConstaticApp.
@@ -17,8 +25,8 @@ export function createClient(token: string, options: CustomClientOptions){
     const app = ConstaticApp.getInstance();
     
     const client = new Client({ ...options,
-        intents: options.intents??[],
-        partials: options.partials??[],
+        intents: options.intents??defaultIntents,
+        partials: options.partials??defaultPartials,
         failIfNotExists: options.failIfNotExists ?? false,
     });
     client.token = token;
