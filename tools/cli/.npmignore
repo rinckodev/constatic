@@ -15,3 +15,4 @@ node_modules
 /build.config.ts
 /tsup.config.ts
 /tsconfig.json
+/build.ts
