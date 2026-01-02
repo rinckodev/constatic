@@ -78,7 +78,7 @@ export class CommandManager extends BaseManager {
             return { ...data, ...slashData };
         }) as BuildedCommandData[];
     }
-    private buildOptions(options: SlashCommandOptionData<boolean>[], path: string) {
+    private buildOptions(options: SlashCommandOptionData<readonly InteractionContextType[]>[], path: string) {
         const resolved: ApplicationCommandOptionData[] = [];
         for (const option of options) {
             const description = option.description ?? option.name;
@@ -149,8 +149,8 @@ export class CommandManager extends BaseManager {
         }
         return resolved;
     }
-    private buildModules(modules: CommandModule[], path: string, run?: Function): SlashCommandOptionData<boolean>[] {
-        const resolved: SlashCommandOptionData<boolean>[] = [];
+    private buildModules(modules: CommandModule[], path: string, run?: Function): SlashCommandOptionData<readonly InteractionContextType[]>[] {
+        const resolved: SlashCommandOptionData<readonly InteractionContextType[]>[] = [];
         if (!modules.length) return resolved;
 
         const groups = modules.filter(module =>
