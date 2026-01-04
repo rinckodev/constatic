@@ -17,14 +17,14 @@ export async function loadModules(meta: ImportMeta, modules: string[] = []) {
 
     const filepaths = await glob(modules, { cwd: meta.dirname, ignore })
 
-    const loadModules: ModuleImported[] = [];
+    const loadedModules: ModuleImported[] = [];
 
     for(const path of filepaths){
-        await import(join(meta.dirname, path))
-            .then(imported => loadModules.push({
+        await import("file://"+join(meta.dirname, path))
+            .then(imported => loadedModules.push({
                 module: imported,
                 filepath: path
             }));
     }
-    return loadModules;
+    return loadedModules;
 }

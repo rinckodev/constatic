@@ -1,6 +1,6 @@
 {
   "name": "@constatic/base",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Library with structures and functions for creating modern Discord applications.",
   "license": "MIT",
   "type": "module",
