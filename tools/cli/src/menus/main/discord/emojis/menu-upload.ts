@@ -1,14 +1,14 @@
+import { CLI } from "#cli";
 import { discordEmojis, divider, equalsIgnoringCase, log, sleep, uiMessage, withDefaults } from "#helpers";
 import { menus } from "#menus";
+import { fetchDiscordEmojis } from "#shared/emojis/fetch.js";
 import { DiscordBotToken } from "#types";
 import { confirm, input, select } from "@inquirer/prompts";
 import ck from "chalk";
 import fs from "node:fs/promises";
 import path from "node:path";
 import ora from "ora";
-import { CLI } from "#cli";
-import { fetchDiscordEmojis } from "#shared/emojis/fetch.js";
-import { glob } from "#lib/glob.js";
+import { glob } from "tinyglobby";
 
 const u = ck.underline;
 
@@ -16,7 +16,7 @@ export async function discordEmojisUploadMenu(cli: CLI, token: DiscordBotToken) 
     const emojis = await fetchDiscordEmojis({ cli, token, notCheckAmount: true });
     if (!emojis) return;
 
-    const displayCurrCwd = ck.dim.underline(path.basename(process.cwd())+"/");
+    const displayCurrCwd = ck.dim.underline(path.basename(process.cwd()) + "/");
 
     const dirpath = await input(withDefaults({
         message: uiMessage({
@@ -38,8 +38,8 @@ export async function discordEmojisUploadMenu(cli: CLI, token: DiscordBotToken) 
 
     const processing = ora();
     processing.start(uiMessage({
-       "en-US": "🔍 Searching for files in nested folders...",
-       "pt-BR": "🔍 Procurando por arquivos nas pastas aninhadas...",
+        "en-US": "🔍 Searching for files in nested folders...",
+        "pt-BR": "🔍 Procurando por arquivos nas pastas aninhadas...",
     }));
 
     const paths = await glob("**/*.{png,jpeg,gif}", {
@@ -48,8 +48,8 @@ export async function discordEmojisUploadMenu(cli: CLI, token: DiscordBotToken) 
     });
 
     processing.text = uiMessage({
-       "en-US": "🗃️ Getting information from found files...",
-       "pt-BR": "🗃️ Obtendo informações dos arquivos encontrados...",
+        "en-US": "🗃️ Getting information from found files...",
+        "pt-BR": "🗃️ Obtendo informações dos arquivos encontrados...",
     });
 
     const data: Array<{ base64: string, name: string }> = [];
@@ -70,19 +70,19 @@ export async function discordEmojisUploadMenu(cli: CLI, token: DiscordBotToken) 
 
     if (!data.length) {
         log.fail(uiMessage({
-           "en-US": "No images found in the given directory!",
-           "pt-BR": "Nenhum imagem encontrada no diretório fornecido!",
+            "en-US": "No images found in the given directory!",
+            "pt-BR": "Nenhum imagem encontrada no diretório fornecido!",
         }));
         menus.discord.emojis.main(cli, token);
         return;
     }
 
     log.success(uiMessage({
-       "en-US": `Image files available for upload: ${data.length}`,
-       "pt-BR": `Arquivos de imagens disponíveis para o envio: ${data.length}`,
+        "en-US": `Image files available for upload: ${data.length}`,
+        "pt-BR": `Arquivos de imagens disponíveis para o envio: ${data.length}`,
     }));
 
-    if (data.length >= 50){
+    if (data.length >= 50) {
         divider();
         log.warn(uiMessage({
             "en-US": [
@@ -114,28 +114,28 @@ export async function discordEmojisUploadMenu(cli: CLI, token: DiscordBotToken) 
 
     const overwrite = await select<"all" | "ask" | "skip">(withDefaults({
         message: uiMessage({
-           "en-US": "Select the overwrite method",
-           "pt-BR": "Selecione o método de sobrescrição",
+            "en-US": "Select the overwrite method",
+            "pt-BR": "Selecione o método de sobrescrição",
         }),
         choices: [
             {
                 name: ck.green("✎ ") + uiMessage({
-                   "en-US": "Overwrite if exists",
-                   "pt-BR": "Sobrescrever se existir",
+                    "en-US": "Overwrite if exists",
+                    "pt-BR": "Sobrescrever se existir",
                 }, ck.green),
                 value: "all",
             },
             {
                 name: ck.cyan("▣ ") + uiMessage({
-                   "en-US": "Ask before overwrite",
-                   "pt-BR": "Perguntar antes de sobrescrever",
+                    "en-US": "Ask before overwrite",
+                    "pt-BR": "Perguntar antes de sobrescrever",
                 }, ck.cyan),
                 value: "ask",
             },
             {
                 name: ck.blue("◎ ") + uiMessage({
-                   "en-US": "Skip and do not overwrite",
-                   "pt-BR": "Pular e não sobrescrever",
+                    "en-US": "Skip and do not overwrite",
+                    "pt-BR": "Pular e não sobrescrever",
                 }, ck.blue),
                 value: "skip",
             },
@@ -148,27 +148,27 @@ export async function discordEmojisUploadMenu(cli: CLI, token: DiscordBotToken) 
             emoji => equalsIgnoringCase(emoji.name, name)
         );
 
-        if (existing){
+        if (existing) {
             const deleteEmoji = async () => {
                 const result = await discordEmojis.delete(token, existing.id);
-                if (!result.success){
+                if (!result.success) {
                     log.error(uiMessage({
                         "en-US": `An error occurred while trying delete the ${emojiName} emoji!`,
                         "pt-BR": `Ocorreu um erro ao tentar excluir o emoji ${emojiName}!`
                     }, ck.red));
                 }
             }
-            switch(overwrite){
-                case "all":{
+            switch (overwrite) {
+                case "all": {
                     await deleteEmoji();
                     break;
                 }
-                case "ask":{
+                case "ask": {
                     log.warn(uiMessage({
                         "en-US": `An emoji named ${emojiName} already exists!`,
                         "pt-BR": `Um emoji chamado ${emojiName} já existe!`,
                     }));
-                
+
                     const proceed = await confirm(withDefaults({
                         message: uiMessage({
                             "en-US": `Do you want to overwrite?`,
@@ -180,10 +180,10 @@ export async function discordEmojisUploadMenu(cli: CLI, token: DiscordBotToken) 
                     await deleteEmoji();
                     break;
                 }
-                case "skip":{
+                case "skip": {
                     log.custom(ck.yellow("◎"), uiMessage({
-                       "en-US": `${ck.bold.yellow("Skipped")} → Skipped existing ${emojiName} emoji!`,
-                       "pt-BR": `${ck.bold.yellow("Pulado")} → Emoji ${emojiName} já existente pulado!`,
+                        "en-US": `${ck.bold.yellow("Skipped")} → ${emojiName} already exists!`,
+                        "pt-BR": `${ck.bold.yellow("Pulado")} → ${emojiName} já existe!`,
                     }));
                     continue;
                 }
@@ -221,8 +221,8 @@ export async function discordEmojisUploadMenu(cli: CLI, token: DiscordBotToken) 
 
     divider();
     log.success(uiMessage({
-       "en-US": "Uploading process completed!",
-       "pt-BR": "Processo de envio concluído!",
+        "en-US": "Uploading process completed!",
+        "pt-BR": "Processo de envio concluído!",
     }, ck.green));
     divider();
 

@@ -1,14 +1,13 @@
-import { divider, fetchNpmPackage, instructions, log, sleep, uiMessage } from "#helpers";
-import { searchSelect, theme, withDefaults } from "../../../../../helpers/prompts.js";
+import { CLI } from "#cli";
+import { divider, fetchNpmPackage, instructions, log, searchSelect, sleep, theme, uiMessage, withDefaults } from "#helpers";
+import { packageJsonHasDeps } from "#shared/presets/scripts/deps.js";
 import { ScriptPreset } from "#types";
 import { checkbox, input, select, Separator } from "@inquirer/prompts";
 import ck from "chalk";
 import ora from "ora";
+import { glob } from "tinyglobby";
 import { formatPresetFiles } from "./format.js";
 import { printPreview } from "./preview.js";
-import { packageJsonHasDeps } from "#shared/presets/scripts/deps.js";
-import { CLI } from "#cli";
-import { glob } from "#lib/glob.js";
 
 export async function modifyScriptPresetMenu(
     _cli: CLI,

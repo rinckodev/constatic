@@ -1,11 +1,10 @@
 import { CLI } from "#cli";
-import { commonTexts, divider, log, sleep, uiMessage } from "#helpers";
+import { commonTexts, divider, log, sleep, uiMessage, withDefaults } from "#helpers";
 import { menus } from "#menus";
-import { withDefaults } from "../../../../helpers/prompts.js";
 import { fetchDiscordTokenData } from "#shared/tokens.js";
 import { select } from "@inquirer/prompts";
 import ck from "chalk";
-import { glob } from "#lib/glob.js";
+import { glob } from "tinyglobby";
 
 type ChoiceData = { name: string, value: string | number };
 

@@ -1,6 +1,6 @@
 {
   "name": "constatic",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Constatic is a CLI for creating and managing modern TypeScript projects, providing an organized structure and features that streamline development.",
   "main": "build/index.js",
   "type": "module",
@@ -89,6 +89,7 @@
     "lodash.merge": "^4.6.2",
     "ora": "^8.2.0",
     "pkg-types": "^1.3.1",
+    "tinyglobby": "^0.2.15",
     "ts-morph": "^26.0.0"
   },
   "imports": {
