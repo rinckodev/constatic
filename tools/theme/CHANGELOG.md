@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.1.5]
+- Fix static property color
+- Fix function colors
+
 ## [0.1.4]
 - Add static property color
 - Adjust mdx colors

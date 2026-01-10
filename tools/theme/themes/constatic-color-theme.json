@@ -104,6 +104,7 @@
 				"keyword.operator.rest",
 				"keyword.operator.type",
 				"keyword.operator.spread",
+				"keyword.operator.increment-decrement",
 				// ---
 				"meta.block",
 				"meta.brace",
@@ -146,20 +147,19 @@
 				"foreground": "#4EC9B0"
 			},
 			"scope": [
-				"entity.name.function.java",
+				"entity.name.type.class",
+				"entity.name.class",
 				"entity.name.function.mdx",
 				"entity.name.type",
-				"entity.name.class",
-				"entity.name.type.class",
 				"entity.name.type.enum",
 				"entity.name.type.instance.jsdoc",
 				"entity.name.type.interface",
 				"entity.name.type.module.ts",
 				"entity.other.inherited-class",
 				// ---
-				"meta.import.ts",
-				// ---
 				"punctuation.definition.annotation.java",
+				// ---
+				"meta.import.ts",
 				// ---
 				"source.ts",
 				// ---
@@ -454,7 +454,6 @@
 	],
 	"semanticHighlighting": true,
 	"semanticTokenColors": {
-		"property.static": "#4FC1FF",
 		"method.static": "#FFC66D",
 		"method": "#DCDCAA",
 		"function": "#DCDCAA",

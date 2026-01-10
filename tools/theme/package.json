@@ -2,7 +2,7 @@
   "name": "constatic-theme",
   "displayName": "Constatic Theme",
   "description": "A sleek and focused dark theme for night owls and developers who love deep contrasts.",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "publisher": "rinckodev",
   "engines": {
     "vscode": "^1.81.0"
