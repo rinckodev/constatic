@@ -18,6 +18,7 @@ export class CLIShell {
     public run(cwd: string, ...args: string[]) {
         return new Promise<ResultType<number, "code">>(resolve => {
             const child = spawn(this.agent, args, {
+                shell: true,
                 cwd, env: {
                     ...process.env,
                     NODE_ENV: "development",
