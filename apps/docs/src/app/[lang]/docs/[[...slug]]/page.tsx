@@ -47,7 +47,7 @@ export async function generateMetadata(
 
   const images = {
     alt: "Banner",
-    url: `/${lang}/og/${slug.join("/")}/image.png`,
+    url: `/${lang}/og/docs/${slug.join("/")}/image.png`,
   };
 
   return {

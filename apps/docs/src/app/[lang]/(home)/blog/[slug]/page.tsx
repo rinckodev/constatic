@@ -5,6 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { blog } from "@/lib/source";
 import { getMDXComponents } from "@/mdx-components";
 import { InlineTOC } from "fumadocs-ui/components/inline-toc";
+import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -30,7 +31,7 @@ export default async function Page(props: PageProps<"/[lang]/blog/[slug]">) {
             <div className="prose min-w-0 flex-1">
                 <page.data.body components={getMDXComponents()} />
             </div>
-            <div className="flex flex-col gap-4 md:border-l md:p-4 text-sm lg:w-[250px]">
+            <div className="flex flex-col gap-4 md:border-l md:p-4 text-sm lg:w-62.5">
                 <BlogPostDate date={getPostDate(page)} />
                 <InlineTOC items={page.data.toc} defaultOpen />
             </div>
@@ -40,4 +41,33 @@ export default async function Page(props: PageProps<"/[lang]/blog/[slug]">) {
 
 export async function generateStaticParams() {
   return blog.generateParams();
+}
+
+export async function generateMetadata(
+  { params }: PageProps<"/[lang]/blog/[slug]">,
+): Promise<Metadata> {
+  const { slug, lang } = await params;
+
+  const page = blog.getPage([slug]);
+  if (!page) notFound();
+
+  const images = {
+    alt: "Banner",
+    url: `/${lang}/og/blog/${slug}/image.png`,
+  };
+
+  return {
+    metadataBase: process.env.NODE_ENV === "development"
+      ? new URL("http://localhost:3000")
+      : new URL("https://constatic-docs.vercel.app"),
+    title: page.data.title,
+    description: page.data.description,
+    openGraph: {
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      images,
+    },
+  } satisfies Metadata;
 }
