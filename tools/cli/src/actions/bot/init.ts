@@ -53,7 +53,7 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
     }
 
     const envFile = new KeyValueFile(distJoin("./.env"));
-    await envFile.read();
+    await envFile.read(distJoin("./.env.example"));
 
     generating.text = uiMessage({
         "en-US": "Creating environment variables manager",
@@ -99,7 +99,6 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
             "pt-BR": "Escrevendo o token no arquivo .env...",
         });
         envFile.set("BOT_TOKEN", token.token);
-        // envManager.set("BOT_TOKEN", token.token);
     };
 
     await copy(
@@ -176,8 +175,6 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
     await project.save();
     await envFile.write();
     await envFile.write(distJoin(".env.example"), true);
-    // await envManager.save();
-    // await envManager.createExample(distJoin(".env.example"));
 
     if (data.install) {
         generating.text = uiMessage({
