@@ -76,4 +76,11 @@ export class KeyValueFile {
             )
             .join("\n");
     }
+    public get record(){
+        return Object.entries(this.data)
+            .reduce((obj, [k, v]) => {
+                if (v !== undefined) obj[k] = v;
+                return obj;
+            }, {} as Record<string, string>)
+    }
 }

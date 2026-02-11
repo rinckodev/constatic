@@ -1,5 +1,6 @@
 import { CLI } from "#cli";
 import { commonTexts, divider, log, sleep, uiMessage, withDefaults } from "#helpers";
+import { KeyValueFile } from "#lib/kvf.js";
 import { menus } from "#menus";
 import { fetchDiscordTokenData } from "#shared/tokens.js";
 import { select } from "@inquirer/prompts";
@@ -20,9 +21,9 @@ export async function selectDiscordBot(cli: CLI) {
 
     const envs = await Promise.all(
         paths.map(async filepath => {
-            const env = cli.createEnvManager(filepath);
-            await env.load();
-            return { name: filepath, vars: env.vars }
+            const env = new KeyValueFile(filepath);
+            await env.read();
+            return { name: filepath, vars: env.record }
         })
     )
         .then(envs => envs.filter(
@@ -35,7 +36,7 @@ export async function selectDiscordBot(cli: CLI) {
             "pt-BR": `▲ Use o BOT_TOKEN do arquivo ${ck.underline(data.name)}`,
         }, ck.yellow),
         value: data.vars.BOT_TOKEN,
-    })))
+    })));
 
     choices.unshift({
         name: uiMessage({

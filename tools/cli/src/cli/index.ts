@@ -2,13 +2,10 @@ import { cliLang } from "#helpers";
 import { Language } from "#types";
 import { PackageJson, readPackageJSON } from "pkg-types";
 import { CLIConfig } from "./config.js";
-import { EnvManager } from "./env.js";
 import { CLIShell } from "./shell.js";
 import path from "node:path";
 import { CLITemplates } from "./templates.js";
 import { CLIFileSystem } from "./fs.js";
-
-export * from "./env.js";
 
 export class CLI {
     public static async init(rootname: string) {
@@ -35,8 +32,5 @@ export class CLI {
         this.shell = new CLIShell();
         this.templates = new CLITemplates(rootname);
         this.fs = new CLIFileSystem();
-    }
-    public createEnvManager(envPath: string) {
-        return new EnvManager(envPath);
     }
 }

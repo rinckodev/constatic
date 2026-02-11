@@ -67,7 +67,7 @@
     },
     "tools/cli": {
       "name": "constatic",
-      "version": "1.5.2",
+      "version": "1.5.5",
       "bin": {
         "constatic": "build/index.js",
       },
@@ -99,7 +99,7 @@
     },
     "tools/theme": {
       "name": "constatic-theme",
-      "version": "0.1.4",
+      "version": "0.1.5",
     },
   },
   "packages": {

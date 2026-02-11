@@ -59,7 +59,6 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
         "en-US": "Creating environment variables manager",
         "pt-BR": "Criando gerenciador de variáveis de ambiente",
     });
-    
     const pkg = await readPackageJSON(distJoin("package.json"));
     pkg.name = toNpmName(path.basename(path.resolve(data.dist)));
 
@@ -86,7 +85,7 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
         });
 
         await actions.bot.add.server({
-            server, pkg, envFile, 
+            server, pkg, envFile,
             cli, dist: distJoin(),
             ...projectFiles,
         });
@@ -121,7 +120,7 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
         await discloudFile.read();
 
         discloudFile.set("NAME", pkg.name);
-        if (cli.shell.isBun){
+        if (cli.shell.isBun) {
             discloudFile.set("MAIN", "Dockerfile")
         }
         if (cli.shell.isBun) {
@@ -148,15 +147,15 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
 
     pkg.baseVersion = cli.pkg.version;
 
-    if (data.scripts && data.scripts.length >= 1){
+    if (data.scripts && data.scripts.length >= 1) {
         const presets = cli.config.get("presets.scripts", []);
         const selected = presets.filter(p =>
             data.scripts?.includes(p.name) ||
-            data.scripts?.includes(p.alias??"")
+            data.scripts?.includes(p.alias ?? "")
         );
         await applyScriptPresets(cli, {
-            pkg, dist: data.dist, 
-            presets: selected, 
+            pkg, dist: data.dist,
+            presets: selected,
         });
     }
 
@@ -270,7 +269,7 @@ export async function updateEnv(
             ([name, initializer]) => ({ name, initializer })
         ))
     });
-    for(const [key, _, value] of schema){
+    for (const [key, _, value] of schema) {
         envManager.set(key, value);
     }
 }

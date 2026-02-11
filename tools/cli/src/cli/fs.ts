@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { PackageJson, readPackageJSON, writePackageJSON } from "pkg-types";
 
 export class CLIFileSystem {
-    constructor() { }
+    constructor() {}
     private resolvePkgPath(path: string){
         return path.endsWith("package.json")
             ? path : join(path, "package.json");

@@ -1,11 +1,10 @@
-import { commonTexts, divider, uiMessage } from "#helpers";
+import { CLI } from "#cli";
+import { commonTexts, divider, uiMessage, withDefaults } from "#helpers";
 import { menus } from "#menus";
 import { DiscordBotToken } from "#types";
 import { select } from "@inquirer/prompts";
 import ck from "chalk";
 import { selectDiscordBot } from "./menu-select.js";
-import { withDefaults } from "../../../../helpers/prompts.js";
-import { CLI } from "#cli";
 
 export async function discordEmojisMenu(cli: CLI, token?: DiscordBotToken){
     if (!token){
