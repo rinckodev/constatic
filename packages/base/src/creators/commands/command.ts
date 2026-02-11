@@ -1,4 +1,5 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, AutocompleteInteraction, ChatInputCommandInteraction, InteractionContextType, MessageContextMenuCommandInteraction, UserContextMenuCommandInteraction, type ApplicationCommandOptionAllowedChannelTypes, type ApplicationCommandOptionChoiceData, type BaseApplicationCommandData, type CacheType, type LocalizationMap } from "discord.js";
+import type { NotEmptyArray, UniqueArray } from "../../utils/types.js";
 
 export type CommandType = Exclude<
     ApplicationCommandType,
@@ -129,7 +130,7 @@ type BaseAppCommandData =
 export interface CommandData<T, Contexts, R> extends BaseAppCommandData {
     name: string;
     description?: string;
-    contexts?: Contexts
+    contexts?: NotEmptyArray<UniqueArray<Contexts>>
     type?: T;
     global?: boolean;
     run?(this: CommandRunThis, interaction: RunInteraction<T, Contexts>): Promise<R>;

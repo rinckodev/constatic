@@ -1,23 +1,6 @@
 import type { ButtonInteraction, CacheType, ChannelSelectMenuInteraction, MentionableSelectMenuInteraction, ModalMessageModalSubmitInteraction, ModalSubmitInteraction, RoleSelectMenuInteraction, StringSelectMenuInteraction, UserSelectMenuInteraction } from "discord.js";
 import { type InferRouteParams } from "rou3";
-import type { Prettify } from "../../utils/types.js";
-
-type NotEmptyArray<T> = T extends never[] ? never : T;
-
-// https://stackoverflow.com/a/64519702
-type UniqueArray<T> =
-    T extends readonly [infer X, ...infer Rest]
-    ? InArray<Rest, X> extends true
-    ? ["Encountered value with duplicates:", X]
-    : readonly [X, ...UniqueArray<Rest>]
-    : T
-
-type InArray<T, X> =
-    T extends readonly [X, ...infer _Rest] ? true :
-    T extends readonly [X] ? true :
-    T extends readonly [infer _, ...infer Rest]
-    ? InArray<Rest, X>
-    : false
+import type { NotEmptyArray, Prettify, UniqueArray } from "../../utils/types.js";
 
 export enum ResponderType {
     Button = "button",
@@ -43,8 +26,8 @@ export type ResponderInteraction<Type extends ResponderType, Cache extends Cache
 
 type ResolveParams<Path extends string, Parsed> = Prettify<
     Parsed extends { [x: string | number | symbol]: any }
-    ? Parsed
-    : InferRouteParams<Path>
+        ? Parsed
+        : InferRouteParams<Path>
 >;
 
 export interface ResponderData<
