@@ -48,31 +48,20 @@ Below, check out the presets according to the library used:
         The `index.ts` file in the `src/database` folder must connect to the database:
 
         ```ts title="src/database/index.ts"
-        import firebase from "firebase-admin";
-        import { MemberDocument } from "./documents/MemberDocument.js";
-        import { GuildDocument } from "./documents/GuildDocument.js";
-        import { schema, Typesaurus } from "typesaurus";
-        import { logger } from "#base";
         import { env } from "#env";
-        import path from "node:path";
-        import chalk from "chalk";
+        import { cert, initializeApp } from "firebase-admin/app";
         import fs from "node:fs";
+        import { schema, Typesaurus } from "typesaurus";
+        import { GuildDocument } from "./documents/GuildDocument.js";
+        import { MemberDocument } from "./documents/MemberDocument.js";
 
-        const firebaseAccountPath = rootTo(env.FIREBASE_PATH);
+        const accountFile = fs.readFileSync(env.FIREBASE_PATH, { 
+            encoding: "utf-8" 
+        });
 
-        if (!fs.existsSync(firebaseAccountPath)){
-            const filename = chalk.yellow(`"${path.basename(firebaseAccountPath)}"`);
-            const text = chalk.red(`The ${filename} file was not found in ${__rootname}`);
-            logger.error(text);
-            process.exit(0);
-        }
-
-        const firebaseAccount: firebase.ServiceAccount = JSON.parse(
-            fs.readFileSync(firebaseAccountPath, { encoding: "utf-8" })
-        );
-
-
-        firebase.initializeApp({ credential: firebase.credential.cert(firebaseAccount) });
+        initializeApp({
+            credential: cert(JSON.parse(accountFile))
+        });
 
         export const db = schema(({ collection }) => ({
             guilds: collection<GuildDocument>().sub({
@@ -152,32 +141,22 @@ Below, check out the presets according to the library used:
         The `index.ts` file in the `src/database` folder must connect to the database:
 
         ```ts title="src/database/index.ts"
-        import fs from "node:fs";
-        import chalk from "chalk";
-        import { logger } from "#base";
-        import { env } from "#env";
-        import path from "node:path";
-
-        const firebaseAccountPath = rootTo(env.FIREBASE_PATH);
-
-        if (!fs.existsSync(firebaseAccountPath)){
-            const filename = chalk.yellow(`"${path.basename(firebaseAccountPath)}"`);
-            const text = chalk.red(`The ${filename} file was not found in ${__rootname}`);
-            logger.error(text);
-            process.exit(0);
-        }
-
-        const firebaseAccount = JSON.parse(
-            fs.readFileSync(firebaseAccountPath, { encoding: "utf-8" })
-        );
-
         import { getFirelord, getFirestore } from "firelord";
         import { cert, initializeApp } from "firebase-admin/app";
+
+        import fs from "node:fs";
+        import { env } from "#env";
 
         import { GuildDocument } from "./documents/GuildDocument.js";
         import { MemberDocument } from "./documents/MemberDocument.js";
 
-        const app = getFirestore(initializeApp({ credential: cert(firebaseAccount) })); 
+        const accountFile = fs.readFileSync(env.FIREBASE_PATH, { 
+            encoding: "utf-8" 
+        });
+
+        const app = getFirestore(initializeApp({
+            credential: cert(JSON.parse(accountFile))
+        }));
 
         export const db = {
             guildsRef: getFirelord<GuildDocument>(app, "guilds"),

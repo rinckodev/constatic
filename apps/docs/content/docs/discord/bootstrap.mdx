@@ -44,23 +44,6 @@ With this, you can create `commands`, `events`, and `responders` within these di
 You can also load files with _side effects_, allowing you to register global variables, change prototypes of existing objects, and more.
 </Callout>
 
-<Callout type="danger">
-    But an important warning about this option! Be careful not to specify a pattern that imports everything from the workdir (the current working directory, in development it's the src folder, and in production it's the build folder) or from the `src/discord/base` folder. This will cause circular dependencies and, consequently, crash the project.
-    So avoid something like this:
-
-    ```ts title="src/index.ts"
-    await bootstrap({
-        meta: import.meta,
-        modules: [
-            "./discord/base/**", // [!code --]
-            "./**/*", // [!code --]
-            "./", // [!code --]
-            "." // [!code --]
-        ]
-    });
-    ```
-</Callout>
-
 ---
 
 ### Load logs (loadLogs)

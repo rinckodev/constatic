@@ -67,7 +67,7 @@ Você pode definir algumas opções de comandos na função `setupCreators`:
     ```
     Assim, ao invés de registrar os comandos globalmente na aplicação, eles serão registrados apenas nas guildas, cujo os ids foram passados para essa opção.
   </Tab>
-  <Tab value="middleware">
+  <Tab id="commands-middleware" value="middleware">
     Você pode definir uma função `middleware` que será executada antes da função `run` dos comandos
 
     ```ts
@@ -97,7 +97,7 @@ Você pode definir algumas opções de comandos na função `setupCreators`:
     });
     ```
   </Tab>
-  <Tab value="onError">
+  <Tab id="commands-onerror" value="onError">
     É possível definir um manipulador de erros customizado para comandos com a função `onError`
 
     ```ts
@@ -130,7 +130,7 @@ Você pode definir algumas opções de comandos na função `setupCreators`:
     })
     ```
   </Tab>
-  <Tab value="onNotFound">
+  <Tab id="commands-onnotfound" value="onNotFound">
     Se por algum motivo não for encontrado nenhum manipulador para o comando, a função `onNotFound` será chamada.
 
     ```ts
@@ -145,7 +145,7 @@ Você pode definir algumas opções de comandos na função `setupCreators`:
     });
     ```
   </Tab>
-  <Tab value="verbose">
+  <Tab id="commands-verboose" value="verbose">
     Essa opção faz com que as logs de registro de comandos sejam mais detalhadas, dessa maneira você pode ter certeza de que seus comandos foram registrados pois isso exibe a resposta direta da api
 
     ```ts
@@ -172,8 +172,8 @@ Você pode definir algumas opções de comandos na função `setupCreators`:
 
 Você pode definir algumas opções de responders na função `setupCreators`:
 
-<Tabs items={["middleware", "onError", "onNotFound"]}>
-  <Tab value="middleware">
+<Tabs items={["Middleware", "onError", "onNotFound"]}>
+  <Tab id="responders-middleware" value="Middleware">
     Você pode definir uma função `middleware` que será executada antes da função `run` dos responders
 
     ```ts
@@ -204,7 +204,7 @@ Você pode definir algumas opções de responders na função `setupCreators`:
     });
     ```
   </Tab>
-  <Tab value="onError">
+  <Tab id="responders-onerror" value="onError">
     É possível definir um manipulador de erros customizado para responders com a função `onError`
 
     ```ts
@@ -239,7 +239,7 @@ Você pode definir algumas opções de responders na função `setupCreators`:
     })
     ```
   </Tab>
-  <Tab value="onNotFound">
+  <Tab id="responders-verboose" value="onNotFound">
     Se não for encontrado nenhum manipulador para o componente ou modal, a função `onNotFound` será chamada.
 
     ```ts
@@ -263,8 +263,8 @@ Você pode definir algumas opções de responders na função `setupCreators`:
 
 Você pode definir algumas opções de eventos na função `setupCreators`:
 
-<Tabs items={["middleware", "onError"]}>
-  <Tab value="middleware">
+<Tabs items={["Middleware", "onError"]}>
+  <Tab id="events-middleware" value="Middleware">
     Você pode definir uma função `middleware` que será executada antes da função `run` dos eventos
 
     ```ts
@@ -391,7 +391,7 @@ Você pode definir algumas opções de eventos na função `setupCreators`:
     Todos os eventos que conter alguma das tags passadas como argumento da função block, não serão executados 
 
   </Tab>
-  <Tab value="onError">
+  <Tab id="events-onerror" value="onError">
     É possível definir um manipulador de erros customizado para eventos com a função `onError`
 
     ```ts

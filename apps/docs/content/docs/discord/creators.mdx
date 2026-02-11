@@ -68,7 +68,7 @@ You can set some command options in the `setupCreators` function:
     ```
     So, instead of registering the commands globally in the application, they will be registered only in the guilds, whose IDs were passed to this option.
   </Tab>
-  <Tab value="middleware">
+  <Tab id="commands-middleware" value="middleware">
     You can set a `middleware` function that will be executed before the commands` run function
 
     ```ts
@@ -98,7 +98,7 @@ You can set some command options in the `setupCreators` function:
     });
     ```
   </Tab>
-  <Tab value="onError">
+  <Tab id="commands-onerror" value="onError">
     It is possible to set a custom error handler for commands with the `onError` function
 
     ```ts
@@ -131,7 +131,7 @@ You can set some command options in the `setupCreators` function:
     })
     ```
   </Tab>
-  <Tab value="onNotFound">
+  <Tab id="commands-onnotfound" value="onNotFound">
     If for some reason no handler is found for the command, the `onNotFound` function will be called.
 
     ```ts
@@ -146,7 +146,7 @@ You can set some command options in the `setupCreators` function:
     });
     ```
   </Tab>
-  <Tab value="verbose">
+  <Tab id="commands-verbose" value="verbose">
     This option makes the command logs more detailed, this way you can be sure that your commands were registered as it displays the direct response from the API.
 
     ```ts
@@ -174,7 +174,7 @@ You can set some command options in the `setupCreators` function:
 You can set some responder options in the `setupCreators` function:
 
 <Tabs items={["middleware", "onError", "onNotFound"]}>
-  <Tab value="middleware">
+  <Tab id="responders-middleware" value="middleware">
     You can set a `middleware` function that will be executed before the responders` run function
 
     ```ts
@@ -205,7 +205,7 @@ You can set some responder options in the `setupCreators` function:
     });
     ```
   </Tab>
-  <Tab value="onError">
+  <Tab id="responders-onerror" value="onError">
     It is possible to set a custom error handler to respond with the `onError` function.
 
     ```ts
@@ -240,7 +240,7 @@ You can set some responder options in the `setupCreators` function:
     })
     ```
   </Tab>
-  <Tab value="onNotFound">
+  <Tab id="responders-onnotfound" value="onNotFound">
     If no handler is found for the component or modal, the `onNotFound` function will be called.
 
     ```ts
@@ -265,7 +265,7 @@ You can set some responder options in the `setupCreators` function:
 You can set some event options in the `setupCreators` function:
 
 <Tabs items={["middleware", "onError"]}>
-  <Tab value="middleware">
+  <Tab id="events-middleware" value="middleware">
     You can set a `middleware` function that will be executed before the events `run` function
 
     ```ts
@@ -393,7 +393,7 @@ You can set some event options in the `setupCreators` function:
     All events that contain any of the tags passed as arguments to the block function will not be executed.
 
   </Tab>
-  <Tab value="onError">
+  <Tab id="events-middleware" value="onError">
     It is possible to set a custom error handler for events with the `onError` function
 
     ```ts

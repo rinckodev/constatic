@@ -14,16 +14,16 @@ import { createModalFields } from "@magicyan/discord";
 interaction.showModal({
     customId: "/form/modal",
     title: "Form",
-    components: createModalFields({
-        name:{
-            label: "What's your name?",
-            style: TextInputStyle.Short
-        },
-        age:{
-            label: "What's your age?",
-            style: TextInputStyle.Short
-        },
-    })
+    components: createModalFields(
+        createLabel(
+            "Qual é o seu nome?",
+            createTextInput({ customId: "name" })
+        ),
+        createLabel(
+            "Qual é a sua idade?",
+            createTextInput({ customId: "age" })
+        ),
+    )
 });
 // ...
 ```
@@ -58,16 +58,16 @@ createResponder({
         await interaction.showModal({
             customId: "/form/modal",
             title: "Form",
-            components: createModalFields({
-                name:{
-                    label: "What's your name?",
-                    style: TextInputStyle.Short
-                },
-                age:{
-                    label: "What's your age?",
-                    style: TextInputStyle.Short
-                },
-            })
+            components: createModalFields(
+                createLabel(
+                    "Qual é o seu nome?",
+                    createTextInput({ customId: "name" })
+                ),
+                createLabel(
+                    "Qual é a sua idade?",
+                    createTextInput({ customId: "age" })
+                ),
+            )
         });
     },
 });

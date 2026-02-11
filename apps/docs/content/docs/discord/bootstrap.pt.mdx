@@ -45,23 +45,6 @@ Com isso você pode criar `comandos`, `eventos` e `responders` dentro desses dir
     Também tem a possibilidade de carregar arquivos com _side effects_, assim podendo registrar variáveis globais, alterar protótipos de objetos existentes e entre outros.
 </Callout>
 
-<Callout type="danger">
-    Mas um aviso importante sobre essa opção! Tome cuidado para não especificar um padrão que importe tudo do workdir (o diretório de trabalho atual, em desenvolvimento é a pasta src, e em produção é a pasta build) ou da pasta `src/discord/base`. Isso irá causar dependências circulares e por consequência, crashando o projeto.
-    Então evite algo como isso:
-
-    ```ts title="src/index.ts"
-    await bootstrap({ 
-        meta: import.meta,
-        modules: [
-            "./discord/base/**", // [!code --]
-            "./**/*", // [!code --]
-            "./", // [!code --]
-            "." // [!code --]
-        ]
-    });
-    ```
-</Callout>
-
 ---
 
 ### Logs de carregamento (loadLogs)

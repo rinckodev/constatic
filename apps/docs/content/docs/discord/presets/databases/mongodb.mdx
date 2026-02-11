@@ -33,15 +33,17 @@ The `index.ts` file in the `src/database` folder must connect to the database:
 import mongoose, { InferSchemaType, model } from "mongoose";
 import { guildSchema } from "./schemas/guild.js";
 import { memberSchema } from "./schemas/member.js";
-import { logger } from "#base";
 import { env } from "#env";
 import chalk from "chalk";
 
 try {
-   await mongoose.connect(env.MONGO_URI, { dbName: "database" });
-   logger.success(chalk.green("MongoDB connected"));
+   console.log(chalk.blue("Connecting to MongoDB..."));
+   await mongoose.connect(env.MONGO_URI, { 
+      dbName: env.DATABASE_NAME || "database" 
+   });
+   console.log(chalk.green("MongoDB connected"));
 } catch(err){
-   logger.error(err);
+   console.error(err);
    process.exit(1);
 }
 
