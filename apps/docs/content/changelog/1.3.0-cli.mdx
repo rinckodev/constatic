@@ -1,0 +1,159 @@
+---
+version: 1.3.0
+title: Atualização 1.3.0
+description: Um novo recurso poderoso para a CLI que dará mais liberdade de customização de projetos
+date: 2025-07-02
+---
+
+import { CliCommand } from "@/components/constatic/cli/command";
+import { CliMenus } from "@/components/constatic/cli/menu";
+import icons from "@lib/icons";
+
+Essa atualização é o inicio de uma série de atualizações que vão tornar o processo de criação de projetos mais prático. O novo grande recurso adicionado na CLI é a possibilidade de criar predefinições de scripts.
+
+Comando para executar a CLI
+
+<CliCommand packageName="constatic@latest" />
+
+# Predefinições
+
+Uma nova opção na CLI foi adicionada, você pode gerenciar predefinições no menu principal:
+
+<CliMenus.Main lang="pt" selected="presets"/>
+
+Os [tokens da CLI](/docs/presets/tokens) foram movidos da aba de configurações para a aba de predefinições e foi adicionado o recurso de predefinições de scripts:
+
+<CliMenus.Presets lang="pt" selected="scripts"/>
+
+## Predefinições de scripts
+
+Existe alguma função, objeto utilitário, modificação, lib ou código que você sempre utiliza em novos projetos? Algo que você sempre tem que copiar de algum lugar e colar ao criar uma nova aplicação? Agora não é mais necessário continuar com esse processo demorado e repetitivo. Você pode simplesmente criar uma predefinição e selecionar ela quando quiser.
+
+Comece criando uma nova predefinição:
+
+<CliMenus.Scripts lang="pt" selected="new"/>
+
+O processo de criação é simples e está [documentado por completo aqui](/docs/presets/scripts/new). Mas em resumo você pode executar a CLI em uma pasta com o código que você deseja reutilizar, selecionar os arquivos necessários, se precisar também pode adicionar dependenências, depois é só salvar com um nome que seja fácil identificar e pronto.
+
+Ao criar um novo projeto, as predefinições de scripts vão aparecer como uma opção na CLI para você selecionar e todo o código salvo será copiado para o novo projeto.
+
+### Criando uma predefinição
+
+<Callout type="info">
+    É recomendado executar a CLI na raiz de um projeto que contenha os códigos que você quero salvar como predefinição de script.
+</Callout>
+
+Supondo que você execute a CLI na raiz de um projeto como este:
+```md
+node_modules/
+src/
+├── discord/ ...
+├── functions/
+│   └── utils/
+│       ├── emojis.ts
+│       └── res.ts
+├── tools/
+│   └── canvas/
+│       └── card.ts
+├── settings/ ...
+└── index.ts
+package.json
+tsconfig.json
+settings.json
+```
+
+Você poderá selecionar todos os arquivos nesse diretório e em subpastas.
+Ao selecionar arquivos, eles serão armazenados em uma pasta de configurações da CLI com a mesma estrutura em que foram selecionados.
+Então se você selecionar estes dois arquivos:
+| | |
+| -- | ---- |
+| `res.ts` | `src/functions/utils/res.ts`|
+| `card.ts` | `src/tools/canvas/card.ts` |
+
+Os arquivos serão armazenados dessa forma:
+
+```md
+src/
+├── functions/
+│   └── utils/
+│       └── res.ts
+└── tools/
+        └── canvas/
+            └── card.ts
+```
+
+Então quando essa predefinição for aplicada, os arquivos serão copiados nesse mesmo formato a partir do diretório em que a CLI está sendo executada.
+
+<Callout type="danger">
+    Tome cuidado ao executar a CLI em um diretório diferente da raiz do projeto!
+
+    Caso você execute a CLI por exemplo, direto na pasta das funções:
+
+    ```md
+    utils/
+    ├── emojis.ts
+    └── res.ts
+    ```
+
+    E selecionar os arquivos `./utils/emojis.ts` e `./utils/res.ts`. Quando o projeto for criado e você selecionar essa predefinição, os arquivos serão colados relativamente à raiz do novo projeto:
+
+    ```json
+    node_modules/
+    src/
+    ├── discord/ ...
+    ├── functions/ ...
+    ├── settings/ ...
+    └── index.ts
+    utils/ // [!code highlight]
+    ├── emojis.ts // [!code highlight]
+    └── res.ts // [!code highlight]
+    package.json
+    tsconfig.json
+    settings.json
+    ```
+</Callout>
+
+### Gerenciando predefinições
+
+Você pode listar, aplicar, editar e excluir predefinições pela CLI veja na documentação como fazer cada coisa:
+
+<Cards className="lg:grid-cols-3">
+	<Card
+		href="/docs/presets/scripts/new"
+		title="Criar predefinição"
+		icon={<icons.HiDocumentPlus/>}
+		description="Aprenda como funciona o menu de criação de predefinição"
+	/>
+	<Card
+		href="/docs/presets/scripts/list"
+		title="Listar todas as predefinições"
+		icon={<icons.FaRegListAlt/>}
+		description="Confira uma listagem de todas as predefinições e informações sobre elas"
+	/>
+	<Card
+		href="/docs/presets/scripts/edit"
+		title="Editar predefinição"
+		icon={<icons.MdModeEdit/>}
+		description="Editar predefinições existentes, adicionando ou removendo arquivos e/ou dependenências"
+	/>
+	<Card
+		href="/docs/presets/scripts/apply"
+		title="Aplicar predefinições"
+		icon={<icons.FaFileDownload/>}
+		description="Veja como aplicar suas predefinições em projetos"
+	/>
+	<Card
+		href="/docs/presets/scripts/delete"
+		title="Excluir predefinições"
+		icon={<icons.FaTrashAlt/>}
+		description="Exclua facilmente uma ou várias predefinições na CLI"
+	/>
+</Cards>
+
+## Planos futuros
+
+Este é só o inicio desse novo recurso de predefinições, tem muita coisa ainda para ser adicionada, coisas que vão facilitar ainda mais o gerenciamento das predefinições, mas por enquanto o mistério será mantido.
+
+---
+
+Novidades, atualizações, alterações, dicas e muito mais será postado neste blog! Se você quiser ser notificado sempre que uma nova postagem for publicada, entre no discord [Zunder Community](http://discord.gg/tTu8dGN) ou Siga [@rinckodev no twitter/x](https://x.com/rinckodev)

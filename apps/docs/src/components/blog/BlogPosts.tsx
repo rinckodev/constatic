@@ -1,4 +1,4 @@
-import type { BlogPost } from "@/lib/source";
+import type { ChangelogPost } from "@/lib/source";
 import Link from "next/link";
 import { IoFlameSharp } from "react-icons/io5";
 import BlogPostDate from "./BlogPostDate";
@@ -6,7 +6,7 @@ import { BlogTag } from "./BlogTag";
 import { getPostDate } from "./date";
 
 interface BlogPostItemProps {
-    posts: BlogPost[],
+    posts: ChangelogPost[],
 }
 
 export default function BlogPosts({ posts }: BlogPostItemProps) {

@@ -1,0 +1,190 @@
+---
+version: 1.5.0
+title: Atualização 1.5.0
+description: O código das estruturas, manipuladores e gerenciadores foi transformado em uma biblioteca 
+date: 2026-01-02
+---
+
+import { CliCommand } from "@/components/constatic/cli/command";
+
+Depois de muita discussão chegamos a uma decisão! Tornar o código da base em uma biblioteca. Dessa forma o projeto fica um pouco menor e as atualizações são facilitadas
+
+Comando para executar a CLI
+
+<CliCommand packageName="constatic@latest" />
+
+## Mudanças
+
+Agora ao gerar um novo projeto usando a [CLI](/docs/discord/start), a biblioteca `@constatic/base` virá como uma dependência.
+
+A pasta `src/discord/base` foi removida!
+
+As estruturas e funções que existiam nessa pasta agora estão todas na biblioteca `@constatic/base`, mas uma coisa boa é que a migração é muito fácil e não deve quebrar muitas coisas.
+
+## Migração 1.4 -> ^1.5
+
+Quase tudo que vinha do atalho `#base` que apontava para `src/discord/base/index.ts` agora deve vir de `@constatic/base`:
+
+A função bootstrap:
+```ts title="src/index.ts"
+import { env } from "#env"; // [!code ++]
+import { bootstrap } from "#base"; // [!code --]
+import { bootstrap } from "@constatic/base"; // [!code ++]
+
+await bootstrap({ meta: import.meta }); // [!code --]
+await bootstrap({ meta: import.meta, env }); // [!code ++]
+```
+
+Se tornou necessário importar o objeto env do arquivo `src/env.ts` para que a função **validateEnv** possa ser executada, assim validando e transformando as variaveis de ambiente.
+
+A função setupCreators:
+```ts
+import { setupCreators } from "#base"; // [!code --]
+import { setupCreators } from "@constatic/base"; // [!code ++]
+
+export const { createCommand, createEvent, createResponder } = setupCreators();
+```
+
+O atalho `#base` ainda existe, porém agora ele aponta para `src/discord/index` que é o local onde estamos usando a função **setupCreators**. Então nos seus comandos, eventos e responders, as importações das funções **createCommand**, **createEvent** e **createResponder** ainda são válidas.
+
+É assim que deve ficar no `package.json`
+```json title="package.json"
+{
+  // ...
+  "imports": {
+    // ...
+    "#base": [
+      "./build/discord/base/index.js" // [!code --]
+      "./build/discord/index.js" // [!code ++]
+    ],
+    // ...
+  },
+}
+```
+E no `tsconfig.json`:
+```json title="tsconfig.json"
+{
+	"compilerOptions": {
+        // ...
+		"paths": {
+			"#base": ["./src/discord/base/index.ts"], // [!code --]
+			"#base": ["./src/discord/index.ts"],  // [!code ++]
+            // ...
+		}
+	},
+	// ...
+}
+```
+
+O enum **ResponderType** agora está na biblioteca, então você deve alterar a importação dele nos arquivos onde você cria responders:
+```ts
+import { createResponder, ResponderType } from "#base"; // [!code --]
+import { createResponder } from "#base"; // [!code ++]
+import { ResponderType } from "@constatic/base"; // [!code ++]
+import { createDate } from "@magicyan/discord";
+import { time } from "discord.js";
+import { z } from "zod";
+
+const schema = z.object({
+    date: z.transform(createDate),
+});
+createResponder({
+    customId: "remind/:date",
+    types: [ResponderType.Button],
+    parse: schema.parse, cache: "cached",
+    async run(interaction, { date }) {
+        await interaction.reply({
+            flags: ["Ephemeral"],
+            content: `⏳ You run ping command ${time(date, "R")}`,
+        });
+    },
+});
+```
+
+A função **validateEnv** que agora é importada da biblioteca, se tornou assíncrona (requirindo await) e aceita o [standard schema](https://github.com/standard-schema/standard-schema) (Isso significa que você pode passar um schema de qualquer lib que use o standard schema, como zod, arktype, valibot, yup):
+
+```ts title="src/env.ts"
+import "./constants.js"; // [!code ++]
+import { validateEnv } from "#base"; // [!code --]
+import { validateEnv } from "@constatic/base"; // [!code ++]
+import { z } from "zod";
+
+export const env = await validateEnv(z.looseObject({ // [!code ++]
+export const env = await validateEnv(z.object({ // [!code --]
+    BOT_TOKEN: z.string("Discord Bot Token is required").min(1),
+    WEBHOOK_LOGS_URL: z.url().optional(),
+    GUILD_ID: z.string().optional()
+}));
+```
+
+Se vocês notarem acima, no topo do arquivo é feita uma importação do arquivo `./src/constants.js`. O novo arquivo `constants.ts` em `src` carrega e cria o objeto global **constants** para que você possa usar em qualquer lugar do seu código:
+```ts title="src/constants.ts"
+import constantsJson from "../constants.json" with { type: "json" };
+
+declare global {
+    const constants: typeof constantsJson;
+}
+Object.assign(globalThis, Object.freeze({
+    constants: constantsJson
+}));
+```
+<Callout type="warn">
+    Antes ele ficava internamente nos arquivos da pasta `src/discord/base`, mas isso não é mais possível, é inviável colocar isso em uma biblioteca e não teríamos o autocomplete das propriedades pela inferencia de tipos.
+</Callout>
+
+Então é importante prestar atenção em como esse arquivo está sendo executado
+
+O arquivo `src/index.ts` importa o arquivo `src/env.ts` e o arquivo `src/env.ts` importa o arquivo `src/constants.ts`:
+
+`constants.ts` -> `env.ts` -> `index.ts`
+
+Só assim o objeto global **constants** pode existir.
+
+A biblioteca também exporta um arquivo json com configurações do tsconfig recomendadas para o projeto, você pode usar para estender o `tsconfig.json`:
+```json title="tsconfig.json"
+{
+	"extends": "@constatic/base/tsconfig", // [!code ++]
+	"compilerOptions": {
+		"esModuleInterop": true, // [!code --]
+		"forceConsistentCasingInFileNames": true, // [!code --]
+		"skipLibCheck": true, // [!code --]
+		"resolveJsonModule": true, // [!code --]
+		"strict": true, // [!code --]
+		"lib": ["ESNext"], // [!code --]
+		"target": "ESNext", // [!code --]
+		"module": "NodeNext", // [!code --]
+		"moduleResolution": "NodeNext", // [!code --]
+		"noUnusedLocals": true, // [!code --]
+		"noUnusedParameters": true, // [!code --]
+		"noImplicitReturns": true, // [!code --]
+		"noImplicitOverride": true, // [!code --]
+		"noEmitOnError": true, // [!code --]
+
+		"outDir": "./build",
+		"rootDir": "./src",
+		"paths": {
+			"#env": ["./src/env.ts"],
+			"#base": ["./src/discord/index.ts"],
+			"#functions": ["./src/functions/index.ts"],
+			"#database": ["./src/database/index.ts"],
+			"#server": ["./src/server/index.ts"],
+			"#menus": ["./src/menus/index.ts"],
+			"#tools": ["./src/tools/index.ts"],
+			"#lib/*": ["./src/lib/*"],
+			"#shared/*": ["./src/shared/*"],
+			"#types/*": ["./src/@types/*"],
+			"#emojis": ["./emojis.json"],
+		}
+	},
+	"include": ["src"],
+	"exclude": ["node_modules"]
+}
+```
+
+## Conclusão
+
+Essas mudanças chegaram para trazer mais praticidade na hora de fazer atualizações e também para tornar o projeto mais organizado. Reporte qualquer problema que encontrar no discord de suporte: [Zunder Community](http://discord.gg/tTu8dGN)
+
+---
+
+Novidades, atualizações, alterações, dicas e muito mais será postado neste blog! Se você quiser ser notificado sempre que uma nova postagem for publicada, entre no discord [Zunder Community](http://discord.gg/tTu8dGN) ou Siga [@rinckodev no twitter/x](https://x.com/rinckodev)

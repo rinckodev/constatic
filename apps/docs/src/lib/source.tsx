@@ -1,7 +1,7 @@
 import { type InferPageType, loader } from "fumadocs-core/source";
 import { lucideIconsPlugin } from "fumadocs-core/source/lucide-icons";
 import { toFumadocsSource } from "fumadocs-mdx/runtime/server";
-import { blogCollection, docs } from "fumadocs-mdx:collections/server";
+import { blogCollection, docs, changelogCollection } from "fumadocs-mdx:collections/server";
 import { createElement } from "react";
 import { HiMiniSparkles } from "react-icons/hi2";
 import { PiFireSimpleFill, PiMagicWandFill } from "react-icons/pi";
@@ -94,4 +94,11 @@ export const blog = loader({
 });
 
 export type BlogPost = NonNullable<ReturnType<typeof blog.getPage>>;
+
+export const changelog = loader({
+  baseUrl: "/changelog",
+  source: toFumadocsSource(changelogCollection, [])
+});
+
+export type ChangelogPost = NonNullable<ReturnType<typeof blog.getPage>>;
 

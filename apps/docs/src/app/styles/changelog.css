@@ -1,0 +1,39 @@
+@utility constatic-changelog {
+  position: relative;
+  @apply pl-6 ml-2 sm:ml-4 sm:pl-7;
+}
+
+@utility constatic-changelog {
+  &::before {
+    content: "";
+    position: absolute;
+    left: 3.5;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+
+    background: linear-gradient(
+      to bottom,
+      transparent 0px,
+      var(--color-fd-border) 30px,
+      var(--color-fd-border) calc(100% - 30px),
+      transparent 100%
+    );
+  }
+}
+
+
+
+@utility constatic-changelog-item {
+  position: relative;
+  &:before {
+    content: "";
+    position: absolute;
+    background-color: var(--color-fd-primary);
+    @apply size-2 -start-6 sm:-start-7 top-3.5 rounded-full transition-all duration-300 ease-in-out;
+  }
+
+  &:hover:before {
+    @apply shadow-[0_0_28px_4px_var(--color-fd-primary)];
+  }
+}

@@ -1,0 +1,295 @@
+---
+version: 1.0.0
+title: Atualização 1.0.0
+description: Grande atualização mudando drasticamente estruturas e melhorando performance
+date: 2025-01-01
+---
+
+Essa atualização traz mudanças radicais nas estruturas e na forma como elas são construídas. Um destaque especial para os Responders que ficaram melhores ainda. Como vocês puderam notar no título, essa atualização traz a possibilidade de fazer muito mais, com menos. Vocês verão!
+
+Comando para executar a CLI
+
+```bash
+npx constatic@latest
+```
+
+## Biblioteca do discord
+
+A biblioteca `discord.js` foi atualizada para a versão mais recente. Atualmente 14.17.2
+
+## ▶️ Função inicial
+
+A função que antes se chamava `bootstrapApp`, agora se chama apenas `bootstrap`. Essa função é responsável por iniciar toda a nossa aplicação, desde carregar **comandos**, **eventos**, **responders**, registrar dados na aplicação e fazer login com o token do bot.
+
+```ts title="src/index.ts"
+import { bootstrapApp } from "#base"; // [!code --]
+import { bootstrap } from "#base"; // [!code ++]
+
+await bootstrapApp({ workdir: import.meta.dirname }); // [!code --]
+await bootstrap({ meta: import.meta }); // [!code ++]
+```
+
+<Accordions>
+    <Accordion title="Mas por que mudar o nome dessa função?">
+    Não é apenas para encurtar o nome da função, isso tem um propósito. Porém ficará para uma futura atualização. Os mais entusiastas já podem começar a especular.
+    </Accordion>
+</Accordions>
+
+Vamos ver agora algumas opções que foram removidas da função `bootstrap`
+
+```ts title="src/index.ts"
+interface BootstrapOptions extends Partial<ClientOptions> {
+    workdir: string; // [!code --]
+    meta: ImportMeta; // [!code ++]
+	commands?: { // [!code --]
+		guilds?: string[]; // [!code --]
+		defaultMemberPermissions?: PermissionResolvable[]; // [!code --]
+        onError?: CommandErrorHandler; // [!code --]
+	}, // [!code --]
+	responders?: { // [!code --]
+        onNotFound?(interaction: ResponderInteraction<ResponderType, CacheType>): void; // [!code --]
+        onError?: ResponderErrorHandler; // [!code --]
+	}, // [!code --]
+    directories?: string[];
+    loadLogs?: boolean;
+    beforeLoad?(client: Client): void
+    whenReady?(client: Client<true>): void;
+}
+```
+
+Antes era possível definir algumas funções para determinados contextos para os comandos e os responders nas opções da função `bootstrap`. Mas agora não é mais possível.
+
+## 🟦 Pasta discord
+
+Essa pasta ainda funciona da mesma maneira, todas as estruturas que estiverem dentro dela, seja qual for a profundidade de pastas aninhadas, serão carregadas antes da aplicação iniciar.
+Mas um pequeno detalhe foi adicionado. Agora existe um arquivo `index.ts` na pasta `discord`.
+
+Neste arquivo é feita a preparação das estrutras da base
+
+```ts title="src/discord/index.ts"
+import { setupCreators } from "#base";
+
+export const { createCommand, createEvent, createResponder } = setupCreators();
+```
+
+Para aqueles que já usavam a base antes, já perceberam que não usaremos mais as classes `Command`, `Event` e `Responder`. Elas foram substituídas pelas funções `createCommand`, `createEvet` e `createResponder`.
+
+<Accordions>
+    <Accordion title="Ainda funcionam da mesma maneira, você só precisa alterar de classe para função">
+    <Tabs items={["Comando", "Evento", "Responder"]}>
+        <Tab value="Comando">
+         ```ts title="ping.ts"
+            import { Command } from "#base"; // [!code --]
+            import { createCommand } from "#base"; // [!code ++]
+            import { ApplicationCommandType } from "discord.js";
+
+            new Command({ // [!code --]
+            createCommand({// [!code ++]
+                name: "ping",
+                description: "Replies with pong 🏓",
+                type: ApplicationCommandType.ChatInput,
+                run(interaction){
+                    // ...
+                }
+            });
+            ```
+        </Tab>
+        <Tab value="Evento">
+         ```ts title="ready.ts"
+            import { Event } from "#base"; // [!code --]
+            import { createEvent } from "#base"; // [!code ++]
+
+            new Event({ // [!code --]
+            createEvent({// [!code ++]
+                name: "When bot ready",
+                event: "ready",
+                run(arg){
+                    // ...
+                }
+            });
+            ```
+        </Tab>
+        <Tab value="Responder">
+         ```ts title="buttons.ts"
+            import { Responder, ResponderType } from "#base"; // [!code --]
+            import { createResponder, ResponderType } from "#base"; // [!code ++]
+                
+
+            new Responder({ // [!code --]
+            createResponder({// [!code ++]
+                customId: "auth/start", cache: "cached",
+                type: ResponderType.Button // [!code --]
+                types: [ResponderType.Button] // [!code ++]
+                run(interaction){
+                    // ...
+                }
+            });
+            ```
+            Vamos falar desse `types` já já.
+        </Tab>
+        </Tabs>
+    </Accordion>
+</Accordions>
+
+Mais uma vez, isso não é por acaso, essa alteração trará grandes recursos em futuras atualizações.
+
+<Callout type="info">
+    Os snippets da base também foram atualizados! Você ainda pode continuar usando `new.command`, `new.event` e `new.responder` para gerar um pequeno trecho de código inicial para essas funções.
+</Callout>
+
+Lembra que algumas opções foram removidas da função `bootstrap`? Então, agora elas serão definidas na função `setupCreators`:
+
+```ts
+export const { createCommand, createEvent, createResponder } = setupCreators({
+    commands: {
+        // ...
+    },
+    responders: {
+        // ...
+    }
+});
+```
+
+### Opções de comandos
+
+Defina quais serão as permissões padrões de todos os comandos, caso não seja definida nenhuma com a opção `defaultMemberPermissions` (É o mesmo array de permissões do comando).
+
+```ts
+/* ... */ setupCreators({
+    commands: {
+        defaultMemberPermissions: ["SendMessages", "Connect"]
+    },
+});
+```
+Dessa forma, ao criar um comando e não definir nenhuma permissão padrão de membro, o que você definiu na função `setupCreators`, será o padrão de todos os comandos.
+
+Você pode definir vários IDs de guildas que deseja registrar os comandos do seu bot com a opção `guilds`.
+
+```ts
+/* ... */ setupCreators({
+    commands: {
+        guilds: [process.env.MAIN_GUILD_ID, "537817462272557057"]
+    },
+});
+```
+Assim, ao invés de registrar os comandos globalmente na aplicação, eles serão registrados apenas nas guildas, cujo os ids foram passados para essa opção.
+
+Agora vamos ver algumas funções abaixo que você pode definir para comandos e responders (Elas funcionam da mesma forma para ambos).
+
+| Função | descrição |
+| - | ---------- |
+| `middleware` | É executada toda vez antes de cada comando/responder ser executado |
+| `onError`, | É executada quando ocorrer um erro na execução de um comando/responder |
+| `onNotFound` | É executada caso um comando/responder não for encontrado para a interação |
+
+Sobre a função `onError`, você pode conferir [alguns exemplos de uso dela em uma postagem anterior](/blog/2024-12-04#%EF%B8%8F-bootstrapapp), basta adptar agora para a função `setupCreators`.
+
+Agora sobre as outras funções, um blog de dicas será postado em breve.
+
+## Responders
+
+Os Responders são com certeza um dos recursos favoritos do desenvolvedor desta base, o que mais recebe atenção e melhorias ao longo do tempo. Vamos começar vendo algumas remoções:
+
+```ts
+export enum ResponderType {
+    Button,
+    Select // [!code --]
+    StringSelect,
+    UserSelect,
+    RoleSelect,
+    ChannelSelect,
+    MentionableSelect,
+    Row // [!code --]
+    Modal,
+    ModalComponent,
+    All // [!code --]
+}
+```
+
+O tipo `ResponderType.Select` servia para responder qualquer tipo de select menu, o `ResponderType.Row` respondia qualquer componente de mensagem e o `ResponderType.All` respondia todos. Mas e agora?
+
+A propriedade `type` foi renomeada para `types` e agora você pode passar um array de `ResponderType` que deseja que este Responder responda.
+
+```ts
+import { createResponder, ResponderType } from "#base";
+
+createResponder({
+    customId: "context/action",
+    types: [ResponderType.Button], cache: "cached",
+    async run(interaction) {
+        // ...     
+    },
+});
+```
+Você pode limitar quais tipos de select menu deseja responder:
+```ts
+createResponder({
+    // ..
+    types: [
+        ResponderType.StringSelect,
+        ResponderType.UserSelect,
+    ],
+    // ..
+});
+```
+
+<Accordions>
+    <Accordion title="Você já usou o ResponderType.All para responder literalmente todos os tipos?">
+    Quando isso foi adicionado, era uma forma de poder responder a diversos tipos de interações com o mesmo customId ou mesmo padrão de customId, mas particularmente, é bem improvável que alguém tenha usado isso para responder a **literalmente** todos os tipos de interações, faz mais sentido escolher quais tipos você quer.
+    </Accordion>
+</Accordions>
+
+Que tal responder apenas botões e modais?
+```ts
+createResponder({
+    // ..
+    types: [
+        ResponderType.Button,
+        ResponderType.ModalComponent,
+        ResponderType.Modal,
+    ],
+    // ..
+});
+```
+São mais de 200 combinações possíveis e maior controle. Um detalhe importante, essa pequena alteração diminuiu o tempo médio para encontrar o Responder de 500-400ms para 30-20ms
+
+Alguns tipos foram removidos, mas diversas possibilidades foram adicionadas. Menos é mais!
+
+## ⭐ Extras
+
+Adicionado um novo snippet para criar uma função de menu interativo
+
+Use `new.menu` e será gerado um trecho de código como este:
+
+```ts
+import { ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from "discord.js";
+import { createEmbed, createRow } from "@magicyan/discord";
+
+export function menu<R>(): R {
+    const embed = createEmbed({
+        description: "Menu"
+    });
+
+    const row = createRow(
+        new ButtonBuilder({
+            customId: "menu/action",
+            label: ">", 
+            style: ButtonStyle.Success
+        })
+    );
+
+    return ({
+        flags,
+        embeds: [embed],
+        components: [row] 
+    } satisfies InteractionReplyOptions) as R;
+}
+```
+
+## Conclusão
+
+Estes novos recursos da base estão em um estado experimental, pode haver bugs ou erros inesperados, caso encontre algum, reporte diretamente no discord [Zunder Community](http://discord.gg/tTu8dGN).
+
+---
+
+Novidades, atualizações, alterações, dicas e muito mais será postado neste blog! Se você quiser ser notificado sempre que uma nova postagem for publicada, entre no discord [Zunder Community](http://discord.gg/tTu8dGN) ou Siga [@rinckodev no twitter/x](https://x.com/rinckodev)

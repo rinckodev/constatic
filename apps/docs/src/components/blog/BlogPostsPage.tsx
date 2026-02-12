@@ -1,9 +1,9 @@
-import type { BlogPost } from "@/lib/source";
+import type { ChangelogPost } from "@/lib/source";
 import { FaNewspaper } from "react-icons/fa";
 import BlogPosts from "./BlogPosts";
 
 interface BlogPageProps {
-    posts: BlogPost[],
+    posts: ChangelogPost[],
 }
 export default function BlogPostsPage({ posts }: BlogPageProps) {
     return <main className="flex flex-col gap-2 px-12 items-center">

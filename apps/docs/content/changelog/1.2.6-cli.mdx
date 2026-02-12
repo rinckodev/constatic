@@ -1,0 +1,96 @@
+---
+version: 1.2.6
+title: Atualização 1.2.6
+description: Atualizações da base, do discord.js e da CLI que vão tornar o desenvolvimento mais moderno e mais prático.
+date: 2025-05-28
+---
+
+import { CliCommand } from "@/components/constatic/cli/command";
+
+Este blog engloba tudo o que foi atualizado desde a versão 1.2 da base da CLI, então se prepare pois temos muitas coisas para falar aqui.
+
+Comando para executar a CLI
+
+<CliCommand packageName="constatic@latest" />
+
+## Use Bun
+
+Sempre foi possível usar executar o projeto com Bun, ao gerar o projeto você podia executar os scripts simplesmente usando o comando `bun` ao invés de `npm`, porém o Bun agia apenas como um gerenciador de dependências.
+
+Gerando o projeto hoje mesmo usando o comando `bunx`, a CLI irá identificar e alterar os scripts para utilizar o Bun como runtime ao invés do node, assim tendo toda a performance do Bun para a execução:
+
+```bash
+bunx constatic@latest
+```
+
+Agora todos os scripts usam Bun e o projeto não precisa mais ser buildado para ser executado. Isso significa que o script `dev` e `start` são os mesmos!
+
+<Callout type="info">
+    É recomendado usar o script `check` antes de hospedar o projeto, para verificar qualquer tipagem incorreta que passou despercebida durante o desenvolvimento
+    ```bash
+    bun run check
+    ```
+</Callout>
+
+Se você marcar o recurso extra `discloud project`, os arquivos para hospedar pelo vscode também virão adaptados para usar Bun ao invés do node. O arquivo `discloud.config` terá como `MAIN` o Dockerfile preparado para executar o projeto com Bun. O Arquivo `.discloudignore` não irá ignorar a pasta src, pois como já foi dito, o projeto não precisa mais ser buildado.
+
+Executando o projeto com Bun, ao invés da versão do Node ser exibida no terminal, a versão do Bun será exibida.
+
+## Gerenciador de dependências
+
+Agora não é mais necessário selecionar o seu gerenciador de dependências na opção `Install dependencies` ao gerar o projeto. A CLI irá detectar automaticamente de acordo com o comando usado para executar ela. Então você só precisa escolher entre sim e não.
+
+Veja abaixo o gerenciador e o comando respectivo
+| Gerenciador | Comando para executar CLIs  |
+|-------------|-----------------------------|
+| **npm**     | `npx constatic@latest`      |
+| **bun**     | `bunx constatic@latest`     |
+| **yarn**    | `yarn dlx constatic@latest` |
+| **pnpm**    | `pnpm dlx constatic@latest` |
+
+## Variáveis de ambiente
+
+Agora você pode importar a variável `env` de `#settings` em qualquer lugar do seu código e utilizar os valores transformados, ou seja, se você tiver valores numéricos, variaveis que foram transformadas em arrays ou datas, poderá ser usado tranquilamente pela variável `env`.
+
+As variáveis brutas em formato de string continuam no `process.env`, mas é recomendado usar a variável `env` para acessar suas variáveis de ambiente transformadas.
+
+Para definir o `schema` das suas variáveis vá ao arquivos `src/settings/env.schema.ts`:
+
+```ts title="src/settings/env.schema.ts"
+import { z } from "zod";
+
+export const envSchema = z.object({
+    BOT_TOKEN: z.string({ description: "Discord Bot Token is required" }).min(1),
+    WEBHOOK_LOGS_URL: z.string().url().optional(),
+    // Env vars...
+});
+```
+
+Ainda funciona da mesma maneira, apenas o nome do arquivo que mudou.
+
+## Ferramenta de emojis da CLI
+
+Melhorias foram adicionadas a ferramenta de gerenciamento de emojis da aplicação na CLI.
+
+Agora você pode inserir o token de uma aplicação de forma temporária para gerenciar os emojis, ou seja, não é preciso armazenar o token no menu de configurações da CLI. Isso é útil para usar durante o desenvolvimento do seu projeto, apenas copiando o token do env e inserindo na opção da CLI. Você pode conferir essa opção ao selecionar o menu `Manage discord emojis`, a lista de aplicações dos tokens salvos será exibida mas a opção `New temporary token` estará disponível.
+
+Uma pequena adição à opção de gerar o arquivo json de emojis foi implementada permitindo com que você escolha gerar um arquivo de IDs ou de URLs. Ao gerar o arquivo com URLs, ao invés dos IDs dos emojis, um link para o emoji na CDN do discord será inserido no valor das propriedades. Isso é útil no vscode para previsualizar a imagem dos emojis com a extensão [Image Preview](https://marketplace.visualstudio.com/items/?itemName=kisstkondoros.vscode-gutter-preview)
+
+<ImageZoom src={"/blog/2025-05-08/emojis.webp"} width={1000} height={300} alt="emojis" unoptimized />
+
+## Documentação
+
+- A ferramenta de emojis foi completamente documentada, [você pode conferir aqui](/docs/emojis/start).
+- As configurações da CLI foram documentadas também, [confira aqui](/docs/settings/language)
+
+## Correções
+
+Alguns erros ocultos e bem específicos foram corrigidos:
+
+- Se o token fosse inválido o bot ficava travado e não iniciava e nem exibia erro no terminal.
+- Se uma URL de webhook inválida fosse definida para a variável de ambiente `WEBHOOK_LOGS_URL`, ao ocorrer um erro que poderia ser enviado para o webhook, um loop de erros ocorria.
+- As permissões padrões dos comandos eram definidas de forma incorreta
+
+---
+
+Novidades, atualizações, alterações, dicas e muito mais será postado neste blog! Se você quiser ser notificado sempre que uma nova postagem for publicada, entre no discord [Zunder Community](http://discord.gg/tTu8dGN) ou Siga [@rinckodev no twitter/x](https://x.com/rinckodev)
