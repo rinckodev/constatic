@@ -2,6 +2,7 @@
     "material-icon-theme.folders.associations": {
         "@config": "config",
         "@template": "template",
+        "changelog": "update"
     },
     "editor.codeActionsOnSave": {
         "source.organizeImports": "explicit",
