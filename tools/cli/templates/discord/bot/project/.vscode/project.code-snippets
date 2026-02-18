@@ -8,7 +8,7 @@
 			"    name: \"${TM_FILENAME_BASE}\",",
 			"    description: \"${TM_FILENAME_BASE} command\",",
 			"    type: ApplicationCommandType.ChatInput,",
-			"    async run(interaction){",
+			"    async run(interaction) {",
 			"        $1",
 			"    }",
 			"});"
@@ -30,7 +30,7 @@
 			"            type: ApplicationCommandOptionType.String",
 			"        }",
 			"    ],",
-			"    async run(interaction){",
+			"    async run(interaction) {",
 			"        const { options } = interaction;",
 			"        ",
 			"    }",
@@ -55,11 +55,11 @@
 		"scope":"typescript",
 		"body": [
 			"options: [",
-			"   {",
-			"      name: \"${1}\",",
-			"      description: \"command option\",",
-			"      type: ApplicationCommandOptionType.String,",
-			"   }",
+			"    {",
+			"        name: \"${1}\",",
+			"        description: \"command option\",",
+			"        type: ApplicationCommandOptionType.String,",
+			"    }",
 			"],"
 		]
 	},
@@ -76,7 +76,7 @@
 			"createCommand({",
 			"    name: \"${TM_FILENAME_BASE}\",",
 			"    type: ApplicationCommandType.User,",
-			"    async run(interaction){",
+			"    async run(interaction) {",
 			"        ",
 			"    }",
 			"});"
@@ -107,10 +107,10 @@
 		"scope":"typescript",
 		"body": [
 			"createResponder({",
-			"    customId: \"${TM_FILENAME_BASE}/action\",",
+			"    customId: \"/${TM_DIRECTORY/(.*[\\\\\\/])([^\\\\\\/]+)$/$2/}/${TM_FILENAME_BASE}\",",
 			"    types: [ResponderType.Button], cache: \"cached\",",
 			"    async run(interaction) {",
-			"        ${1}",
+			"        ${1}", 
 			"    },",
 			"});"
 		]
@@ -121,10 +121,10 @@
 		"scope":"typescript",
 		"body": [
 			"createResponder({",
-			"    customId: \"users/:userId\",",
+			"    customId: \"/${TM_DIRECTORY/(.*[\\\\\\/])([^\\\\\\/]+)$/$2/}/${TM_FILENAME_BASE}/:action\",",
 			"    types: [ResponderType.Button], cache: \"cached\",",
-			"    async run(interaction, { userId }) {",
-			"        ",
+			"    async run(interaction, { action }) {",
+			"        ${1}",
 			"    },",
 			"});"
 		]
@@ -167,14 +167,15 @@
             "import { brBuilder, createContainer, createRow } from \"@magicyan/discord\";",
             "import { ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from \"discord.js\";",
             "",
-            "export function ${TM_FILENAME_BASE}Menu<R>(): R {",
-            "    const container = createContainer(constants.colors.azoxo,",
+            "export function ${TM_DIRECTORY/(.*[\\\\\\/])([^\\\\\\/]+)$/$2/}${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}Menu<R>(): R {",
+            "    const customId = (action: string) => `/${TM_DIRECTORY/(.*[\\\\\\/])([^\\\\\\/]+)$/$2/}/${TM_FILENAME_BASE}/\\${action}`;",
+			"    const container = createContainer(constants.colors.azoxo,",
             "        brBuilder(",
             "            \"## ${TM_FILENAME_BASE} menu\"",
             "        ),",
             "        createRow(",
             "            new ButtonBuilder({",
-            "                customId: \"menu/action\",",
+            "                customId: customId(\"action\"),",
             "                label: \">\",", 
             "                style: ButtonStyle.Success",
             "            })",
@@ -220,4 +221,15 @@
 			"}"
 		]
 	},
+	"Create bootstrap code": {
+		"description": "Create bootstrap code",
+		"prefix": ["bootstrap"],
+		"scope":"typescript",
+		"body": [
+			"import { env } from \"#env\";",
+			"import { bootstrap } from \"@constatic/base\";",
+			"",
+			"await bootstrap({ meta: import.meta, env: env });"
+		]
+	}
 }
