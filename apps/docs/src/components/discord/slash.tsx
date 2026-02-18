@@ -1,5 +1,5 @@
+import { cn } from "@/lib/cn";
 import avatar from "@public/avatar/awes.svg";
-import { cn } from "fumadocs-ui/utils/cn";
 import Image from "next/image";
 import { ggsans } from "./font";
 
@@ -51,7 +51,7 @@ export function DiscordSlashCommand(props: DiscordSlashCommandProps) {
                       ">{data.name}</div>
                       <input 
                         type={data.type??"button"}
-                        className="w-[100px] bg-dc-secondary outline-none px-2" 
+                        className="w-25 bg-dc-secondary outline-none px-2" 
                       />
                     </div>
                   ))}

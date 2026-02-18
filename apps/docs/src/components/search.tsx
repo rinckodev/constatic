@@ -8,8 +8,8 @@ import {
   SearchDialogIcon,
   SearchDialogInput,
   SearchDialogList,
-  SearchDialogOverlay,
   SearchDialogListItem,
+  SearchDialogOverlay,
   type SharedProps,
 } from "fumadocs-ui/components/dialog/search";
 import { useI18n } from "fumadocs-ui/contexts/i18n";

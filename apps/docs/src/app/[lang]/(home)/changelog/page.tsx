@@ -4,7 +4,8 @@ import { changelog } from "@/lib/source";
 import Link from "next/link";
 import { MdOutlineUpdate } from "react-icons/md";
 
-export default async function Page() {
+export default async function Page({ params }: PageProps<"/[lang]/changelog">) {
+    const { lang } = await params;
     const posts = changelog.getPages()
         .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
@@ -18,8 +19,8 @@ export default async function Page() {
                     Registro de alterações da organização constatic
                 </p>
             </div>
-            <Changelog>{posts.map(post => <ChangelogItem
-                key={post.data.version}
+            <Changelog>{posts.map((post) => <ChangelogItem
+                key={`${lang}-${post.data.version}`}
             >
                 <Link 
                     href={post.url}

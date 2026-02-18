@@ -1,6 +1,5 @@
-import { source } from "@lib/source";
 import { getMDXComponents } from "@/mdx-components";
-import { createRelativeLink } from "fumadocs-ui/mdx";
+import { source } from "@lib/source";
 import {
   DocsBody,
   DocsDescription,
@@ -23,10 +22,7 @@ export default async function Page(props: PageProps<"/[lang]/docs/[[...slug]]">)
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
         <MDX
-          components={getMDXComponents({
-            // this allows you to link to other pages with relative file paths
-            a: createRelativeLink(source, page),
-          })}
+          components={getMDXComponents()}
         />
       </DocsBody>
     </DocsPage>

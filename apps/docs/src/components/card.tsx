@@ -1,4 +1,4 @@
-import { cn } from "fumadocs-ui/utils/cn";
+import { cn } from "@/lib/cn";
 import Link from "fumadocs-core/link";
 import type { HTMLAttributes, ReactNode } from "react";
 

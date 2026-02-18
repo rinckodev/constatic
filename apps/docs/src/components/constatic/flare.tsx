@@ -1,4 +1,4 @@
-import { cn } from "fumadocs-ui/utils/cn";
+import { cn } from "@/lib/cn";
 
 interface ConstaticFlareProps {
     className?: string;
@@ -13,11 +13,11 @@ export function ConstaticFlare({ className }: ConstaticFlareProps){
       before:blur-[100px]
       before:opacity-30
       before:rotate-[-32deg]
-      before:w-[140px] before:h-[500px]
+      before:w-35 before:h-125
       before:translate-x-[-30%] before:translate-y-[-30%]
   
-      sm:before:w-[140px] sm:before:h-[700px]
-      lg:before:w-60 lg:before:h-[700px]`,
+      sm:before:w-35 sm:before:h-175
+      lg:before:w-60 lg:before:h-175`,
       className
     )}
   />

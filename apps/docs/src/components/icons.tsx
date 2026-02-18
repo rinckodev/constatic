@@ -3,7 +3,7 @@
  *
  * All copyright belongs to https://github.com/lucide-icons/lucide, we bundle it as part of library to avoid upstream issues.
  */
-import { cn } from "fumadocs-ui/utils/cn";
+import { cn } from "@/lib/cn";
 import { type ComponentProps, createElement, forwardRef } from "react";
 
 const defaultAttributes: LucideProps = {

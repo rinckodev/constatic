@@ -1,11 +1,10 @@
 "use client";
 
+import { cn } from "@/lib/cn";
 import { cva } from "class-variance-authority";
-import { File as FileIcon, Folder as FolderIcon, FolderOpen } from "lucide-react";
 import { type HTMLAttributes, type ReactNode, useState } from "react";
-import { cn } from "../lib/cn";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
 import { FaFile, FaFolder, FaFolderOpen } from "react-icons/fa";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
 
 const itemVariants = cva(
   "flex flex-row items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-fd-accent hover:text-fd-accent-foreground [&_svg]:size-4",

@@ -3,7 +3,7 @@ import { defineI18nUI } from "fumadocs-ui/i18n";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import { Inter } from "next/font/google";
 //@ts-ignore
-import "../global.css";
+import "@/app/global.css";
 
 const inter = Inter({
   subsets: ["latin"],

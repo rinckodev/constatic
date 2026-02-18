@@ -1,7 +1,7 @@
 "use client";
-import { cn } from "fumadocs-ui/utils/cn";
 import { ReactElement } from "react";
 import { ggsans } from "./font";
+import { cn } from "@/lib/cn";
 
 const styles = {
     primary: "bg-dc-primary not-disabled:hover:bg-dc-primary/80 disabled:bg-dc-primary/50",

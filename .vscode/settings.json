@@ -1,4 +1,5 @@
 {
+    "files.autoSave": "off",
     "material-icon-theme.folders.associations": {
         "@config": "config",
         "@template": "template",
@@ -9,5 +10,5 @@
         "source.sortImports": "explicit",
         "source.removeUnusedImports": "explicit",
         "source.addMissingImports.ts": "explicit"
-    }
+    },
 }

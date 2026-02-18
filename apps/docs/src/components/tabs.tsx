@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/cn";
 import * as React from "react";
 import {
   type ComponentProps,
@@ -11,7 +12,6 @@ import {
   useMemo,
   useState,
 } from "react";
-import { cn } from "../lib/cn";
 import * as Unstyled from "./ui/tabs";
 
 type CollectionKey = string | symbol;

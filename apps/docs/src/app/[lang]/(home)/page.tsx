@@ -1,7 +1,7 @@
 import { CliCommand } from "@/components/constatic/cli/command";
 import { ConstaticFlare } from "@/components/constatic/flare";
 import { GridPattern } from "@/components/constatic/grid";
-import { cn } from "fumadocs-ui/utils/cn";
+import { cn } from "@/lib/cn";
 import { Poppins } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";

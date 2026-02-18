@@ -1,23 +1,22 @@
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
-import { changelog, source } from "@/lib/source";
+import { changelog } from "@/lib/source";
 import { getMDXComponents } from "@/mdx-components";
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
-import { createRelativeLink } from "fumadocs-ui/mdx";
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/page";
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export default async function Page({ params }: PageProps<"/[lang]/changelog/[slug]">) {
-    const { slug } = await params;
+    const { slug, lang } = await params;
     const page = changelog.getPage([slug]);
     if (!page) notFound();
 
     const MDX = page.data.body;
 
     return <DocsLayout
-        tree={changelog.pageTree}
+        tree={changelog.pageTree[lang]}
         sidebar={{
             enabled: false
         }}
@@ -44,9 +43,7 @@ export default async function Page({ params }: PageProps<"/[lang]/changelog/[slu
             </div>
             <DocsBody>
                 <MDX
-                    components={getMDXComponents({
-                        a: createRelativeLink(source, page),
-                    })}
+                    components={getMDXComponents()}
                 />
             </DocsBody>
         </DocsPage>
@@ -55,11 +52,15 @@ export default async function Page({ params }: PageProps<"/[lang]/changelog/[slu
 }
 
 export async function generateStaticParams() {
-  return changelog.generateParams();
+    const params = changelog.generateParams();
+    console.log(params);
+    return params.map(({ lang, slug: [slug] }) => ({
+        lang, slug
+    }));
 }
 
 export async function generateMetadata(
-  { params }: PageProps<"/[lang]/blog/[slug]">,
+  { params }: PageProps<"/[lang]/changelog/[slug]">,
 ): Promise<Metadata> {
   const { slug, lang } = await params;
 

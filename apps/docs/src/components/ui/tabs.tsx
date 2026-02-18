@@ -1,5 +1,6 @@
-'use client';
+"use client";
 
+import * as Primitive from "@radix-ui/react-tabs";
 import {
   type ComponentProps,
   createContext,
@@ -9,9 +10,8 @@ import {
   useMemo,
   useRef,
   useState,
-} from 'react';
-import * as Primitive from '@radix-ui/react-tabs';
-import { mergeRefs } from '../../lib/merge-refs';
+} from "react";
+import { mergeRefs } from "../../lib/merge-refs";
 
 type ChangeListener = (v: string) => void;
 const listeners = new Map<string, Set<ChangeListener>>();
@@ -28,7 +28,7 @@ export interface TabsProps extends ComponentProps<typeof Primitive.Tabs> {
   persist?: boolean;
 
   /**
-   * If true, updates the URL hash based on the tab's id
+   * If true, updates the URL hash based on the tab"s id
    */
   updateAnchor?: boolean;
 }
@@ -39,7 +39,7 @@ const TabsContext = createContext<{
 
 function useTabContext() {
   const ctx = use(TabsContext);
-  if (!ctx) throw new Error('You must wrap your component in <Tabs>');
+  if (!ctx) throw new Error("You must wrap your component in <Tabs>");
   return ctx;
 }
 
@@ -102,7 +102,7 @@ export function Tabs({
           const id = valueToIdMap.get(v);
 
           if (id) {
-            window.history.replaceState(null, '', `#${id}`);
+            window.history.replaceState(null, "", `#${id}`);
           }
         }
 

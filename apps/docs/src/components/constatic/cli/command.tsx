@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "fumadocs-ui/utils/cn";
+import { cn } from "@/lib/cn";
 import { JetBrains_Mono } from "next/font/google";
 import { JSX, useState } from "react";
 import { FaNodeJs } from "react-icons/fa";
