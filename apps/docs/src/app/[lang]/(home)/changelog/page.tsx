@@ -4,8 +4,7 @@ import { changelog } from "@/lib/source";
 import Link from "next/link";
 import { MdOutlineUpdate } from "react-icons/md";
 
-export default async function Page({ params }: PageProps<"/[lang]/changelog">) {
-    const { lang } = await params;
+export default async function Page({}: PageProps<"/[lang]/changelog">) {
     const posts = changelog.getPages()
         .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
@@ -19,24 +18,26 @@ export default async function Page({ params }: PageProps<"/[lang]/changelog">) {
                     Registro de alterações da organização constatic
                 </p>
             </div>
-            <Changelog>{posts.map((post) => <ChangelogItem
-                key={`${lang}-${post.data.version}`}
-            >
-                <Link 
-                    href={post.url}
-                    className="flex flex-col min-h-26 max-h-26 pb-12 overflow-hidden group">
-                    <div className="flex lg:gap-2 flex-col lg:flex-row">
-                        <ScopeLabel
-                            scope={post.data.scope}
-                            version={post.data.version}
-                        />
-                        <span>
-                            {<DisplayDate date={post.data.date} />}
-                        </span>
-                    </div>
-                    <p>{post.data.description}</p>
-                </Link>
-            </ChangelogItem>)}</Changelog>
+            <Changelog>
+                {posts.map((post) => (
+                    <ChangelogItem key={post.url}>
+                        <Link
+                            href={post.url}
+                            className="flex flex-col min-h-26 max-h-26 pb-12 overflow-hidden group">
+                            <div className="flex lg:gap-2 flex-col lg:flex-row">
+                                <ScopeLabel
+                                    scope={post.data.scope}
+                                    version={post.data.version}
+                                />
+                                <span>
+                                    {<DisplayDate date={post.data.date} />}
+                                </span>
+                            </div>
+                            <p>{post.data.description}</p>
+                        </Link>
+                    </ChangelogItem>
+                ))}
+            </Changelog>
         </div>
     </main>
 }
@@ -54,7 +55,7 @@ function ScopeLabel({ scope, version }: ScopeLabelProps) {
 
     return <h2 className="text-2xl font-semibold flex 
             group-hover:text-fd-primary group-hover:underline"
-            
+
     >
         <span className="flex gap-2 items-center">
             {label}@
