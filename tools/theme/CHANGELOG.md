@@ -1,5 +1,8 @@
 # Change Log
 
+## [0.1.6]
+- Fix jsx colors
+
 ## [0.1.5]
 - Fix static property color
 - Fix function colors

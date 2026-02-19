@@ -106,7 +106,6 @@
 				"keyword.operator.spread",
 				"keyword.operator.increment-decrement",
 				// ---
-				"meta.block",
 				"meta.brace",
 				"meta.class",
 				"meta.class.java",
