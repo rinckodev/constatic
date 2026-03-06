@@ -18,16 +18,14 @@ export class CommandManager extends BaseManager {
     }
     private readonly collection = new Map<string, Command<unknown, readonly InteractionContextType[], unknown>>();
     public readonly runners = new Map<string, Runner[]>();
+    public readonly autocompleteRunners = new Map<string, Runner>();
     public set<T, C extends readonly InteractionContextType[], R>(command: Command<T, C, R>) {
         this.collection.set(command.data.name, command);
         const path = `/${command.data.type}/${command.data.name}`;
         this.runners.set(path, [command.data.run]);
 
         if (command.data.autocomplete) {
-            this.runners.set(
-                `${path}/autocomplete`,
-                [command.data.autocomplete]
-            );
+            this.autocompleteRunners.set(path, command.data.autocomplete);
         }
 
         const [icon, label] = this.getTitle(<CommandType>command.data.type);
@@ -38,6 +36,14 @@ export class CommandManager extends BaseManager {
             styleText(["blue", "underline"], command.data.name),
             styleText("green", "✓"),
         ].join(" "));
+    }
+    public getAutocompleteHandler(...path: (string | null)[]) {
+        const commandName = path[0];
+        const type = ApplicationCommandType.ChatInput;
+        const resolved = `/${type}/${path.filter(p => p).join("/")}`;
+
+        return this.autocompleteRunners.get(resolved) ??
+            this.autocompleteRunners.get(`/${type}/${commandName}`);
     }
     public getTitle(type?: CommandType) {
         return {
@@ -88,9 +94,10 @@ export class CommandManager extends BaseManager {
                 option.autocomplete &&
                 typeof option.autocomplete === "function"
             ) {
-                this.runners.set(
-                    `${path}/autocomplete/${option.name}`,
-                    [option.autocomplete]
+
+                this.autocompleteRunners.set(
+                    `${path}/${option.name}`,
+                    option.autocomplete
                 );
             }
 
@@ -200,16 +207,13 @@ export class CommandManager extends BaseManager {
     public async onAutocomplete(interaction: AutocompleteInteraction) {
         const options = interaction.options;
 
-        const handler = this.getHandler(
-            interaction.commandType,
+        const run = this.getAutocompleteHandler(
             interaction.commandName,
-            "autocomplete",
             options.getSubcommandGroup(false),
             options.getSubcommand(false),
             options.getFocused(true).name
         );
-        if (!handler || !handler[0]) return;
-        const [run] = handler;
+        if (!run) return;
 
         const choices = await run(interaction);
         if (choices && Array.isArray(choices)) {

@@ -1,6 +1,6 @@
 {
   "name": "@constatic/base",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Library with structures and functions for creating modern Discord applications.",
   "license": "MIT",
   "type": "module",
@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "@constatic/config": "*",
+    "@standard-schema/spec": "^1.1.0",
     "typescript": "^5.8.2"
   },
   "exports": {

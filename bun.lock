@@ -59,6 +59,7 @@
       },
       "devDependencies": {
         "@constatic/config": "*",
+        "@standard-schema/spec": "^1.1.0",
         "typescript": "^5.8.2",
       },
       "peerDependencies": {
@@ -99,7 +100,7 @@
     },
     "tools/theme": {
       "name": "constatic-theme",
-      "version": "0.1.5",
+      "version": "0.1.6",
     },
   },
   "packages": {

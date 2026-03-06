@@ -1,5 +1,5 @@
+import type { StandardSchemaV1 } from "@standard-schema/spec";
 import { format, styleText } from "node:util";
-import type { StandardSchemaV1 } from "./utils/schema.js";
 
 type Schema = StandardSchemaV1;
 type Out<T extends Schema> = StandardSchemaV1.InferOutput<T>;
