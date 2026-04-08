@@ -15,6 +15,7 @@ export default async function Layout({ children, params }: LayoutProps<"/[lang]"
       <body className="flex flex-col min-h-screen">
         <RootProvider
           i18n={i18nProvider(lang)}
+          theme={{ defaultTheme: 'dark' }}
         >
           {children}
         </RootProvider>
