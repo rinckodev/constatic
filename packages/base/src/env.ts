@@ -1,8 +1,5 @@
-import type { StandardSchemaV1 } from "@standard-schema/spec";
 import { format, styleText } from "node:util";
-
-type Schema = StandardSchemaV1;
-type Out<T extends Schema> = StandardSchemaV1.InferOutput<T>;
+import type { StandardSchemaV1 } from "./standard-schema.js";
 
 /**
  * Validates the current process environment variables using a StandardSchema.
@@ -27,7 +24,7 @@ type Out<T extends Schema> = StandardSchemaV1.InferOutput<T>;
  *     BOT_TOKEN: "string > 0"
  * }));
  */
-export async function validateEnv<T extends Schema>(schema: T): Promise<Out<T>> {
+export async function validateEnv<const T extends StandardSchemaV1>(schema: T): Promise<StandardSchemaV1.InferOutput<T>> {
     const result = await schema["~standard"].validate(process.env);
     if (result.issues) {
         console.log(

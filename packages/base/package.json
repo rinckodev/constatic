@@ -42,7 +42,6 @@
   },
   "devDependencies": {
     "@constatic/config": "*",
-    "@standard-schema/spec": "^1.1.0",
     "typescript": "^5.8.2"
   },
   "exports": {
@@ -70,10 +69,10 @@
     "dev": "bun run ./playground/index.ts"
   },
   "peerDependencies": {
-    "discord.js": "^14.25.1"
+    "discord.js": "^14.26.3"
   },
   "dependencies": {
-    "rou3": "^0.7.12",
-    "tinyglobby": "^0.2.15"
+    "rou3": "^0.8.1",
+    "tinyglobby": "^0.2.16"
   }
 }
