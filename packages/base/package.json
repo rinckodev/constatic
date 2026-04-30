@@ -1,6 +1,6 @@
 {
   "name": "@constatic/base",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "description": "Library with structures and functions for creating modern Discord applications.",
   "license": "MIT",
   "type": "module",
@@ -42,7 +42,8 @@
   },
   "devDependencies": {
     "@constatic/config": "*",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "discord.js": "^14.26.3"
   },
   "exports": {
     ".": {
@@ -69,7 +70,7 @@
     "dev": "bun run ./playground/index.ts"
   },
   "peerDependencies": {
-    "discord.js": "^14.26.3"
+    "discord.js": ">=14.25.0"
   },
   "dependencies": {
     "rou3": "^0.8.1",
