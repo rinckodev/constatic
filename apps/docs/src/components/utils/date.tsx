@@ -10,7 +10,8 @@ export default function DisplayDate({ date }: {
             {date.toLocaleDateString(lang, {
                 day: "numeric",
                 month: "short",
-                year: "numeric"
+                year: "numeric",
+                timeZone: "UTC"
             })}
         </p>
     </>;

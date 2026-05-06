@@ -1,10 +1,9 @@
 import { rehypeCodeDefaultOptions } from "fumadocs-core/mdx-plugins";
+import { metaSchema, pageSchema } from "fumadocs-core/source/schema";
 import {
-  defineCollections,
-  defineConfig,
-  defineDocs,
-  frontmatterSchema,
-  metaSchema,
+    defineCollections,
+    defineConfig,
+    defineDocs,
 } from "fumadocs-mdx/config";
 import { transformerTwoslash } from "fumadocs-twoslash";
 import { createFileSystemTypesCache } from "fumadocs-twoslash/cache-fs";
@@ -17,7 +16,7 @@ const withTagSchema = {
 export const docs = defineDocs({
   dir: "content/docs",
   docs: {
-    schema: frontmatterSchema.extend(withTagSchema),
+    schema: pageSchema.extend(withTagSchema),
     postprocess: {
       includeProcessedMarkdown: true,
     },
@@ -29,7 +28,7 @@ export const docs = defineDocs({
 
 export const blogCollection = defineCollections({
   dir: "content/blog",
-  schema: frontmatterSchema.extend({
+  schema: pageSchema.extend({
     date: z.coerce.date().or(z.date()).optional(),
     tags: z.array(z.string()).optional(),
   }),
@@ -39,7 +38,7 @@ export const blogCollection = defineCollections({
 export const changelogCollection = defineCollections({
   dir: "content/changelog",
   type: "doc",
-  schema: frontmatterSchema.extend({
+  schema: pageSchema.extend({
     date: z.coerce.date().or(z.date()),
     version: z.string(),
     scope: z.literal(["cli", "base"]).default("cli")
