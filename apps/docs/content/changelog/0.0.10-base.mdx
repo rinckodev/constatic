@@ -1,0 +1,68 @@
+---
+version: 0.0.10
+title: Atualizações da @constatic/base até 0.0.10
+description: Resumo de alterações na biblioteca da base até a versão 0.0.10
+date: 2026-04-30
+scope: base
+---
+
+import { Changelog, ChangelogItem } from "@/components/changelog/Changelog";
+
+
+<Changelog>
+	<ChangelogItem>
+		# @0.0.1
+
+		Lançamento oficial da migração da base no código dentro do projeto para uma biblioteca instalada no projeto.
+	</ChangelogItem>
+	<ChangelogItem>
+		# @0.0.2
+
+		Foi definido para client usar todos os intents e partials por padrão.
+	</ChangelogItem>
+	<ChangelogItem>
+		# @0.0.3
+
+		Corrigido um problema de importações no windows onde os arquivos encontrados pelo glob não eram carregados pelo node.
+	</ChangelogItem>
+	<ChangelogItem>
+		# @0.0.4
+
+		Os comandos de guilda devem ser limpos ao trocar o tipo de registro de comandos do manipulador.
+	</ChangelogItem>
+	<ChangelogItem>
+		# @0.0.5
+
+		Foi corrigido uma inconsistência que fazia com que manipuladores autocomplete de módulos de comandos não funcionassem.
+	</ChangelogItem>
+	<ChangelogItem>
+		# @0.0.6
+
+		Correções de tipagem do discord.js.
+	</ChangelogItem>
+	<ChangelogItem>
+		# @0.0.7
+
+		Foi corrigido um problema onde ao registrar comandos de guilda não limpava os comandos globais registrados anteriormente.
+	</ChangelogItem>
+	<ChangelogItem>
+		# @0.0.8
+
+		Foram adicionadas logs para eventos registrados ao iniciar o projeto. Algo que estava faltando desde a [**migração de projeto** gerado para **biblioteca instalada**](/changelog/1.5.0-cli).
+	</ChangelogItem>
+	<ChangelogItem>
+		# @0.0.9
+
+		O [Standard Schema](https://standardschema.dev/schema) foi integrado internamente ao invés de ser instalado como dependência da biblioteca.
+	</ChangelogItem>
+	<ChangelogItem>
+		# @0.0.10
+
+		A versão mínima da `peerDependency` discord.js foi alterada para `>=14.25.0` pois em alguns versões mais atualizadas do discord.js existiam bugs que podiam afetar sistemas que dependiam de eventos específicos.
+	</ChangelogItem>
+</Changelog>
+
+
+---
+
+Novidades, atualizações, alterações, dicas e muito mais será postado neste blog! Se você quiser ser notificado sempre que uma nova postagem for publicada, entre no discord [Zunder Community](http://discord.gg/tTu8dGN) ou Siga [@rinckodev no twitter/x](https://x.com/rinckodev)
