@@ -1,7 +1,7 @@
 import { createCommand, createResponder } from "#base";
 import { ResponderType } from "@constatic/base";
 import { createContainer, createSection, Separator } from "@magicyan/discord";
-import { ApplicationCommandType, ButtonBuilder, ButtonStyle, InteractionReplyOptions } from "discord.js";
+import { ApplicationCommandType, ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from "discord.js";
 
 createCommand({
     name: "counter",

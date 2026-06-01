@@ -1,15 +1,38 @@
 {
   "presets": {
     "databases": {
+      "mongodb": {
+        "name": "MongoDB 🌿",
+        "icon": "☵",
+        "hint": "mongodb driver",
+        "path": "mongodb",
+        "env": [
+          [
+            "MONGO_URI",
+            "z.string(\"MongoDB URI is required\").min(1)"
+          ],
+          [
+            "DATABASE_NAME",
+            "z.string().optional()",
+            "database"
+          ]
+        ],
+        "packageJson": {
+          "dependencies": {
+            "mongodb": "^7.2.0"
+          }
+        },
+        "isORM": false
+      },
       "mongoose": {
-        "name": "MongoDb 🍃",
+        "name": "MongoDB 🍃",
         "icon": "☵",
         "hint": "mongoose",
         "path": "mongoose",
         "env": [
           [
             "MONGO_URI",
-            "z.string(\"MongoDb URI is required\").min(1)"
+            "z.string(\"MongoDB URI is required\").min(1)"
           ],
           [
             "DATABASE_NAME",
