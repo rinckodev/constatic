@@ -5,6 +5,8 @@ export {
     type ResponderInteraction
 } from "./responders/responder.js";
 
+export { emitResponder } from "./responders/emit.js";
+
 export {
     type Command,
     type CommandData

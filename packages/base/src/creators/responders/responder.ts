@@ -1,6 +1,7 @@
-import type { ButtonInteraction, CacheType, ChannelSelectMenuInteraction, MentionableSelectMenuInteraction, ModalMessageModalSubmitInteraction, ModalSubmitInteraction, RoleSelectMenuInteraction, StringSelectMenuInteraction, UserSelectMenuInteraction } from "discord.js";
+import type { ButtonInteraction, CacheType, ChannelSelectMenuInteraction, ChatInputCommandInteraction, MentionableSelectMenuInteraction, MessageContextMenuCommandInteraction, ModalMessageModalSubmitInteraction, ModalSubmitInteraction, RoleSelectMenuInteraction, StringSelectMenuInteraction, UserContextMenuCommandInteraction, UserSelectMenuInteraction } from "discord.js";
 import { type InferRouteParams } from "rou3";
 import type { NotEmptyArray, Prettify, UniqueArray } from "../../utils/types.js";
+import type { WithCustomId } from "./emit.js";
 
 export enum ResponderType {
     Button = "button",
@@ -11,6 +12,9 @@ export enum ResponderType {
     MentionableSelect = "select.mentionable",
     Modal = "modal",
     ModalComponent = "modal.component",
+    ChatInput = "command.chat.input",
+    UserContextMenu = "command.context.user",
+    MessageContextMenu = "command.context.message",
 }
 
 export type ResponderInteraction<Type extends ResponderType, Cache extends CacheType> = {
@@ -22,6 +26,9 @@ export type ResponderInteraction<Type extends ResponderType, Cache extends Cache
     [ResponderType.MentionableSelect]: MentionableSelectMenuInteraction<Cache>,
     [ResponderType.Modal]: ModalSubmitInteraction<Cache>,
     [ResponderType.ModalComponent]: ModalMessageModalSubmitInteraction<Cache>,
+    [ResponderType.ChatInput]: WithCustomId<ChatInputCommandInteraction<Cache>>,
+    [ResponderType.UserContextMenu]: WithCustomId<UserContextMenuCommandInteraction<Cache>>,
+    [ResponderType.MessageContextMenu]: WithCustomId<MessageContextMenuCommandInteraction<Cache>>,
 }[Type];
 
 type ResolveParams<Path extends string, Parsed> = Prettify<
