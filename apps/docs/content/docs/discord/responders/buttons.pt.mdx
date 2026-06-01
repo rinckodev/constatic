@@ -7,29 +7,31 @@ description: Como responder botões do discord com a estrutura Responder
 Responda um botão definindo o tipo do `Responder` para botão.
 
 ```ts title="command.ts"
+import { createRow, createComponents } from "@magicyan/discord";
+
 const row = createRow(
     new ButtonBuilder({
-        customId: "/confirm/button", 
-        label: "Confirmar", 
+        customId: "/system/confirm", 
+        label: "Confirm", 
         style: ButtonStyle.Success
     })
 );
 await interaction.reply({ 
-    flags: ["Ephemeral"], 
-    components: [row] 
+    flags: ["Ephemeral", "IsComponentsV2"], 
+    components: createComponents(row) 
 });
 ```
 
 ```ts title="responder.ts"
 createResponder({
-    customId: "/confirm/button",
+    customId: "/system/confirm",
     // [!code word:Button]
     types: [ResponderType.Button], cache: "cached",
     async run(interaction) {
         interaction.update({ 
-            flags: ["Ephemeral"], 
-            content: "Confirmado", 
-            components: [] 
+            components: createComponents(
+                "Confirmado"
+            )
         });
     },
 });

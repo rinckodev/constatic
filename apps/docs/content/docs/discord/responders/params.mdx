@@ -14,6 +14,7 @@ Just like in http routes, we can pass parameters to the `customIds` of buttons, 
 
 First let's create a user context command:
 ```ts title="src/discord/commands/context/manage.ts"
+import { createContainer, createRow } from "@magicyan/discord";
 
 createCommand({
     name: "Manage",
@@ -21,27 +22,32 @@ createCommand({
     async run(interaction){
         const { targetUser } = interaction;
 
-        const embed = new EmbedBuilder({ description: `Manage ${targetUser}` });
-        const row = createRow(
-            new ButtonBuilder({ 
-                customId: `/manage/user/${targetUser.id}/kick`, 
-                label: "Kick", style: ButtonStyle.Secondary 
-            }),
-            new ButtonBuilder({ 
-                customId: `/manage/user/${targetUser.id}/ban`, 
-                label: "Ban", style: ButtonStyle.Danger 
-            }),
-            new ButtonBuilder({ 
-                customId: `/manage/user/${targetUser.id}/timeout`, 
-                label: "Timeout", style: ButtonStyle.Danger 
-            }),
-            new ButtonBuilder({ 
-                customId: `/manage/user/${targetUser.id}/alert`, 
-                label: "Alert", style: ButtonStyle.Primary 
-            })
+        createContainer("#5147da",
+            `Manage ${targetUser}`,
+            createRow(
+                new ButtonBuilder({ 
+                    customId: `/manage/user/${targetUser.id}/kick`, 
+                    label: "Kick", style: ButtonStyle.Secondary 
+                }),
+                new ButtonBuilder({ 
+                    customId: `/manage/user/${targetUser.id}/ban`, 
+                    label: "Ban", style: ButtonStyle.Danger 
+                }),
+                new ButtonBuilder({ 
+                    customId: `/manage/user/${targetUser.id}/timeout`, 
+                    label: "Timeout", style: ButtonStyle.Danger 
+                }),
+                new ButtonBuilder({ 
+                    customId: `/manage/user/${targetUser.id}/alert`, 
+                    label: "Alert", style: ButtonStyle.Primary 
+                })
+            )
         );
 
-        interaction.reply({ flags: ["Ephemeral"], embeds: [embed], components: [row] });
+        await interaction.reply({ 
+            flags: ["Ephemeral", "IsComponentsV2"], 
+            components: [container] 
+        });
     }
 });
 ```

@@ -23,7 +23,7 @@ Veja um simples exemplo abaixo, vamos enviar um botão através de um comando e 
 
 ```ts title="command.ts"
 import { createCommand } from "#base";
-import { createRow } from "@magicyan/discord";
+import { createComponents } from "@magicyan/discord";
 import { ApplicationCommandType, ButtonBuilder, ButtonStyle } from "discord.js";
 
 createCommand({
@@ -32,14 +32,17 @@ createCommand({
     dmPermission: false,
     type: ApplicationCommandType.ChatInput,
     async run(interaction){
-        const row = createRow(
-            new ButtonBuilder({
-                customId: "/ping/button",
-                label: "Ping", 
-                style: ButtonStyle.Success
-            })
-        );
-        interaction.reply({ flags: ["Ephemeral"], components: [row] });
+
+        await interaction.reply({ 
+            flags: ["Ephemeral", "IsComponentsV2"], 
+            components: createComponents(
+                new ButtonBuilder({
+                    customId: "/ping/button",
+                    label: "Ping", 
+                    style: ButtonStyle.Success
+                })
+            ) 
+        });
     }
 });
 ```
@@ -51,7 +54,12 @@ createResponder({
     customId: "/ping/button",
     types: [ResponderType.Button], cache: "cached",
     async run(interaction) {
-        interaction.reply({ flags: ["Ephemeral"], content: "pong" });
+        await interaction.reply({ 
+            flags: ["Ephemeral", "IsComponentsV2"], 
+            content: createComponents(
+                "pong"
+            ) 
+        });
     },
 });
 ```
@@ -62,4 +70,48 @@ Dessa forma estamos respondendo a um componente de botão fixo em uma mensagem o
     Note que criamos um customId que começa com `/` (barra). Nessa base, todos os componentes e modais que forem manipulados nos **Responders**, devem ter o customId iniciado com `/` (barra), pois o manipulador trata os **Responders** como rotas HTTP, assim como você pode ver [nesta página](/docs/discord/responders/params).
 </Callout>
 
-Os `Responders` usam o evento `interactionCreate`, o que significa que mesmo que o bot reinicie, se alguém usar esse botão novamente, ele ainda será respondido com a função definida. O mesmo ocorre para menus de seleção e modais
+Os `Responders` usam o evento `interactionCreate`, o que significa que mesmo que o bot reinicie, se alguém usar esse botão novamente, ele ainda será respondido com a função definida. O mesmo ocorre para menus de seleção e modais.
+
+Podemos responder interações de tipos diferentes mas com o mesmo customId definindo mais tipos no array `types`:
+
+```ts title="responder.ts"
+createResponder({
+    customId: "/form/register",
+    types: [ // [!code highlight]
+        ResponderType.Button, // [!code highlight] 
+        ResponderType.ModalComponent // [!code highlight]
+    ], cache: "cached",
+    async run(interaction) {
+        if (interaction.isButton()){
+            await interaction.showModal({
+                //    ^ ButtonInteraction
+                customId: interaction.customId,
+                // ...
+            })
+            return;
+        }
+        const { fields } = interaction;
+        //                      ^ ModalMessageModalSubmitInteraction
+
+        // ...
+    },
+});
+```
+No exemplo acima temos um botão que abre um modal e no mesmo **Responder** pegamos os dados passados para o modal de mesmo customId. O type narrowing definido pelas chegagens com os type guards das interações, restringiu o tipo delas dentro dos blocos.
+
+Confira todos os tipos de interações que os Respoders podem receber:
+
+| Tipo | Interação | Detalhes |
+| -- | -- | -- |
+| `ResponderType.Button` | **ButtonInteraction** | É emitido quando um botão em uma mensagem é clicado |
+| `ResponderType.StringSelect` | **StringSelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção em uma mensagem são selecionadas |
+| `ResponderType.UserSelect` | **UserSelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção de usuário em uma mensagem são selecionadas |
+| `ResponderType.RoleSelect` | **RoleSelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção de cargos em uma mensagem são selecionadas |
+| `ResponderType.ChannelSelect` | **ChannelSelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção de canais em uma mensagem são selecionadas |
+| `ResponderType.Mentionable` | **MentionableSelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção de menção em uma mensagem são selecionadas |
+| `ResponderType.Select` | **AnySelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção de qualquer tipo em uma mensagem são selecionadas |
+| `ResponderType.Modal` | **ModalSubmitInteraction** | É emitido quando um modal aberto por um comando é enviado |
+| `ResponderType.ModalComponent` | **ModalMessageModalSubmitInteraction** | É emitido quando um modal aberto por um componente de mensagem é enviado |
+| `ResponderType.ChatInput` | **ChatInputCommandInteraction** | Só pode ser emitido pela função [emitResponder](/docs/discord/responders/emit) passando um comando do tipo **ChatInputCommandInteraction** como argumento |
+| `ResponderType.UserContextMenu` | **UserContextMenuCommandInteraction** | Só pode ser emitido pela função [emitResponder](/docs/discord/responders/emit) passando um comando do tipo **UserContextMenuCommandInteraction** como argumento |
+| `ResponderType.MessageContextMenu` | **MessageContextMenuCommandInteraction** | Só pode ser emitido pela função [emitResponder](/docs/discord/responders/emit) passando um comando do tipo **MessageContextMenuCommandInteraction** como argumento |

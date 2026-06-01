@@ -1,0 +1,61 @@
+---
+title: Emitir
+icon: HiOutlineSignal
+description: Emita interações para manipuladores de Responders
+---
+
+O manipulador de Responder que você cria será executado quando um evento de interação for emitido! Mas você pode emitir seu próprio evento de interação de forma simples usando a função `emitResponder`:
+
+```ts
+import { emitResponder } from "@constatic/base";
+
+emitResponder("/foo/bar", interaction);
+```
+
+Passe o customId do Responder correspondente no primeiro argumento e uma interação de qualquer tipo no segundo argumento.
+
+Então o manipulador `run` do **Responder** será executado:
+
+
+```ts
+import { createResponder } from "#base";
+import { ResponderType } from "@constatic/base";
+
+createResponder({
+    customId: "/foo/bar",
+    types: [ResponderType.Button], cache: "cached",
+    async run(interaction){
+        // fazer coisas
+    }
+});
+```
+
+Você pode passar [parâmetros de customId](/docs/discord/responders/params) na função `emitResponder` e eles chegarão no **Responder**:
+
+```ts
+
+emitResponder(`/remember/${Date.now()}`, interaction)
+//                        ^ "1780301472577"
+
+// ...
+createResponder({
+    customId: "/remember/:date",
+    types: [ResponderType.Button], cache: "cached",
+    async run(interaction, { date }){ // "1780301472577"
+        console.log(new Date(date)) // Date Mon Jun 01 2026
+    }
+});
+```
+
+<Callout type="danger">
+    Mas tome cuidado para não criar um loop infinito:
+    ```ts
+    createResponder({
+        customId: "/foo/bar",
+        types: [ResponderType.Button], cache: "cached",
+        async run(interaction){
+            emitResponder("/foo/bar", interaction);
+        }
+    });
+    ```
+</Callout>

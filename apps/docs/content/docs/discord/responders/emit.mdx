@@ -1,0 +1,61 @@
+---
+title: Emit
+icon: HiOutlineSignal
+description: Emit interactions to Responder handlers.
+---
+
+The `Responder` handler you create will be executed when an interaction event is emitted! But you can easily emit your own interaction event using the `emitResponder` function:
+
+```ts
+import { emitResponder } from "@constatic/base";
+
+emitResponder("/foo/bar", interaction);
+```
+
+Pass the corresponding Responder's customId as the first argument and an interaction of any type as the second argument.
+
+Then the Responder's `run` handler will be executed:
+
+
+```ts
+import { createResponder } from "#base";
+import { ResponderType } from "@constatic/base";
+
+createResponder({
+    customId: "/foo/bar",
+    types: [ResponderType.Button], cache: "cached",
+    async run(interaction){
+        // do things
+    }
+});
+```
+
+You can pass [customId parameters](/docs/discord/responders/params) to the `emitResponder` function and they will arrive in the **Responder**:
+
+```ts
+
+emitResponder(`/remember/${Date.now()}`, interaction)
+//                        ^ "1780301472577"
+
+// ...
+createResponder({
+    customId: "/remember/:date",
+    types: [ResponderType.Button], cache: "cached",
+    async run(interaction, { date }){ // "1780301472577"
+        console.log(new Date(date)) // Date Mon Jun 01 2026
+    }
+});
+```
+
+<Callout type="danger">
+    But be careful not to create an infinite loop:
+    ```ts
+    createResponder({
+        customId: "/foo/bar",
+        types: [ResponderType.Button], cache: "cached",
+        async run(interaction){
+            emitResponder("/foo/bar", interaction);
+        }
+    });
+    ```
+</Callout>

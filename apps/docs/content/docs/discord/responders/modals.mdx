@@ -12,7 +12,7 @@ Below you can see a code snippet responding to a command interaction by showing 
 import { createModalFields } from "@magicyan/discord";
 // ...
 interaction.showModal({
-    customId: "/form/modal",
+    customId: "/register/form",
     title: "Form",
     components: createModalFields(
         createLabel(
@@ -33,7 +33,7 @@ To reply to a modal with `Responder`, add `ResponderType.Modal` to the types:
 
 ```ts title="responder.ts"
 createResponder({
-    customId: "/form/modal",
+    customId: "/register/form",
     // [!code word:Modal]
     types: [ResponderType.Modal], cache: "cached",
     async run(interaction) {
@@ -56,7 +56,7 @@ createResponder({
     types: [ResponderType.Button], cache: "cached",
     async run(interaction) {
         await interaction.showModal({
-            customId: "/form/modal",
+            customId: "/register/form",
             title: "Form",
             components: createModalFields(
                 createLabel(
@@ -76,7 +76,7 @@ createResponder({
 You can use the `ResponderType.ModalComponent` type:
 ```ts title="responder.ts"
 createResponder({
-    customId: "/form/modal",
+    customId: "/register/form",
     // [!code word:ModalComponent]
     types: [ResponderType.ModalComponent], cache: "cached",
     async run(interaction) {
@@ -114,7 +114,7 @@ createResponder({
     ```
     ```ts title="responder.ts"
     createResponder({
-        customId: "/form/modal",
+        customId: "/register/form",
         // [!code word:ModalComponent]
         // [!code word:Modal]
         types: [

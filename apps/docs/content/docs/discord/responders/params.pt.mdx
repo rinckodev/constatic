@@ -14,6 +14,7 @@ Igual em rotas HTTP, podemos passar parâmetros para os `customIds` de botões, 
 
 Primeiro vamos criar um comando de contexto de usuário:
 ```ts title="src/discord/commands/context/manage.ts"
+import { createContainer, createRow } from "@magicyan/discord";
 
 createCommand({
     name: "Gerenciar",
@@ -21,27 +22,32 @@ createCommand({
     async run(interaction){
         const { targetUser } = interaction;
 
-        const embed = new EmbedBuilder({ description: `Gerenciar ${targetUser}` });
-        const row = createRow(
-            new ButtonBuilder({ 
-                customId: `/manage/user/${targetUser.id}/kick`, 
-                label: "Expulsar", style: ButtonStyle.Secondary 
-            }),
-            new ButtonBuilder({ 
-                customId: `/manage/user/${targetUser.id}/ban`, 
-                label: "Banir", style: ButtonStyle.Danger 
-            }),
-            new ButtonBuilder({ 
-                customId: `/manage/user/${targetUser.id}/timeout`, 
-                label: "Castigo", style: ButtonStyle.Danger 
-            }),
-            new ButtonBuilder({ 
-                customId: `/manage/user/${targetUser.id}/alert`, 
-                label: "Alertar", style: ButtonStyle.Primary 
-            })
+        createContainer("#5147da",
+            `Gerenciar ${targetUser}`,
+            createRow(
+                new ButtonBuilder({ 
+                    customId: `/manage/user/${targetUser.id}/kick`, 
+                    label: "Expulsar", style: ButtonStyle.Secondary 
+                }),
+                new ButtonBuilder({ 
+                    customId: `/manage/user/${targetUser.id}/ban`, 
+                    label: "Banir", style: ButtonStyle.Danger 
+                }),
+                new ButtonBuilder({ 
+                    customId: `/manage/user/${targetUser.id}/timeout`, 
+                    label: "Castigo", style: ButtonStyle.Danger 
+                }),
+                new ButtonBuilder({ 
+                    customId: `/manage/user/${targetUser.id}/alert`, 
+                    label: "Alertar", style: ButtonStyle.Primary 
+                })
+            )
         );
 
-        interaction.reply({ flags: ["Ephemeral"], embeds: [embed], components: [row] });
+        await interaction.reply({ 
+            flags: ["Ephemeral", "IsComponentsV2"], 
+            components: [container] 
+        });
     }
 });
 ```
@@ -95,22 +101,22 @@ createResponder({
         switch(action){
             case "kick": {
                 targetMember.kick();
-                // do things ...
+                // fazer coisas ...
                 break;
             }
             case "ban": {
                 targetMember.ban();
-                // do things ...
+                // fazer coisas ...
                 break;
             }
             case "timeout": {
                 targetMember.timeout(60000);
-                // do things ...
+                // fazer coisas ...
                 break;
             }
             case "alert": {
                 targetMember.send({ /* ... */ });
-                // do things ...
+                // fazer coisas ...
                 break;
             }
         }

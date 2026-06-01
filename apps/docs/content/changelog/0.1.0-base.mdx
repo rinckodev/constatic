@@ -1,0 +1,165 @@
+---
+version: 0.1.0
+title: Atualização 0.1.0 da @constatic/base
+description: Novidades para os Responders que vão elevar ainda mais o seu uso
+date: 2026-05-23
+scope: base
+---
+
+## Novos tipos de **Responders**
+
+Essa atualização traz 3 novos tipos ao `ResponderType`:
+- **ChatInputCommandInteraction**: `ResponderType.ChatInput`
+- **UserContextMenuCommandInteraction**: `ResponderType.UserContextMenu`
+- **MessageContextMenuCommandInteraction**: `ResponderType.MessageContextMenu`
+
+Esses 3 novos tipos vem com uma propriedade **customId** quando manipulados no `run` do **Responder**:
+
+```ts
+import { createResponder } from "#base";
+import { ResponderType } from "@constatic/base";
+
+createResponder({
+    customId: "/foo/bar",
+    types: [
+        ResponderType.ChatInput,
+    ], cache: "cached",
+    async run(interaction) {
+        const options = interaction.options;
+        console.log(interaction.customId)
+    },
+});
+```
+
+<Accordions>
+    <Accordion title={`"Qual é a utilidade da propriedade \`customId\` sendo que ele já está no Responder?"`}>
+    [Nós sabemos que será útil quando tivermos parâmetros](/docs/discord/responders/params)
+    </Accordion>
+</Accordions>
+
+Certo, temos essas novas opções para os Responders, mas quando e como vamos usar elas?
+
+## Nova função **emitResponder**
+
+Em um primeiro momento estamos com uma versão mais simples possível dessa função. Você precisa passar duas informações para ela:
+- O customId que um **Responder** está aguardando
+- Uma interação de **Responder**
+
+E você pode passar usando um dos overloads:
+```ts
+emitResponder("/foo/bar", interaction);
+// ou
+emitResponder({
+    customId: "/foo/bar", 
+    interaction
+});
+```
+
+Nesse ponto você já deve ter notado que essa função serve para emitir um **Responder** com o customId passado para ela que chamará a função `run` do **Responder** correspondente previamente registrado.
+
+## Emitir um **Responder** é útil como?
+
+Esse recurso vai ser útil para usuários um pouco mais avançados com projetos robustos e modernos. Mas basicamente emitir um **Responder** serve para resumir código.
+
+Considere a seguinte situação:
+
+Você tem um comando que busca algo no banco de dados e exibe um [menu interativo](https://www.youtube.com/watch?v=G383tFXHr_E&list=PL9tY_tDo_Q0AxL3q1l1JN_mMPUkUEO3-l). Durante a navegação desse menu, você pode ir e voltar entre diversas páginas. Mas pense que a página principal requer os dados atualizados. Normalmente teríamos algo como isso:
+
+Um comando que exibe pela primeira vez o menu
+
+```ts
+import { createCommand } from "#base";
+import { db } from "#database";
+import { menus } from "#menus";
+import { ApplicationCommandType } from "discord.js";
+
+createCommand({
+    name: "configurações",
+    description: "Comando de configurações",
+    type: ApplicationCommandType.ChatInput,
+    async run(interaction) {
+        const { guild } = interaction;
+
+        await interaction.deferReply({
+            flags: "Ephemeral"
+        });
+
+        const data = await db.guilds.get(guild.id); // Função fictícia de busca no banco de dados
+
+        await interaction.editReply(
+            menus.settings.main(data) // Função fictícia de menu interativo
+        )
+    }
+});
+```
+
+E um **Responder** que responde a botões de retorno (supondo que o usuário esteja em um sub menu do menu de configurações, ao clicar em voltar, o bot exibe novamente o menu de configurações)
+
+```ts
+import { createResponder } from "#base";
+import { db } from "#database";
+import { menus } from "#menus";
+import { ResponderType } from "@constatic/base";
+
+createResponder({
+    customId: "/settings/main",
+    types: [ResponderType.Button], cache: "cached",
+    async run(interaction) {
+        const { guild } = interaction;
+
+        await interaction.deferUpdate();
+
+        const data = await db.guilds.get(guild.id);
+        
+        await interaction.editReply(
+            menus.settings.main(data)
+        )
+    },
+});
+```
+
+Parece o mesmo código não é? Na verdade é o mesmo código com uma única diferença que é o método de resposta inicial da interação. Mas agora com esse recurso de emitir **Responders**, podemos fazer algo como isso:
+
+```ts
+createCommand({
+    name: "configurações",
+    description: "Comando de configurações",
+    type: ApplicationCommandType.ChatInput,
+    async run(interaction) {
+        await interaction.deferReply({
+            flags: "Ephemeral"
+        });
+
+        emitResponder("/settings/main", interaction); // [!code ++]
+    }
+});
+
+createResponder({
+    customId: "/settings/main",
+    types: [
+        ResponderType.Button,
+        ResponderType.ChatInput // [!code ++]
+    ], cache: "cached",
+    async run(interaction) {
+        const { guild } = interaction;
+
+        if (interaction.isButton()){ // [!code ++]
+            await interaction.deferUpdate();
+        } // [!code ++]
+
+        const data = await db.guilds.get(guild.id);
+        
+        await interaction.editReply(
+            menus.settings.main(data)
+        )
+    },
+});
+```
+
+Perceba que a lógica principal (que era buscar os dados e exibir o menu) ficou toda no **Responder**. O código foi escrito uma vez (com adaptações para os diferentes tipos de interações possíveis) e pode ser usado por qualquer tipo de interação que você quiser, basta adicionar no array de `types`!
+
+Claro que esse é um exemplo muito simples, você pode combinar diversos tipos de interações, sempre usando os [type guards](https://youtu.be/pC9tJOLSaGM?si=ihTjYbP2CYXsICmh) para verificar qual é o tipo da interação na execução atual e adaptando os métodos de resposta. Mas a criação desse recurso foi pensada depois que muito código que poderia ser reaproveitado foi percebido em alguns projetos grandes.
+
+---
+
+Novidades, atualizações, alterações, dicas e muito mais será postado neste blog! Se você quiser ser notificado sempre que uma nova postagem for publicada, entre no discord [Zunder Community](http://discord.gg/tTu8dGN) ou Siga [@rinckodev no twitter/x](https://x.com/rinckodev)

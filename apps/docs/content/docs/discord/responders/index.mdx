@@ -24,7 +24,7 @@ See a simple example below, let's send a button through a command and respond to
 
 ```ts title="command.ts"
 import { createCommand, createResponder, ResponderType } from "#base";
-import { createRow } from "@magicyan/discord";
+import { createComponents } from "@magicyan/discord";
 import { ApplicationCommandType, ButtonBuilder, ButtonStyle } from "discord.js";
 
 createCommand({
@@ -33,14 +33,17 @@ createCommand({
     dmPermission: false,
     type: ApplicationCommandType.ChatInput,
     async run(interaction){
-        const row = createRow(
-            new ButtonBuilder({
-                customId: "/ping/button",
-                label: "Ping", 
-                style: ButtonStyle.Success
-            })
-        );
-        interaction.reply({ flags: ["Ephemeral"], components: [row] });
+
+        await interaction.reply({ 
+            flags: ["Ephemeral", "IsComponentsV2"], 
+            components: createComponents(
+                new ButtonBuilder({
+                    customId: "/ping/button",
+                    label: "Ping", 
+                    style: ButtonStyle.Success
+                })
+            ) 
+        });
     }
 });
 ```
@@ -52,7 +55,12 @@ createResponder({
     customId: "/ping/button",
     types: [ResponderType.Button], cache: "cached",
     async run(interaction) {
-        interaction.reply({ flags: ["Ephemeral"], content: "pong" });
+        await interaction.reply({ 
+            flags: ["Ephemeral", "IsComponentsV2"], 
+            content: createComponents(
+                "pong"
+            ) 
+        });
     },
 });
 ```
@@ -64,3 +72,50 @@ This way we are responding to a fixed button component in a message where the cu
 </Callout>
 
 `Responders` use the `interactionCreate` event, which means that even if the bot restarts, if someone uses that button again, it will still be responded to with the defined function. The same applies to select menus and modals
+
+We can respond to interactions of different types but with the same customId by defining more types in the `types` array:
+
+```ts title="responder.ts"
+createResponder({
+    customId: "/form/register",
+    types: [ // [!code highlight]
+        ResponderType.Button, // [!code highlight] 
+        ResponderType.ModalComponent // [!code highlight]
+    ], cache: "cached",
+    async run(interaction) {
+        if (interaction.isButton()){
+            await interaction.showModal({
+                //    ^ ButtonInteraction
+                customId: interaction.customId,
+                // ...
+            })
+            return;
+        }
+        const { fields } = interaction;
+        //                      ^ ModalMessageModalSubmitInteraction
+
+        // ...
+    },
+});
+```
+
+In the example above, we have a button that show a modal, and in the same **Responder** we retrieve the data passed to the modal with the same customId. The type narrowing defined by the interactions with type guards restricted their types within the blocks.
+
+Check out all the interaction types that Responders can receive:
+
+| Type | Interaction | Details |
+| -- | -- | -- |
+| `ResponderType.Button` | **ButtonInteraction** | Emited when a button in a message is clicked |
+| `ResponderType.StringSelect` | **StringSelectMenuInteraction** | Emited when one or more options in a selection menu in a message are selected |
+| `ResponderType.UserSelect` | **UserSelectMenuInteraction** | Emited when one or more options in a user selection menu in a message are selected |
+| `ResponderType.RoleSelect` | **RoleSelectMenuInteraction** | Emited when one or more options in a role selection menu in a message are selected |
+| `ResponderType.ChannelSelect` | **ChannelSelectMenuInteraction** | Emited when one or more options in a channel selection menu in a message are selected |
+| `ResponderType.Mentionable` | **MentionableSelectMenuInteraction** | Emited when one or more options in a mentionable selection menu in a message are selected |
+| `ResponderType.Select` | **AnySelectMenuInteraction** | Emited when one or more options in a selection menu of any type in a message are selected |
+| `ResponderType.Modal` | **ModalSubmitInteraction** | Emited when a modal opened by a command is sent |
+| `ResponderType.ModalComponent` | **ModalMessageModalSubmitInteraction** | Emited when a modal opened by a message component is sent |
+| `ResponderType.ChatInput` | **ChatInputCommandInteraction** | Can only be emited by the [emitResponder](/docs/discord/responders/emit) function passing a command of type **ChatInputCommandInteraction** as an argument |
+
+| `ResponderType.UserContextMenu` | **UserContextMenuCommandInteraction** | Can only be emitted by the [emitResponder](/docs/discord/responders/emit) function, passing a command of type **UserContextMenuCommandInteraction** as an argument |
+
+| `ResponderType.MessageContextMenu` | **MessageContextMenuCommandInteraction** | Can only be emitted by the [emitResponder](/docs/discord/responders/emit) function, passing a command of type **MessageContextMenuCommandInteraction** as an argument |

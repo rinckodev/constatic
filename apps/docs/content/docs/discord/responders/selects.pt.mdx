@@ -10,20 +10,21 @@ description: Como responder menus de seleção do discord com a estrutura Respon
 
 ```ts title="command.ts"
 // ...
-const row = createRow(
-    new StringSelectMenuBuilder({
-        customId: "/select/fruits",
-        placeholder: "Select fruits",
-        options: [
-            { emoji: "🍎", label: "Maçã", value: "apple" },
-            { emoji: "🍉", label: "Melancia", value: "melon" },
-            { emoji: "🍊", label: "Laranja", value: "orange" }
-        ]
-    })
-);
+import { createComponents } from "@magicyan/discord";
+
 await interaction.reply({ 
-    flags: ["Ephemeral"], 
-    components: [row] 
+    flags: ["Ephemeral", "IsComponentsV2"], 
+    components: createComponents(
+        new StringSelectMenuBuilder({
+            customId: "/fruits",
+            placeholder: "Selecione frutas",
+            options: [
+                { emoji: "🍎", label: "Maçã", value: "apple" },
+                { emoji: "🍉", label: "Melancia", value: "melon" },
+                { emoji: "🍊", label: "Laranja", value: "orange" }
+            ]
+        })
+    ) 
 });
 // ...
 ```
@@ -31,15 +32,15 @@ Acima está o código para enviar um menu de seleção comum como resposta do co
 
 ```ts title="responder.ts"
 createResponder({
-    customId: "/select/fruits",
+    customId: "/fruits",
     // [!code word:StringSelect]
     types: [ResponderType.StringSelect], cache: "cached",
     async run(interaction) {
         const selected = interaction.values[0];
         interaction.update({ 
-            flags: ["Ephemeral"], 
-            content: `${selected} Selecionada`, 
-            components: []
+            components: createComponents(
+                `${selected} Selecionada`
+            ), 
         });
     },
 });
@@ -69,9 +70,9 @@ createResponder({
         }
 
         await interaction.editReply({ 
-            flags: ["Ephemeral"], 
-            content: `${userMention(selected)} foi banido!`, 
-            components: [] 
+            components: createComponents(
+                `${userMention(selected)} foi banido!`
+            )
         });
     },
 });

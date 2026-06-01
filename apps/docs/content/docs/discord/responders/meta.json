@@ -2,5 +2,5 @@
     "title": "Responders",
     "defaultOpen": true,
     "icon": "BsFillReplyFill",
-    "pages": ["buttons", "selects", "modals", "params"]
+    "pages": ["buttons", "selects", "modals", "params", "emit"]
 }
