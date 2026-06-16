@@ -52,7 +52,7 @@
     "constants.json": "emojis.json, emojis.dev.json",
     "package.json": "*lock.json, *.lock, *lock.yaml, *.lockb, *config.json, *config.ts, .eslintrc.json, .gitignore, biome.json, .nvmrc"
   },
-  "typescript.suggest.autoImports": true,
+  "js/ts.suggest.autoImports": true,
   "window.title": "${rootName}${separator}",
   "files.autoSave": "afterDelay",
   "typescript.experimental.expandableHover": true,

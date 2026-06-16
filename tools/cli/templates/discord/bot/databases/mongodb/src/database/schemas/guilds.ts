@@ -19,9 +19,11 @@ export function createGuildModel(db: Db){
             return {...data, _id: result.insertedId }
         },
         async get(id: string): Promise<WithId<GuildData>> {
-            const doc = await collection.findOne({ id }) 
-            if (doc) return doc;
-            return await this.create({ id });
+            const data = await collection.findOneAndUpdate(
+                { id }, { $setOnInsert: { id } },
+                { upsert: true, returnDocument: "after" }
+            );
+            return data!;
         }
     })
 }

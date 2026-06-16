@@ -13,7 +13,10 @@ export const memberSchema = new Schema(
         statics: {
             async get(member: { id: string, guild: { id: string } }) {
                 const query = { id: member.id, guildId: member.guild.id };
-                return await this.findOne(query) ?? this.create(query);
+                return await this.findOneAndUpdate(
+                    query, { $setOnInsert: query },
+                    { returnDocument: "after", upsert: true }
+                );
             }
         }
     },

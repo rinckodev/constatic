@@ -18,9 +18,11 @@ export function createMemberModel(db: Db){
         },
         async get(member: Pick<GuildMember, "id" | "guild">): Promise<WithId<MemberData>> {
             const query = { id: member.id, guildId: member.guild.id };
-            const doc = await collection.findOne(query) 
-            if (doc) return doc;
-            return await this.create(query);
+            const data = await collection.findOneAndUpdate(
+                query, { $setOnInsert: query },
+                { upsert: true, returnDocument: "after" }
+            )
+            return data!;
         }
     })
 }

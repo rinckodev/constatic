@@ -12,7 +12,11 @@ export const guildSchema = new Schema(
     {
         statics: {
             async get(id: string) {
-                return await this.findOne({ id }) ?? this.create({ id });
+                const query = { id };
+                return await this.findOneAndUpdate(
+                    query, { $setOnInsert: query },
+                    { returnDocument: "after", upsert: true }
+                );
             }
         }
     }
