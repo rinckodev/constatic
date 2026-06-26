@@ -1,7 +1,7 @@
 import { type Client } from "discord.js";
 import { ConstaticApp, type BaseErrorHandler } from "./app.js";
 import { createClient, type CustomClientOptions } from "./client.js";
-import { ConstaticError } from "./error.js";
+import { Errors } from "./error.js";
 import { loadModules } from "./modules.js";
 
 export interface BootstrapOptions extends CustomClientOptions {
@@ -71,9 +71,7 @@ export async function bootstrap(options: BootstrapOptions) {
         ?? options.env?.BOT_TOKEN 
         ?? process.env?.BOT_TOKEN;
 
-    if (!token) throw new ConstaticError(
-        "The application token was not provided!"
-    );
+    if (!token) throw Errors.tokenNotProvided();
 
     const app = ConstaticApp.getInstance();
     if (options.errorHandler){

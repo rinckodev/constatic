@@ -1,12 +1,22 @@
-import { Client, codeBlock, TextDisplayBuilder, time, parseWebhookURL, REST, Routes } from "discord.js";
+import { Client, codeBlock, TextDisplayBuilder, time, WebhookClient } from "discord.js";
 import console from "node:console";
 import { styleText } from "node:util";
 
 export class ConstaticError extends Error {
     constructor(
+        public readonly code: string,
         message: string
     ) {
         super(message);
+    }
+}
+
+export class Errors {
+    static tokenNotProvided(){
+        return new ConstaticError(
+            "TOKEN_NOT_PROVIDED",
+            "The application token was not provided!"
+        )
     }
 }
 
@@ -38,32 +48,24 @@ export async function baseErrorHandler(error: any, client?: Client) {
 
     const url = process.env.WEBHOOK_LOGS_URL;
     if (!url) return;
-    const data = parseWebhookURL(url)
-    if (!data) return;
 
-    const rest = new REST();
-    if (process.env.BOT_TOKEN) rest.setToken(process.env.BOT_TOKEN);
-
+    const username = client?.user?.username;
 
     try {
-        const username = client?.user?.username;
-        rest.post(Routes.webhook(data.id, data.token), {
-            body: {
-                flags: ["IsComponentsV2"],
-                components: [
-                    new TextDisplayBuilder({
-                        content: [
-                            codeBlock("ansi", text.join("\n")),
-                            time(new Date(), "R")
-                        ].join("\n")
-                    })
-                ],
-                withComponents: true,
-                avatarURL: client?.user?.displayAvatarURL({ size: 512 }),
-                username: username ? `${username} logs` : "Logs"
-            }
-        })
-            .catch(console.error);
+        new WebhookClient({ url }).send({
+            flags: "IsComponentsV2",
+            withComponents: true,
+            components: [
+                new TextDisplayBuilder({
+                    content: [
+                        codeBlock("ansi", text.join("\n")),
+                        time(new Date(), "R")
+                    ].join("\n")
+                })
+            ],
+            avatarURL: client?.user?.displayAvatarURL({ size: 512 }),
+            username: username ? `${username} logs` : "Logs"
+        });
     } catch {
         console.log();
         console.error(
