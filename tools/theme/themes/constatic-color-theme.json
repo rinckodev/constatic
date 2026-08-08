@@ -73,7 +73,7 @@
 			},
 			"scope": [
 				"invalid",
-				"invalid.illegal",
+				"invalid.illegal"
 			],
 		},
 		{
@@ -187,7 +187,8 @@
 				// ---
 				"punctuation.decorator.ts",
 				// ---
-				"support.function"
+				"support.function",
+				"entity.name.function.tagged-template.ts",
 			]
 		},
 		{
@@ -301,7 +302,7 @@
 				"markup.underline.link",
 				"string.other.link.destination.mdx",
 				"variable.key.dotenv",
-				"meta.link.email.lt-gt.markdown"
+				"meta.link.email.lt-gt.markdown",
 			],
 		},
 		{
@@ -454,6 +455,9 @@
 	"semanticHighlighting": true,
 	"semanticTokenColors": {
 		"method.static": "#FFC66D",
+		"property.static": {
+			"foreground": "#7cc6ff"
+		},
 		"method": "#DCDCAA",
 		"function": "#DCDCAA",
 		"enumMember": "#4FC1FF",

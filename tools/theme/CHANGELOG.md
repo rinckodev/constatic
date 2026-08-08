@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.1.7]
+- Revert tab color
+
+## [0.1.7]
+- Add new tab color
+
 ## [0.1.6]
 - Fix jsx colors
 
