@@ -1,8 +1,8 @@
-import { JetBrains_Mono } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 import { FaMinus } from "react-icons/fa6";
 import { LuSquare, LuX } from "react-icons/lu";
 
-const font = JetBrains_Mono({
+const font = Geist_Mono({
   subsets: ["latin"]
 });
 
@@ -69,7 +69,7 @@ export function CliMenu(props: CLIMenuProps) {
           <LuX size={16} />
         </span>
       </div>
-      <div className={`${font.className} w-full flex flex-col rounded-b-sm items-start p-2 bg-fd-background`}>
+      <div className={` w-full flex flex-col rounded-b-sm items-start p-2 bg-fd-background`}>
         {items.filter(item => !hidden.includes(item.id ?? "")).map((item, key) => {
           const textColorClass = item.color ? chalkToTailwindMap[item.color] : "";
           const iconColorClass = item.iconColor
@@ -80,7 +80,7 @@ export function CliMenu(props: CLIMenuProps) {
           const bg = (item.id && selected.includes(item.id)) ? "bg-blue-500/20" : "";
 
           return (
-            <span key={key} className={`${font.className} flex px-2 py-[0.5px] text-sm rounded-md w-full items-center ${bg} ${textColorClass} ${styleClasses}`}>
+            <span key={key} className={` flex px-2 py-[0.5px] text-sm rounded-md w-full items-center ${bg} ${textColorClass} ${styleClasses}`}>
               {item.icon ? (
                 <span className={iconColorClass}>{item.icon} {item.label}</span>
               ) : item.label}

@@ -1,28 +1,43 @@
-import { getMDXComponents } from "@/mdx-components";
-import { source } from "@lib/source";
+import { getMDXComponents } from '@/components/mdx';
+import { gitConfig } from '@/lib/shared';
+import { getPageImageUrl, getPageMarkdownUrl, source } from '@/lib/source';
 import {
   DocsBody,
   DocsDescription,
   DocsPage,
   DocsTitle,
-} from "fumadocs-ui/page";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+  MarkdownCopyButton,
+  ViewOptionsPopover,
+} from 'fumadocs-ui/layouts/notebook/page';
+import { createRelativeLink } from 'fumadocs-ui/mdx';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
-export default async function Page(props: PageProps<"/[lang]/docs/[[...slug]]">) {
+export default async function Page(props: PageProps<'/[lang]/docs/[[...slug]]'>) {
   const params = await props.params;
   const page = source.getPage(params.slug, params.lang);
   if (!page) notFound();
 
   const MDX = page.data.body;
+  const markdownUrl = getPageMarkdownUrl(page).url;
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
       <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription>{page.data.description}</DocsDescription>
+      <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
+      <div className="flex flex-row gap-2 items-center border-b pb-6">
+        <MarkdownCopyButton markdownUrl={markdownUrl} />
+        <ViewOptionsPopover
+          markdownUrl={markdownUrl}
+          githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${page.path}`}
+        />
+      </div>
       <DocsBody>
         <MDX
-          components={getMDXComponents()}
+          components={getMDXComponents({
+            // this allows you to link to other pages with relative file paths
+            a: createRelativeLink(source, page),
+          })}
         />
       </DocsBody>
     </DocsPage>
@@ -33,31 +48,16 @@ export async function generateStaticParams() {
   return source.generateParams();
 }
 
-export async function generateMetadata(
-  { params }: PageProps<"/[lang]/docs/[[...slug]]">,
-): Promise<Metadata> {
-  const { slug = [], lang } = await params;
-
-  const page = source.getPage(slug, lang);
+export async function generateMetadata(props: PageProps<'/[lang]/docs/[[...slug]]'>): Promise<Metadata> {
+  const params = await props.params;
+  const page = source.getPage(params.slug, params.lang);
   if (!page) notFound();
 
-  const images = {
-    alt: "Banner",
-    url: `/${lang}/og/docs/${slug.join("/")}/image.png`,
-  };
-
   return {
-    metadataBase: process.env.NODE_ENV === "development"
-      ? new URL("http://localhost:3000")
-      : new URL("https://constatic-docs.vercel.app"),
     title: page.data.title,
     description: page.data.description,
     openGraph: {
-      images,
+      images: getPageImageUrl(page).url,
     },
-    twitter: {
-      card: "summary_large_image",
-      images,
-    },
-  } satisfies Metadata;
+  };
 }

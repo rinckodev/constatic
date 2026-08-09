@@ -1,0 +1,10 @@
+@theme {
+	--color-dc-success: hsl(146, 100%, 26%);
+	--color-dc-danger: hsl(355, 65%, 54%);
+	--color-dc-primary: hsl(235, 86%, 65%);
+	--color-dc-secondary: hsl(240, 5%, 17%);
+	--color-dc-secondary-darker: hsl(228, 7%, 14%);
+	--color-dc-border: hsl(240, 5%, 22%);
+	--color-dc-darker: hsl(240, 6%, 15%);
+	--color-dc-info: hsl(207, 100%, 42%);
+}

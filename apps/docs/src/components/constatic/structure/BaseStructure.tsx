@@ -1,5 +1,5 @@
 import { ConfigIcon, EnvIcon, GitIcon, NodeJSIcon, ReadmeIcon, TsConfigIcon, TsIcon, VSCodeIcon } from "@public/icons/files";
-import { File, Files, Folder } from "../../../components/files";
+import { File, Files, Folder } from "fumadocs-ui/components/files";
 
 export function BaseStructure() {
     return <Files>

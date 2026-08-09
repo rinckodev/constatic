@@ -1,5 +1,4 @@
 {
-  
   "compilerOptions": {
     "target": "ESNext",
     "lib": [
@@ -29,9 +28,6 @@
       "@lib/*": [
         "./src/lib/*"
       ],
-      "fumadocs-mdx:collections/*": [
-        "./.source/*"
-      ]
     },
     "plugins": [
       {
@@ -45,7 +41,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
-, "src/lib/source.tsx"  ],
+  ],
   "exclude": [
     "node_modules"
   ]

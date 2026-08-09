@@ -10,7 +10,7 @@ export default async function Layout({ children, params }: LayoutProps<"/[lang]/
                 enabled: false,
             }}
             tree={changelog.pageTree[lang]}
-            {...baseOptions()}
+            {...baseOptions(lang)}
             sidebar={{
                 enabled: false,
             }}

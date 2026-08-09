@@ -1,7 +1,5 @@
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/cn";
+import { getMDXComponents } from "@/components/mdx";
 import { changelog } from "@/lib/source";
-import { getMDXComponents } from "@/mdx-components";
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/page";
 import { Metadata } from "next";
 import Link from "next/link";
@@ -22,14 +20,12 @@ export default async function Page({ params }: PageProps<"/[lang]/changelog/[slu
         }}
         breadcrumb={{ enabled: false }}
     >
-        <div className="border-b">
+        <div className="border-b flex flex-col py-1">
             <DocsTitle>{page.data.title}</DocsTitle>
             <DocsDescription className="mb-1">{page.data.description}</DocsDescription>
             <Link
                 href={"/changelog"}
-                className={cn(buttonVariants({ size: "sm", color: "secondary" }),
-                    "mb-2"
-                )}
+                className="border px-2 py-1 w-fit rounded-sm text-xs bg-black/20"
             >
                 Voltar para changelog
             </Link>

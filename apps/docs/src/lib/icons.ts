@@ -1,3 +1,4 @@
+import { DiscloudWhite } from "@public/svgs/icons/DiscloudWhite";
 import { IconType } from "react-icons";
 import * as bi from "react-icons/bi";
 import * as bs from "react-icons/bs";
@@ -15,7 +16,6 @@ import * as ri from "react-icons/ri";
 import * as si from "react-icons/si";
 import * as tb from "react-icons/tb";
 import * as ti from "react-icons/ti";
-import { DiscloudWhite } from "@public/svgs/icons/DiscloudWhite";
 
 const LocalIcons = {
     DiscloudWhite,

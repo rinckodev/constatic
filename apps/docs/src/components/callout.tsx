@@ -1,5 +1,4 @@
 import { cn } from "@/lib/cn";
-import { cva } from "class-variance-authority";
 import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import { BsExclamationCircle } from "react-icons/bs";
 import { FaRegCircleCheck } from "react-icons/fa6";
@@ -23,7 +22,7 @@ type CalloutProps = Omit<
   icon?: ReactNode | boolean;
 };
 
-const calloutVariants = cva(
+const calloutVariants = cn(
   `my-6 flex flex-row gap-2 rounded-lg border border-s-4 bg-fd-card p-4 text-sm text-fd-card-foreground shadow-md`,
   {
     variants: {
@@ -57,7 +56,7 @@ export const Callout = forwardRef<HTMLDivElement, CalloutProps>(
     return (
       <div
         ref={ref}
-        className={cn(calloutVariants({ type }), className, 
+        className={cn(className, 
         "transition-all duration-300 ease-in-out")}
         {...props}
       >

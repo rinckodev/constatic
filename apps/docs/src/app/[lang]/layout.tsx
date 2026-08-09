@@ -1,20 +1,42 @@
-import { RootProvider } from "fumadocs-ui/provider/next";
-import { Inter } from "next/font/google";
-//@ts-ignore
-import "@/app/global.css";
-import { i18nProvider } from "./i18n-provider";
+import { translations } from '@/lib/layout.shared';
+import { i18nProvider } from 'fumadocs-ui/i18n';
+import { RootProvider } from 'fumadocs-ui/provider/next';
+import { Geist, Geist_Mono, Inter, JetBrains_Mono } from 'next/font/google';
+import '../global.css';
 
-const inter = Inter({
-  subsets: ["latin"],
+const geistMono = Geist_Mono({
+  subsets: ["latin"]
 });
 
-export default async function Layout({ children, params }: LayoutProps<"/[lang]">) {
-  const { lang } = await params;
+const geist = Geist({
+  subsets: ["latin"]
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+});
+
+export default async function Layout({ 
+  params,
+  children 
+}: LayoutProps<'/[lang]'>) {
+  const lang = (await params).lang
   return (
-    <html lang={lang} className={inter.className} suppressHydrationWarning>
+    <html 
+      lang={lang} 
+      className={
+        `dark ${inter.className} ${geist.className} ${jetbrainsMono.className} ${geistMono.className}`
+      } 
+      suppressHydrationWarning
+    >
       <body className="flex flex-col min-h-screen">
         <RootProvider
-          i18n={i18nProvider(lang)}
+        theme={{ enabled: false, hotKey: false }}
+          i18n={i18nProvider(translations, lang)}
         >
           {children}
         </RootProvider>

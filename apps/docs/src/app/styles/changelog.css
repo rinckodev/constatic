@@ -30,7 +30,7 @@
     content: "";
     position: absolute;
     background-color: var(--color-fd-primary);
-    @apply size-2 -start-6 sm:-start-7 top-3.5 rounded-full transition-all duration-300 ease-in-out;
+    @apply size-2 -inset-s-6 sm:-inset-s-7 top-3.5 rounded-full transition-all duration-300 ease-in-out;
   }
 
   &:hover:before {
