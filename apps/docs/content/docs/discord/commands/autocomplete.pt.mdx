@@ -6,7 +6,7 @@ description: Como criar comandos de autocomplete do discord
 
 # O que é autocomplete?
 
-Imagine que você queira fornecer escolhas para uma opção de um comando mas de forma dinâmica, por exemplo um comando para pesquisar vídeos no youtube. Você pode usar a opção `autocomplete`, assim com base no que o usuário digitar nessa opção, você pode fazer buscas em APIs e retornar uma lista de escolhas.
+Imagine que você queira fornecer escolhas para uma opção de um comando mas de forma dinâmica, por exemplo um comando para pesquisar vídeos no youtube. Você pode usar a opção <CodeSpan.Method identifier="autocomplete"/>, assim com base no que o usuário digitar nessa opção, você pode fazer buscas em APIs e retornar uma lista de escolhas.
 
 # Criando uma opção autocomplete
 
@@ -14,7 +14,7 @@ Imagine que você queira fornecer escolhas para uma opção de um comando mas de
     É preciso ter um [comando de barra](/docs/discord/commands/slash) para criar uma opção autocomplete
 </Callout>
 
-Apenas opções do tipo **String**, **Number** e **Integer** podem ser autocomplete. Para isso basta definir a propriedade `autocomplete` como verdadeira no objeto da opção no seu comando:
+Apenas opções do tipo **String**, **Number** e **Integer** podem ser autocomplete. Para isso basta definir a propriedade <CodeSpan.Method identifier="autocomplete"/> como verdadeira no objeto da opção no seu comando:
 
 ```ts title="command.ts"
 createCommand({
@@ -127,7 +127,7 @@ createCommand({
 ```
 
 <Callout type="info">
-	Se você preferir, pode usar o método `respond` da interação como faria normalmente:
+	Se você preferir, pode usar o método <CodeSpan.Method identifier="respond" /> da interação como faria normalmente:
 	```ts
 	return choices; // [!code --]
 	interaction.respond(choices.slice(0, 25)) // [!code ++]

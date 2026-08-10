@@ -4,11 +4,11 @@ icon: BsFillChatRightDotsFill
 description: Discord bot intents using Constatic Base
 ---
 
-`Intents` were introduced by Discord so that bot developers can choose which events their bot receives based on what data it needs to function. In order for a given event to be emitted, a related intent needs to be enabled.
+<CodeSpan.Prop identifier="intents" />. were introduced by Discord so that bot developers can choose which events their bot receives based on what data it needs to function. In order for a given event to be emitted, a related intent needs to be enabled.
 
-For example, one of the most used events in Discord bots is `guildMemberAdd`, this event is emitted when a member joins the guild, but it is necessary to set the `GuildMembers` intent for the event to be emitted.
+For example, one of the most used events in Discord bots is <CodeSpan.String magic content="guildMemberAdd"/>, this event is emitted when a member joins the guild, but it is necessary to set the <CodeSpan.String magic content="GuildMembers"/> intent for the event to be emitted.
 
-When generating this project, by default all intents are enabled in the `Client`. See below what a simple code would look like without using Constatic Base:
+When generating this project, by default all intents are enabled in the <CodeSpan.Class identifier="Client" />. See below what a simple code would look like without using Constatic Base:
 
 ```ts title="src/index.ts"
 import { Client } from "discord.js";
@@ -34,7 +34,7 @@ import { bootstrap } from "@constatic/base";
 await bootstrap({ meta: import.meta, env });
 ```
 
-However, if you want to set only specific intents, as in the case of a public bot where you do not want to enable the `MessageContent` intent, simply use the `intents` property of the `bootstrap` function, it is the same as the `Client` options:
+However, if you want to set only specific intents, as in the case of a public bot where you do not want to enable the <CodeSpan.String magic content="MessageContent" /> intent, simply use the <CodeSpan.Prop identifier="intents" />. property of the <CodeSpan.Method identifier="bootstrap"/> function, it is the same as the <CodeSpan.Class identifier="Client" /> options:
 
 ```ts title="src/index.ts"
 import { env } from "#env";

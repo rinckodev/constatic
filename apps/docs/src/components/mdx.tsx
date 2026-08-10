@@ -15,6 +15,7 @@ import * as inlineComponents from "fumadocs-ui/components/inline-toc";
 import * as stepsComponents from "fumadocs-ui/components/steps";
 import * as tabs from "fumadocs-ui/components/tabs";
 import { Link } from "./Link";
+import CodeSpan from './code/CodeSpan';
 
 export function getMDXComponents(components?: MDXComponents) {
   return {
@@ -38,7 +39,8 @@ export function getMDXComponents(components?: MDXComponents) {
       </CodeBlock>
     ),
     CodeBlockTabs, CodeBlockTabsList,
-    CodeBlockTab, CodeBlockTabsTrigger
+    CodeBlockTab, CodeBlockTabsTrigger,
+    CodeSpan,
   } satisfies MDXComponents;
 }
 

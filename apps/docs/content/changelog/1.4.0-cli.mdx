@@ -149,7 +149,7 @@ await bootstrap({
 
 ## whenReady
 
-Se você usava essa opção antes para executar algum código no próprio `ready` da base, precisará alterar o seu código para usar `createEvent` em favor das mudanças ditas logo abaixo:
+Se você usava essa opção antes para executar algum código no próprio `ready` da base, precisará alterar o seu código para usar <CodeSpan.Method identifier="createEvent"/> em favor das mudanças ditas logo abaixo:
 
 ## Eventos
 
@@ -201,7 +201,7 @@ createCommand({
 });
 ```
 
-Acima respondemos uma única opção autocomplete usando a função `autocomplete` no objeto inteiro do comando. Mas agora podemos colocar essa função diretamente na opção:
+Acima respondemos uma única opção autocomplete usando a função <CodeSpan.Method identifier="autocomplete"/> no objeto inteiro do comando. Mas agora podemos colocar essa função diretamente na opção:
 
 ```ts title="mycommand.ts"
 import { createCommand } from "#base";
@@ -326,7 +326,7 @@ createCommand({
 });
 ```
 
-Podendo definir a função `autocomplete` diretamente na opção, não é necessário verificar qual grupo e sub comando ela pertence, o handler da base fará isso pra você!
+Podendo definir a função <CodeSpan.Method identifier="autocomplete"/> diretamente na opção, não é necessário verificar qual grupo e sub comando ela pertence, o handler da base fará isso pra você!
 
 ```ts title="mycommand.ts"
 import { createCommand } from "#base";
@@ -695,7 +695,7 @@ Acima temos o exemplo de apenas um sub comando, que é o `/gerenciar canais cria
 ## Utilidade real
 
 <Callout type="warn">
-  Para os mais críticos que vão dizer que já faziam algo assim antes porém usando funções, saibam de uma coisa: Este projeto é focado em tipagem inferida! Isso significa que as estruturas como `createCommand`, `createResponder` e `createEvent`, são usadas para que você utilizador, não precise ficar escrevendo tipagens o tempo todo.
+  Para os mais críticos que vão dizer que já faziam algo assim antes porém usando funções, saibam de uma coisa: Este projeto é focado em tipagem inferida! Isso significa que as estruturas como <CodeSpan.Method identifier="createResponder"/>, <CodeSpan.Method identifier="createResponder"/> e <CodeSpan.Method identifier="createEvent"/>, são usadas para que você utilizador, não precise ficar escrevendo tipagens o tempo todo.
 
   E este recurso de modularização infere a tipagem do seu comando automaticamente conforme as opções que você definiu nele! 
 </Callout>
@@ -873,7 +873,7 @@ createCommand({
 });
 ```
 
-Agora com a modularização, se você precisar buscar alguma informação que será usada em todos os sub comandos, para que você não precise executar o mesmo código em cada arquivo, basta usar o `run` do grupo e retornar os dados que você precisar:
+Agora com a modularização, se você precisar buscar alguma informação que será usada em todos os sub comandos, para que você não precise executar o mesmo código em cada arquivo, basta usar o <CodeSpan.Method identifier="run"/> do grupo e retornar os dados que você precisar:
 
 ```ts tab="Cargos" title="roles/group.ts"
 import command from "../command.js";
@@ -900,7 +900,7 @@ export default command.group({
 });
 ```
 
-Então o segundo argumento do seu sub comando será o retorno do `run` do grupo:
+Então o segundo argumento do seu sub comando será o retorno do <CodeSpan.Method identifier="run"/> do grupo:
 
 ```ts tab="Cargos" title="roles/create.ts"
 import group from "./group.js";
@@ -970,7 +970,7 @@ group.subcommand({
 });
 ```
 
-O `run` do comando é exeutado primeiro, então o retorno dele é passado como segundo argumento para o grupo. O `run` do grupo é executado e o seu retorno é passado para o sub comando:
+O <CodeSpan.Method identifier="run"/> do comando é exeutado primeiro, então o retorno dele é passado como segundo argumento para o grupo. O <CodeSpan.Method identifier="run"/> do grupo é executado e o seu retorno é passado para o sub comando:
 
 ```json
 Comando
@@ -980,10 +980,10 @@ Comando
 ``` 
 
 <Callout type="warn">
-  Então fique atento ao responder interações entre as funções `run`, pois se você responder a interação no `run` do comando e responder novamente no `run` do sub comando, você receberá um erro do discord! 
+  Então fique atento ao responder interações entre as funções <CodeSpan.Method identifier="run"/>, pois se você responder a interação no <CodeSpan.Method identifier="run"/> do comando e responder novamente no <CodeSpan.Method identifier="run"/> do sub comando, você receberá um erro do discord! 
 </Callout>
 
-Se você não precisar de nenhuma execução além da do sub comando, não é obrigatório definir funções `run` no comando e no grupo:
+Se você não precisar de nenhuma execução além da do sub comando, não é obrigatório definir funções <CodeSpan.Method identifier="run"/> no comando e no grupo:
 
 ```ts
 import { createCommand } from "#base";
@@ -1006,7 +1006,7 @@ group.subcommand({
 ```
 
 <Callout type="warn">
-  Uma última consideração sobre o objeto que o `createCommand` retorna: Você pode definir tanto grupos, quanto sub comandos para o comando:
+  Uma última consideração sobre o objeto que o <CodeSpan.Method identifier="createResponder"/> retorna: Você pode definir tanto grupos, quanto sub comandos para o comando:
   
    ```ts
     import { createCommand } from "#base";

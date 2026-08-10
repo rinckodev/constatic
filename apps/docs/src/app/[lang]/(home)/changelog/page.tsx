@@ -1,6 +1,7 @@
 import { Changelog, ChangelogItem } from "@/components/changelog/Changelog";
 import DisplayDate from "@/components/utils/date";
 import { changelog } from "@/lib/source";
+import { Metadata } from "next";
 import Link from "next/link";
 import { MdOutlineUpdate } from "react-icons/md";
 
@@ -65,4 +66,14 @@ function ScopeLabel({ scope, version }: ScopeLabelProps) {
             {version}
         </code>
     </h2>
+}
+
+export async function generateMetadata(_: PageProps<'/[lang]/changelog'>): Promise<Metadata> {
+  return {
+    title: "Constatic",
+    description: "Constatic docs",
+    openGraph: {
+      images: "/og.png"
+    }
+  };
 }

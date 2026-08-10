@@ -4,7 +4,7 @@ icon: HiOutlineSignal
 description: Emit interactions to Responder handlers.
 ---
 
-The `Responder` handler you create will be executed when an interaction event is emitted! But you can easily emit your own interaction event using the `emitResponder` function:
+The <CodeSpan.Class identifier="Responder" /> handler you create will be executed when an interaction event is emitted! But you can easily emit your own interaction event using the <CodeSpan.Method identifier="emitResponder"/> function:
 
 ```ts
 import { emitResponder } from "@constatic/base";
@@ -14,7 +14,7 @@ emitResponder("/foo/bar", interaction);
 
 Pass the corresponding Responder's customId as the first argument and an interaction of any type as the second argument.
 
-Then the Responder's `run` handler will be executed:
+Then the Responder's <CodeSpan.Method identifier="run"/> handler will be executed:
 
 
 ```ts
@@ -30,7 +30,7 @@ createResponder({
 });
 ```
 
-You can pass [customId parameters](/docs/discord/responders/params) to the `emitResponder` function and they will arrive in the **Responder**:
+You can pass [customId parameters](/docs/discord/responders/params) to the <CodeSpan.Method identifier="emitResponder"/> function and they will arrive in the **Responder**:
 
 ```ts
 

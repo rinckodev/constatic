@@ -31,7 +31,7 @@ await setTimeout(4000);
 console.log("World");
 ```
 
-Se por algum motivo precisar de importações dinâmicas, você pode utilizar `import` como uma função no código:
+Se por algum motivo precisar de importações dinâmicas, você pode utilizar <CodeSpan.Method identifier="import"/> como uma função no código:
 ```ts title="handler.ts"
 async function handle(path: string){
   const module = await import(path);

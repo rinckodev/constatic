@@ -8,12 +8,12 @@ scope: base
 
 ## Novos tipos de **Responders**
 
-Essa atualização traz 3 novos tipos ao `ResponderType`:
-- **ChatInputCommandInteraction**: `ResponderType.ChatInput`
+Essa atualização traz 3 novos tipos ao <CodeSpan.Enum identifier="ResponderType" />:
+- **ChatInputCommandInteraction**: <CodeSpan.Enum identifier="ResponderType" member="ChatInput" />
 - **UserContextMenuCommandInteraction**: `ResponderType.UserContextMenu`
-- **MessageContextMenuCommandInteraction**: `ResponderType.MessageContextMenu`
+- **MessageContextMenuCommandInteraction**: <CodeSpan.Enum identifier="ResponderType" member="MessageContextMenu" />
 
-Esses 3 novos tipos vem com uma propriedade **customId** quando manipulados no `run` do **Responder**:
+Esses 3 novos tipos vem com uma propriedade **customId** quando manipulados no <CodeSpan.Method identifier="run"/> do **Responder**:
 
 ```ts
 import { createResponder } from "#base";
@@ -55,7 +55,7 @@ emitResponder({
 });
 ```
 
-Nesse ponto você já deve ter notado que essa função serve para emitir um **Responder** com o customId passado para ela que chamará a função `run` do **Responder** correspondente previamente registrado.
+Nesse ponto você já deve ter notado que essa função serve para emitir um **Responder** com o customId passado para ela que chamará a função <CodeSpan.Method identifier="run"/> do **Responder** correspondente previamente registrado.
 
 ## Emitir um **Responder** é útil como?
 
@@ -156,7 +156,7 @@ createResponder({
 });
 ```
 
-Perceba que a lógica principal (que era buscar os dados e exibir o menu) ficou toda no **Responder**. O código foi escrito uma vez (com adaptações para os diferentes tipos de interações possíveis) e pode ser usado por qualquer tipo de interação que você quiser, basta adicionar no array de `types`!
+Perceba que a lógica principal (que era buscar os dados e exibir o menu) ficou toda no **Responder**. O código foi escrito uma vez (com adaptações para os diferentes tipos de interações possíveis) e pode ser usado por qualquer tipo de interação que você quiser, basta adicionar no array de <CodeSpan.Prop identifier="types" />!
 
 Claro que esse é um exemplo muito simples, você pode combinar diversos tipos de interações, sempre usando os [type guards](https://youtu.be/pC9tJOLSaGM?si=ihTjYbP2CYXsICmh) para verificar qual é o tipo da interação na execução atual e adaptando os métodos de resposta. Mas a criação desse recurso foi pensada depois que muito código que poderia ser reaproveitado foi percebido em alguns projetos grandes.
 

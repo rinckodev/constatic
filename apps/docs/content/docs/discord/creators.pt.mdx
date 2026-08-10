@@ -5,7 +5,7 @@ description: Principais estruturas da base para criação de comandos e sistemas
 ---
 import icons from "@lib/icons";
 
-Nesta base, para criar comandos e sistemas você deve utilizar as funções criadoras, que são `createCommand`, `createEvent` e `createResponder`.
+Nesta base, para criar comandos e sistemas você deve utilizar as funções criadoras, que são <CodeSpan.Method identifier="createCommand"/>, <CodeSpan.Method identifier="createEvent"/> e <CodeSpan.Method identifier="createResponder"/>.
 
 Ao executar essas funções passando os dados da estruturas respectivas, elas serão criadas e registradas.
 
@@ -25,11 +25,11 @@ import { createCommand, createEvent, createResponder } from "#base";
 
 ## Opções de comandos [#command-options]
 
-Você pode definir algumas opções de comandos na função `setupCreators`:
+Você pode definir algumas opções de comandos na função <CodeSpan.Method identifier="setupCreators"/>:
 
 <Tabs updateAnchor items={["Permissões padrões", "Guildas", "middleware", "onError", "onNotFound", "verbose"]}>
   <Tab id="commands-default-permissions" value="Permissões padrões">
-    Defina quais serão as permissões padrões de todos os comandos, caso não seja definida nenhuma com a opção `defaultMemberPermissions` (É o mesmo array de permissões do comando).
+    Defina quais serão as permissões padrões de todos os comandos, caso não seja definida nenhuma com a opção <CodeSpan.Prop identifier="defaultMemberPermissions" /> (É o mesmo array de permissões do comando).
 
     ```ts
     /* ... */ setupCreators({
@@ -38,7 +38,7 @@ Você pode definir algumas opções de comandos na função `setupCreators`:
         },
     });
     ```
-    Dessa forma, ao criar um comando e não definir nenhuma permissão padrão de membro, o que você definiu na função `setupCreators`, será o padrão de todos os comandos.
+    Dessa forma, ao criar um comando e não definir nenhuma permissão padrão de membro, o que você definiu na função <CodeSpan.Method identifier="setupCreators"/>, será o padrão de todos os comandos.
 
     ```ts title="command.ts"
     createCommand({
@@ -68,7 +68,7 @@ Você pode definir algumas opções de comandos na função `setupCreators`:
     Assim, ao invés de registrar os comandos globalmente na aplicação, eles serão registrados apenas nas guildas, cujo os ids foram passados para essa opção.
   </Tab>
   <Tab id="commands-middleware" value="middleware">
-    Você pode definir uma função `middleware` que será executada antes da função `run` dos comandos
+    Você pode definir uma função <CodeSpan.Method identifier="middleware" /> que será executada antes da função <CodeSpan.Method identifier="run"/> dos comandos
 
     ```ts
     /* ... */ setupCreators({
@@ -81,7 +81,7 @@ Você pode definir algumas opções de comandos na função `setupCreators`:
     ```
     Você pode fazer muita coisa com isso, como exibir logs padronizados para todos os comandos executados, injetar informações adicionais na interação, ou até mesmo bloquear a execução com base em checagens.
 
-    Você pode executar a função `block` para bloquear a execução dos comandos.
+    Você pode executar a função <CodeSpan.Method identifier="block" /> para bloquear a execução dos comandos.
 
     ```ts
     /* ... */ setupCreators({
@@ -170,11 +170,11 @@ Você pode definir algumas opções de comandos na função `setupCreators`:
 
 ## Opções de Responders [#responder-options]
 
-Você pode definir algumas opções de responders na função `setupCreators`:
+Você pode definir algumas opções de responders na função <CodeSpan.Method identifier="setupCreators"/>:
 
 <Tabs items={["Middleware", "onError", "onNotFound"]}>
   <Tab id="responders-middleware" value="Middleware">
-    Você pode definir uma função `middleware` que será executada antes da função `run` dos responders
+    Você pode definir uma função <CodeSpan.Method identifier="middleware" /> que será executada antes da função <CodeSpan.Method identifier="run"/> dos responders
 
     ```ts
     /* ... */ setupCreators({
@@ -188,7 +188,7 @@ Você pode definir algumas opções de responders na função `setupCreators`:
     ```
     Assim como nos comandos, você pode fazer muita coisa com isso, como exibir logs padronizados para todos os responders executados, injetar informações adicionais na interação, ou até mesmo bloquear a execução com base em checagens.
 
-    Você pode executar a função `block` para bloquear a execução dos responders.
+    Você pode executar a função <CodeSpan.Method identifier="block" /> para bloquear a execução dos responders.
 
     ```ts
     /* ... */ setupCreators({
@@ -254,18 +254,18 @@ Você pode definir algumas opções de responders na função `setupCreators`:
     });
     ```
     <Callout type="danger">
-        Tome cuidado! Se você usar coletores de componentes ou modais em algum comando, essa função ainda será chamada, pois ela busca um manipulador criado com a função `createResponder`. Então é importante verificar se a interação já foi respondida ou aguardar um pequeno tempo antes de responder de fato.
+        Tome cuidado! Se você usar coletores de componentes ou modais em algum comando, essa função ainda será chamada, pois ela busca um manipulador criado com a função <CodeSpan.Method identifier="createResponder"/>. Então é importante verificar se a interação já foi respondida ou aguardar um pequeno tempo antes de responder de fato.
     </Callout>
   </Tab>
 </Tabs>
 
 ## Opções de Eventos [#event-options]
 
-Você pode definir algumas opções de eventos na função `setupCreators`:
+Você pode definir algumas opções de eventos na função <CodeSpan.Method identifier="setupCreators"/>:
 
 <Tabs items={["Middleware", "onError"]}>
   <Tab id="events-middleware" value="Middleware">
-    Você pode definir uma função `middleware` que será executada antes da função `run` dos eventos
+    Você pode definir uma função <CodeSpan.Method identifier="middleware" /> que será executada antes da função <CodeSpan.Method identifier="run"/> dos eventos
 
     ```ts
     /* ... */ setupCreators({
@@ -279,7 +279,7 @@ Você pode definir algumas opções de eventos na função `setupCreators`:
     Assim como nos comandos e responders, você pode fazer muita coisa com isso, como exibir logs padronizados para todos os eventos executados, injetar informações adicionais nos argumentos de eventos específicos, ou até mesmo bloquear a execução com base em checagens.
 
     <Callout type="info">
-        No primeiro argumento, é recebido um objeto com os dados do evento, onde `name` é o nome do evento emitido e `args` são os argumentos desse evento, então verificando qual é o nome do evento, a tipagem dos argumentos é definida automaticamente:
+        No primeiro argumento, é recebido um objeto com os dados do evento, onde <CodeSpan.Prop identifier="name" /> é o nome do evento emitido e <CodeSpan.Prop identifier="args" /> são os argumentos desse evento, então verificando qual é o nome do evento, a tipagem dos argumentos é definida automaticamente:
         ```ts
         /* ... */ setupCreators({
             events: {
@@ -305,7 +305,7 @@ Você pode definir algumas opções de eventos na função `setupCreators`:
         ```
     </Callout>
 
-    Você pode executar a função `block` para bloquear a execução dos eventos.
+    Você pode executar a função <CodeSpan.Method identifier="block" /> para bloquear a execução dos eventos.
 
     ```ts
     /* ... */ setupCreators({
@@ -322,7 +322,7 @@ Você pode definir algumas opções de eventos na função `setupCreators`:
         },
     });
     ```
-    No caso dos eventos também é possível passar tags como argumento da função block, dessa maneira, você pode ter 3 eventos do mesmo tipo, por exemplo `messageCreate`, mas bloquear apenas aqueles com as tags previamente definidas:
+    No caso dos eventos também é possível passar tags como argumento da função block, dessa maneira, você pode ter 3 eventos do mesmo tipo, por exemplo <CodeSpan.String magic content="messageCreate" />, mas bloquear apenas aqueles com as tags previamente definidas:
 
     ```ts tab="Eventos"
     createEvent({
@@ -380,7 +380,7 @@ Você pode definir algumas opções de eventos na função `setupCreators`:
     }
     ```
 
-    Você pode passar quantas tags quiser para função `block`
+    Você pode passar quantas tags quiser para função <CodeSpan.Method identifier="block" />
 
     ```ts
     // ...

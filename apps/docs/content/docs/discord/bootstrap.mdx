@@ -7,7 +7,7 @@ import icons from "@lib/icons";
 
 ## Entry point
 
-The `index.ts` file in the `src` folder is the entry point of this project, it is where the `bootstrap` function is executed to connect the discord bot application.
+The `index.ts` file in the `src` folder is the entry point of this project, it is where the <CodeSpan.Method identifier="bootstrap"/> function is executed to connect the discord bot application.
 
 ```ts title="src/index.ts"
 import { bootstrap } from "@constatic/base";
@@ -48,7 +48,7 @@ You can also load files with _side effects_, allowing you to register global var
 
 ### Load logs (loadLogs)
 
-It is possible to disable the load logs of structures in this base by setting false in the `loadLogs` option of the `bootstrapApp` function.
+It is possible to disable the load logs of structures in this base by setting false in the <CodeSpan.Prop identifier="loadLogs" /> option of the `bootstrapApp` function.
 
 ```ts title="src/index.ts"
 await bootstrap({ 
@@ -61,7 +61,7 @@ await bootstrap({
 
 ### Before load
 
-You can run code before the directories are loaded. Receive the `client` not ready yet.
+You can run code before the directories are loaded. Receive the <CodeSpan.Class identifier="Client" /> not ready yet.
 
 ```ts title="src/index.ts"
 await bootstrap({ 

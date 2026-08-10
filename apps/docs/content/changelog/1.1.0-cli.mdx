@@ -65,7 +65,7 @@ Agora você pode definir um **middleware** e um **manipulador de erros** para os
 
 #### Manipulador de erros de eventos 
 
-Na função `setupCreators`, defina uma função que será executada quando ocorrer um erro em algum evento:
+Na função <CodeSpan.Method identifier="setupCreators"/>, defina uma função que será executada quando ocorrer um erro em algum evento:
 
 ```ts
 /* ... */ setupCreators({
@@ -107,7 +107,7 @@ Dessa forma você pode criar diversos manipuladores de erros diferentes para vá
 
 #### Middleware de eventos
 
-Você pode definir uma função `middleware` que será executada antes da função `run` dos eventos
+Você pode definir uma função <CodeSpan.Method identifier="middleware" /> que será executada antes da função <CodeSpan.Method identifier="run"/> dos eventos
 
 ```ts
 /* ... */ setupCreators({
@@ -120,9 +120,9 @@ Você pode definir uma função `middleware` que será executada antes da funç�
 ```
 Assim como nos comandos e responders, você pode fazer muita coisa com isso, como exibir logs padronizadas para todos os eventos executados, injetar informações adicionais nos argumentos de eventos específicos, ou até mesmo bloquear a execução com base em checagens.
 
-A função `block` funciona igual nos middlewares de comandos e eventos, mas com uma pequena adição:
+A função <CodeSpan.Method identifier="block" /> funciona igual nos middlewares de comandos e eventos, mas com uma pequena adição:
 
-No caso dos eventos também é possível passar tags como argumento da função block, dessa maneira, você pode ter 3 eventos do mesmo tipo, por exemplo `messageCreate`, mas bloquear apenas aqueles com as tags previamente definidas:
+No caso dos eventos também é possível passar tags como argumento da função block, dessa maneira, você pode ter 3 eventos do mesmo tipo, por exemplo <CodeSpan.String magic content="messageCreate" />, mas bloquear apenas aqueles com as tags previamente definidas:
 
 ```ts tab="Eventos"
 createEvent({
@@ -180,7 +180,7 @@ function isNight(): boolean {
 }
 ```
 
-Você pode passar quantas tags quiser para função `block`
+Você pode passar quantas tags quiser para função <CodeSpan.Method identifier="block" />
 
 ```ts
 // ...
@@ -192,7 +192,7 @@ Todos os eventos que conter alguma das tags passadas como argumento da função 
 
 ## Opções Autocomplete
 
-Foi adicionado um ajudante para funções que respondem opções `autocomplete`, agora ao invés de usar o método `respond` da interação, e limitar o array de escolhas, você pode apenas retornar o array que a base fará isso para você, veja:
+Foi adicionado um ajudante para funções que respondem opções <CodeSpan.Method identifier="autocomplete"/>, agora ao invés de usar o método <CodeSpan.Method identifier="respond" /> da interação, e limitar o array de escolhas, você pode apenas retornar o array que a base fará isso para você, veja:
 
 ```ts title="command.ts"
 createCommand({
@@ -219,7 +219,7 @@ createCommand({
 ```
 
 <Callout type="info">
-	Você ainda pode usar o método `respond` da interação se preferir:
+	Você ainda pode usar o método <CodeSpan.Method identifier="respond" /> da interação se preferir:
 	```ts
 		return choices; // [!code --]
 		interaction.respond(choices.slice(0, 25)) // [!code ++]
@@ -228,7 +228,7 @@ createCommand({
 
 ## Qualidade de vida
 
-A posição dos argumentos da função `middleware` dos `responders` foi alterada para condizer com as outras funções de `middleware`:
+A posição dos argumentos da função <CodeSpan.Method identifier="middleware" /> dos `responders` foi alterada para condizer com as outras funções de <CodeSpan.Method identifier="middleware" />:
 
 ```ts
 /* ... */ setupCreators({
@@ -244,7 +244,7 @@ A posição dos argumentos da função `middleware` dos `responders` foi alterad
 - O anti-crash que só era ativado após o bot ficar online, agora está ativo desde o início.
 - A lib `@magicyan/discord` foi atualizada para a sua versão mais recente: `1.3.1`.
 - Todas as dependencias no package.json vem com a versão exata (sem o prefixo `^`).
-- Foi adicionada na documentação, informações sobre o função `autocomplete`, opção global dos comandos e de todas as novidades deste blog.
+- Foi adicionada na documentação, informações sobre o função <CodeSpan.Method identifier="autocomplete"/>, opção global dos comandos e de todas as novidades deste blog.
 
 #### Conclusão
 

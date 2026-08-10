@@ -8,12 +8,12 @@ import icons from "@lib/icons";
 # Creating slash commands
 
 <Callout type="success">
-    You can set some command options in the `setupCreators` function!
+    You can set some command options in the <CodeSpan.Method identifier="setupCreators"/> function!
 
     [See more details on the creator functions page](/docs/discord/creators#command-options)
 </Callout>
 
-First of all, import the `createCommand` function from base and `ApplicationCommandType` from `discord.js`
+First of all, import the <CodeSpan.Method identifier="createCommand"/> function from base and <CodeSpan.Enum identifier="ApplicationCommandType" /> from `discord.js`
 
 ```ts
 import { Command } from "#base";
@@ -24,7 +24,7 @@ import { ApplicationCommandType } from "discord.js";
     See [conventions](/docs/discord/conventions/structure) to create your commands
 </Callout>
 
-To create a slash command, you need to set `name`, `description` and `type`.
+To create a slash command, you need to set <CodeSpan.Prop identifier="name" />, `description` and <CodeSpan.Prop identifier="type" />.
 
 ```ts title="hello.ts"
 createCommand({
@@ -89,7 +89,7 @@ createCommand({
 
 # Global
 
-The `global` option in commands is useful when you want the command to be registered to the application rather than the guild. It is only needed when guild IDs are set in the [setupCreators](/docs/discord/creators/#commandoptions) function.
+The <CodeSpan.Prop identifier="global" /> option in commands is useful when you want the command to be registered to the application rather than the guild. It is only needed when guild IDs are set in the [setupCreators](/docs/discord/creators/#commandoptions) function.
 
 The code below causes commands to be registered only to the valid guilds listed in the array:
 ```ts title="src/discord/index.ts"
@@ -136,6 +136,6 @@ createCommand({
 });
 ```
 
-The `settings` and `manage` commands will be registered in the guilds defined in the `setupCreators` function, but the `information` command will be registered globally in the application, thus being available in any guild.
+The `settings` and `manage` commands will be registered in the guilds defined in the <CodeSpan.Method identifier="setupCreators"/> function, but the `information` command will be registered globally in the application, thus being available in any guild.
 
 # Modularization

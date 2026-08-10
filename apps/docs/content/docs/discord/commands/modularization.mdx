@@ -302,7 +302,7 @@ createCommand({
     Even though it's quite simple, this command has over 200 lines of code. Imagine a real command with more complexity, checks, transformations, and interactivity—it would be much larger. This could be detrimental over time if you want to maintain your project and keep updating it.
 </Callout>
 
-The `createCommand` function returns a `CommandInstance` that contains two special methods: `group` and `subcommand`. As you can imagine, this is used to create groups and subcommands:
+The <CodeSpan.Method identifier="createCommand"/> function returns a `CommandInstance` that contains two special methods: <CodeSpan.Method identifier="group" /> and <CodeSpan.Method identifier="subcommand" />. As you can imagine, this is used to create groups and subcommands:
 
 ```ts title="src/discord/commands/manage.ts"
 const command = createCommand({
@@ -367,7 +367,7 @@ Now, within the **manage** folder, we'll create other folders for the subcommand
     </Folder>
 </Files>
  
-Since we exported the return of the `createCommando` function using `export default`, we can import it into the `group.ts` files in the **channels** and **roles** folders to define the subcommand groups:
+Since we exported the return of the <CodeSpan.Method identifier="createCommand" /> function using `export default`, we can import it into the `group.ts` files in the **channels** and **roles** folders to define the subcommand groups:
 
 <Tabs items={["channels", "roles"]}>
     <Tab value="channels">
@@ -714,7 +714,7 @@ export default createCommand({
 });
 ```
 
-Above, we have something like a database query to get the document from our store system. When we return something within `run`, it will be passed as the second argument to `run` of the groups and subcommands, all with automatically inferred typing!
+Above, we have something like a database query to get the document from our store system. When we return something within <CodeSpan.Method identifier="run"/>, it will be passed as the second argument to <CodeSpan.Method identifier="run"/> of the groups and subcommands, all with automatically inferred typing!
 
 ```ts tab="setup" title="store/setup.ts"
 import command from "./command.js";

@@ -79,7 +79,7 @@ createCommand({
 </Accordions>
 
 
-Com isso podemos criar um `Responder` que espera qualquer componente de botão que siga esse padrão no customId.
+Com isso podemos criar um <CodeSpan.Class identifier="Responder" /> que espera qualquer componente de botão que siga esse padrão no customId.
 
 Ele deve começar com `/manage/user` logo depois deve ter mais dois segmentos de parâmetros separados por `/` e começando com `:`, onde o primeiro será o id do usuário e o segundo vai ser uma ação.
 
@@ -124,12 +124,12 @@ createResponder({
 });
 ```
 <Callout type="danger">
-    Você pode usar esse recurso com qualquer tipo de `Responder`, mas não esqueça que o discord tem um limite de 100 caracteres nos customIds.
+    Você pode usar esse recurso com qualquer tipo de <CodeSpan.Class identifier="Responder" />, mas não esqueça que o discord tem um limite de 100 caracteres nos customIds.
 </Callout>
 
 ## Transformando parâmetros de CustomID
 
-A função `createResponder` tem uma opção onde você pode especificar uma forma de transformar o objeto de parâmetros que inicalmente tanto as chaves, quantos os valores são somente strings. Confira:
+A função <CodeSpan.Method identifier="createResponder"/> tem uma opção onde você pode especificar uma forma de transformar o objeto de parâmetros que inicalmente tanto as chaves, quantos os valores são somente strings. Confira:
 
 <Tabs items={["Transformação simples", "Transformando datas", "Transformação opcional", "Esquema Zod"]}>
   <Tab value="Transformação simples">

@@ -19,7 +19,7 @@ A biblioteca `discord.js` foi atualizada para a versão mais recente. Atualmente
 
 ## ▶️ Função inicial
 
-A função que antes se chamava `bootstrapApp`, agora se chama apenas `bootstrap`. Essa função é responsável por iniciar toda a nossa aplicação, desde carregar **comandos**, **eventos**, **responders**, registrar dados na aplicação e fazer login com o token do bot.
+A função que antes se chamava `bootstrapApp`, agora se chama apenas <CodeSpan.Method identifier="bootstrap"/>. Essa função é responsável por iniciar toda a nossa aplicação, desde carregar **comandos**, **eventos**, **responders**, registrar dados na aplicação e fazer login com o token do bot.
 
 ```ts title="src/index.ts"
 import { bootstrapApp } from "#base"; // [!code --]
@@ -35,7 +35,7 @@ await bootstrap({ meta: import.meta }); // [!code ++]
     </Accordion>
 </Accordions>
 
-Vamos ver agora algumas opções que foram removidas da função `bootstrap`
+Vamos ver agora algumas opções que foram removidas da função <CodeSpan.Method identifier="bootstrap"/>
 
 ```ts title="src/index.ts"
 interface BootstrapOptions extends Partial<ClientOptions> {
@@ -57,7 +57,7 @@ interface BootstrapOptions extends Partial<ClientOptions> {
 }
 ```
 
-Antes era possível definir algumas funções para determinados contextos para os comandos e os responders nas opções da função `bootstrap`. Mas agora não é mais possível.
+Antes era possível definir algumas funções para determinados contextos para os comandos e os responders nas opções da função <CodeSpan.Method identifier="bootstrap"/>. Mas agora não é mais possível.
 
 ## 🟦 Pasta discord
 
@@ -72,7 +72,7 @@ import { setupCreators } from "#base";
 export const { createCommand, createEvent, createResponder } = setupCreators();
 ```
 
-Para aqueles que já usavam a base antes, já perceberam que não usaremos mais as classes `Command`, `Event` e `Responder`. Elas foram substituídas pelas funções `createCommand`, `createEvet` e `createResponder`.
+Para aqueles que já usavam a base antes, já perceberam que não usaremos mais as classes `Command`, `Event` e <CodeSpan.Class identifier="Responder" />. Elas foram substituídas pelas funções <CodeSpan.Method identifier="createResponder"/>, `createEvet` e <CodeSpan.Method identifier="createResponder"/>.
 
 <Accordions>
     <Accordion title="Ainda funcionam da mesma maneira, você só precisa alterar de classe para função">
@@ -125,7 +125,7 @@ Para aqueles que já usavam a base antes, já perceberam que não usaremos mais 
                 }
             });
             ```
-            Vamos falar desse `types` já já.
+            Vamos falar desse <CodeSpan.Prop identifier="types" /> já já.
         </Tab>
         </Tabs>
     </Accordion>
@@ -137,7 +137,7 @@ Mais uma vez, isso não é por acaso, essa alteração trará grandes recursos e
     Os snippets da base também foram atualizados! Você ainda pode continuar usando `new.command`, `new.event` e `new.responder` para gerar um pequeno trecho de código inicial para essas funções.
 </Callout>
 
-Lembra que algumas opções foram removidas da função `bootstrap`? Então, agora elas serão definidas na função `setupCreators`:
+Lembra que algumas opções foram removidas da função <CodeSpan.Method identifier="bootstrap"/>? Então, agora elas serão definidas na função <CodeSpan.Method identifier="setupCreators"/>:
 
 ```ts
 export const { createCommand, createEvent, createResponder } = setupCreators({
@@ -152,7 +152,7 @@ export const { createCommand, createEvent, createResponder } = setupCreators({
 
 ### Opções de comandos
 
-Defina quais serão as permissões padrões de todos os comandos, caso não seja definida nenhuma com a opção `defaultMemberPermissions` (É o mesmo array de permissões do comando).
+Defina quais serão as permissões padrões de todos os comandos, caso não seja definida nenhuma com a opção <CodeSpan.Prop identifier="defaultMemberPermissions" /> (É o mesmo array de permissões do comando).
 
 ```ts
 /* ... */ setupCreators({
@@ -161,7 +161,7 @@ Defina quais serão as permissões padrões de todos os comandos, caso não seja
     },
 });
 ```
-Dessa forma, ao criar um comando e não definir nenhuma permissão padrão de membro, o que você definiu na função `setupCreators`, será o padrão de todos os comandos.
+Dessa forma, ao criar um comando e não definir nenhuma permissão padrão de membro, o que você definiu na função <CodeSpan.Method identifier="setupCreators"/>, será o padrão de todos os comandos.
 
 Você pode definir vários IDs de guildas que deseja registrar os comandos do seu bot com a opção `guilds`.
 
@@ -178,11 +178,11 @@ Agora vamos ver algumas funções abaixo que você pode definir para comandos e 
 
 | Função | descrição |
 | - | ---------- |
-| `middleware` | É executada toda vez antes de cada comando/responder ser executado |
+| <CodeSpan.Method identifier="middleware" /> | É executada toda vez antes de cada comando/responder ser executado |
 | `onError`, | É executada quando ocorrer um erro na execução de um comando/responder |
 | `onNotFound` | É executada caso um comando/responder não for encontrado para a interação |
 
-Sobre a função `onError`, você pode conferir [alguns exemplos de uso dela em uma postagem anterior](/blog/2024-12-04#%EF%B8%8F-bootstrapapp), basta adptar agora para a função `setupCreators`.
+Sobre a função `onError`, você pode conferir [alguns exemplos de uso dela em uma postagem anterior](/blog/2024-12-04#%EF%B8%8F-bootstrapapp), basta adptar agora para a função <CodeSpan.Method identifier="setupCreators"/>.
 
 Agora sobre as outras funções, um blog de dicas será postado em breve.
 
@@ -206,9 +206,9 @@ export enum ResponderType {
 }
 ```
 
-O tipo `ResponderType.Select` servia para responder qualquer tipo de select menu, o `ResponderType.Row` respondia qualquer componente de mensagem e o `ResponderType.All` respondia todos. Mas e agora?
+O tipo <CodeSpan.Enum identifier="ResponderType" member="Select" /> servia para responder qualquer tipo de select menu, o `ResponderType.Row` respondia qualquer componente de mensagem e o `ResponderType.All` respondia todos. Mas e agora?
 
-A propriedade `type` foi renomeada para `types` e agora você pode passar um array de `ResponderType` que deseja que este Responder responda.
+A propriedade <CodeSpan.Prop identifier="type" /> foi renomeada para <CodeSpan.Prop identifier="types" /> e agora você pode passar um array de <CodeSpan.Enum identifier="ResponderType" /> que deseja que este Responder responda.
 
 ```ts
 import { createResponder, ResponderType } from "#base";

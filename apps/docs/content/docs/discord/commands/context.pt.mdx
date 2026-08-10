@@ -7,7 +7,7 @@ description: Como criar comandos de menu de contexto do discord
 ## Criando menus de contexto
 
 <Callout type="success">
-    É possível definir algumas opções para os comandos na função `setupCreators`!
+    É possível definir algumas opções para os comandos na função <CodeSpan.Method identifier="setupCreators"/>!
 
     [Veja mais detalhes na página sobre as funções criadoras](/docs/discord/creators#command-options)
 </Callout>
@@ -16,7 +16,7 @@ Menus de contexto não tem descrição e o nome desses comandos pode conter letr
 
 <Tabs items={["Menu de contexto de usuário", "Menu de contexto de mensagem"]}>
   <Tab value="Menu de contexto de usuário">
-    Para criar um comando de menu de contexto de usuário, você precisa definir `name` e `type`.
+    Para criar um comando de menu de contexto de usuário, você precisa definir <CodeSpan.Prop identifier="name" /> e <CodeSpan.Prop identifier="type" />.
 
     ```ts
     createCommand({
@@ -34,7 +34,7 @@ Menus de contexto não tem descrição e o nome desses comandos pode conter letr
     ```
   </Tab>
   <Tab value="Menu de contexto de mensagem">
-    Para criar um comando de menu de contexto de mensagem, você precisa definir `name` e `type`.
+    Para criar um comando de menu de contexto de mensagem, você precisa definir <CodeSpan.Prop identifier="name" /> e <CodeSpan.Prop identifier="type" />.
 
     ```ts
     createCommand({

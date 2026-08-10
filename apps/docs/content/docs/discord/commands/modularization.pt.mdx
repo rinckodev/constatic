@@ -302,7 +302,7 @@ createCommand({
     Mesmo que bem simples, este comando tem mais de 200 linhas de código. Imagine um comando real com mais complexidade, verificações, transformações, interatividade, ficaria muito maior. Isso pode ser ruim ao longo do tempo se você deseja manter seu projeto e atualizar sempre.
 </Callout>
 
-A função `createCommand` retorna um `CommandInstance` que contém dois métodos especiais: `group` e `subcommand`. Como você pode imaginar isso serve para criar grupos e sub comandos:
+A função <CodeSpan.Method identifier="createCommand"/> retorna um `CommandInstance` que contém dois métodos especiais: <CodeSpan.Method identifier="group" /> e <CodeSpan.Method identifier="subcommand" />. Como você pode imaginar isso serve para criar grupos e sub comandos:
 
 ```ts title="src/discord/commands/manage.ts"
 const command = createCommand({
@@ -367,7 +367,7 @@ Agora dentro da pasta **manage** vamos criar outras pastas para os grupos de sub
     </Folder>
 </Files>
  
-Como exportamos o retorno da função `createCommando` usando `export default`, podemos importar nos arquivos `group.ts` das pastas **channels** e ** roles** para definir os grupos de sub comandos:
+Como exportamos o retorno da função <CodeSpan.Method identifier="createCommand" /> usando `export default`, podemos importar nos arquivos `group.ts` das pastas **channels** e **roles** para definir os grupos de sub comandos:
 
 <Tabs items={["channels", "roles"]}>
     <Tab value="channels">
@@ -692,7 +692,7 @@ Agora basta criar um arquivo para cada sub comando e o seu código já vai estar
 
 # Transporte de dados
 
-Você pode transportar dados entre os grupos e sub comandos simplesmente retornando eles nas funções `run` de cada um. Vamos ver um exemplo simples:
+Você pode transportar dados entre os grupos e sub comandos simplesmente retornando eles nas funções <CodeSpan.Method identifier="run"/> de cada um. Vamos ver um exemplo simples:
 
 ```ts title="store/command.ts"
 import { createCommand } from "#base";
@@ -714,7 +714,7 @@ export default createCommand({
 });
 ```
 
-Acima temos algo como uma consulta ao banco de dados para obter o documento do nosso sistema de loja. Quando retornamos algo dentro do `run`, ele será passado como o segundo argumento para o `run` dos grupos e sub comandos, tudo isso com tipagem inferida automaticamente!
+Acima temos algo como uma consulta ao banco de dados para obter o documento do nosso sistema de loja. Quando retornamos algo dentro do <CodeSpan.Method identifier="run"/>, ele será passado como o segundo argumento para o <CodeSpan.Method identifier="run"/> dos grupos e sub comandos, tudo isso com tipagem inferida automaticamente!
 
 ```ts tab="setup" title="store/setup.ts"
 import command from "./command.js";

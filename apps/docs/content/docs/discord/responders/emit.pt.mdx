@@ -4,7 +4,7 @@ icon: HiOutlineSignal
 description: Emita interações para manipuladores de Responders
 ---
 
-O manipulador de Responder que você cria será executado quando um evento de interação for emitido! Mas você pode emitir seu próprio evento de interação de forma simples usando a função `emitResponder`:
+O manipulador de Responder que você cria será executado quando um evento de interação for emitido! Mas você pode emitir seu próprio evento de interação de forma simples usando a função <CodeSpan.Method identifier="emitResponder"/>:
 
 ```ts
 import { emitResponder } from "@constatic/base";
@@ -14,7 +14,7 @@ emitResponder("/foo/bar", interaction);
 
 Passe o customId do Responder correspondente no primeiro argumento e uma interação de qualquer tipo no segundo argumento.
 
-Então o manipulador `run` do **Responder** será executado:
+Então o manipulador <CodeSpan.Method identifier="run"/> do **Responder** será executado:
 
 
 ```ts
@@ -30,7 +30,7 @@ createResponder({
 });
 ```
 
-Você pode passar [parâmetros de customId](/docs/discord/responders/params) na função `emitResponder` e eles chegarão no **Responder**:
+Você pode passar [parâmetros de customId](/docs/discord/responders/params) na função <CodeSpan.Method identifier="emitResponder"/> e eles chegarão no **Responder**:
 
 ```ts
 

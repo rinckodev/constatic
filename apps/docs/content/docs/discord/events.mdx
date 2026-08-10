@@ -7,19 +7,19 @@ description: How to create discord event listeners
 ## Creating functions for event listeners
 
 <Callout type="success">
-    You can set some event options in the `setupCreators` function!
+    You can set some event options in the <CodeSpan.Method identifier="setupCreators"/> function!
 
     [See more details on the creator functions page](/docs/discord/creators#event-options)
 </Callout>
 
-To create a function for a discord event listener, use the `createEvent` function
+To create a function for a discord event listener, use the <CodeSpan.Method identifier="createEvent"/> function
 
 First import from the base
 ```ts title="src/events/myevent.ts"
 import { createEvent } from "#base";
 ```
 
-Use the `name` property to create a custom identifier for your event, then set which discord event you expect using the `event` property.
+Use the <CodeSpan.Prop identifier="name" /> property to create a custom identifier for your event, then set which discord event you expect using the `event` property.
 ```ts
 import { createEvent } from "#base";
 

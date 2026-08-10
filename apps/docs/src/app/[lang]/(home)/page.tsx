@@ -2,6 +2,7 @@ import { CliCommand } from "@/components/constatic/cli/command";
 import { ConstaticFlare } from "@/components/constatic/flare";
 import { GridPattern } from "@/components/constatic/grid";
 import { cn } from "@/lib/cn";
+import { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
@@ -53,4 +54,14 @@ export default function HomePage() {
         )}
       />
     </main>
+}
+
+export async function generateMetadata(_: PageProps<'/[lang]/docs/[[...slug]]'>): Promise<Metadata> {
+  return {
+    title: "Constatic",
+    description: "Constatic docs",
+    openGraph: {
+      images: "/og.png"
+    }
+  };
 }

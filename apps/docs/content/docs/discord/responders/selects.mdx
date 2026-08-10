@@ -6,7 +6,7 @@ description: How to reply discord select menus
 
 ## Creating a Responder for a Selection Menu
 
-It is possible to create a `Responder` that can accept several types of select menus, see an example:
+It is possible to create a <CodeSpan.Class identifier="Responder" /> that can accept several types of select menus, see an example:
 
 ```ts title="command.ts"
 // ...
@@ -28,7 +28,7 @@ await interaction.reply({
 });
 // ...
 ```
-Above is the code to send a common selection menu as a response to a command. Just below you can see a `Responder` with `ResponderType.StringSelect` in the types, so that the `run` function of this Responder will be executed when someone selects from this selection menu:
+Above is the code to send a common selection menu as a response to a command. Just below you can see a <CodeSpan.Class identifier="Responder" /> with <CodeSpan.Enum identifier="ResponderType" member="StringSelect" /> in the types, so that the <CodeSpan.Method identifier="run"/> function of this Responder will be executed when someone selects from this selection menu:
 
 ```ts title="responder.ts"
 createResponder({
@@ -82,11 +82,11 @@ Below are all the types of select menus:
 
 | Select Menu | ResponderType |
 | - | - |
-| Strings | `ResponderType.StringSelect` |
-| Users | `ResponderType.UserSelect` |
-| Channels | `ResponderType.ChannelSelect` |
-| Roles | `ResponderType.RoleSelect` |
-| Mentions | `ResponderType.MentionableSelect` |
+| Strings | <CodeSpan.Enum identifier="ResponderType" member="StringSelect" /> |
+| Users | <CodeSpan.Enum identifier="ResponderType" member="UserSelect" /> |
+| Channels | <CodeSpan.Enum identifier="ResponderType" member="ChannelSelect" /> |
+| Roles | <CodeSpan.Enum identifier="ResponderType" member="RoleSelect" /> |
+| Mentions | <CodeSpan.Enum identifier="ResponderType" member="MentionableSelect" /> |
 
 It is possible to combine with any type, this way you can have a button, a select menu and a modal with the same customId and they will all be answered in this function, just do the checks:
 

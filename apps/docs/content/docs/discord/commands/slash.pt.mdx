@@ -8,12 +8,12 @@ import icons from "@lib/icons";
 # Criando comandos de barra
 
 <Callout type="success">
-    É possível definir algumas opções para os comandos na função `setupCreators`!
+    É possível definir algumas opções para os comandos na função <CodeSpan.Method identifier="setupCreators"/>!
 
     [Veja mais detalhes na página sobre as funções criadoras](/docs/discord/creators#command-options)
 </Callout>
 
-Antes de tudo, importe a função `createCommand` da base e `ApplicationCommandType` do `discord.js`
+Antes de tudo, importe a função <CodeSpan.Method identifier="createCommand"/> da base e <CodeSpan.Enum identifier="ApplicationCommandType" /> do `discord.js`
 
 ```ts title="ping.ts"
 import { createCommand } from "#base"
@@ -88,7 +88,7 @@ createCommand({
 
 # Global
 
-A opção `global` nos comandos é útil quando você quer que o comando seja registrado na aplicação ao invés da guilda. Só é necessário quando IDs de guildas são definidos na função [setupCreators](/docs/discord/creators/#commandoptions)
+A opção <CodeSpan.Prop identifier="global" /> nos comandos é útil quando você quer que o comando seja registrado na aplicação ao invés da guilda. Só é necessário quando IDs de guildas são definidos na função [setupCreators](/docs/discord/creators/#commandoptions)
 
 O código abaixo faz com que os comandos sejam registrados apenas nas guildas válidas listadas no array:
 ```ts title="src/discord/index.ts"
@@ -135,4 +135,4 @@ createCommand({
 });
 ```
 
-Os comandos `configurações` e `gerenciar` serão registrados nas guildas definidas na função `setupCreators`, mas o comando `informações` será registrado globalmente na aplicação, assim estando disponível em qualquer guilda.
+Os comandos `configurações` e `gerenciar` serão registrados nas guildas definidas na função <CodeSpan.Method identifier="setupCreators"/>, mas o comando `informações` será registrado globalmente na aplicação, assim estando disponível em qualquer guilda.

@@ -6,7 +6,7 @@ description: Como responder menus de seleção do discord com a estrutura Respon
 
 ## Criando Responder para menu de seleção
 
-É possível criar um `Responder` que pode aceitar vários tipos de menus de seleção, veja um exemplo:
+É possível criar um <CodeSpan.Class identifier="Responder" /> que pode aceitar vários tipos de menus de seleção, veja um exemplo:
 
 ```ts title="command.ts"
 // ...
@@ -28,7 +28,7 @@ await interaction.reply({
 });
 // ...
 ```
-Acima está o código para enviar um menu de seleção comum como resposta do comando. Logo abaixo você pode ver um `Responder` com `ResponderType.StringSelect` nos tipos, assim a função `run` deste Responder será executada quando alguém selecionar neste menu de seleção:
+Acima está o código para enviar um menu de seleção comum como resposta do comando. Logo abaixo você pode ver um <CodeSpan.Class identifier="Responder" /> com <CodeSpan.Enum identifier="ResponderType" member="StringSelect" /> nos tipos, assim a função <CodeSpan.Method identifier="run"/> deste Responder será executada quando alguém selecionar neste menu de seleção:
 
 ```ts title="responder.ts"
 createResponder({
@@ -80,11 +80,11 @@ createResponder({
 Abaixo estão todos os tipos de menus de seleção:
 | Menu de seleção | ResponderType | 
 | - | - | 
-| Strings | `ResponderType.StringSelect` | 
-| Usuários | `ResponderType.UserSelect` | 
-| Canais | `ResponderType.ChannelSelect` | 
-| Cargos | `ResponderType.RoleSelect` | 
-| Menções | `ResponderType.MentionableSelect` | 
+| Strings | <CodeSpan.Enum identifier="ResponderType" member="StringSelect" /> | 
+| Usuários | <CodeSpan.Enum identifier="ResponderType" member="UserSelect" /> | 
+| Canais | <CodeSpan.Enum identifier="ResponderType" member="ChannelSelect" /> | 
+| Cargos | <CodeSpan.Enum identifier="ResponderType" member="RoleSelect" /> | 
+| Menções | <CodeSpan.Enum identifier="ResponderType" member="MentionableSelect" /> | 
 
 É possível combinar com qualquer tipo, dessa forma você pode ter um botão, um menu de seleção e um modal com o mesmo customId e todos serão respondidos nesta função, basta fazer verificações:
 

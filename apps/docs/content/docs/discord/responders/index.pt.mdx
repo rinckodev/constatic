@@ -5,21 +5,21 @@ description: Entenda o que são Responders e como eles funcionam
 ---
 
 <Callout type="success">
-    É possível definir algumas opções para os Responders na função `setupCreators`!
+    É possível definir algumas opções para os Responders na função <CodeSpan.Method identifier="setupCreators"/>!
 
     [Veja mais detalhes na página sobre as funções criadoras](/docs/discord/creators#responder-options)
 </Callout>
 
 ## O que são Responders?
 
-A função `createResponder` é poderosa para lidar com diferentes tipos de interações do discord. Com ela podemos responder botões, menus de seleção e modais, ou todos ao mesmo tempo.
+A função <CodeSpan.Method identifier="createResponder"/> é poderosa para lidar com diferentes tipos de interações do discord. Com ela podemos responder botões, menus de seleção e modais, ou todos ao mesmo tempo.
 
-Para criar um `Responder` é preciso importar a função e o enum
+Para criar um <CodeSpan.Class identifier="Responder" /> é preciso importar a função e o enum
 ```ts title="responder.ts"
 import { createResponder } from "#base";
 import { ResponderType } from "@constatic/base";
 ```
-Veja um simples exemplo abaixo, vamos enviar um botão através de um comando e responder ele usando a função `createResponder`
+Veja um simples exemplo abaixo, vamos enviar um botão através de um comando e responder ele usando a função <CodeSpan.Method identifier="createResponder"/>
 
 ```ts title="command.ts"
 import { createCommand } from "#base";
@@ -64,15 +64,15 @@ createResponder({
 });
 ```
 
-Dessa forma estamos respondendo a um componente de botão fixo em uma mensagem onde o customId é `/ping/button`, então qualquer botão que nosso bot enviar que tiver esse customId, será respondido por essa função definida no `run` do nosso `Responder`.
+Dessa forma estamos respondendo a um componente de botão fixo em uma mensagem onde o customId é `/ping/button`, então qualquer botão que nosso bot enviar que tiver esse customId, será respondido por essa função definida no <CodeSpan.Method identifier="run"/> do nosso <CodeSpan.Class identifier="Responder" />.
 
 <Callout type="warn">
     Note que criamos um customId que começa com `/` (barra). Nessa base, todos os componentes e modais que forem manipulados nos **Responders**, devem ter o customId iniciado com `/` (barra), pois o manipulador trata os **Responders** como rotas HTTP, assim como você pode ver [nesta página](/docs/discord/responders/params).
 </Callout>
 
-Os `Responders` usam o evento `interactionCreate`, o que significa que mesmo que o bot reinicie, se alguém usar esse botão novamente, ele ainda será respondido com a função definida. O mesmo ocorre para menus de seleção e modais.
+Os `Responders` usam o evento <CodeSpan.String magic content="interactionCreate" />, o que significa que mesmo que o bot reinicie, se alguém usar esse botão novamente, ele ainda será respondido com a função definida. O mesmo ocorre para menus de seleção e modais.
 
-Podemos responder interações de tipos diferentes mas com o mesmo customId definindo mais tipos no array `types`:
+Podemos responder interações de tipos diferentes mas com o mesmo customId definindo mais tipos no array <CodeSpan.Prop identifier="types" />:
 
 ```ts title="responder.ts"
 createResponder({
@@ -103,15 +103,15 @@ Confira todos os tipos de interações que os Respoders podem receber:
 
 | Tipo | Interação | Detalhes |
 | -- | -- | -- |
-| `ResponderType.Button` | **ButtonInteraction** | É emitido quando um botão em uma mensagem é clicado |
-| `ResponderType.StringSelect` | **StringSelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção em uma mensagem são selecionadas |
-| `ResponderType.UserSelect` | **UserSelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção de usuário em uma mensagem são selecionadas |
-| `ResponderType.RoleSelect` | **RoleSelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção de cargos em uma mensagem são selecionadas |
-| `ResponderType.ChannelSelect` | **ChannelSelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção de canais em uma mensagem são selecionadas |
-| `ResponderType.Mentionable` | **MentionableSelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção de menção em uma mensagem são selecionadas |
-| `ResponderType.Select` | **AnySelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção de qualquer tipo em uma mensagem são selecionadas |
-| `ResponderType.Modal` | **ModalSubmitInteraction** | É emitido quando um modal aberto por um comando é enviado |
-| `ResponderType.ModalComponent` | **ModalMessageModalSubmitInteraction** | É emitido quando um modal aberto por um componente de mensagem é enviado |
-| `ResponderType.ChatInput` | **ChatInputCommandInteraction** | Só pode ser emitido pela função [emitResponder](/docs/discord/responders/emit) passando um comando do tipo **ChatInputCommandInteraction** como argumento |
-| `ResponderType.UserContextMenu` | **UserContextMenuCommandInteraction** | Só pode ser emitido pela função [emitResponder](/docs/discord/responders/emit) passando um comando do tipo **UserContextMenuCommandInteraction** como argumento |
-| `ResponderType.MessageContextMenu` | **MessageContextMenuCommandInteraction** | Só pode ser emitido pela função [emitResponder](/docs/discord/responders/emit) passando um comando do tipo **MessageContextMenuCommandInteraction** como argumento |
+| <CodeSpan.Enum identifier="ResponderType" member="Button" /> | **ButtonInteraction** | É emitido quando um botão em uma mensagem é clicado |
+| <CodeSpan.Enum identifier="ResponderType" member="StringSelect" /> | **StringSelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção em uma mensagem são selecionadas |
+| <CodeSpan.Enum identifier="ResponderType" member="UserSelect" /> | **UserSelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção de usuário em uma mensagem são selecionadas |
+| <CodeSpan.Enum identifier="ResponderType" member="RoleSelect" /> | **RoleSelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção de cargos em uma mensagem são selecionadas |
+| <CodeSpan.Enum identifier="ResponderType" member="ChannelSelect" /> | **ChannelSelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção de canais em uma mensagem são selecionadas |
+| <CodeSpan.Enum identifier="ResponderType" member="MentionableSelect" /> | **MentionableSelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção de menção em uma mensagem são selecionadas |
+| <CodeSpan.Enum identifier="ResponderType" member="Select" /> | **AnySelectMenuInteraction** | É emitido quando uma ou mais opções em um menu de seleção de qualquer tipo em uma mensagem são selecionadas |
+| <CodeSpan.Enum identifier="ResponderType" member="Modal" /> | **ModalSubmitInteraction** | É emitido quando um modal aberto por um comando é enviado |
+| <CodeSpan.Enum identifier="ResponderType" member="ModalComponent" /> | **ModalMessageModalSubmitInteraction** | É emitido quando um modal aberto por um componente de mensagem é enviado |
+| <CodeSpan.Enum identifier="ResponderType" member="ChatInput" /> | **ChatInputCommandInteraction** | Só pode ser emitido pela função [emitResponder](/docs/discord/responders/emit) passando um comando do tipo **ChatInputCommandInteraction** como argumento |
+| <CodeSpan.Enum identifier="ResponderType" member="UserContextMenu" /> | **UserContextMenuCommandInteraction** | Só pode ser emitido pela função [emitResponder](/docs/discord/responders/emit) passando um comando do tipo **UserContextMenuCommandInteraction** como argumento |
+| <CodeSpan.Enum identifier="ResponderType" member="MessageContextMenu" /> | **MessageContextMenuCommandInteraction** | Só pode ser emitido pela função [emitResponder](/docs/discord/responders/emit) passando um comando do tipo **MessageContextMenuCommandInteraction** como argumento |

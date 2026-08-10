@@ -6,7 +6,7 @@ description: How to create discord autocomplete commands
 
 # What is autocomplete?
 
-Imagine you want to dynamically provide choices for a command option, for example, a command to search for videos on YouTube. You can use the `autocomplete` option. This way, based on what the user types in that option, you can search APIs and return a list of choices.
+Imagine you want to dynamically provide choices for a command option, for example, a command to search for videos on YouTube. You can use the <CodeSpan.Method identifier="autocomplete"/> option. This way, based on what the user types in that option, you can search APIs and return a list of choices.
 
 # Creating an autocomplete option
 
@@ -14,7 +14,7 @@ Imagine you want to dynamically provide choices for a command option, for exampl
 You must have a [slash command](/docs/discord/commands/slash) to create an autocomplete option.
 </Callout>
 
-Only options of types **String**, **Number**, and **Integer** can be autocompleted. To do this, simply set the `autocomplete` property to true on the option object in your command:
+Only options of types **String**, **Number**, and **Integer** can be autocompleted. To do this, simply set the <CodeSpan.Method identifier="autocomplete"/> property to true on the option object in your command:
 
 ```ts title="command.ts"
 createCommand({
@@ -127,7 +127,7 @@ createCommand({
 ```
 
 <Callout type="info">
-	If you prefer, you can use the interaction's `respond` method as you normally would:
+	If you prefer, you can use the interaction's <CodeSpan.Method identifier="respond" /> method as you normally would:
 	```ts
 	return choices; // [!code --]
 	interaction.respond(choices.slice(0, 25)) // [!code ++]

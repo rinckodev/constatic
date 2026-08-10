@@ -7,7 +7,7 @@ import icons from "@lib/icons";
 
 ## Ponto de entrada
 
-O arquivo `index.ts` da pasta `src` é o ponto de entrada deste projeto, é nele que a função `bootstrap` é executada para ligar a aplicação de bot de discord.
+O arquivo `index.ts` da pasta `src` é o ponto de entrada deste projeto, é nele que a função <CodeSpan.Method identifier="bootstrap"/> é executada para ligar a aplicação de bot de discord.
 
 ```ts title="src/index.ts"
 import { bootstrap } from "@constatic/base";
@@ -49,7 +49,7 @@ Com isso você pode criar `comandos`, `eventos` e `responders` dentro desses dir
 
 ### Logs de carregamento (loadLogs)
 
-É possível desabilitar as logs de carregamento das estruturas dessa base definindo `falso` na opção `loadLogs` da função `bootstrap`.
+É possível desabilitar as logs de carregamento das estruturas dessa base definindo `falso` na opção <CodeSpan.Prop identifier="loadLogs" /> da função <CodeSpan.Method identifier="bootstrap"/>.
 
 ```ts title="src/index.ts"
 await bootstrap({ 
@@ -62,7 +62,7 @@ await bootstrap({
 
 ### Antes de carregar (beforeLoad)
 
-Você você pode executar um código antes dos diretórios serem carregados e recebe o `client` antes de ficar online (ready).
+Você você pode executar um código antes dos diretórios serem carregados e recebe o <CodeSpan.Class identifier="Client" /> antes de ficar online (ready).
 
 ```ts title="src/index.ts"
 await bootstrap({ 
