@@ -1,10 +1,10 @@
-import type { DiscordBotToken } from "#types";
 import { uiMessage } from "#helpers";
-import { withDefaults } from "../../../../../helpers/prompts.js";
-import { fetchDiscordTokenData } from "#shared/tokens.js";
-import { password } from "@inquirer/prompts";
-import ck from "chalk";
 import { Result } from "#lib/result.js";
+import { fetchDiscordTokenData } from "#shared/tokens.js";
+import type { DiscordBotToken } from "#types";
+import { ck } from "#utils/ck.js";
+import { password } from "@inquirer/prompts";
+import { withDefaults } from "../../../../../helpers/prompts.js";
 
 export async function promptToken(tokens: DiscordBotToken[]) {
     const token = await password(withDefaults({
@@ -29,7 +29,6 @@ export async function promptToken(tokens: DiscordBotToken[]) {
             "pt-BR": `Este token já está salvo! ${name}`,
         }, ck.red));
     }
-
     return await fetchDiscordTokenData(token);
 
 }

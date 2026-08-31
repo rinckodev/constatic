@@ -1,8 +1,8 @@
 import { CLI } from "#cli";
-import { uiMessage, discordEmojis, sleep, log } from "#helpers";
+import { discordEmojis, log, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { DiscordBotToken } from "#types";
-import ora from "ora";
+import { createSpinner } from "#utils/spinner.js";
 
 interface FetchDiscordEmojisProps {
     cli: CLI,
@@ -11,12 +11,11 @@ interface FetchDiscordEmojisProps {
 }
 
 export async function fetchDiscordEmojis({ cli, token, notCheckAmount=false }: FetchDiscordEmojisProps){
-    const loading = ora({
-        text: uiMessage({
+    const loading = createSpinner()
+        .start(uiMessage({
             "en-US": "Fetching emojis",
             "pt-BR": "Buscando emojis"
-        }),
-    }).start();
+        }));
 
     const result = await discordEmojis.get(token);
     loading.stop();

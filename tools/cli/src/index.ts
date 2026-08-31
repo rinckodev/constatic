@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { log, showUsage, uiMessage } from "#helpers";
-import ck from "chalk";
+import { ck } from "#utils/ck.js";
 import { runMain } from "citty";
 import path from "node:path";
 import { fileURLToPath } from "url";

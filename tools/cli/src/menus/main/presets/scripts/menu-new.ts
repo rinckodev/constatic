@@ -1,14 +1,14 @@
 import { copy, divider, log, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
-import { withDefaults } from "../../../../helpers/prompts.js";
 import { ScriptPreset } from "#types";
 import { input } from "@inquirer/prompts";
+import { withDefaults } from "../../../../helpers/prompts.js";
 
-import ck from "chalk";
+import { CLI } from "#cli";
+import { ck } from "#utils/ck.js";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { modifyScriptPresetMenu } from "./actions/modify.js";
-import { CLI } from "#cli";
 
 export async function presetsScriptsNewMenu(cli: CLI) {
     const presets = cli.config.get("presets.scripts", []);

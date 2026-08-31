@@ -1,11 +1,11 @@
-import { APIEmoji, DiscordBotToken } from "#types";
-import { input, select } from "@inquirer/prompts";
-import fs from "node:fs/promises";
+import { CLI } from "#cli";
 import { divider, log, sleep, uiMessage, withDefaults } from "#helpers";
 import { menus } from "#menus";
-import ck from "chalk";
-import { CLI } from "#cli";
 import { fetchDiscordEmojis } from "#shared/emojis/fetch.js";
+import { APIEmoji, DiscordBotToken } from "#types";
+import { ck } from "#utils/ck.js";
+import { input, select } from "@inquirer/prompts";
+import fs from "node:fs/promises";
 
 export async function discordEmojisFileMenu(cli: CLI, token: DiscordBotToken){
     const emojis = await fetchDiscordEmojis({ cli, token });

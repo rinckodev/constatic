@@ -1,6 +1,6 @@
 import { commonTexts } from "#helpers";
 import { ScriptPreset, ScriptPresetFile } from "#types";
-import ck from "chalk";
+import { ck } from "#utils/ck.js";
 
 export function formatPresets(presets: ScriptPreset[], withoutback?: boolean) {
     const formated = presets.map(({ id, name }) => ({

@@ -4,12 +4,12 @@ import { byeMessage, divider, getCdPath, json, log, modifyObjArg, toNpmName, uiM
 import { KeyValueFile } from "#lib/kvf.js";
 import { applyScriptPresets } from "#shared/presets/scripts/apply.js";
 import type { EnvVarData } from "#types";
-import ck from "chalk";
+import { ck } from "#utils/ck.js";
+import { createSpinner } from "#utils/spinner.js";
 import { copy } from "fs-extra";
 import merge from "lodash.merge";
 import { cp, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import ora from "ora";
 import { readPackageJSON } from "pkg-types";
 import { Project, SourceFile } from "ts-morph";
 
@@ -28,7 +28,7 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
 
     const isDistRoot = data.dist === process.cwd();
 
-    const generating = ora();
+    const generating = createSpinner();
     generating.start(uiMessage({
         "en-US": "The project is being generated! Please wait...",
         "pt-BR": "O projeto está sendo gerado! Aguarde...",
@@ -55,20 +55,20 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
     const envFile = new KeyValueFile(distJoin("./.env"));
     await envFile.read(distJoin("./.env.example"));
 
-    generating.text = uiMessage({
+    generating.update(uiMessage({
         "en-US": "Creating environment variables manager",
         "pt-BR": "Criando gerenciador de variáveis de ambiente",
-    });
+    }));
     const pkg = await readPackageJSON(distJoin("package.json"));
     pkg.name = toNpmName(path.basename(path.resolve(data.dist)));
 
     const database = cli.templates.bot.presets.databases[data.database ?? ""];
 
     if (database) {
-        generating.text = uiMessage({
+        generating.update(uiMessage({
             "en-US": "Setting up the database",
             "pt-BR": "Configurando o banco de dados",
-        });
+        }));
         await actions.bot.add.database({
             database, pkg, envFile,
             envSchema: projectFiles.envSchema,
@@ -79,10 +79,10 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
     const server = cli.templates.bot.presets.servers[data.server ?? ""];
 
     if (server) {
-        generating.text = uiMessage({
+        generating.update(uiMessage({
             "en-US": "Setting up the API Server...",
             "pt-BR": "Configurando Servidor de API...",
-        });
+        }));
 
         await actions.bot.add.server({
             server, pkg, envFile,
@@ -93,10 +93,10 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
 
     const token = cli.config.getToken(data.token ?? "");
     if (token) {
-        generating.text = uiMessage({
+        generating.update(uiMessage({
             "en-US": "Writing the token to the .env file...",
             "pt-BR": "Escrevendo o token no arquivo .env...",
-        });
+        }));
         envFile.set("BOT_TOKEN", token.token);
     };
 
@@ -176,10 +176,10 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
     await envFile.write(distJoin(".env.example"), true);
 
     if (data.install) {
-        generating.text = uiMessage({
+        generating.update(uiMessage({
             "en-US": "Installing the dependencies...",
             "pt-BR": "Instalando as dependências...",
-        });
+        }));
         const result = await cli.shell.run(distJoin(), "install");
         generating.stop();
         if (result.success) {

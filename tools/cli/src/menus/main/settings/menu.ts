@@ -1,8 +1,8 @@
-import { colors, commonTexts, divider, uiMessage } from "#helpers";
-import { menus } from "#menus";
-import { select } from "@inquirer/prompts";
-import ck from "chalk";
 import type { CLI } from "#cli";
+import { commonTexts, divider, uiMessage } from "#helpers";
+import { menus } from "#menus";
+import { ck } from "#utils/ck.js";
+import { select } from "@inquirer/prompts";
 
 export async function settingsMenu(cli: CLI){
     const menu = await select({
@@ -15,7 +15,7 @@ export async function settingsMenu(cli: CLI){
                 name: uiMessage({
                     "pt-BR": "🌐 Idioma",
                     "en-US": "🌐 Language",
-                }, ck.hex(colors.azoxo)),
+                }, ck.blue),
                 value: "lang" 
             },
             { 

@@ -3,8 +3,8 @@ import { commonTexts, divider, log, sleep, uiMessage, withDefaults } from "#help
 import { KeyValueFile } from "#lib/kvf.js";
 import { menus } from "#menus";
 import { fetchDiscordTokenData } from "#shared/tokens.js";
+import { ck } from "#utils/ck.js";
 import { select } from "@inquirer/prompts";
-import ck from "chalk";
 import { glob } from "tinyglobby";
 
 type ChoiceData = { name: string, value: string | number };

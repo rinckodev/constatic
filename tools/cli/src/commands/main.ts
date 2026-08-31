@@ -1,9 +1,9 @@
-import ck from "chalk";
-import { CLI } from "../cli/index.js";
-import { defineCommand } from "citty";
 import { menus } from "#menus";
+import { defineCommand } from "citty";
+import { CLI } from "../cli/index.js";
 // import bot from "./bot/index.js"; SOON
 import { divider } from "#helpers";
+import { ck } from "#utils/ck.js";
 
 export default function (cli: CLI) {
     return defineCommand({

@@ -1,10 +1,10 @@
 import { getDiscordBotInfo, uiMessage } from "#helpers";
 import { Result } from "#lib/result.js";
-import ck from "chalk";
-import ora from "ora";
+import { ck } from "#utils/ck.js";
+import { createSpinner } from "#utils/spinner.js";
 
 export async function fetchDiscordTokenData(token: string) {
-    const fetching = ora();
+    const fetching = createSpinner();
     fetching.start(uiMessage({
         "en-US": "🔍 Fetching token information...",
         "pt-BR": "🔍 Buscando informações do token...",

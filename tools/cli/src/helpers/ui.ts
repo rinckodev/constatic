@@ -1,10 +1,10 @@
 import { Language } from "#types";
-import ck, { ChalkInstance } from "chalk";
-import { cliLang, l } from "./lang.js";
+import { Chalk, ck } from "#utils/ck.js";
 import { Arg, ArgsDef, CommandDef, CommandMeta, Resolvable } from "citty";
+import { cliLang, l } from "./lang.js";
 export { setTimeout as sleep } from "node:timers/promises";
 
-export function uiMessage(texts: Record<Language, string>, style?: ChalkInstance) {
+export function uiMessage(texts: Record<Language, string>, style?: Chalk) {
     const lang = cliLang.get();
     return style ? style(texts[lang]) : texts[lang];
 }
@@ -93,7 +93,7 @@ export async function showUsage<T extends ArgsDef = ArgsDef>(
 
     const command = parentMeta.name
         ? `${parentMeta.name} ${cmdMeta.name}`
-        : cmdMeta.name;
+        : cmdMeta.name!;
 
     console.log(ck.dim(`${cmdMeta.description}`));
 
@@ -110,7 +110,7 @@ export async function showUsage<T extends ArgsDef = ArgsDef>(
             const padded = `<${arg.name}>`.padEnd(maxLength + 2, " ");
             const meta = await resolveValue(arg.meta||{});
             console.log(
-                `  ${ck.blue(padded)} ${ck.gray(meta.description)}`
+                `  ${ck.blue(padded)} ${ck.gray(meta.description!)}`
             );
         }
         divider();
@@ -125,7 +125,7 @@ export async function showUsage<T extends ArgsDef = ArgsDef>(
         for (const { name, description, valueHint: hint } of posArgs) {
             const padded = `<${name}>`.padEnd(maxLength + 2, " ");
             console.log(
-                `  ${ck.blue(padded)} ${ck.gray(description)} ${hint ? `: ${hint}` : ""}`
+                `  ${ck.blue(padded)} ${ck.gray(description!)} ${hint ? `: ${hint}` : ""}`
             );
         }
         divider();
@@ -160,7 +160,7 @@ export async function showUsage<T extends ArgsDef = ArgsDef>(
             const padded = aliasStrPlain.padEnd(maxLength + 1, " ");
 
             console.log(
-                `  ${ck.blue(padded)} ${ck.gray(flag.description)}`
+                `  ${ck.blue(padded)} ${ck.gray(flag.description!)}`
             );
         }
     }

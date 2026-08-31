@@ -1,4 +1,4 @@
-import ck from "chalk";
+import { ck } from "#utils/ck.js";
 
 type FileTreeNode = {
 	name: string;

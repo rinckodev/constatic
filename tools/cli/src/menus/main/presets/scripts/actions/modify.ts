@@ -2,9 +2,9 @@ import { CLI } from "#cli";
 import { divider, fetchNpmPackage, instructions, log, searchSelect, sleep, theme, uiMessage, withDefaults } from "#helpers";
 import { packageJsonHasDeps } from "#shared/presets/scripts/deps.js";
 import { ScriptPreset } from "#types";
+import { ck } from "#utils/ck.js";
+import { createSpinner } from "#utils/spinner.js";
 import { checkbox, input, select, Separator } from "@inquirer/prompts";
-import ck from "chalk";
-import ora from "ora";
 import { glob } from "tinyglobby";
 import { formatPresetFiles } from "./format.js";
 import { printPreview } from "./preview.js";
@@ -188,12 +188,11 @@ export async function modifyScriptPresetMenu(
                     required: true,
                 }));
 
-                const loading = ora({
-                    text: uiMessage({
+                const loading = createSpinner()
+                    .start(uiMessage({
                         "en-US": "Fetching package",
                         "pt-BR": "Buscando pacote"
-                    }),
-                }).start();
+                    }));
 
                 const result = await fetchNpmPackage(name);
                 loading.stop();

@@ -1,14 +1,14 @@
+import { CLI } from "#cli";
 import { divider, instructions, log, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
-import { checkbox } from "@inquirer/prompts";
 import { ScriptPreset } from "#types";
-import ck from "chalk";
-import { withDefaults } from "../../../../helpers/prompts.js";
+import { ck } from "#utils/ck.js";
+import { checkbox } from "@inquirer/prompts";
 import { rm } from "node:fs/promises";
 import path from "node:path";
+import { withDefaults } from "../../../../helpers/prompts.js";
 import { formatPresets } from "./actions/format.js";
 import { noSelect } from "./actions/noselect.js";
-import { CLI } from "#cli";
 
 export async function presetsScriptsDeleteMenu(cli: CLI, presets: ScriptPreset[]) {
     const selected = await checkbox(withDefaults({

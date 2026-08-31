@@ -1,8 +1,8 @@
 import { CLI } from "#cli";
-import { uiMessage, divider, sleep, cliTableChars } from "#helpers";
+import { cliTableChars, divider, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { ScriptPreset } from "#types";
-import ck from "chalk";
+import { ck } from "#utils/ck.js";
 import Table from "cli-table3";
 
 export async function presetsScriptsListMenu(cli: CLI, presets: ScriptPreset[]) {
@@ -34,10 +34,10 @@ export async function presetsScriptsListMenu(cli: CLI, presets: ScriptPreset[]) 
     presets.forEach(preset => table.push([
         ck.yellow(preset.name),
         ck.green(preset.id),
-        ck.greenBright(preset.files.length),
+        ck.greenBright(preset.files.length.toString()),
         ck.greenBright(
             Object.values(preset.packageJson??{})
-                .map(record => Object.values(record)).flat().length
+                .map(record => Object.values(record)).flat().length.toString()
         )
     ]));
 

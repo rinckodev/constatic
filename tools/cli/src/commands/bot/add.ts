@@ -1,14 +1,14 @@
+import { actions } from "#actions/index.js";
 import { CLI } from "#cli";
 import { divider, l, log } from "#helpers";
+import { KeyValueFile } from "#lib/kvf.js";
+import { ck } from "#utils/ck.js";
+import { createSpinner } from "#utils/spinner.js";
 import { defineCommand } from "citty";
 import path, { join } from "node:path";
-import { Project } from "ts-morph";
-import { actions } from "#actions/index.js";
 import { writePackageJSON } from "pkg-types";
-import ck from "chalk";
-import ora from "ora";
+import { Project } from "ts-morph";
 import { commandFlags } from "../flags.js";
-import { KeyValueFile } from "#lib/kvf.js";
 
 const plus = ck.green("+");
 
@@ -73,7 +73,7 @@ export default function (cli: CLI) {
                 process.exit(1);
             }
 
-            const adding = ora();
+            const adding = createSpinner();
             adding.start(l({
                 "en-US": "Adding selected items! Please wait",
                 "pt-BR": "Adicionando itens selecionados! Aguarde",
@@ -118,10 +118,10 @@ export default function (cli: CLI) {
                 .bot.presets.databases[data.database ?? ""];
 
             if (database) {
-                adding.text = l({
+                adding.update(l({
                     "pt-BR": `Adicionando banco de dados: ${database.name}`,
                     "en-US": `Adding database: ${database.name}`
-                });
+                }));
                 await actions.bot.add.database({
                     cli, database, dist, envFile,
                     envSchema: projectFiles.envSchema,
@@ -139,10 +139,10 @@ export default function (cli: CLI) {
                 .bot.presets.servers[data.server ?? ""];
 
             if (server) {
-                adding.text = l({
+                adding.update(l({
                     "pt-BR": `Adicionando servidor http: ${server.name}`,
                     "en-US": `Adding http server: ${server.name}`
-                });
+                }));
                 await actions.bot.add.server({
                     cli, server, dist, envFile,
                     ...projectFiles,
@@ -158,10 +158,10 @@ export default function (cli: CLI) {
 
             const token = cli.config.getToken(data.token ?? "");
             if (token) {
-                adding.text = l({
+                adding.update(l({
                     "pt-BR": `Adicionando token salvo`,
                     "en-US": `Adding saved token`
-                });
+                }));
                 envFile.set("BOT_TOKEN", token.token);
                 adding.stop();
                 console.log(plus, l({
@@ -172,10 +172,10 @@ export default function (cli: CLI) {
             }
 
             if (data.discloud) {
-                adding.text = l({
+                adding.update(l({
                     "pt-BR": `Adicionando arquivos Discloud`,
                     "en-US": `Adding Discloud files`
-                });
+                }));
                 await actions.bot.add.discloud({ cli, dist });
                 adding.stop();
                 console.log(plus, l({
@@ -186,10 +186,10 @@ export default function (cli: CLI) {
             }
 
             if (data.tsup) {
-                adding.text = l({
+                adding.update(l({
                     "pt-BR": `Adicionando compilador tsup`,
                     "en-US": `Adding tsup compiler`
-                });
+                }));
                 await actions.bot.add.tsup({
                     cli, distdir: dist, pkg,
                 });
@@ -206,10 +206,10 @@ export default function (cli: CLI) {
             await writePackageJSON(path.join(dist, "package.json"), pkg);
 
             if (data.install) {
-                adding.text = l({
+                adding.update(l({
                     "pt-BR": `Instalando dependências`,
                     "en-US": `Installing dependencies`
-                });
+                }));
                 await cli.shell.run(dist, "install");
                 adding.stop();
                 log.success(l({

@@ -1,9 +1,9 @@
+import { CLI } from "#cli";
 import { commonTexts, divider, uiMessage } from "#helpers";
 import { menus } from "#menus";
+import { ck } from "#utils/ck.js";
 import { select } from "@inquirer/prompts";
-import ck from "chalk";
 import { withDefaults } from "../../../../helpers/prompts.js";
-import { CLI } from "#cli";
 
 export async function scriptPresetsMenu(cli: CLI){
     const presets = cli.config.get("presets.scripts", []);

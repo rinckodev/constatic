@@ -10,8 +10,8 @@
   "scripts": {
     "build": "bun run ./build.ts",
     "link": "npm unlink constatic && npm link",
-    "predev": "rm -rf playground && mkdir playground",
-    "dev": "bun run build && cd playground && zsh -ic 'constatic-dev'",
+    "predev": "bun run build && rm -rf playground && mkdir ./playground",
+    "dev": "cd ./playground && bun run ../build/index.js",
     "check": "tsc --noEmit"
   },
   "keywords": [
@@ -69,17 +69,16 @@
   "license": "ISC",
   "devDependencies": {
     "@constatic/config": "*",
+    "@types/bun": "^1.4.0",
     "@types/cross-spawn": "^6.0.6",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "^22.19.2",
-    "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "dependencies": {
     "@inquirer/prompts": "^7.10.1",
-    "chalk": "5.3.0",
     "citty": "^0.1.6",
     "cli-table3": "^0.6.5",
     "conf": "12.0.0",
@@ -87,7 +86,6 @@
     "fs-extra": "11.2.0",
     "inquirer-select-pro": "^1.0.0-alpha.9",
     "lodash.merge": "^4.6.2",
-    "ora": "^8.2.0",
     "pkg-types": "^1.3.1",
     "tinyglobby": "^0.2.15",
     "ts-morph": "^26.0.0"
@@ -102,11 +100,17 @@
     "#menus": [
       "./build/menus/index.js"
     ],
+    "#program": [
+      "./build/program/index.js"
+    ],
     "#shared/*": [
       "./build/shared/*"
     ],
     "#lib/*": [
       "./build/lib/*"
+    ],
+    "#utils/*": [
+      "./build/utils/*"
     ],
     "#actions/*": [
       "./build/actions/*"

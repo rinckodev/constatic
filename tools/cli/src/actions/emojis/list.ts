@@ -1,44 +1,22 @@
-import { CLI } from "#cli";
-import { cliTableChars, uiMessage } from "#helpers";
-import { fetchDiscordEmojis } from "#shared/emojis/fetch.js";
-import { DiscordBotToken } from "#types";
-import ck from "chalk";
+import { APIEmoji } from "#shared/emojis.js";
+import { ck } from "#utils/ck.js";
 import Table from "cli-table3";
 
-interface ListEmojisActionData {
-    token: DiscordBotToken;
-    // type?: string;
-}
-export async function listEmojisAction(cli: CLI, data: ListEmojisActionData) {
-    const emojis = await fetchDiscordEmojis({ cli, token: data.token });
-    if (!emojis) return;
-
-    const cc = {
-        name: uiMessage(
-            { "en-US": "Name", "pt-BR": "Nome", },
-            ck.white
-        ),
-        id: uiMessage(
-            { "en-US": "ID", "pt-BR": "ID", },
-            ck.white
-        ),
-        type: uiMessage(
-            { "en-US": "Type", "pt-BR": "Tipo", },
-            ck.white
-        ),
-    }
-
+export async function emojisListAction(emojis: APIEmoji[]) {
     const table = new Table({
-        head: [cc.name, cc.id, cc.type],
+        head: ["name", "id", "type"].map(ck.white),
         style: { compact: true },
-        chars: cliTableChars,
     });
 
-    emojis.forEach(emoji => table.push([
-        ck.yellow(emoji.name),
-        ck.green(emoji.id),
-        emoji.animated ? ck.magenta("animated") : ck.cyan("static"),
-    ]));
-
-    console.log(table.toString());
+    for(const { id, name, animated } of emojis){
+        table.push([
+            ck.yellow(name),
+            ck.green(id),
+            animated 
+                ? ck.magenta("animated") 
+                : ck.cyan("static")
+        ]);
+    }
+    console.log(table.toString())
+    console.log();
 }

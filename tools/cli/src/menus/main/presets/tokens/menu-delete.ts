@@ -1,10 +1,10 @@
-import type { DiscordBotToken } from "#types";
+import { CLI } from "#cli";
 import { divider, log, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
-import { withDefaults } from "../../../../helpers/prompts.js";
+import type { DiscordBotToken } from "#types";
+import { ck } from "#utils/ck.js";
 import { checkbox } from "@inquirer/prompts";
-import ck from "chalk";
-import { CLI } from "#cli";
+import { withDefaults } from "../../../../helpers/prompts.js";
 
 export async function presetsTokensDeleteMenu(cli: CLI, tokens: DiscordBotToken[]) {
     const choices = tokens.map(t => ({

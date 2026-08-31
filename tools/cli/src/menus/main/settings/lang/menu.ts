@@ -1,10 +1,10 @@
 import type { CLI } from "#cli";
 import { cliLang, commonTexts, divider, uiMessage } from "#helpers";
 import { menus } from "#menus";
-import { withDefaults } from "../../../../helpers/prompts.js";
 import { Language } from "#types";
+import { ck } from "#utils/ck.js";
 import { select } from "@inquirer/prompts";
-import ck from "chalk";
+import { withDefaults } from "../../../../helpers/prompts.js";
 
 export async function settingsLangMenu(cli: CLI){
     const arg = await select(withDefaults({

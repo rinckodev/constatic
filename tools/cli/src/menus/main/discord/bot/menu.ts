@@ -1,11 +1,11 @@
-import { divider, instructions, json, log, toNpmName, uiMessage } from "#helpers";
-import { searchSelect, theme, withDefaults } from "../../../../helpers/prompts.js";
-import { BotTemplateProperties } from "#types";
-import { checkbox, input, select } from "@inquirer/prompts";
-import ck from "chalk";
-import path from "node:path";
-import { CLI } from "#cli";
 import { initBotAction } from "#actions/bot/init.js";
+import { CLI } from "#cli";
+import { divider, instructions, json, log, toNpmName, uiMessage } from "#helpers";
+import { BotTemplateProperties } from "#types";
+import { ck } from "#utils/ck.js";
+import { checkbox, input, select } from "@inquirer/prompts";
+import path from "node:path";
+import { searchSelect, theme, withDefaults } from "../../../../helpers/prompts.js";
 
 export async function discordBotMenu(cli: CLI) {
     const templatePath = path.join(cli.rootname, "/templates/discord/bot");

@@ -3,11 +3,11 @@ import { discordEmojis, divider, equalsIgnoringCase, log, sleep, uiMessage, with
 import { menus } from "#menus";
 import { fetchDiscordEmojis } from "#shared/emojis/fetch.js";
 import { DiscordBotToken } from "#types";
+import { ck } from "#utils/ck.js";
+import { createSpinner } from "#utils/spinner.js";
 import { confirm, input, select } from "@inquirer/prompts";
-import ck from "chalk";
 import fs from "node:fs/promises";
 import path from "node:path";
-import ora from "ora";
 import { glob } from "tinyglobby";
 
 const u = ck.underline;
@@ -36,7 +36,7 @@ export async function discordEmojisUploadMenu(cli: CLI, token: DiscordBotToken) 
         default: "./",
     }));
 
-    const processing = ora();
+    const processing = createSpinner();
     processing.start(uiMessage({
         "en-US": "🔍 Searching for files in nested folders...",
         "pt-BR": "🔍 Procurando por arquivos nas pastas aninhadas...",
@@ -47,10 +47,10 @@ export async function discordEmojisUploadMenu(cli: CLI, token: DiscordBotToken) 
         absolute: true,
     });
 
-    processing.text = uiMessage({
+    processing.update(uiMessage({
         "en-US": "🗃️ Getting information from found files...",
         "pt-BR": "🗃️ Obtendo informações dos arquivos encontrados...",
-    });
+    }));
 
     const data: Array<{ base64: string, name: string }> = [];
 
@@ -190,7 +190,7 @@ export async function discordEmojisUploadMenu(cli: CLI, token: DiscordBotToken) 
             }
         }
 
-        const uploading = ora();
+        const uploading = createSpinner();
         uploading.start(uiMessage({
             "en-US": `Uploading emoji ${ck.yellow.underline(name)}`,
             "pt-BR": `Enviando emoji ${ck.yellow.underline(name)}`,

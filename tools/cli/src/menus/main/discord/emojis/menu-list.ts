@@ -1,10 +1,10 @@
+import { CLI } from "#cli";
 import { cliTableChars, divider, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
-import { DiscordBotToken } from "#types";
-import ck from "chalk";
-import Table from "cli-table3";
-import { CLI } from "#cli";
 import { fetchDiscordEmojis } from "#shared/emojis/fetch.js";
+import { DiscordBotToken } from "#types";
+import { ck } from "#utils/ck.js";
+import Table from "cli-table3";
 
 export async function discordEmojisListMenu(cli: CLI, token: DiscordBotToken){
     const emojis = await fetchDiscordEmojis({ cli, token });

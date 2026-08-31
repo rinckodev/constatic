@@ -1,6 +1,6 @@
 import { buildAndFormatTree, divider, printRecordTree, uiMessage } from "#helpers";
 import { ScriptPreset } from "#types";
-import ck from "chalk";
+import { ck } from "#utils/ck.js";
 
 export function printPreview(preset: ScriptPreset) {
     if (preset.files.length) {

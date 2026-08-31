@@ -1,3 +1,5 @@
+import { ck } from "#utils/ck.js";
+
 export * from "./discord/emojis.js";
 export * from "./discord/tokens.js";
 
@@ -7,13 +9,11 @@ export * from "./files.js";
 export * from "./format.js";
 export * from "./lang.js";
 export * from "./log.js";
-export * from "./ui.js";
-export * from "./validation.js";
 export * from "./morph/functions.js";
 export * from "./morph/objects.js";
 export * from "./prompts.js";
-
-import ck from "chalk";
+export * from "./ui.js";
+export * from "./validation.js";
 
 export const byeMessage = [
     `👋 Discord: ${ck.blue("http://discord.gg/tTu8dGN")}`,

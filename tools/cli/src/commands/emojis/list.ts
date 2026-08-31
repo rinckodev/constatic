@@ -1,4 +1,3 @@
-import { actions } from "#actions/index.js";
 import { CLI } from "#cli";
 import { l } from "#helpers";
 import { fetchDiscordTokenData } from "#shared/tokens.js";
@@ -51,7 +50,7 @@ export default function (cli: CLI) {
                 token=result.data;
             }
 
-            await actions.emojis.list(cli, { token });
+            // await actions.emojis.list(cli, { token });
             
         },
     })

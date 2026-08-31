@@ -1,16 +1,16 @@
+import { CLI } from "#cli";
 import { divider, instructions, json, log, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
-import { checkbox } from "@inquirer/prompts";
-import { ScriptPreset } from "#types";
-import ck from "chalk";
-import { withDefaults } from "../../../../helpers/prompts.js";
-import path from "node:path";
-import { formatPresets } from "./actions/format.js";
-import { PackageJson } from "pkg-types";
 import { applyScriptPresets } from "#shared/presets/scripts/apply.js";
-import { noSelect } from "./actions/noselect.js";
 import { packageJsonHasDeps } from "#shared/presets/scripts/deps.js";
-import { CLI } from "#cli";
+import { ScriptPreset } from "#types";
+import { ck } from "#utils/ck.js";
+import { checkbox } from "@inquirer/prompts";
+import path from "node:path";
+import { PackageJson } from "pkg-types";
+import { withDefaults } from "../../../../helpers/prompts.js";
+import { formatPresets } from "./actions/format.js";
+import { noSelect } from "./actions/noselect.js";
 
 export async function presetsScriptsApplyMenu(cli: CLI, presets: ScriptPreset[]) {
     const selected = await checkbox(withDefaults({

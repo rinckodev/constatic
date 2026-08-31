@@ -1,11 +1,11 @@
+import { CLI } from "#cli";
 import { commonTexts, divider, log, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
-import { withDefaults } from "../../../../helpers/prompts.js";
 import type { DiscordBotToken } from "#types";
+import { ck } from "#utils/ck.js";
 import { select } from "@inquirer/prompts";
-import ck from "chalk";
+import { withDefaults } from "../../../../helpers/prompts.js";
 import { promptToken } from "./actions/prompt.js";
-import { CLI } from "#cli";
 
 export async function presetsTokensEditMenu(cli: CLI, tokens: DiscordBotToken[]) {
     const choices = tokens.map(token => ({

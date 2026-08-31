@@ -1,9 +1,9 @@
-import type { DiscordBotToken } from "#types";
+import { CLI } from "#cli";
 import { cliTableChars, divider, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
-import ck from "chalk";
+import type { DiscordBotToken } from "#types";
+import { ck } from "#utils/ck.js";
 import Table from "cli-table3";
-import { CLI } from "#cli";
 
 export async function presetsTokensListMenu(cli: CLI, tokens: DiscordBotToken[]) {
     const cc = {

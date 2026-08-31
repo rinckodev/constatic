@@ -2,8 +2,8 @@ import { CLI } from "#cli";
 import { commonTexts, divider, uiMessage, withDefaults } from "#helpers";
 import { menus } from "#menus";
 import { DiscordBotToken } from "#types";
+import { ck } from "#utils/ck.js";
 import { select } from "@inquirer/prompts";
-import ck from "chalk";
 import { selectDiscordBot } from "./menu-select.js";
 
 export async function discordEmojisMenu(cli: CLI, token?: DiscordBotToken){

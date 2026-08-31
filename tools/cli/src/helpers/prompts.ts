@@ -1,5 +1,5 @@
+import { ck } from "#utils/ck.js";
 import { select as searchSelectPro } from "inquirer-select-pro";
-import ck from "chalk";
 import merge from "lodash.merge";
 
 export const baseTheme = {

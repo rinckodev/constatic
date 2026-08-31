@@ -1,11 +1,11 @@
+import { CLI } from "#cli";
 import { discordEmojis, divider, log, sleep, uiMessage, withDefaults } from "#helpers";
 import { menus } from "#menus";
-import { DiscordBotToken } from "#types";
-import { checkbox, confirm } from "@inquirer/prompts";
-import ck from "chalk";
-import ora from "ora";
-import { CLI } from "#cli";
 import { fetchDiscordEmojis } from "#shared/emojis/fetch.js";
+import { DiscordBotToken } from "#types";
+import { ck } from "#utils/ck.js";
+import { createSpinner } from "#utils/spinner.js";
+import { checkbox, confirm } from "@inquirer/prompts";
 
 export async function discordEmojisDeleteMenu(cli: CLI, token: DiscordBotToken) {
     const emojis = await fetchDiscordEmojis({ cli, token });
@@ -61,7 +61,7 @@ export async function discordEmojisDeleteMenu(cli: CLI, token: DiscordBotToken) 
 
     const promises: Promise<void>[] = [];
 
-    const deleting = ora();
+    const deleting = createSpinner();
     deleting.start(uiMessage({
         "en-US": `Preparing to delete emojis...`,
         "pt-BR": `Preparando para excluir emojis...`
