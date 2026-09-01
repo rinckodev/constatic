@@ -3,14 +3,12 @@ import { showUsage, uiMessage } from "#helpers";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
 import { runMain } from "citty";
-import path from "node:path";
-import { fileURLToPath } from "url";
-import { CLI } from "./cli/index.js";
+// import { CLI } from "./cli/index.txt";
 import createMain from "./commands/main.js";
 
-const cliroot = import.meta.dirname 
-    ? path.join(import.meta.dirname, "..")
-    : path.dirname(path.join(fileURLToPath(import.meta.url), ".."));
+// const cliroot = import.meta.dirname 
+//     ? path.join(import.meta.dirname, "..")
+//     : path.dirname(path.join(fileURLToPath(import.meta.url), ".."));
 
 const REQ_VERSION = "20.12";
 
@@ -26,8 +24,8 @@ if (process.versions.node < REQ_VERSION){
     process.exit(1);
 }
 
-const cli = await CLI.init(cliroot);
+// const cli = await CLI.init(cliroot);
 
-runMain(createMain(cli), { 
+runMain(createMain(), { 
     showUsage 
 });

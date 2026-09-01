@@ -1,16 +1,16 @@
 import { menus } from "#menus";
 import { defineCommand } from "citty";
-import { CLI } from "../cli/index.js";
 // import bot from "./bot/index.js"; SOON
 import { divider } from "#helpers";
 import { ck } from "#utils/ck.js";
+import { pkg } from "#utils/pkg.js";
 
-export default function (cli: CLI) {
+export default function () {
     return defineCommand({
         meta: {
-            name: cli.pkg.name,
-            description: cli.pkg.description,
-            version: cli.pkg.version,
+            name: pkg.name,
+            description: pkg.description,
+            version: pkg.version,
         },
         // SOON
         // subCommands: {
@@ -19,7 +19,7 @@ export default function (cli: CLI) {
         setup() {
             console.log(
                 ck.blue("💎 Constatic CLI"), "📦",
-                ck.dim.underline(cli.pkg.version),
+                ck.dim.underline(pkg.version),
             );
             divider();
         },

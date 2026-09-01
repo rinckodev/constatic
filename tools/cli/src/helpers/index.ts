@@ -4,7 +4,7 @@ export * from "./npm/package.js";
 
 export * from "./files.js";
 export * from "./format.js";
-export * from "./lang.js";
+// export * from "./lang.js";
 export * from "./morph/functions.js";
 export * from "./morph/objects.js";
 export * from "./prompts.js";

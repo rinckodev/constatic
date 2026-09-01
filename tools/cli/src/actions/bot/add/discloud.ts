@@ -1,18 +1,18 @@
-import { CLI } from "#cli";
+// import { CLI } from "../../../cli/index.txt";
 import { copy } from "#helpers";
+import { program } from "#program";
 import path, { join } from "node:path";
 
 interface Props {
     dist: string,
-    cli: CLI,
 }
 
 export async function addBotDiscloudAction(props: Props) {
-    const { cli, dist } = props;
+    const { dist } = props;
 
     const dir = join(
-        cli.templates.botPath, "extras", 
-        cli.shell.isBun 
+        program.templates.path, "extras", 
+        program.runtime.isBun() 
             ? "bun" 
             : "discloud"
     );
@@ -24,7 +24,7 @@ export async function addBotDiscloudAction(props: Props) {
         path.join(dir, "discloud.config.txt"),
         join(dist, "discloud.config")
     );
-    if (cli.shell.isBun) {
+    if (program.runtime.isBun()) {
         await copy(
             path.join(dir, "Dockerfile"),
             join(dist, "Dockerfile")

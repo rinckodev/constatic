@@ -1,19 +1,14 @@
 import { actions } from "#actions/index.js";
-import { CLI } from "#cli";
-import { l } from "#helpers";
 import { menus } from "#menus";
 import { defineCommand } from "citty";
 import path from "node:path";
 import { commandFlags } from "../flags.js";
 
-export default function (_cli: CLI) {
+export default function () {
     return defineCommand({
         meta: {
             name: "init",
-            description: l({
-                "pt-BR": "Iniciar novo projeto de bot de discord",
-                "en-US": "Init a new discord bot project",
-            })
+            description: "Init a new discord bot project",
         },
         args: {
             database: commandFlags.database,
@@ -25,18 +20,12 @@ export default function (_cli: CLI) {
             scripts: {
                 type: "string",
                 alias: "s",
-                description: l({
-                    "pt-BR": "Predefinições de scripts do projeto",
-                    "en-US": "Project script presets",
-                })
+                description: "Project script presets"
             },
             dist: {
                 type: "positional",
                 required: false,
-                description: l({
-                    "pt-BR": "Caminho de destino do projeto",
-                    "en-US": "Project dist path",
-                })
+                description: "Project dist path"
             },
         },
         async run(context) {
