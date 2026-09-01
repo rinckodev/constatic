@@ -1,12 +1,12 @@
-import { CLI } from "#cli";
 import { commonTexts, divider, uiMessage } from "#helpers";
 import { menus } from "#menus";
+import { program } from "#program";
 import { ck } from "#utils/ck.js";
 import { select } from "@inquirer/prompts";
 import { withDefaults } from "../../../../helpers/prompts.js";
 
-export async function scriptPresetsMenu(cli: CLI){
-    const presets = cli.config.get("presets.scripts", []);
+export async function scriptPresetsMenu(){
+    const presets = program.config.get("presets.scripts", []);
 
     const disabled = presets.length ? false : " ";
 
@@ -65,27 +65,27 @@ export async function scriptPresetsMenu(cli: CLI){
 
     switch(action){
         case "new":{
-            menus.presets.scripts.new(cli);
+            await menus.presets.scripts.new();
             return;
         }
         case "apply":{
-            menus.presets.scripts.apply(cli, presets);
+            await menus.presets.scripts.apply(presets);
             return;
         }
         case "list":{
-            menus.presets.scripts.list(cli, presets);
+            await menus.presets.scripts.list(presets);
             return;
         }
         case "edit":{
-            menus.presets.scripts.edit(cli, presets);
+            await menus.presets.scripts.edit(presets);
             return;
         }
         case "delete":{
-            menus.presets.scripts.delete(cli, presets);
+            await menus.presets.scripts.delete(presets);
             return;
         }
         case "back":{
-            menus.presets.main(cli);
+            await menus.presets.main();
             return;
         }
     }

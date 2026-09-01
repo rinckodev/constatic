@@ -1,11 +1,10 @@
-import { CLI } from "#cli";
 import { commonTexts, divider, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { ck } from "#utils/ck.js";
 import { select } from "@inquirer/prompts";
 import { withDefaults } from "../../../helpers/prompts.js";
 
-export async function presetsMenu(cli: CLI){
+export async function presetsMenu(){
     const menu = await select(withDefaults({
         message: uiMessage({
             "pt-BR": "❑ Predefinições",
@@ -36,15 +35,15 @@ export async function presetsMenu(cli: CLI){
     
     switch(menu){
         case "scripts":{
-            menus.presets.scripts.main(cli);
+            await menus.presets.scripts.main();
             return;
         }
         case "tokens":{
-            menus.presets.tokens.main(cli);
+            await menus.presets.tokens.main();
             return;
         }
         case "back":{
-            menus.main(cli);
+            await menus.main();
             return;
         }
     }

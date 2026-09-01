@@ -1,8 +1,5 @@
 import { ck } from "#utils/ck.js";
 
-export * from "./discord/emojis.js";
-export * from "./discord/tokens.js";
-
 export * from "./npm/package.js";
 
 export * from "./files.js";

@@ -4,7 +4,7 @@ import { api } from "#shared/api.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
 import { input, select } from "@inquirer/prompts";
-import { DiscordBotToken } from "../../shared/token.js";
+import type { DiscordBotToken } from "../../shared/token.js";
 
 export async function emojisFileMenu(token: DiscordBotToken) {
     const result = await api.emojis.fetch(token.id, token.token);

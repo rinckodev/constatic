@@ -1,4 +1,3 @@
-import { CLI } from "#cli";
 import { divider, instructions, json, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { applyScriptPresets } from "#shared/presets/scripts/apply.js";
@@ -13,7 +12,7 @@ import { withDefaults } from "../../../../helpers/prompts.js";
 import { formatPresets } from "./actions/format.js";
 import { noSelect } from "./actions/noselect.js";
 
-export async function presetsScriptsApplyMenu(cli: CLI, presets: ScriptPreset[]) {
+export async function presetsScriptsApplyMenu(presets: ScriptPreset[]) {
     const selected = await checkbox(withDefaults({
         message: uiMessage({
             "en-US": "Select the presets you want to apply",
@@ -26,7 +25,7 @@ export async function presetsScriptsApplyMenu(cli: CLI, presets: ScriptPreset[])
     divider();
 
     if (selected.length < 1) {
-        await noSelect(cli);
+        await noSelect();
         return;
     }
 
@@ -59,7 +58,7 @@ export async function presetsScriptsApplyMenu(cli: CLI, presets: ScriptPreset[])
         divider();
     }
 
-    await applyScriptPresets(cli, {
+    await applyScriptPresets({
         dist: process.cwd(),
         pkg, presets: selectedPresets,
     });
@@ -75,5 +74,5 @@ export async function presetsScriptsApplyMenu(cli: CLI, presets: ScriptPreset[])
     divider();
 
     await sleep(400);
-    menus.presets.scripts.main(cli);
+    await menus.presets.scripts.main();
 }

@@ -1,11 +1,10 @@
-import { CLI } from "#cli";
 import { byeMessage, divider, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { ck } from "#utils/ck.js";
 import { select } from "@inquirer/prompts";
 import { withDefaults } from "../../helpers/prompts.js";
 
-export async function mainMenu(cli: CLI){
+export async function mainMenu(){
     const menu = await select(withDefaults({
         message: uiMessage({
             "pt-BR": "❑ Menu principal",
@@ -17,7 +16,7 @@ export async function mainMenu(cli: CLI){
                     "en-US": "◈ Init discord bot project",
                     "pt-BR": "◈ Iniciar projeto de bot de discord",
                 }, ck.green),
-                value: "discord/bot" 
+                value: "bot" 
             },
             { 
                 name: uiMessage({
@@ -52,20 +51,20 @@ export async function mainMenu(cli: CLI){
     divider();
     
     switch(menu){
-        case "discord/bot":{
-            menus.discord.bot(cli);
+        case "bot":{
+            menus.discord.bot();
             return;
         }
         case "emojis":{
             menus.emojis.main();
             return;
         }
-        case "settings":{
-            menus.settings.main(cli);
-            return;
-        }
+        // case "settings":{
+        //     menus.settings.main();
+        //     return;
+        // }
         case "presets":{
-            menus.presets.main(cli);
+            menus.presets.main();
             return;
         }
         case "quit":{

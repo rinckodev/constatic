@@ -91,6 +91,7 @@
     "ts-morph": "^26.0.0"
   },
   "imports": {
+    "#root": ["./build/root.js"],
     "#helpers": [
       "./build/helpers/index.js"
     ],

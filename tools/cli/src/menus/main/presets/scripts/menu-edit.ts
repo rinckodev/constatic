@@ -1,15 +1,15 @@
 import { copy, divider, uiMessage } from "#helpers";
 import { menus } from "#menus";
-import { withDefaults } from "../../../../helpers/prompts.js";
+import { program } from "#program";
 import { ScriptPreset } from "#types";
 import { search } from "@inquirer/prompts";
 import { rm } from "node:fs/promises";
 import path from "node:path";
+import { withDefaults } from "../../../../helpers/prompts.js";
 import { formatPresets } from "./actions/format.js";
 import { modifyScriptPresetMenu } from "./actions/modify.js";
-import { CLI } from "#cli";
 
-export async function presetsScriptsEditMenu(cli: CLI, presets: ScriptPreset[]) {
+export async function presetsScriptsEditMenu(presets: ScriptPreset[]) {
     const selected = await search(withDefaults({
         message: uiMessage({
             "en-US": "Select the presets you want to edit",
@@ -28,22 +28,22 @@ export async function presetsScriptsEditMenu(cli: CLI, presets: ScriptPreset[]) 
     divider();
 
     if (selected === "back"){
-        menus.presets.scripts.main(cli);
+        menus.presets.scripts.main();
         return;
     }
 
     const index = presets.findIndex(preset => preset.id === selected);
     const original = presets[index];
     if (!original) {
-        menus.presets.scripts.edit(cli, presets);
+        await menus.presets.scripts.edit(presets);
         return;
     }
     const preset = { ...original };
 
-    const status = await modifyScriptPresetMenu(cli, preset, true);
+    const status = await modifyScriptPresetMenu(preset, true);
 
     if (status === "cancel") {
-        menus.presets.scripts.edit(cli, presets);
+        await menus.presets.scripts.edit(presets);
         return;
     }
 
@@ -52,7 +52,7 @@ export async function presetsScriptsEditMenu(cli: CLI, presets: ScriptPreset[]) 
     );
 
     const presetPath = path.join(
-        cli.config.dirname, 
+        program.config.dirname(), 
         "presets/scripts", 
         preset.id
     );
@@ -69,7 +69,7 @@ export async function presetsScriptsEditMenu(cli: CLI, presets: ScriptPreset[]) 
     ));
 
     presets[index] = preset;
-    cli.config.set("presets.scripts", presets);
+    program.config.set("presets.scripts", presets);
 
-    menus.presets.scripts.main(cli);
+    await menus.presets.scripts.main();
 }

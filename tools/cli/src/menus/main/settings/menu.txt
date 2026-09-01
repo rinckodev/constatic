@@ -27,12 +27,12 @@ export async function settingsMenu(cli: CLI){
     divider();
     
     switch(menu){
-        case "lang":{
-            menus.settings.lang(cli);
-            return;
-        }
+        // case "lang":{
+        //     menus.settings.lang(cli);
+        //     return;
+        // }
         case "back":{
-            menus.main(cli);
+            await menus.main();
             return;
         }
     }

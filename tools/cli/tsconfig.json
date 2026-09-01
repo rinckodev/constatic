@@ -17,6 +17,7 @@
       "noUnusedLocals": true,
       "noUnusedParameters": true,
       "paths": {
+        "#root": ["./src/root.js"],
         "#helpers": ["./src/helpers/index.js"],
         "#prompts": ["./src/helpers/helper.prompts.js"],
         "#menus": ["./src/menus/index.js"],

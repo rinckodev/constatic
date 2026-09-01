@@ -1,6 +1,6 @@
 import { initBotAction } from "#actions/bot/init.js";
-import { CLI } from "#cli";
 import { divider, instructions, json, toNpmName, uiMessage } from "#helpers";
+import { program } from "#program";
 import { BotTemplateProperties } from "#types";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
@@ -8,8 +8,8 @@ import { checkbox, input, select } from "@inquirer/prompts";
 import path from "node:path";
 import { searchSelect, theme, withDefaults } from "../../../../helpers/prompts.js";
 
-export async function discordBotMenu(cli: CLI) {
-    const templatePath = path.join(cli.rootname, "/templates/discord/bot");
+export async function discordBotMenu() {
+    const templatePath = program.templates.path;
 
     const displayCurrCwd = ck.dim.underline(path.basename(process.cwd()) + "/");
     const projectPath = await input(withDefaults({
@@ -117,7 +117,7 @@ export async function discordBotMenu(cli: CLI) {
         : undefined
     if (extras.includes("server")) divider();
 
-    const tokens = cli.config.get("discord.bot.tokens", []);
+    const tokens = program.config.get("discord.bot.tokens", []);
     const token = tokens.length >= 1
         ? await select(withDefaults({
             message: uiMessage({
@@ -141,7 +141,7 @@ export async function discordBotMenu(cli: CLI) {
         : undefined
     divider();
 
-    const scripts = cli.config.get("presets.scripts", []);
+    const scripts = program.config.get("presets.scripts", []);
     const selectedScripts = scripts.length < 1 ? [] : await searchSelect(withDefaults({
         message: uiMessage({
             "en-US": "🗐 Script presets",
@@ -156,7 +156,7 @@ export async function discordBotMenu(cli: CLI) {
     }));
     if (scripts.length >= 1) divider();
 
-    const managerSuffix = ck.bgWhite(` ${cli.shell.agent} `);
+    const managerSuffix = ck.bgWhite(` ${program.runtime.agent()} `);
 
     const install = await select(withDefaults({
         message: uiMessage({
@@ -180,7 +180,7 @@ export async function discordBotMenu(cli: CLI) {
     })) == "yes";
     divider();
 
-    await initBotAction(cli, {
+    await initBotAction({
         dist: distPath,
         database, 
         extras, 

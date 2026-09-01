@@ -124,7 +124,7 @@ export default function (cli: CLI) {
                     "en-US": `Adding database: ${database.name}`
                 }));
                 await actions.bot.add.database({
-                    cli, database, dist, envFile,
+                    database, dist, envFile,
                     envSchema: projectFiles.envSchema,
                     pkg,
                 });
@@ -145,7 +145,7 @@ export default function (cli: CLI) {
                     "en-US": `Adding http server: ${server.name}`
                 }));
                 await actions.bot.add.server({
-                    cli, server, dist, envFile,
+                    server, dist, envFile,
                     ...projectFiles,
                     pkg,
                 });
@@ -192,7 +192,7 @@ export default function (cli: CLI) {
                     "en-US": `Adding tsup compiler`
                 }));
                 await actions.bot.add.tsup({
-                    cli, distdir: dist, pkg,
+                    distdir: dist, pkg,
                 });
                 adding.stop();
                 console.log(plus, l({

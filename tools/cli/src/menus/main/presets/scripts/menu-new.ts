@@ -1,28 +1,28 @@
-import { copy, divider, sleep, uiMessage } from "#helpers";
+import { copy, divider, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { ScriptPreset } from "#types";
 import { input } from "@inquirer/prompts";
 import { withDefaults } from "../../../../helpers/prompts.js";
 
-import { CLI } from "#cli";
+import { program } from "#program";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { modifyScriptPresetMenu } from "./actions/modify.js";
 
-export async function presetsScriptsNewMenu(cli: CLI) {
-    const presets = cli.config.get("presets.scripts", []);
+export async function presetsScriptsNewMenu() {
+    const presets = program.config.get("presets.scripts", []);
     const preset: ScriptPreset = {
         name: "", type: "default",
         id: new Date().getTime().toString(),
         files: []
     };
 
-    const status = await modifyScriptPresetMenu(cli, preset);
+    const status = await modifyScriptPresetMenu(preset);
 
     if (status === "cancel") {
-        menus.presets.scripts.main(cli);
+        menus.presets.scripts.main();
         return;
     }
 
@@ -36,7 +36,7 @@ export async function presetsScriptsNewMenu(cli: CLI) {
     divider();
     
     const presetpath = path.join(
-        cli.config.dirname, 
+        program.config.dirname(), 
         "presets/scripts", 
         preset.id
     );
@@ -49,13 +49,12 @@ export async function presetsScriptsNewMenu(cli: CLI) {
     ));
     
     presets.push(preset);
-    cli.config.set("presets.scripts", presets);
+    program.config.set("presets.scripts", presets);
 
     log.success(uiMessage({
         "en-US": "Preset created successfully!",
         "pt-BR": "Predefinição criada com sucesso!",
     }, ck.green));
 
-    await sleep(400);
-    menus.presets.scripts.main(cli);
+    await menus.presets.scripts.main();
 }

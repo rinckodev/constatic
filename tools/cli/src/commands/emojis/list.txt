@@ -1,6 +1,5 @@
 import { CLI } from "#cli";
 import { l } from "#helpers";
-import { fetchDiscordTokenData } from "#shared/tokens.js";
 import { defineCommand } from "citty";
 
 export default function (cli: CLI) {

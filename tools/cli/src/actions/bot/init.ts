@@ -1,11 +1,12 @@
 import { actions } from "#actions/index.js";
-import { type CLI } from "#cli";
 import { byeMessage, divider, getCdPath, json, modifyObjArg, toNpmName, uiMessage } from "#helpers";
 import { KeyValueFile } from "#lib/kvf.js";
+import { program } from "#program";
 import { applyScriptPresets } from "#shared/presets/scripts/apply.js";
 import type { EnvVarData } from "#types";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
+import { pkg } from "#utils/pkg.js";
 import { createSpinner } from "#utils/spinner.js";
 import { copy } from "fs-extra";
 import merge from "lodash.merge";
@@ -23,9 +24,9 @@ export interface InitBotActionData {
     extras?: string[];
     install?: boolean;
 }
-export async function initBotAction(cli: CLI, data: InitBotActionData) {
+export async function initBotAction(data: InitBotActionData) {
     const distJoin = (...paths: string[]) => path.join(data.dist, ...paths);
-    const templateJoin = (...paths: string[]) => path.join(cli.templates.botPath, ...paths);
+    const templateJoin = (...paths: string[]) => path.join(program.templates.path, ...paths);
 
     const isDistRoot = data.dist === process.cwd();
 
@@ -36,7 +37,7 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
     }));
 
     await copyProject(
-        path.join(cli.templates.botPath, "project"),
+        templateJoin("project"),
         distJoin(),
     );
 
@@ -60,10 +61,10 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
         "en-US": "Creating environment variables manager",
         "pt-BR": "Criando gerenciador de variáveis de ambiente",
     }));
-    const pkg = await readPackageJSON(distJoin("package.json"));
-    pkg.name = toNpmName(path.basename(path.resolve(data.dist)));
+    const templatePkg = await readPackageJSON(distJoin("package.json"));
+    templatePkg.name = toNpmName(path.basename(path.resolve(data.dist)));
 
-    const database = cli.templates.bot.presets.databases[data.database ?? ""];
+    const database = program.templates.props.presets.databases[data.database ?? ""];
 
     if (database) {
         generating.update(uiMessage({
@@ -71,13 +72,13 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
             "pt-BR": "Configurando o banco de dados",
         }));
         await actions.bot.add.database({
-            database, pkg, envFile,
+            database, pkg: templatePkg, envFile,
             envSchema: projectFiles.envSchema,
-            cli, dist: distJoin()
+            dist: distJoin()
         });
     }
 
-    const server = cli.templates.bot.presets.servers[data.server ?? ""];
+    const server = program.templates.props.presets.servers[data.server ?? ""];
 
     if (server) {
         generating.update(uiMessage({
@@ -86,13 +87,13 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
         }));
 
         await actions.bot.add.server({
-            server, pkg, envFile,
-            cli, dist: distJoin(),
+            server, pkg: templatePkg, envFile,
+            dist: distJoin(),
             ...projectFiles,
         });
     }
 
-    const token = cli.config.getToken(data.token ?? "");
+    const token = program.config.getToken(data.token ?? "");
     if (token) {
         generating.update(uiMessage({
             "en-US": "Writing the token to the .env file...",
@@ -107,7 +108,7 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
     )
 
     if (data.extras?.includes("discloud")) {
-        const dir = templateJoin("extras", cli.shell.isBun ? "bun" : "discloud");
+        const dir = templateJoin("extras", program.runtime.isBun() ? "bun" : "discloud");
         // const dir = templateJoin("extras", "discloud");
         await copy(
             path.join(dir, "discloud.ignore.txt"),
@@ -120,57 +121,55 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
         const discloudFile = new KeyValueFile(distJoin("discloud.config"));
         await discloudFile.read();
 
-        discloudFile.set("NAME", pkg.name);
-        if (cli.shell.isBun) {
+        discloudFile.set("NAME", templatePkg.name);
+        if (program.runtime.isBun()) {
             discloudFile.set("MAIN", "Dockerfile")
-        }
-        if (cli.shell.isBun) {
             await copy(
                 path.join(dir, "Dockerfile"),
                 distJoin("Dockerfile")
-            )
+            );
         }
         await discloudFile.write();
     }
 
     if (data.extras?.includes("tsup")) {
         await actions.bot.add.tsup({
-            cli, pkg, distdir: distJoin()
+            pkg: templatePkg, distdir: distJoin()
         });
     }
 
     const baseVersionPath = distJoin("src/discord/base/base.version.ts");
 
     await readFile(baseVersionPath, "utf-8")
-        .then(content => content.replace("{{baseVersion}}", cli.pkg.version))
+        .then(content => content.replace("{{baseVersion}}", pkg.version))
         .then(content => writeFile(baseVersionPath, content, "utf-8"))
         .catch(() => null);
 
-    pkg.baseVersion = cli.pkg.version;
+    templatePkg.baseVersion = pkg.version;
 
     if (data.scripts && data.scripts.length >= 1) {
-        const presets = cli.config.get("presets.scripts", []);
+        const presets = program.config.get("presets.scripts", []);
         const selected = presets.filter(p =>
             data.scripts?.includes(p.name) ||
             data.scripts?.includes(p.alias ?? "")
         );
-        await applyScriptPresets(cli, {
-            pkg, dist: data.dist,
+        await applyScriptPresets({
+            pkg: templatePkg, dist: data.dist,
             presets: selected,
         });
     }
 
-    if (cli.shell.isBun) {
+    if (program.runtime.isBun()) {
         const bunPkgJson = await readPackageJSON(
             templateJoin("extras", "bun/package.json")
         );
-        merge(pkg, bunPkgJson);
-        pkg.devDependencies ??= {}
-        delete pkg.devDependencies["tsx"];
-        delete pkg.devDependencies["@types/node"];
+        merge(templatePkg, bunPkgJson);
+        templatePkg.devDependencies ??= {}
+        delete templatePkg.devDependencies["tsx"];
+        delete templatePkg.devDependencies["@types/node"];
     }
 
-    await json.write(distJoin("package.json"), pkg);
+    await json.write(distJoin("package.json"), templatePkg);
 
     await project.save();
     await envFile.write();
@@ -181,7 +180,7 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
             "en-US": "Installing the dependencies...",
             "pt-BR": "Instalando as dependências...",
         }));
-        const result = await cli.shell.run(distJoin(), "install");
+        const result = await program.runtime.agentRun(distJoin(), "install");
         generating.stop();
         if (result.success) {
             log.success(uiMessage({
@@ -189,7 +188,7 @@ export async function initBotAction(cli: CLI, data: InitBotActionData) {
                 "pt-BR": "✅ Dependências instaladas com sucesso!",
             }));
         } else {
-            const command = `${cli.shell.agent} install`;
+            const command = `${program.runtime.agent()} install`;
             log.fail(uiMessage({
                 "en-US": [
                     "❌ Unable to install dependencies!",

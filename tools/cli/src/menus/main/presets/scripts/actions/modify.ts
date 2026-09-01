@@ -1,4 +1,3 @@
-import { CLI } from "#cli";
 import { divider, fetchNpmPackage, instructions, searchSelect, sleep, theme, uiMessage, withDefaults } from "#helpers";
 import { packageJsonHasDeps } from "#shared/presets/scripts/deps.js";
 import { ScriptPreset } from "#types";
@@ -11,7 +10,6 @@ import { formatPresetFiles } from "./format.js";
 import { printPreview } from "./preview.js";
 
 export async function modifyScriptPresetMenu(
-    _cli: CLI,
     preset: ScriptPreset,
     existing: boolean = false,
 ) {

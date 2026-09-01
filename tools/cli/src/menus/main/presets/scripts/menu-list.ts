@@ -1,11 +1,10 @@
-import { CLI } from "#cli";
 import { cliTableChars, divider, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { ScriptPreset } from "#types";
 import { ck } from "#utils/ck.js";
 import Table from "cli-table3";
 
-export async function presetsScriptsListMenu(cli: CLI, presets: ScriptPreset[]) {
+export async function presetsScriptsListMenu(presets: ScriptPreset[]) {
     const cc = {
         name: uiMessage( 
             { "en-US": "Name", "pt-BR": "Nome", },
@@ -45,5 +44,5 @@ export async function presetsScriptsListMenu(cli: CLI, presets: ScriptPreset[]) 
     divider();
     
     await sleep(400);
-    menus.presets.scripts.main(cli);
+    await menus.presets.scripts.main();
 }

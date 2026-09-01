@@ -12,14 +12,13 @@ import { presetsScriptsEditMenu } from "./main/presets/scripts/menu-edit.js";
 import { presetsScriptsListMenu } from "./main/presets/scripts/menu-list.js";
 import { presetsScriptsNewMenu } from "./main/presets/scripts/menu-new.js";
 import { scriptPresetsMenu } from "./main/presets/scripts/menu.js";
-import { promptToken } from "./main/presets/tokens/actions/prompt.js";
-import { presetsTokensDeleteMenu } from "./main/presets/tokens/menu-delete.js";
-import { presetsTokensEditMenu } from "./main/presets/tokens/menu-edit.js";
-import { presetsTokensListMenu } from "./main/presets/tokens/menu-list.js";
-import { presetsTokensNewMenu } from "./main/presets/tokens/menu-new.js";
-import { presetsTokensMenu } from "./main/presets/tokens/menu.js";
-import { settingsLangMenu } from "./main/settings/lang/menu.js";
-import { settingsMenu } from "./main/settings/menu.js";
+import { presetsTokensDeleteMenu } from "./main/presets/tokens/delete.js";
+import { presetsTokensEditMenu } from "./main/presets/tokens/edit.js";
+import { presetsTokensListMenu } from "./main/presets/tokens/list.js";
+import { presetsTokensMenu } from "./main/presets/tokens/main.js";
+import { presetsTokensNewMenu } from "./main/presets/tokens/new.js";
+// import { settingsLangMenu } from "./main/settings/lang/menu.txt";
+// import { settingsMenu } from "./main/settings/menu.txt";
 
 export const menus = {
     main: mainMenu,
@@ -57,13 +56,10 @@ export const menus = {
             list: presetsTokensListMenu,
             delete: presetsTokensDeleteMenu,
             edit: presetsTokensEditMenu,
-            prompts: {
-                token: promptToken
-            }
         }
     },
-    settings: {
-        main: settingsMenu,
-        lang: settingsLangMenu,
-    }
+    // settings: {
+    //     main: settingsMenu,
+    //     lang: settingsLangMenu,
+    // }
 }

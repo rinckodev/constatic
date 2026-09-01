@@ -1,24 +1,23 @@
-import merge from "lodash.merge";
+import { KeyValueFile } from "#lib/kvf.js";
+import { program } from "#program";
 import type { BotDatabasePreset } from "#types";
+import { copy } from "fs-extra";
+import merge from "lodash.merge";
+import { join } from "node:path";
 import type { PackageJson } from "pkg-types";
 import type { SourceFile } from "ts-morph";
 import { updateEnv } from "../init.js";
-import { copy } from "fs-extra";
-import type { CLI } from "#cli";
-import { join } from "node:path";
-import { KeyValueFile } from "#lib/kvf.js";
 
 interface Props {
     pkg: PackageJson,
     database: BotDatabasePreset,
     envFile: KeyValueFile,
     envSchema: SourceFile,
-    cli: CLI,
     dist: string,
 }
 
 export async function addBotDatabaseAction(props: Props) {
-    const { cli, pkg, database, envFile: envManager, envSchema } = props;
+    const { pkg, database, envFile: envManager, envSchema } = props;
     merge(pkg, database.packageJson);
 
     if (database.env) {
@@ -30,7 +29,7 @@ export async function addBotDatabaseAction(props: Props) {
     }
     if (database.path) {
         await copy(join(
-            cli.templates.botPath,
+            program.templates.path,
             "databases", database.path,
         ), props.dist);
     }

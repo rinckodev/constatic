@@ -1,26 +1,25 @@
-import merge from "lodash.merge";
-import { readPackageJSON, type PackageJson } from "pkg-types";
+import { program } from "#program";
 import { copy } from "fs-extra";
-import type { CLI } from "#cli";
+import merge from "lodash.merge";
 import { join } from "node:path";
+import { readPackageJSON, type PackageJson } from "pkg-types";
 
 interface Props {
     pkg: PackageJson,
-    distdir: string,
-    cli: CLI
+    distdir: string
 }
 
 export async function addBotTsupAction(props: Props) {
-    const { pkg, distdir, cli } = props;
+    const { pkg, distdir } = props;
     const tsupPackageJson = await readPackageJSON(join(
-        cli.templates.botPath,
+        program.templates.path,
         "extras/tsup/package.json"
     ));
 
     merge(pkg, tsupPackageJson);
 
     await copy(join(
-        cli.templates.botPath,
+        program.templates.path,
         "extras/tsup/tsup.config.ts"
     ), join(distdir, "tsup.config.ts"));
 }

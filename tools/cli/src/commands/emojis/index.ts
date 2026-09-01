@@ -1,9 +1,8 @@
-import { defineCommand } from "citty";
 import { CLI } from "#cli";
 import { l } from "#helpers";
-import list from "./list.js";
+import { defineCommand } from "citty";
 
-export default function (cli: CLI) {
+export default function (_cli: CLI) {
     return defineCommand({
         meta: {
             name: "emojis",
@@ -13,7 +12,7 @@ export default function (cli: CLI) {
             }),
         },
         subCommands: {
-            list: list(cli)
+            // list: list(cli)
         }
     })
 }

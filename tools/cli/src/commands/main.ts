@@ -25,7 +25,7 @@ export default function (cli: CLI) {
         },
         async run({ args }) {
             if (args._.length > 0) return;
-            menus.main(cli);
+            await menus.main();
         },
     })
 }

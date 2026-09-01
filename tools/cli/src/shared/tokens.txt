@@ -1,7 +1,8 @@
-import { getDiscordBotInfo, uiMessage } from "#helpers";
+import { uiMessage } from "#helpers";
 import { ck } from "#utils/ck.js";
 import { Result } from "#utils/result.js";
 import { createSpinner } from "#utils/spinner.js";
+import { fetchToken } from "./token.js";
 
 export async function fetchDiscordTokenData(token: string) {
     const fetching = createSpinner();
@@ -9,7 +10,7 @@ export async function fetchDiscordTokenData(token: string) {
         "en-US": "🔍 Fetching token information...",
         "pt-BR": "🔍 Buscando informações do token...",
     }));
-    const r = await getDiscordBotInfo(token);
+    const r = await fetchToken(token);
     fetching.stop();
 
     return r.success

@@ -6,7 +6,7 @@ import { defineCommand } from "citty";
 import path from "node:path";
 import { commandFlags } from "../flags.js";
 
-export default function (cli: CLI) {
+export default function (_cli: CLI) {
     return defineCommand({
         meta: {
             name: "init",
@@ -43,7 +43,7 @@ export default function (cli: CLI) {
             const args = context.args;
 
             if (context.rawArgs.length < 1) {
-                menus.discord.bot(cli);
+                await menus.discord.bot();
                 return;
             }
             const extras: string[] = [];
@@ -63,7 +63,7 @@ export default function (cli: CLI) {
                     : []
             };
 
-            await actions.bot.init(cli, data);
+            await actions.bot.init(data);
         },
     })
 }

@@ -1,13 +1,12 @@
-import { CLI } from "#cli";
-import { divider, sleep, uiMessage } from "#helpers";
+import { divider, uiMessage, withDefaults } from "#helpers";
 import { menus } from "#menus";
-import type { DiscordBotToken } from "#types";
+import { program } from "#program";
+import { DiscordBotToken } from "#shared/token.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
 import { checkbox } from "@inquirer/prompts";
-import { withDefaults } from "../../../../helpers/prompts.js";
 
-export async function presetsTokensDeleteMenu(cli: CLI, tokens: DiscordBotToken[]) {
+export async function presetsTokensDeleteMenu(tokens: DiscordBotToken[]) {
     const choices = tokens.map(t => ({
         name: `🤖 ${ck.yellow.underline(t.name)}`, value: t.id
     }));
@@ -29,12 +28,11 @@ export async function presetsTokensDeleteMenu(cli: CLI, tokens: DiscordBotToken[
            "pt-BR": "Nenhum token selecionado, voltando ao menu de tokens",
         }))
         divider();
-        await sleep(500);
-        menus.presets.tokens.main(cli);
+        await menus.presets.tokens.main();
         return;
     }
 
-    cli.config.set("discord.bot.tokens", 
+    program.config.set("discord.bot.tokens", 
         tokens.filter(t => !selected.includes(t.id))
     );
 
@@ -44,6 +42,5 @@ export async function presetsTokensDeleteMenu(cli: CLI, tokens: DiscordBotToken[
     }, ck.green));
     divider();
 
-    await sleep(500);
-    menus.presets.tokens.main(cli);
+    await menus.presets.tokens.main();
 }

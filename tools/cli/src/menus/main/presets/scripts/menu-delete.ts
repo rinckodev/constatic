@@ -1,17 +1,16 @@
-import { CLI } from "#cli";
-import { divider, instructions, sleep, uiMessage } from "#helpers";
+import { divider, instructions, uiMessage, withDefaults } from "#helpers";
 import { menus } from "#menus";
+import { program } from "#program";
 import { ScriptPreset } from "#types";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
 import { checkbox } from "@inquirer/prompts";
 import { rm } from "node:fs/promises";
 import path from "node:path";
-import { withDefaults } from "../../../../helpers/prompts.js";
 import { formatPresets } from "./actions/format.js";
 import { noSelect } from "./actions/noselect.js";
 
-export async function presetsScriptsDeleteMenu(cli: CLI, presets: ScriptPreset[]) {
+export async function presetsScriptsDeleteMenu(presets: ScriptPreset[]) {
     const selected = await checkbox(withDefaults({
         message: uiMessage({
             "en-US": "Select the presets you want to delete",
@@ -25,17 +24,17 @@ export async function presetsScriptsDeleteMenu(cli: CLI, presets: ScriptPreset[]
 
 
     if (selected.length < 1){
-        await noSelect(cli);
+        await noSelect();
         return;
     }
 
     await Promise.all(selected.map(id => 
-        rm(path.join(cli.config.dirname, "presets/scripts", id), {
+        rm(path.join(program.config.dirname(), "presets/scripts", id), {
             force: true, recursive: true,
         })
     ));
 
-    cli.config.set("presets.scripts", 
+    program.config.set("presets.scripts", 
         presets.filter(t => !selected.includes(t.id))
     );
 
@@ -44,7 +43,5 @@ export async function presetsScriptsDeleteMenu(cli: CLI, presets: ScriptPreset[]
        "pt-BR": "Predefinições selecionados removidos com sucesso!",
     }, ck.green));
     divider();
-
-    await sleep(500);
-    menus.presets.scripts.main(cli);
+    await menus.presets.scripts.main();
 }
