@@ -115,6 +115,9 @@
     "#actions/*": [
       "./build/actions/*"
     ],
+    "#actions/": [
+      "./build/actions/index.js"
+    ],
     "#types": [
       "./build/types/index.js"
     ],

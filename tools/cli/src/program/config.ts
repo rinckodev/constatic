@@ -1,7 +1,7 @@
-import Conf from "conf";
-import { DiscordBotToken } from "../shared/token.js";
 import { pkg } from "#utils/pkg.js";
+import Conf from "conf";
 import { dirname } from "node:path";
+import type { DiscordBotToken } from "../shared/token.js";
 
 export interface ScriptPreset {
     id: string;

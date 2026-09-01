@@ -1,6 +1,6 @@
 import { getDiscordBotInfo, uiMessage } from "#helpers";
-import { Result } from "#lib/result.js";
 import { ck } from "#utils/ck.js";
+import { Result } from "#utils/result.js";
 import { createSpinner } from "#utils/spinner.js";
 
 export async function fetchDiscordTokenData(token: string) {

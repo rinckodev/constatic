@@ -1,5 +1,5 @@
-import { Result } from "#lib/result.js";
 import type { NpmPackage } from "#types";
+import { Result } from "#utils/result.js";
 import path from "node:path";
 import { uiMessage } from "../ui.js";
 

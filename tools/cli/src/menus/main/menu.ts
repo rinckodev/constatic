@@ -24,7 +24,7 @@ export async function mainMenu(cli: CLI){
                     "en-US": "◈ Manage discord emojis",
                     "pt-BR": "◈ Gerenciar emojis do discord",
                 }, ck.green),
-                value: "discord/emojis" 
+                value: "emojis" 
             },
             { 
                 name: uiMessage({
@@ -56,8 +56,8 @@ export async function mainMenu(cli: CLI){
             menus.discord.bot(cli);
             return;
         }
-        case "discord/emojis":{
-            menus.discord.emojis.main(cli);
+        case "emojis":{
+            menus.emojis.main();
             return;
         }
         case "settings":{

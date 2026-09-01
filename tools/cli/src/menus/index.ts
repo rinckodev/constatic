@@ -1,10 +1,9 @@
+import { emojisDeleteMenu } from "./emojis/delete.js";
+import { emojisFileMenu } from "./emojis/file.js";
+import { emojisListMenu } from "./emojis/list.js";
+import { emojisMenu } from "./emojis/menu.js";
+import { emojisUploadMenu } from "./emojis/upload.js";
 import { discordBotMenu } from "./main/discord/bot/menu.js";
-import { discordEmojisDeleteMenu } from "./main/discord/emojis/menu-delete.js";
-import { discordEmojisFileMenu } from "./main/discord/emojis/menu-file.js";
-import { discordEmojisListMenu } from "./main/discord/emojis/menu-list.js";
-import { selectDiscordBot } from "./main/discord/emojis/menu-select.js";
-import { discordEmojisUploadMenu } from "./main/discord/emojis/menu-upload.js";
-import { discordEmojisMenu } from "./main/discord/emojis/menu.js";
 import { mainMenu } from "./main/menu.js";
 import { presetsMenu } from "./main/presets/menu.js";
 import { presetsScriptsApplyMenu } from "./main/presets/scripts/menu-apply.js";
@@ -24,16 +23,23 @@ import { settingsMenu } from "./main/settings/menu.js";
 
 export const menus = {
     main: mainMenu,
+    emojis: {
+        main: emojisMenu,
+        list: emojisListMenu,
+        file: emojisFileMenu,
+        upload: emojisUploadMenu,
+        delete: emojisDeleteMenu,
+    },
     discord: {
         bot: discordBotMenu,
-        emojis: {
-            main: discordEmojisMenu,
-            list: discordEmojisListMenu,
-            upload: discordEmojisUploadMenu,
-            file: discordEmojisFileMenu,
-            delete: discordEmojisDeleteMenu,
-            select: selectDiscordBot,
-        },
+        // emojis: {
+        //     main: discordEmojisMenu,
+        //     list: discordEmojisListMenu,
+        //     upload: discordEmojisUploadMenu,
+        //     file: discordEmojisFileMenu,
+        //     delete: discordEmojisDeleteMenu,
+        //     select: selectDiscordBot,
+        // },
     },
     presets: {
         main: presetsMenu,

@@ -1,4 +1,4 @@
-import { Result } from "#lib/result.js";
+import { Result } from "#utils/result.js";
 
 const baseURL = "https://discord.com/api/v10";
 

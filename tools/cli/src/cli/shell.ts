@@ -1,4 +1,4 @@
-import { Result, ResultType } from "#lib/result.js";
+import { Result, ResultType } from "#utils/result.js";
 import { execSync, spawn } from "node:child_process";
 
 export class CLIShell {
@@ -16,7 +16,7 @@ export class CLIShell {
         return this.agent === "bun";
     }
     public run(cwd: string, ...args: string[]) {
-        return new Promise<ResultType<number, "code">>(resolve => {
+        return new Promise<ResultType<number>>(resolve => {
             const child = spawn(this.agent, args, {
                 shell: true,
                 cwd, env: {
@@ -27,7 +27,7 @@ export class CLIShell {
             });
             child.on("exit", code => {
                 return resolve(code === 0
-                    ? Result.ok(code, "code")
+                    ? Result.ok(code)
                     : Result.fail("fail", code ?? undefined)
                 );
             })

@@ -1,8 +1,8 @@
 import { uiMessage } from "#helpers";
-import { Result } from "#lib/result.js";
 import { fetchDiscordTokenData } from "#shared/tokens.js";
 import type { DiscordBotToken } from "#types";
 import { ck } from "#utils/ck.js";
+import { Result } from "#utils/result.js";
 import { password } from "@inquirer/prompts";
 import { withDefaults } from "../../../../../helpers/prompts.js";
 

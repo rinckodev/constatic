@@ -1,4 +1,4 @@
-import { Result } from "#lib/result.js";
+import { Result } from "#utils/result.js";
 import { DISCORD_API_URL } from "./constants.js";
 import { DiscordBotToken } from "./token.js";
 
