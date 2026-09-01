@@ -1,9 +1,10 @@
 import { CLI } from "#cli";
-import { commonTexts, divider, log, sleep, uiMessage, withDefaults } from "#helpers";
+import { commonTexts, divider, sleep, uiMessage, withDefaults } from "#helpers";
 import { KeyValueFile } from "#lib/kvf.js";
 import { menus } from "#menus";
 import { fetchDiscordTokenData } from "#shared/tokens.js";
 import { ck } from "#utils/ck.js";
+import { log } from "#utils/log.js";
 import { select } from "@inquirer/prompts";
 import { glob } from "tinyglobby";
 

@@ -1,10 +1,11 @@
 import { actions } from "#actions/index.js";
 import { type CLI } from "#cli";
-import { byeMessage, divider, getCdPath, json, log, modifyObjArg, toNpmName, uiMessage } from "#helpers";
+import { byeMessage, divider, getCdPath, json, modifyObjArg, toNpmName, uiMessage } from "#helpers";
 import { KeyValueFile } from "#lib/kvf.js";
 import { applyScriptPresets } from "#shared/presets/scripts/apply.js";
 import type { EnvVarData } from "#types";
 import { ck } from "#utils/ck.js";
+import { log } from "#utils/log.js";
 import { createSpinner } from "#utils/spinner.js";
 import { copy } from "fs-extra";
 import merge from "lodash.merge";

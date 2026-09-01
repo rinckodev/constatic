@@ -1,8 +1,9 @@
 import { CLI } from "#cli";
-import { divider, fetchNpmPackage, instructions, log, searchSelect, sleep, theme, uiMessage, withDefaults } from "#helpers";
+import { divider, fetchNpmPackage, instructions, searchSelect, sleep, theme, uiMessage, withDefaults } from "#helpers";
 import { packageJsonHasDeps } from "#shared/presets/scripts/deps.js";
 import { ScriptPreset } from "#types";
 import { ck } from "#utils/ck.js";
+import { log } from "#utils/log.js";
 import { createSpinner } from "#utils/spinner.js";
 import { checkbox, input, select, Separator } from "@inquirer/prompts";
 import { glob } from "tinyglobby";

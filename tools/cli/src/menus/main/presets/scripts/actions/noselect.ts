@@ -1,6 +1,7 @@
 import { CLI } from "#cli";
-import { uiMessage, divider, sleep, log } from "#helpers";
+import { divider, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
+import { log } from "#utils/log.js";
 
 export async function noSelect(cli: CLI) {
     log.warn(uiMessage({

@@ -1,10 +1,11 @@
 import { CLI } from "#cli";
-import { divider, instructions, json, log, sleep, uiMessage } from "#helpers";
+import { divider, instructions, json, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { applyScriptPresets } from "#shared/presets/scripts/apply.js";
 import { packageJsonHasDeps } from "#shared/presets/scripts/deps.js";
 import { ScriptPreset } from "#types";
 import { ck } from "#utils/ck.js";
+import { log } from "#utils/log.js";
 import { checkbox } from "@inquirer/prompts";
 import path from "node:path";
 import { PackageJson } from "pkg-types";

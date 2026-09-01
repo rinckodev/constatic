@@ -1,6 +1,6 @@
 // spinner.ts
-import { log } from "#helpers";
 import { ck, type Chalk } from "#utils/ck.js";
+import { log } from "./log.js";
 
 const FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'] as const;
 const CLEAR_LINE = '\x1b[2K';

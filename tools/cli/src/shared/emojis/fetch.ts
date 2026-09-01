@@ -1,7 +1,8 @@
 import { CLI } from "#cli";
-import { discordEmojis, log, sleep, uiMessage } from "#helpers";
+import { discordEmojis, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { DiscordBotToken } from "#types";
+import { log } from "#utils/log.js";
 import { createSpinner } from "#utils/spinner.js";
 
 interface FetchDiscordEmojisProps {

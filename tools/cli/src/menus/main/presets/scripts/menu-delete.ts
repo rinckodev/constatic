@@ -1,8 +1,9 @@
 import { CLI } from "#cli";
-import { divider, instructions, log, sleep, uiMessage } from "#helpers";
+import { divider, instructions, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { ScriptPreset } from "#types";
 import { ck } from "#utils/ck.js";
+import { log } from "#utils/log.js";
 import { checkbox } from "@inquirer/prompts";
 import { rm } from "node:fs/promises";
 import path from "node:path";
@@ -37,7 +38,6 @@ export async function presetsScriptsDeleteMenu(cli: CLI, presets: ScriptPreset[]
     cli.config.set("presets.scripts", 
         presets.filter(t => !selected.includes(t.id))
     );
-
 
     log.success(uiMessage({
        "en-US": "Selected presets removed successfully!",

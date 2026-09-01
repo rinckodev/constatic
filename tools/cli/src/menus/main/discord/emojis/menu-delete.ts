@@ -1,9 +1,10 @@
 import { CLI } from "#cli";
-import { discordEmojis, divider, log, sleep, uiMessage, withDefaults } from "#helpers";
+import { discordEmojis, divider, sleep, uiMessage, withDefaults } from "#helpers";
 import { menus } from "#menus";
 import { fetchDiscordEmojis } from "#shared/emojis/fetch.js";
 import { DiscordBotToken } from "#types";
 import { ck } from "#utils/ck.js";
+import { log } from "#utils/log.js";
 import { createSpinner } from "#utils/spinner.js";
 import { checkbox, confirm } from "@inquirer/prompts";
 

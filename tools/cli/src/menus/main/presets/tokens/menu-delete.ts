@@ -1,8 +1,9 @@
 import { CLI } from "#cli";
-import { divider, log, sleep, uiMessage } from "#helpers";
+import { divider, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import type { DiscordBotToken } from "#types";
 import { ck } from "#utils/ck.js";
+import { log } from "#utils/log.js";
 import { checkbox } from "@inquirer/prompts";
 import { withDefaults } from "../../../../helpers/prompts.js";
 

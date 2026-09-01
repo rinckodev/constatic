@@ -1,9 +1,10 @@
 import { CLI } from "#cli";
-import { divider, log, sleep, uiMessage, withDefaults } from "#helpers";
+import { divider, sleep, uiMessage, withDefaults } from "#helpers";
 import { menus } from "#menus";
 import { fetchDiscordEmojis } from "#shared/emojis/fetch.js";
 import { APIEmoji, DiscordBotToken } from "#types";
 import { ck } from "#utils/ck.js";
+import { log } from "#utils/log.js";
 import { input, select } from "@inquirer/prompts";
 import fs from "node:fs/promises";
 

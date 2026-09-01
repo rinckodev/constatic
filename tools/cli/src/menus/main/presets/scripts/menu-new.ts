@@ -1,4 +1,4 @@
-import { copy, divider, log, sleep, uiMessage } from "#helpers";
+import { copy, divider, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { ScriptPreset } from "#types";
 import { input } from "@inquirer/prompts";
@@ -6,6 +6,7 @@ import { withDefaults } from "../../../../helpers/prompts.js";
 
 import { CLI } from "#cli";
 import { ck } from "#utils/ck.js";
+import { log } from "#utils/log.js";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { modifyScriptPresetMenu } from "./actions/modify.js";

@@ -1,8 +1,9 @@
 import { actions } from "#actions/index.js";
 import { CLI } from "#cli";
-import { divider, l, log } from "#helpers";
+import { divider, l } from "#helpers";
 import { KeyValueFile } from "#lib/kvf.js";
 import { ck } from "#utils/ck.js";
+import { log } from "#utils/log.js";
 import { createSpinner } from "#utils/spinner.js";
 import { defineCommand } from "citty";
 import path, { join } from "node:path";

@@ -1,8 +1,9 @@
 import { CLI } from "#cli";
-import { log, sleep, uiMessage } from "#helpers";
+import { sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { DiscordBotToken } from "#types";
 import { ck } from "#utils/ck.js";
+import { log } from "#utils/log.js";
 import { promptToken } from "./actions/prompt.js";
 
 export async function presetsTokensNewMenu(cli: CLI, tokens: DiscordBotToken[]) {

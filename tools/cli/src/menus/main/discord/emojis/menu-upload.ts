@@ -1,9 +1,10 @@
 import { CLI } from "#cli";
-import { discordEmojis, divider, equalsIgnoringCase, log, sleep, uiMessage, withDefaults } from "#helpers";
+import { discordEmojis, divider, equalsIgnoringCase, sleep, uiMessage, withDefaults } from "#helpers";
 import { menus } from "#menus";
 import { fetchDiscordEmojis } from "#shared/emojis/fetch.js";
 import { DiscordBotToken } from "#types";
 import { ck } from "#utils/ck.js";
+import { log } from "#utils/log.js";
 import { createSpinner } from "#utils/spinner.js";
 import { confirm, input, select } from "@inquirer/prompts";
 import fs from "node:fs/promises";

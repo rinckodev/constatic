@@ -1,7 +1,8 @@
 import { CLI } from "#cli";
-import { commonTexts, divider, log, sleep, uiMessage } from "#helpers";
+import { commonTexts, divider, sleep, uiMessage } from "#helpers";
 import { menus } from "#menus";
 import { ck } from "#utils/ck.js";
+import { log } from "#utils/log.js";
 import { select } from "@inquirer/prompts";
 import { withDefaults } from "../../../../helpers/prompts.js";
 

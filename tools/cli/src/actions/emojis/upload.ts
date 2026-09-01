@@ -1,8 +1,8 @@
-import { log } from "#helpers";
 import { api } from "#shared/api.js";
 import { APIEmoji, UploadEmojisData } from "#shared/emojis.js";
 import { DiscordBotToken } from "#shared/token.js";
 import { ck } from "#utils/ck.js";
+import { log } from "#utils/log.js";
 import { createSpinner } from "#utils/spinner.js";
 import { confirm } from "@inquirer/prompts";
 

@@ -1,6 +1,6 @@
-import fs from "node:fs/promises";
 import { CopyOptions, copy as fsCopy } from "fs-extra";
-import { log } from "./log.js";
+import fs from "node:fs/promises";
+import { log } from "../utils/log.js";
 import { uiMessage } from "./ui.js";
 
 export const json = {

@@ -1,8 +1,9 @@
 import { initBotAction } from "#actions/bot/init.js";
 import { CLI } from "#cli";
-import { divider, instructions, json, log, toNpmName, uiMessage } from "#helpers";
+import { divider, instructions, json, toNpmName, uiMessage } from "#helpers";
 import { BotTemplateProperties } from "#types";
 import { ck } from "#utils/ck.js";
+import { log } from "#utils/log.js";
 import { checkbox, input, select } from "@inquirer/prompts";
 import path from "node:path";
 import { searchSelect, theme, withDefaults } from "../../../../helpers/prompts.js";
