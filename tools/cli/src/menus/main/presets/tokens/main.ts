@@ -1,4 +1,4 @@
-import { commonTexts, divider, uiMessage } from "#helpers";
+import { commonTexts } from "#helpers";
 import { menus } from "#menus";
 import { program } from "#program";
 import { ck } from "#utils/ck.js";
@@ -8,10 +8,7 @@ import { withDefaults } from "../../../../helpers/prompts.js";
 
 export async function presetsTokensMenu() {
     const action = await select(withDefaults({
-        message: uiMessage({
-            "pt-BR": "❑ Gerenciar tokens",
-            "en-US": "❑ Manage tokens",
-        }, ck.reset.cyan.underline),
+        message: ck.reset.cyan.underline("❑ Manage tokens"),
         choices: [
             {
                 name: ck.green("✦ New token"),
@@ -35,7 +32,7 @@ export async function presetsTokensMenu() {
             },
         ]
     }));
-    divider();
+    console.log();
 
     const tokens = program.config.get("discord.bot.tokens", []);
     switch(action){

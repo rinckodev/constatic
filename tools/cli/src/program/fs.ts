@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process";
-import { access, constants, glob } from "node:fs/promises";
+import { access, constants, glob as nodeGlob } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { PackageJson, readPackageJSON, writePackageJSON } from "pkg-types";
 import { programRuntime } from "./runtime.js";
@@ -18,7 +18,7 @@ export const programFs = Object.freeze({
         const paths = await Array.fromAsync(
             programRuntime.isBun()
                 ? new Bun.Glob(pattern).scan(options)
-                : glob(pattern, options)
+                : nodeGlob(pattern, options)
         );
         return (!programRuntime.isBun() && options.absolute)
             ? paths.map(p => resolve(p))

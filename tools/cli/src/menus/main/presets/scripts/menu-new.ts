@@ -1,4 +1,4 @@
-import { copy, divider, uiMessage } from "#helpers";
+import { copy } from "#helpers";
 import { menus } from "#menus";
 import { ScriptPreset } from "#types";
 import { input } from "@inquirer/prompts";
@@ -27,13 +27,10 @@ export async function presetsScriptsNewMenu() {
     }
 
     preset.name = await input(withDefaults({
-        message: uiMessage({
-            "en-US": "Preset name:",
-            "pt-BR": "Nome da predefinição:",
-        }),
+        message: "Preset name:",
         required: true,
     }));
-    divider();
+    console.log();
     
     const presetpath = path.join(
         program.config.dirname(), 
@@ -51,10 +48,7 @@ export async function presetsScriptsNewMenu() {
     presets.push(preset);
     program.config.set("presets.scripts", presets);
 
-    log.success(uiMessage({
-        "en-US": "Preset created successfully!",
-        "pt-BR": "Predefinição criada com sucesso!",
-    }, ck.green));
+    log.success(ck.green("Preset created successfully!"));
 
     await menus.presets.scripts.main();
 }

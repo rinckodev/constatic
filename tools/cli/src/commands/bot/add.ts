@@ -1,5 +1,4 @@
 import { actions } from "#actions/index.js";
-import { divider } from "#helpers";
 import { KeyValueFile } from "#lib/kvf.js";
 import { program } from "#program";
 import { ck } from "#utils/ck.js";
@@ -164,7 +163,7 @@ export default function () {
 
             adding.stop();
 
-            divider();
+            console.log();
             console.log(ck.green("✓"), 
                 `The selected items have been added to the project!`
             );

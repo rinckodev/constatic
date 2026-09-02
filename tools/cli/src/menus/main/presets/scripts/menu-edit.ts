@@ -1,20 +1,16 @@
-import { copy, divider, uiMessage } from "#helpers";
+import { copy, withDefaults } from "#helpers";
 import { menus } from "#menus";
 import { program } from "#program";
 import { ScriptPreset } from "#types";
 import { search } from "@inquirer/prompts";
 import { rm } from "node:fs/promises";
 import path from "node:path";
-import { withDefaults } from "../../../../helpers/prompts.js";
 import { formatPresets } from "./actions/format.js";
 import { modifyScriptPresetMenu } from "./actions/modify.js";
 
 export async function presetsScriptsEditMenu(presets: ScriptPreset[]) {
     const selected = await search(withDefaults({
-        message: uiMessage({
-            "en-US": "Select the presets you want to edit",
-            "pt-BR": "Selecione as predefinições que deseja editar",
-        }),
+        message: "Select the presets you want to edit",
         async source(term) {
             if (!term) return formatPresets(presets);
 
@@ -25,7 +21,7 @@ export async function presetsScriptsEditMenu(presets: ScriptPreset[]) {
             }));
         },
     }));
-    divider();
+    console.log();
 
     if (selected === "back"){
         menus.presets.scripts.main();

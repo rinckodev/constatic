@@ -1,4 +1,4 @@
-import { commonTexts, divider, uiMessage } from "#helpers";
+import { commonTexts } from "#helpers";
 import { menus } from "#menus";
 import { ck } from "#utils/ck.js";
 import { select } from "@inquirer/prompts";
@@ -6,23 +6,14 @@ import { withDefaults } from "../../../helpers/prompts.js";
 
 export async function presetsMenu(){
     const menu = await select(withDefaults({
-        message: uiMessage({
-            "pt-BR": "❑ Predefinições",
-            "en-US": "❑ Presets",
-        }, ck.reset.cyan.underline),
+        message: ck.reset.cyan.underline("❑ Presets"),
         choices: [
             { 
-                name: uiMessage({
-                    "pt-BR": "🗐 Scripts",
-                    "en-US": "🗐 Scripts",
-                }, ck.green),
+                name: ck.green("🗐 Scripts"),
                 value: "scripts" 
             },
             { 
-                name: uiMessage({
-                    "pt-BR": "☵ Tokens",
-                    "en-US": "☵ Tokens",
-                }, ck.green),
+                name: ck.green("☵ Tokens"),
                 value: "tokens" 
             },
             { 
@@ -31,7 +22,7 @@ export async function presetsMenu(){
             },
         ]
     }));
-    divider();
+    console.log();
     
     switch(menu){
         case "scripts":{

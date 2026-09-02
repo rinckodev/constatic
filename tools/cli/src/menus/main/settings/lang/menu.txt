@@ -33,7 +33,7 @@ export async function settingsLangMenu(cli: CLI){
             },
         ]
     }));
-    divider();
+    console.log();
 
     if (arg === "back"){
         menus.settings.main(cli);

@@ -1,4 +1,4 @@
-import { cliTableChars, divider, sleep, uiMessage } from "#helpers";
+import { cliTableChars, sleep } from "#helpers";
 import { menus } from "#menus";
 import { ScriptPreset } from "#types";
 import { ck } from "#utils/ck.js";
@@ -6,22 +6,11 @@ import Table from "cli-table3";
 
 export async function presetsScriptsListMenu(presets: ScriptPreset[]) {
     const cc = {
-        name: uiMessage( 
-            { "en-US": "Name", "pt-BR": "Nome", },
-            ck.white
-        ),
-        id: uiMessage( 
-            { "en-US": "ID", "pt-BR": "ID", },
-            ck.white
-        ),
-        files: uiMessage( 
-            { "en-US": "Files", "pt-BR": "Arquivos", },
-            ck.white
-        ),
-        deps: uiMessage( 
-            { "en-US": "Dependencies", "pt-BR": "Dependências", },
-            ck.white
-        )
+        name: ck.white("Name"),
+        id: ck.white("ID"),
+        files: ck.white("Files"),
+        deps: ck.white("Dependencies")
+        
     }
 
     const table = new Table({
@@ -41,7 +30,7 @@ export async function presetsScriptsListMenu(presets: ScriptPreset[]) {
     ]));
 
     console.log(table.toString());
-    divider();
+    console.log();
     
     await sleep(400);
     await menus.presets.scripts.main();

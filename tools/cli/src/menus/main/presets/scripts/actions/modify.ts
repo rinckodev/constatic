@@ -1,4 +1,4 @@
-import { divider, fetchNpmPackage, instructions, searchSelect, sleep, theme, uiMessage, withDefaults } from "#helpers";
+import { fetchNpmPackage, instructions, searchSelect, sleep, theme, withDefaults } from "#helpers";
 import { packageJsonHasDeps } from "#shared/presets/scripts/deps.js";
 import { ScriptPreset } from "#types";
 import { ck } from "#utils/ck.js";
@@ -30,102 +30,66 @@ export async function modifyScriptPresetMenu(
         const hasDeps = packageJsonHasDeps(preset.packageJson??{});
         const disabled = (!hasFiles && !hasDeps) ? " " : false;
         const action = await select(withDefaults({
-            message: uiMessage({
-                "pt-BR": "❑ Nova predefinições de script",
-                "en-US": "❑ New script preset",
-            }, ck.reset.cyan.underline),
+            message: ck.reset.cyan.underline("❑ New script preset"),
             choices: [
                 existing ? {
-                    name: uiMessage({
-                        "en-US": "✎ Edit name",
-                        "pt-BR": "✎ Editar nome",
-                    }, ck.blue),
+                    name: ck.blue("✎ Edit name"),
                     value: "name"
                 } : null,
                 {
-                    name: uiMessage({
-                        "en-US": "✎ Edit alias",
-                        "pt-BR": "✎ Editar alias",
-                    }, ck.blue),
+                    name: ck.blue("✎ Edit alias"),
                     value: "alias"
                 },
                 {
-                    name: uiMessage({
-                        "en-US": "🗐 Select files",
-                        "pt-BR": "🗐 Selecionar arquivos",
-                    }, ck.green),
+                    name: ck.green("🗐 Select files"),
                     value: "select"
                 },
                 hasFiles && {
-                    name: uiMessage({
-                        "en-US": "✗ Remove files",
-                        "pt-BR": "✗ Remover arquivos",
-                    }, ck.redBright),
+                    name: ck.redBright("✗ Remove files"),
                     value: "rm"
                 },
                 {
-                    name: uiMessage({
-                        "en-US": "☶ Add dependencies",
-                        "pt-BR": "☶ Adicionar dependências",
-                    }, ck.green),
+                    name: ck.green("☶ Add dependencies"),
                     value: "deps"
                 },
                 hasDeps && {
-                    name: uiMessage({
-                        "en-US": "✗ Remove dependencies",
-                        "pt-BR": "✗ Remover dependências",
-                    }, ck.redBright),
+                    name: ck.redBright("✗ Remove dependencies"),
                     value: "uninstall"
                 },
                 {
-                    name: uiMessage({
-                        "en-US": "⦿ Preview",
-                        "pt-BR": "⦿ Previsualizar",
-                    }, ck.green),
+                    name: ck.green("⦿ Preview"),
                     value: "preview",
                     disabled,
                 },
                 {
-                    name: uiMessage({
-                        "en-US": "↯ Save",
-                        "pt-BR": "↯ Salvar",
-                    }, ck.green),
+                    name: ck.green("↯ Save"),
                     value: "save",
                     disabled,
                 },
                 {
-                    name: uiMessage({
-                        "pt-BR": "⤶ Cancelar",
-                        "en-US": "⤶ Cancel",
-                    }, ck.red),
+                    name: ck.red("⤶ Cancelar"),
                     value: "cancel"
                 },
             ].filter(choice => !!choice),
             pageSize: 10,
         }));
-        divider();
+        console.log();
 
         switch (action) {
             case "name": {
                 preset.name = await input(withDefaults({
-                    message: uiMessage({
-                        "en-US": "Preset name",
-                        "pt-BR": "Nome da predefinição",
-                    }),
+                    message: "Preset name",
                     required: true,
                 }));
-                divider();
+                console.log();
                 continue;
             }
             case "alias": {
                 preset.alias = await input(withDefaults({
-                    message: uiMessage({
-                        "en-US": "Preset alias",
-                        "pt-BR": "Alias da predefinição",
-                    }),
+                    message: "Preset alias",
                     required: true,
                 }));
-                divider();
+                console.log();
                 continue;
             }
             case "select": {
@@ -135,10 +99,7 @@ export async function modifyScriptPresetMenu(
                 ]);
 
                 const files = await searchSelect(withDefaults({
-                    message: uiMessage({
-                        "en-US": "Select the files you want",
-                        "pt-BR": "Selecione os arquivos que deseja",
-                    }),
+                    message: "Select the files you want",
                     theme: theme.searchSelect,
                     async options(term) {
                         const format = (value: string) => ({
@@ -165,13 +126,10 @@ export async function modifyScriptPresetMenu(
             }
             case "rm": {
                 const files = await searchSelect(withDefaults({
-                    message: uiMessage({
-                        "en-US": "Select the files you want delete",
-                        "pt-BR": "Selecione os arquivos que deseja deletar",
-                    }),
+                    message: "Select the files you want delete",
                     options: queryFiles
                 }))
-                divider();
+                console.log();
 
                 preset.files = preset.files.filter(
                     ({ path, dist = path }) => !files.includes(dist)
@@ -180,22 +138,16 @@ export async function modifyScriptPresetMenu(
             }
             case "deps": {
                 const name = await input(withDefaults({
-                    message: uiMessage({
-                        "en-US": "Enter the dependency name:",
-                        "pt-BR": "Insira o nome da dependência:",
-                    }),
+                    message: "Enter the dependency name:",
                     required: true,
                 }));
 
                 const loading = createSpinner()
-                    .start(uiMessage({
-                        "en-US": "Fetching package",
-                        "pt-BR": "Buscando pacote"
-                    }));
+                    .start("Fetching package");
 
                 const result = await fetchNpmPackage(name);
                 loading.stop();
-                divider();
+                console.log();
 
                 if (!result.success) {
                     log.error(result.error);
@@ -206,47 +158,32 @@ export async function modifyScriptPresetMenu(
                 const packageName = result.data.name;
                 const version = result.data.selectedVersion;
 
-                log.success(uiMessage({
-                    "en-US": `Package ${packageName} / version: ${version}`,
-                    "pt-BR": `Pacote ${packageName} / versão: ${version}`
-                }));
-                divider();
+                log.success(`Package ${packageName} / version: ${version}`);
+                console.log();
 
 
                 const type = await select<"dependencies" | "devDependencies">(withDefaults({
-                    message: uiMessage({
-                        "pt-BR": "Selecione o tipo de dependência",
-                        "en-US": "Select the type of dependency",
-                    }),
+                    message: "Select the type of dependency",
                     choices: [
                         {
-                            name: uiMessage({
-                                "en-US": "Production dependency",
-                                "pt-BR": "Dependência de produção",
-                            }, ck.green),
+                            name: ck.green("Production dependency"),
                             value: "dependencies"
                         },
                         {
-                            name: uiMessage({
-                                "en-US": "Development dependency",
-                                "pt-BR": "Dependência de desenvolvimento",
-                            }, ck.green),
+                            name: ck.green("Development dependency"),
                             value: "devDependencies"
                         },
                     ]
                 }));
-                divider();
+                console.log();
 
 
                 preset.packageJson ??= {};
                 preset.packageJson[type] ??= {}
                 preset.packageJson[type][packageName] = version;
 
-                log.success(uiMessage({
-                    "en-US": `Dependency successfully added to preset`,
-                    "pt-BR": `Dependência adicionada com sucesso à predefinição`
-                }));
-                divider();
+                log.success(`Dependency successfully added to preset`);
+                console.log();
                 continue;
             }
             case "uninstall": {
@@ -270,14 +207,10 @@ export async function modifyScriptPresetMenu(
                 };
 
                 const deps = await checkbox({
-                    message: uiMessage({
-                        "en-US": `Select the dependencies you want to remove`,
-                        "pt-BR": `Selecione as dependências que deseja remover`
-                    }),
+                    message: `Select the dependencies you want to remove`,
                     choices,
-                    instructions: instructions.checkbox,
                 });
-                divider();
+                console.log();
 
                 for (const key in preset.packageJson?.dependencies ?? {}) {
                     if (deps.includes(key)) {
@@ -293,52 +226,37 @@ export async function modifyScriptPresetMenu(
             }
             case "preview": {
                 printPreview(preset);
-                divider();
+                console.log();
                 await sleep(400);
                 continue;
             }
             case "save": {
                 if (!preset.files.length && !preset.packageJson) {
-                    log.error(uiMessage({
-                        "en-US": `You need to add files and/or dependencies to create a preset.`,
-                        "pt-BR": `É necessário adicionar arquivos e/ou dependendências para criar uma predefinição`,
-                    }));
-                    divider();
+                    log.error(`You need to add files and/or dependencies to create a preset.`);
+                    console.log();
                     await sleep(400);
                     continue;
                 }
                 printPreview(preset);
-                divider();
+                console.log();
                 const action = await select(withDefaults({
-                    message: uiMessage({
-                        "pt-BR": `❑ Salvar predefinições de script`,
-                        "en-US": "❑ Save script preset",
-                    }, ck.reset.cyan.underline),
+                    message: ck.reset.cyan.underline("❑ Save script preset"),
                     choices: [
                         {
-                            name: uiMessage({
-                                "en-US": "↪ Continue to save",
-                                "pt-BR": "↪ Continuar para salvar",
-                            }, ck.green),
+                            name: ck.green("↪ Continue to save"),
                             value: "continue"
                         },
                         {
-                            name: uiMessage({
-                                "en-US": "✎ Back to edit",
-                                "pt-BR": "✎ Voltar a edição",
-                            }, ck.blue),
+                            name: ck.blue("✎ Back to edit"),
                             value: "back"
                         },
                         {
-                            name: uiMessage({
-                                "pt-BR": "⤶ Cancelar",
-                                "en-US": "⤶ Cancel",
-                            }, ck.red),
+                            name: ck.red("⤶ Cancel"),
                             value: "cancel"
                         },
                     ]
                 }));
-                divider();
+                console.log();
 
                 if (action === "cancel") {
                     status = action;

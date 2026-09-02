@@ -1,4 +1,4 @@
-import { commonTexts, divider, uiMessage } from "#helpers";
+import { commonTexts } from "#helpers";
 import { menus } from "#menus";
 import { program } from "#program";
 import { DiscordBotToken } from "#shared/token.js";
@@ -20,13 +20,10 @@ export async function presetsTokensEditMenu(tokens: DiscordBotToken[]) {
     })
 
     const selected = await select(withDefaults({
-        message: uiMessage({
-            "en-US": "Select the token you want to edit",
-            "pt-BR": "Selecione o token que deseja editar",
-        }),
+        message: "Select the token you want to edit",
         choices,
     }));
-    divider();
+    console.log();
 
 
     if (selected === "back") {
@@ -46,10 +43,6 @@ export async function presetsTokensEditMenu(tokens: DiscordBotToken[]) {
 
     program.config.set("discord.bot.tokens", tokens);
 
-    log.success(uiMessage({
-        "en-US": "Token edited successfully!",
-        "pt-BR": "Token editado com sucesso!",
-    }, ck.green));
-
+    log.success(ck.green("Token edited successfully!"));
     await menus.presets.tokens.main();
 }

@@ -1,4 +1,4 @@
-import { divider, instructions, uiMessage, withDefaults } from "#helpers";
+import { instructions, withDefaults } from "#helpers";
 import { menus } from "#menus";
 import { program } from "#program";
 import { ScriptPreset } from "#types";
@@ -12,15 +12,12 @@ import { noSelect } from "./actions/noselect.js";
 
 export async function presetsScriptsDeleteMenu(presets: ScriptPreset[]) {
     const selected = await checkbox(withDefaults({
-        message: uiMessage({
-            "en-US": "Select the presets you want to delete",
-            "pt-BR": "Selecione as predefinições que deseja deletar",
-        }),
+        message: "Select the presets you want to delete",
         choices: formatPresets(presets, true),
         instructions: instructions.checkbox,
         required: false,
     }));
-    divider();
+    console.log();
 
 
     if (selected.length < 1){
@@ -38,10 +35,7 @@ export async function presetsScriptsDeleteMenu(presets: ScriptPreset[]) {
         presets.filter(t => !selected.includes(t.id))
     );
 
-    log.success(uiMessage({
-       "en-US": "Selected presets removed successfully!",
-       "pt-BR": "Predefinições selecionados removidos com sucesso!",
-    }, ck.green));
-    divider();
+    log.success(ck.green("Selected presets removed successfully!"));
+    console.log();
     await menus.presets.scripts.main();
 }

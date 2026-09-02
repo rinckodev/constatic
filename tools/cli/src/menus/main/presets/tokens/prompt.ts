@@ -1,4 +1,4 @@
-import { uiMessage, withDefaults } from "#helpers";
+import { withDefaults } from "#helpers";
 import { DiscordBotToken, fetchToken } from "#shared/token.js";
 import { ck } from "#utils/ck.js";
 import { Result } from "#utils/result.js";
@@ -16,10 +16,7 @@ export async function promptToken(tokens: DiscordBotToken[]) {
     const existing = tokens.find(t => t.token === token)
     if (existing) {
         const name = `🤖 ${ck.yellow.underline(existing.name)}`;
-        return Result.fail(uiMessage({
-            "en-US": `This token is already saved! ${name}`,
-            "pt-BR": `Este token já está salvo! ${name}`,
-        }, ck.red));
+        return Result.fail(ck.red(`This token is already saved! ${name}`));
     }
     return fetchToken(token);
 

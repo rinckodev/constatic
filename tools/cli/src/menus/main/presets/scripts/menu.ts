@@ -1,9 +1,8 @@
-import { commonTexts, divider, uiMessage } from "#helpers";
+import { commonTexts, withDefaults } from "#helpers";
 import { menus } from "#menus";
 import { program } from "#program";
 import { ck } from "#utils/ck.js";
 import { select } from "@inquirer/prompts";
-import { withDefaults } from "../../../../helpers/prompts.js";
 
 export async function scriptPresetsMenu(){
     const presets = program.config.get("presets.scripts", []);
@@ -11,47 +10,29 @@ export async function scriptPresetsMenu(){
     const disabled = presets.length ? false : " ";
 
     const action = await select(withDefaults({
-        message: uiMessage({
-            "pt-BR": "❑ Gerenciar predefinições de scripts",
-            "en-US": "❑ Manage script presets",
-        }, ck.reset.cyan.underline),
+        message: ck.reset.cyan.underline("❑ Manage script presets"),
         choices: [
             { 
-                name: uiMessage({
-                    "en-US": "✦ New preset",
-                    "pt-BR": "✦ Nova predefinição",
-                }, ck.green),
+                name: ck.green("✦ New preset"),
                 value: "new" 
             },
             { 
-                name: uiMessage({
-                    "en-US": "↯ Apply preset",
-                    "pt-BR": "↯ Aplicar predefinição",
-                }, ck.magenta),
+                name: ck.magenta("↯ Apply preset"),
                 value: "apply", 
                 disabled 
             },
             { 
-                name: uiMessage({
-                    "en-US": "☰ Lists preset",
-                    "pt-BR": "☰ Listar predefinição",
-                }, ck.blue),
+                name: ck.blue("☰ Lists preset"),
                 value: "list",
                 disabled 
             },
             { 
-                name: uiMessage({
-                    "en-US": "✎ Edit preset",
-                    "pt-BR": "✎ Editar predefinição",
-                }, ck.yellow),
+                name: ck.yellow("✎ Edit preset"),
                 value: "edit" ,
                 disabled
             },
             { 
-                name: uiMessage({
-                    "en-US": "✗ Delete preset",
-                    "pt-BR": "✗ Excluir predefinição",
-                }, ck.red),
+                name: ck.red("✗ Delete preset"),
                 value: "delete",
                 disabled 
             },
@@ -61,7 +42,7 @@ export async function scriptPresetsMenu(){
             },
         ]
     }));
-    divider();
+    console.log();
 
     switch(action){
         case "new":{

@@ -4,6 +4,7 @@ import { DiscordBotToken } from "#shared/token.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
 import { confirm } from "@inquirer/prompts";
+import multifilter from "inquirerjs-checkbox-search";
 
 export async function emojisDeleteMenu(token: DiscordBotToken) {
     const result = await api.emojis.fetch(token.id, token.token);
@@ -13,27 +14,24 @@ export async function emojisDeleteMenu(token: DiscordBotToken) {
         return;
     }
 
-    const selected: number[] = [];
-
-    // const selected = await multifilter({
-    //     message: "Select the emojis you want to delete",
-    //     choices: result.data.map((emoji, index) => ({
-    //         label: [
-    //             emoji.animated
-    //                 ? ck.magenta("(animated)")
-    //                 : ck.cyan("(static)")
-    //             ,
-    //             ck.yellow(emoji.name),
-    //             ck.dim.green(emoji.id)
-    //         ].join(" "),
-    //         value: index
-    //     })),
-    //     maxVisible: 12,
-    //     placeholder: "Type to search...",
-    // });
+    const selected = await multifilter({
+        message: "Select the emojis you want to delete",
+        choices: result.data.map(emoji => ({
+            name: [
+                emoji.animated
+                    ? ck.magenta("(animated)")
+                    : ck.cyan("(static)")
+                ,
+                ck.yellow(emoji.name),
+                ck.dim.green(emoji.id)
+            ].join(" "),
+            value: emoji.id
+        })),
+        pageSize: 12,
+    });
     console.log();
 
-    if (selected.length < 1){
+    if (selected.length < 1) {
         log.warn("No emoji selected, back to emojis menu");
         await menus.emojis.main(token);
         return;
@@ -41,22 +39,25 @@ export async function emojisDeleteMenu(token: DiscordBotToken) {
 
     const procceed = await confirm({
         message: `Number of emojis that will be deleted: ${selected.length}`,
-        // active: "Confirm and delete",
-        // inactive: "Cancel",
+        theme: {
+            keywords: {
+                yes: "Confirm and delete",
+                no: "Cancel",
+            }
+        },
         default: true
     });
-    if (!procceed){
+    if (!procceed) {
         await menus.emojis.main(token);
         return;
     }
-
-    await Promise.all(
-        selected.map(async index => {
-            const emoji = result.data[index];
+    await Promise.all(result.data
+        .filter(e => selected.includes(e.id))
+        .map(async emoji => {
             const name = ck.yellow.underline(emoji.name);
 
             const deleteResult = await api.emojis.delete(token, emoji.id);
-            if (!deleteResult.success){
+            if (!deleteResult.success) {
                 log.fail(`Could not delete the emoji ${name}: ${deleteResult.error}`);
                 return;
             }

@@ -1,59 +1,37 @@
-import { Language } from "#types";
-import { Chalk, ck } from "#utils/ck.js";
+import { ck } from "#utils/ck.js";
 import { Arg, ArgsDef, CommandDef, CommandMeta, Resolvable } from "citty";
-import { cliLang, l } from "./lang.js";
 export { setTimeout as sleep } from "node:timers/promises";
 
-export function uiMessage(texts: Record<Language, string>, style?: Chalk) {
-    const lang = cliLang.get();
-    return style ? style(texts[lang]) : texts[lang];
-}
+// export function uiMessage(texts: Record<Language, string>, style?: Chalk) {
+//     const lang = cliLang.get();
+//     return style ? style(texts[lang]) : texts[lang];
+// }
 
 const keys = {
     tab: ck.cyan("<tab>"),
     enter: ck.cyan("<enter>"),
-    get space() {
-        return l({
-            "en-US": ck.cyan("<space>"),
-            "pt-BR": ck.cyan("<espaço>"),
-        });
-    },
+    space: ck.cyan("<space>"),
     a: ck.cyan("<a>")
 }
 
 export const instructions = {
     get checkbox() {
-        return "\n" + uiMessage({
-            "en-US": `Controls: ${keys.space} select/deselect | ${keys.a} select all | ${keys.enter} proceed`,
-            "pt-BR": `Controles: ${keys.space} selecionar/deselecionar | ${keys.a} selecionar tudo | ${keys.enter} prosseguir`
-        }, ck.dim)
+        return ck.dim(`\nControls: ${keys.space} select/deselect | ${keys.a} select all | ${keys.enter} proceed`)
     },
     get searchSelect() {
         return () => {
-            return "\n" + uiMessage({
-                "en-US": `Controls: ${keys.tab} select/deselect | ${keys.enter} proceed`,
-                "pt-BR": `Controles: ${keys.tab} selecionar/desselecionar | ${keys.enter} prosseguir`
-            }, ck.dim);
+            return ck.dim(`Controls: ${keys.tab} select/deselect | ${keys.enter} proceed`)
         }
     }
 }
 
 export const commonTexts = {
-    get back() {
-        return uiMessage({
-            "en-US": ck.dim(`⤶ Back`),
-            "pt-BR": ck.dim(`⤶ Voltar`),
-        })
-    },
+    back: ck.dim(`⤶ Back`)
 }
 
 export const colors = {
     azoxo: "#5865F2"
 };
-
-export function divider() {
-    console.log();
-}
 
 export const cliTableChars = {
     "top-left": "╭",
@@ -98,7 +76,7 @@ export async function showUsage<T extends ArgsDef = ArgsDef>(
     console.log(ck.dim(`${cmdMeta.description}`));
 
     console.log(ck.cyan("$"), ck.underline("Command usage:"), ck.cyan(command), ck.cyan(options));
-    divider();
+    console.log();
 
     if (subCommands.length >= 1) {
         console.log(ck.blue("$"), ck.underline("Subcommands:"));
@@ -113,7 +91,7 @@ export async function showUsage<T extends ArgsDef = ArgsDef>(
                 `  ${ck.blue(padded)} ${ck.gray(meta.description!)}`
             );
         }
-        divider();
+        console.log();
     }
 
     if (posArgs.length >= 1) {
@@ -128,7 +106,7 @@ export async function showUsage<T extends ArgsDef = ArgsDef>(
                 `  ${ck.blue(padded)} ${ck.gray(description!)} ${hint ? `: ${hint}` : ""}`
             );
         }
-        divider();
+        console.log();
     }
     if (flags.length >= 1) {
         console.log(ck.blue("⚑"), ck.underline("Command flags:"));

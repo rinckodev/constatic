@@ -1,4 +1,4 @@
-import { cliTableChars, divider } from "#helpers";
+import { cliTableChars } from "#helpers";
 import { menus } from "#menus";
 import { DiscordBotToken } from "#shared/token.js";
 import { ck } from "#utils/ck.js";
@@ -22,6 +22,6 @@ export async function presetsTokensListMenu(tokens: DiscordBotToken[]) {
     ]));
 
     console.log(table.toString());
-    divider();
+    console.log();
     await menus.presets.tokens.main();
 }

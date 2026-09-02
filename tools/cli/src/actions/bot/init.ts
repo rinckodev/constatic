@@ -1,9 +1,10 @@
 import { actions } from "#actions/index.js";
-import { byeMessage, divider, getCdPath, json, modifyObjArg, toNpmName, uiMessage } from "#helpers";
+import { getCdPath, json, modifyObjArg, toNpmName } from "#helpers";
 import { KeyValueFile } from "#lib/kvf.js";
 import { program } from "#program";
 import { applyScriptPresets } from "#shared/presets/scripts/apply.js";
 import type { EnvVarData } from "#types";
+import { quit } from "#utils/cancel.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
 import { pkg } from "#utils/pkg.js";
@@ -31,10 +32,7 @@ export async function initBotAction(data: InitBotActionData) {
     const isDistRoot = data.dist === process.cwd();
 
     const generating = createSpinner();
-    generating.start(uiMessage({
-        "en-US": "The project is being generated! Please wait...",
-        "pt-BR": "O projeto está sendo gerado! Aguarde...",
-    }));
+    generating.start("The project is being generated! Please wait...");
 
     await copyProject(
         templateJoin("project"),
@@ -57,20 +55,14 @@ export async function initBotAction(data: InitBotActionData) {
     const envFile = new KeyValueFile(distJoin("./.env"));
     await envFile.read(distJoin("./.env.example"));
 
-    generating.update(uiMessage({
-        "en-US": "Creating environment variables manager",
-        "pt-BR": "Criando gerenciador de variáveis de ambiente",
-    }));
+    generating.update("Creating environment variables manager");
     const templatePkg = await readPackageJSON(distJoin("package.json"));
     templatePkg.name = toNpmName(path.basename(path.resolve(data.dist)));
 
     const database = program.templates.props.presets.databases[data.database ?? ""];
 
     if (database) {
-        generating.update(uiMessage({
-            "en-US": "Setting up the database",
-            "pt-BR": "Configurando o banco de dados",
-        }));
+        generating.update("Setting up the database");
         await actions.bot.add.database({
             database, pkg: templatePkg, envFile,
             envSchema: projectFiles.envSchema,
@@ -81,10 +73,7 @@ export async function initBotAction(data: InitBotActionData) {
     const server = program.templates.props.presets.servers[data.server ?? ""];
 
     if (server) {
-        generating.update(uiMessage({
-            "en-US": "Setting up the API Server...",
-            "pt-BR": "Configurando Servidor de API...",
-        }));
+        generating.update("Setting up the API Server...");
 
         await actions.bot.add.server({
             server, pkg: templatePkg, envFile,
@@ -95,10 +84,7 @@ export async function initBotAction(data: InitBotActionData) {
 
     const token = program.config.getToken(data.token ?? "");
     if (token) {
-        generating.update(uiMessage({
-            "en-US": "Writing the token to the .env file...",
-            "pt-BR": "Escrevendo o token no arquivo .env...",
-        }));
+        generating.update("Writing the token to the .env file...");
         envFile.set("BOT_TOKEN", token.token);
     };
 
@@ -109,7 +95,6 @@ export async function initBotAction(data: InitBotActionData) {
 
     if (data.extras?.includes("discloud")) {
         const dir = templateJoin("extras", program.runtime.isBun() ? "bun" : "discloud");
-        // const dir = templateJoin("extras", "discloud");
         await copy(
             path.join(dir, "discloud.ignore.txt"),
             distJoin(".discloudignore")
@@ -176,61 +161,42 @@ export async function initBotAction(data: InitBotActionData) {
     await envFile.write(distJoin(".env.example"), true);
 
     if (data.install) {
-        generating.update(uiMessage({
-            "en-US": "Installing the dependencies...",
-            "pt-BR": "Instalando as dependências...",
-        }));
+        generating.update("Installing the dependencies...");
         const result = await program.runtime.agentRun(distJoin(), "install");
         generating.stop();
         if (result.success) {
-            log.success(uiMessage({
-                "en-US": "✅ Dependencies installed successfully!",
-                "pt-BR": "✅ Dependências instaladas com sucesso!",
-            }));
+            log.success("✅ Dependencies installed successfully!");
         } else {
             const command = `${program.runtime.agent()} install`;
-            log.fail(uiMessage({
-                "en-US": [
-                    "❌ Unable to install dependencies!",
-                    `Install manually using ${command}`
-                ].join("\n"),
-                "pt-BR": [
-                    "❌ Não foi possível instalar dependências!",
-                    `Instale manualmente usando ${command}`
-                ].join("\n"),
-            }))
+            log.fail([
+                "❌ Unable to install dependencies!",
+                `Install manually using ${command}`
+            ].join("\n"))
         }
-        divider();
+        console.log();
     }
     generating.stop();
 
-    log.success(uiMessage({
-        "en-US": "Project generate successfully!",
-        "pt-BR": "Projeto gerado com sucesso!",
-    }));
-    divider();
+    log.success("Project generate successfully!");
+    console.log();
 
     if (!isDistRoot) {
-        log.custom(ck.green("➞"), uiMessage({
-            "en-US": `Use: ${getCdPath(data.dist)}`,
-            "pt-BR": `Use: ${getCdPath(data.dist)}`,
-        }));
+        log.custom(ck.green("➞"),
+            `Use: ${getCdPath(data.dist)}`,
+        );
     }
     if (!data.install) {
-        log.custom(ck.green("➞"), uiMessage({
-            "en-US": "Install the dependencies",
-            "pt-BR": "Instale as dependências",
-        }));
+        log.custom(ck.green("➞"),
+            "Install the dependencies"
+        );
     }
 
-    log.custom(ck.green("➞"), uiMessage({
-        "en-US": `Run ${ck.underline("dev")} script`,
-        "pt-BR": `Execute o script ${ck.underline("dev")}`,
-    }));
-
-    divider();
-    console.log(byeMessage);
-    divider();
+    log.custom(ck.green("➞"),
+        `Run ${ck.underline("dev")} script`
+    );
+    console.log();
+    quit();
+    console.log();
 }
 
 async function copyProject(src: string, dist: string) {

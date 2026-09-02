@@ -1,4 +1,4 @@
-import { divider, uiMessage, withDefaults } from "#helpers";
+import { withDefaults } from "#helpers";
 import { menus } from "#menus";
 import { program } from "#program";
 import { DiscordBotToken } from "#shared/token.js";
@@ -12,22 +12,16 @@ export async function presetsTokensDeleteMenu(tokens: DiscordBotToken[]) {
     }));
 
     const selected = await checkbox(withDefaults({
-        message: uiMessage({
-            "en-US": "Select the tokens you want to delete",
-            "pt-BR": "Selecione os tokens que deseja deletar",
-        }),
+        message: "Select the tokens you want to delete",
         choices,
         required: false,
     }));
-    divider();
+    console.log();
 
 
     if (selected.length < 1){
-        log.warn(uiMessage({
-           "en-US": "No token selected, back to tokens menu",
-           "pt-BR": "Nenhum token selecionado, voltando ao menu de tokens",
-        }))
-        divider();
+        log.warn("No token selected, back to tokens menu")
+        console.log();
         await menus.presets.tokens.main();
         return;
     }
@@ -36,11 +30,8 @@ export async function presetsTokensDeleteMenu(tokens: DiscordBotToken[]) {
         tokens.filter(t => !selected.includes(t.id))
     );
 
-    log.success(uiMessage({
-       "en-US": "Selected tokens removed successfully!",
-       "pt-BR": "Tokens selecionados removidos com sucesso!",
-    }, ck.green));
-    divider();
+    log.success(ck.green("Selected tokens removed successfully!"));
+    console.log();
 
     await menus.presets.tokens.main();
 }

@@ -1,7 +1,6 @@
 import type { NpmPackage } from "#types";
 import { Result } from "#utils/result.js";
 import path from "node:path";
-import { uiMessage } from "../ui.js";
 
 const baseURL = "https://registry.npmjs.org";
 
@@ -17,10 +16,7 @@ export async function fetchNpmPackage(lib: string) {
     const data = await response.json() as NpmPackage;
 
     if (response.status !== 200) {
-        return Result.fail(uiMessage({
-            "en-US": "Package not found",
-            "pt-BR": "Pacote não encontrado",
-        }));
+        return Result.fail("Package not found");
     }
 
     const versionKey = version === "latest"
@@ -30,10 +26,7 @@ export async function fetchNpmPackage(lib: string) {
     const hasVersion = !!data.versions[versionKey];
 
     if (!hasVersion) {
-        return Result.fail(uiMessage({
-            "en-US": "Package version not found",
-            "pt-BR": "Versão do pacote não encontrada",
-        }));
+        return Result.fail("Package version not found");
     }
 
     return Result.ok({ ...data, selectedVersion: versionKey });

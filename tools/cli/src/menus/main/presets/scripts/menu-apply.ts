@@ -1,4 +1,4 @@
-import { divider, instructions, json, sleep, uiMessage } from "#helpers";
+import { instructions, json, sleep, withDefaults } from "#helpers";
 import { menus } from "#menus";
 import { applyScriptPresets } from "#shared/presets/scripts/apply.js";
 import { packageJsonHasDeps } from "#shared/presets/scripts/deps.js";
@@ -8,21 +8,17 @@ import { log } from "#utils/log.js";
 import { checkbox } from "@inquirer/prompts";
 import path from "node:path";
 import { PackageJson } from "pkg-types";
-import { withDefaults } from "../../../../helpers/prompts.js";
 import { formatPresets } from "./actions/format.js";
 import { noSelect } from "./actions/noselect.js";
 
 export async function presetsScriptsApplyMenu(presets: ScriptPreset[]) {
     const selected = await checkbox(withDefaults({
-        message: uiMessage({
-            "en-US": "Select the presets you want to apply",
-            "pt-BR": "Selecione as predefinições que deseja aplicar",
-        }),
+        message: "Select the presets you want to apply",
         instructions: instructions.checkbox,
         choices: formatPresets(presets, true),
         required: false,
     }));
-    divider();
+    console.log();
 
     if (selected.length < 1) {
         await noSelect();
@@ -40,22 +36,16 @@ export async function presetsScriptsApplyMenu(presets: ScriptPreset[]) {
         .catch(() => null);
 
     const hasDeps = selectedPresets.some(
-        preset => packageJsonHasDeps(preset.packageJson??{})
+        preset => packageJsonHasDeps(preset.packageJson ?? {})
     );
 
     if (!pkg && hasDeps) {
         const ref = ck.underline("package.json");
-        log.warn(uiMessage({
-            "en-US": [
-                `The file ${ref} was not found in the root or is incorrect!`,
-                "The preset dependencies cannot be applied."
-            ].join("\n"),
-            "pt-BR": [
-                `O arquivo ${ref} não foi encontrado na raiz ou está incorreto!`,
-                "As dependências das predefinições não podem ser aplicadas."
-            ].join("\n"),
-        }, ck.yellow));
-        divider();
+        log.warn(ck.yellow([
+            `The file ${ref} was not found in the root or is incorrect!`,
+            "The preset dependencies cannot be applied."
+        ].join("\n")));
+        console.log();
     }
 
     await applyScriptPresets({
@@ -67,11 +57,8 @@ export async function presetsScriptsApplyMenu(presets: ScriptPreset[]) {
         await json.write(pkgJsonPath, pkg);
     }
 
-    log.success(uiMessage({
-        "en-US": "Selected presets applied successfully!",
-        "pt-BR": "Predefinições selecionadas aplicadas com sucesso!",
-    }, ck.green));
-    divider();
+    log.success(ck.green("Selected presets applied successfully!"));
+    console.log();
 
     await sleep(400);
     await menus.presets.scripts.main();

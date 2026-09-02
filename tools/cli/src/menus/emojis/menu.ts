@@ -9,7 +9,7 @@ export async function emojisMenu(token?: DiscordBotToken){
         const result = await selectBotMenu();
         if (!result.success){
             if (result.error === "back"){
-                // await menus.main(); TODO
+                await menus.main();
                 return;
             }
             console.error(ck.red(`✖︎ ${result.error}`));
@@ -19,11 +19,7 @@ export async function emojisMenu(token?: DiscordBotToken){
         token = result.data;
     }
     const menu = await select({
-        message: `Manage emojis ${ck.green.dim(`🤖 ${token.name}`)}`,
-        // theme: {
-        //     message: m => ck.reset.cyan(m),
-        //     prefix: () => ck.reset.cyan("❑")
-        // },
+        message: ck.reset.cyan(`❑ Manage emojis ${ck.green.dim(`🤖 ${token.name}`)}`),
         choices: [
             {
                 name: ck.blue("☰ List emojis"),
@@ -70,7 +66,7 @@ export async function emojisMenu(token?: DiscordBotToken){
             return;
         }
         default:{
-            // await menus.main(); TODO
+            await menus.main();
         }
     }
 }

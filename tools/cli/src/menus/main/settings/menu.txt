@@ -24,7 +24,7 @@ export async function settingsMenu(cli: CLI){
             },
         ]
     });
-    divider();
+    console.log();
     
     switch(menu){
         // case "lang":{
