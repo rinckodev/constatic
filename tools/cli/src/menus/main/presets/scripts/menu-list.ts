@@ -1,6 +1,6 @@
 import { cliTableChars, sleep } from "#helpers";
 import { menus } from "#menus";
-import { ScriptPreset } from "#types";
+import { ScriptPreset } from "#program";
 import { ck } from "#utils/ck.js";
 import Table from "cli-table3";
 

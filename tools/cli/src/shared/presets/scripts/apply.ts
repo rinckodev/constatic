@@ -1,6 +1,5 @@
 import { copy } from "#helpers";
-import { program } from "#program";
-import type { ScriptPreset } from "#types";
+import { program, ScriptPreset } from "#program";
 import merge from "lodash.merge";
 import path from "node:path";
 import { PackageJson } from "pkg-types";

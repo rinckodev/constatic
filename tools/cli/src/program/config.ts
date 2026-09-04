@@ -18,6 +18,11 @@ export interface ScriptPreset {
     }
 }
 
+export interface ScriptPresetFile {
+    path: string;
+    dist?: string;
+}
+
 interface ConfigSchema {
     "discord.bot.tokens": DiscordBotToken[]
     "presets.scripts": ScriptPreset[]

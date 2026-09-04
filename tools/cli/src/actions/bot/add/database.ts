@@ -1,6 +1,5 @@
 import { KeyValueFile } from "#lib/kvf.js";
-import { program } from "#program";
-import type { BotDatabasePreset } from "#types";
+import { type BotDatabasePreset, program } from "#program";
 import { copy } from "fs-extra";
 import merge from "lodash.merge";
 import { join } from "node:path";

@@ -1,8 +1,8 @@
 import { instructions, json, sleep, withDefaults } from "#helpers";
 import { menus } from "#menus";
+import { ScriptPreset } from "#program";
 import { applyScriptPresets } from "#shared/presets/scripts/apply.js";
 import { packageJsonHasDeps } from "#shared/presets/scripts/deps.js";
-import { ScriptPreset } from "#types";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
 import { checkbox } from "@inquirer/prompts";

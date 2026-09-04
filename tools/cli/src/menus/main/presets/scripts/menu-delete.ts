@@ -1,7 +1,6 @@
 import { instructions, withDefaults } from "#helpers";
 import { menus } from "#menus";
-import { program } from "#program";
-import { ScriptPreset } from "#types";
+import { program, ScriptPreset } from "#program";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
 import { checkbox } from "@inquirer/prompts";

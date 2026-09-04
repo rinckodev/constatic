@@ -1,7 +1,6 @@
 import { copy, withDefaults } from "#helpers";
 import { menus } from "#menus";
-import { program } from "#program";
-import { ScriptPreset } from "#types";
+import { program, ScriptPreset } from "#program";
 import { search } from "@inquirer/prompts";
 import { rm } from "node:fs/promises";
 import path from "node:path";

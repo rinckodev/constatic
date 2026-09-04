@@ -1,12 +1,10 @@
 import { initBotAction } from "#actions/bot/init.js";
-import { instructions, json, toNpmName } from "#helpers";
-import { program } from "#program";
-import { BotTemplateProperties } from "#types";
+import { instructions, json, searchSelect, theme, toNpmName, withDefaults } from "#helpers";
+import { type BotTemplateProperties, program } from "#program";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
 import { checkbox, input, select } from "@inquirer/prompts";
 import path from "node:path";
-import { searchSelect, theme, withDefaults } from "../../../../helpers/prompts.js";
 
 export async function discordBotMenu() {
     const templatePath = program.templates.path;

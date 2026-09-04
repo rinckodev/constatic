@@ -1,8 +1,14 @@
-import type { NpmPackage } from "#types";
 import { Result } from "#utils/result.js";
 import path from "node:path";
 
 const baseURL = "https://registry.npmjs.org";
+
+export interface NpmPackage {
+    name: string;
+    "dist-tags": { latest: string }
+    versions: Record<string, object>
+    time: Record<(string&{}) | "created" | "modified", string>
+}
 
 export async function fetchNpmPackage(lib: string) {
     const regex = /^(?<name>@?[^@\/]+(?:\/[^@]+)?)(?:@(?<version>.+))?$/;

@@ -1,10 +1,8 @@
-import { copy } from "#helpers";
+import { copy, withDefaults } from "#helpers";
 import { menus } from "#menus";
-import { ScriptPreset } from "#types";
 import { input } from "@inquirer/prompts";
-import { withDefaults } from "../../../../helpers/prompts.js";
 
-import { program } from "#program";
+import { program, ScriptPreset } from "#program";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
 import { mkdir } from "node:fs/promises";

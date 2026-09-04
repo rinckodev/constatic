@@ -1,5 +1,5 @@
 import { commonTexts } from "#helpers";
-import { ScriptPreset, ScriptPresetFile } from "#types";
+import { ScriptPreset, ScriptPresetFile } from "#program";
 import { ck } from "#utils/ck.js";
 
 export function formatPresets(presets: ScriptPreset[], withoutback?: boolean) {
@@ -18,5 +18,5 @@ export function formatPresets(presets: ScriptPreset[], withoutback?: boolean) {
 export function formatPresetFiles(files: ScriptPresetFile[]){
     return files.map(({ path, dist=path }) => ({
         name: path, value: dist
-    }))
+    }));
 }

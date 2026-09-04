@@ -1,6 +1,6 @@
 import { fetchNpmPackage, instructions, searchSelect, sleep, theme, withDefaults } from "#helpers";
+import { ScriptPreset } from "#program";
 import { packageJsonHasDeps } from "#shared/presets/scripts/deps.js";
-import { ScriptPreset } from "#types";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
 import { createSpinner } from "#utils/spinner.js";

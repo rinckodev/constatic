@@ -1,5 +1,5 @@
 import { buildAndFormatTree, printRecordTree } from "#helpers";
-import { ScriptPreset } from "#types";
+import { ScriptPreset } from "#program";
 import { ck } from "#utils/ck.js";
 
 export function printPreview(preset: ScriptPreset) {
