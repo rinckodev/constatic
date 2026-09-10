@@ -1,10 +1,10 @@
 import { actions } from "#actions";
 import { menus } from "#menus";
 import { api } from "#shared/api.js";
+import { prompts } from "#shared/prompts.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
 import { createSpinner } from "#utils/spinner.js";
-import { confirm, input, select } from "@inquirer/prompts";
 import { basename } from "node:path";
 import { DiscordBotToken } from "../../shared/token.js";
 
@@ -24,7 +24,7 @@ export async function emojisUploadMenu(token: DiscordBotToken){
 
     const currentDir = ck.dim.underline(basename(process.cwd()) + "/");
 
-    const dirpath = await input({
+    const dirpath = await prompts.input({
         message: `Provide the image directory path ${currentDir}`,
         // async validate(value){
         //     const exists = await program.fs.exists(resolve(value));
@@ -47,7 +47,7 @@ export async function emojisUploadMenu(token: DiscordBotToken){
     }
     searching.succeed(`Image files available for upload: ${data.length}`);
 
-    const procceed = await confirm({
+    const procceed = await prompts.confirm({
         message: "Do you want to confirm the image files upload process?"
     });
 
@@ -56,7 +56,7 @@ export async function emojisUploadMenu(token: DiscordBotToken){
         return;
     }
 
-    const overwrite = await select({
+    const overwrite = await prompts.select({
         message: "Select the overwrite method",
         choices: [
             {

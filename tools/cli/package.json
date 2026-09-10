@@ -117,7 +117,7 @@
     "#actions/*": [
       "./build/actions/*"
     ],
-    "#actions/": [
+    "#actions": [
       "./build/actions/index.js"
     ],
     "#types": [

@@ -1,23 +1,23 @@
-import { instructions, json, sleep, withDefaults } from "#helpers";
+import { json, sleep } from "#helpers";
 import { menus } from "#menus";
 import { ScriptPreset } from "#program";
 import { applyScriptPresets } from "#shared/presets/scripts/apply.js";
 import { packageJsonHasDeps } from "#shared/presets/scripts/deps.js";
+import { prompts } from "#shared/prompts.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
-import { checkbox } from "@inquirer/prompts";
 import path from "node:path";
 import { PackageJson } from "pkg-types";
 import { formatPresets } from "./actions/format.js";
 import { noSelect } from "./actions/noselect.js";
 
 export async function presetsScriptsApplyMenu(presets: ScriptPreset[]) {
-    const selected = await checkbox(withDefaults({
+    const selected = await prompts.checkbox({
         message: "Select the presets you want to apply",
-        instructions: instructions.checkbox,
+        // instructions: instructions.checkbox, TODO
         choices: formatPresets(presets, true),
         required: false,
-    }));
+    });
     console.log();
 
     if (selected.length < 1) {

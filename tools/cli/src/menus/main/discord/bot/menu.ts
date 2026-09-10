@@ -1,17 +1,17 @@
 import { initBotAction } from "#actions/bot/init.js";
-import { instructions, json, searchSelect, theme, toNpmName, withDefaults } from "#helpers";
+import { instructions, json, searchSelect, theme, toNpmName } from "#helpers";
 import { type BotTemplateProperties, program } from "#program";
+import { prompts } from "#shared/prompts.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
-import { checkbox, input, select } from "@inquirer/prompts";
 import path from "node:path";
 
 export async function discordBotMenu() {
     const templatePath = program.templates.path;
 
     const displayCurrCwd = ck.dim.underline(path.basename(process.cwd()) + "/");
-    const projectPath = await input(withDefaults({
-        message: `📁 Project name ${displayCurrCwd}"\n"`,
+    const projectPath = await prompts.input({
+        message: `📁 Project name ${displayCurrCwd}\n`,
         async validate(projetpath) {
             if (!projetpath) {
                 return `${projetpath} is not a valid path`;
@@ -20,7 +20,7 @@ export async function discordBotMenu() {
         },
         required: true,
         default: "./",
-    }));
+    });
     console.log();
 
     const distPath = path.resolve(projectPath);
@@ -33,7 +33,7 @@ export async function discordBotMenu() {
     const properties = await json
         .read<BotTemplateProperties>(path.join(templatePath, "properties.json"));
 
-    const database = await select(withDefaults({
+    const database = await prompts.select({
         message: "🧰 Database preset",
         loop: false,
         choices: [
@@ -48,10 +48,10 @@ export async function discordBotMenu() {
                     value, description: preset.hint
                 }))
         ],
-    }));
+    });
     console.log();
 
-    const extras = await checkbox(withDefaults({
+    const extras = await prompts.checkbox({
         message: "✨ Extra features",
         choices: [
             {
@@ -68,13 +68,13 @@ export async function discordBotMenu() {
                 value: "tsup"
             },
         ] as const,
-        instructions: instructions.checkbox,
+        // instructions: instructions.checkbox, // TODO
         required: false,
-    }));
+    });
     console.log();
 
     const server = extras.includes("server")
-        ? await select(withDefaults({
+        ? await prompts.select({
             message: "🌐 API Server",
             choices: Object.entries(properties.presets.servers)
                 .filter(([_, preset]) => preset.disabled !== true)
@@ -82,13 +82,13 @@ export async function discordBotMenu() {
                     name: `${preset.icon} ${preset.name} ${ck.dim(`(${preset.hint})`)}`,
                     value,
                 }))
-        }))
+        })
         : undefined
     if (extras.includes("server")) console.log();
 
     const tokens = program.config.get("discord.bot.tokens", []);
     const token = tokens.length >= 1
-        ? await select(withDefaults({
+        ? await prompts.select({
             message: "🔑 Saved token",
             choices: [
                 {
@@ -100,12 +100,12 @@ export async function discordBotMenu() {
                     value: token.name,
                 }))
             ],
-        }))
+        })
         : undefined
     console.log();
 
     const scripts = program.config.get("presets.scripts", []);
-    const selectedScripts = scripts.length < 1 ? [] : await searchSelect(withDefaults({
+    const selectedScripts = scripts.length < 1 ? [] : await searchSelect({
         message: "🗐 Script presets",
         options: scripts.map(script => ({
             name: script.name,
@@ -113,12 +113,12 @@ export async function discordBotMenu() {
         })),
         theme: theme.searchSelect,
         instructions: instructions.searchSelect,
-    }));
+    }); // TODO
     if (scripts.length >= 1) console.log();
 
     const managerSuffix = ck.bgWhite(` ${program.runtime.agent()} `);
 
-    const install = await select(withDefaults({
+    const install = await prompts.select({
         message: `📥 Install dependencies? ${managerSuffix}`,
         choices: [
             {
@@ -130,7 +130,7 @@ export async function discordBotMenu() {
                 value: false
             },
         ]
-    }));
+    });
     console.log();
 
     await initBotAction({

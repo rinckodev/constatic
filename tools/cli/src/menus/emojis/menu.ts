@@ -1,6 +1,6 @@
 import { menus } from "#menus";
+import { prompts } from "#shared/prompts.js";
 import { ck } from "#utils/ck.js";
-import { select } from "@inquirer/prompts";
 import { DiscordBotToken } from "../../shared/token.js";
 import { selectBotMenu } from "./select.js";
 
@@ -18,7 +18,7 @@ export async function emojisMenu(token?: DiscordBotToken){
         }
         token = result.data;
     }
-    const menu = await select({
+    const menu = await prompts.select({
         message: ck.reset.cyan(`❑ Manage emojis ${ck.green.dim(`🤖 ${token.name}`)}`),
         choices: [
             {

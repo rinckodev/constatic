@@ -1,21 +1,20 @@
-import { instructions, withDefaults } from "#helpers";
 import { menus } from "#menus";
 import { program, ScriptPreset } from "#program";
+import { prompts } from "#shared/prompts.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
-import { checkbox } from "@inquirer/prompts";
 import { rm } from "node:fs/promises";
 import path from "node:path";
 import { formatPresets } from "./actions/format.js";
 import { noSelect } from "./actions/noselect.js";
 
 export async function presetsScriptsDeleteMenu(presets: ScriptPreset[]) {
-    const selected = await checkbox(withDefaults({
+    const selected = await prompts.checkbox({
         message: "Select the presets you want to delete",
         choices: formatPresets(presets, true),
-        instructions: instructions.checkbox,
+        // instructions: instructions.checkbox, TODO
         required: false,
-    }));
+    });
     console.log();
 
 

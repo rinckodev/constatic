@@ -1,7 +1,7 @@
 import { program } from "#program";
+import { prompts } from "#shared/prompts.js";
 import { ck } from "#utils/ck.js";
 import { Result } from "#utils/result.js";
-import { password, select } from "@inquirer/prompts";
 import { KeyValueFile } from "../../lib/kvf.js";
 import { fetchToken } from "../../shared/token.js";
 
@@ -44,7 +44,7 @@ export async function selectBotMenu() {
         value: -1
     });
 
-    const index = await select({
+    const index = await prompts.select({
         message: "Select an bot application",
         choices,
     });
@@ -56,8 +56,9 @@ export async function selectBotMenu() {
         return Result.fail("back");
     }
     if (index === -2){
-        const token = await password({
+        const token = await prompts.password({
             message: "Insert your bot application token",
+            mask: "*"
         });
         const existing = tokens.find(t => t.token === token);
         if (existing) return Result.fail(

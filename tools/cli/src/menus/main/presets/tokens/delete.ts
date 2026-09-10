@@ -1,21 +1,20 @@
-import { withDefaults } from "#helpers";
 import { menus } from "#menus";
 import { program } from "#program";
+import { prompts } from "#shared/prompts.js";
 import { DiscordBotToken } from "#shared/token.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
-import { checkbox } from "@inquirer/prompts";
 
 export async function presetsTokensDeleteMenu(tokens: DiscordBotToken[]) {
     const choices = tokens.map(t => ({
         name: `🤖 ${ck.yellow.underline(t.name)}`, value: t.id
     }));
 
-    const selected = await checkbox(withDefaults({
+    const selected = await prompts.checkbox({
         message: "Select the tokens you want to delete",
         choices,
         required: false,
-    }));
+    });
     console.log();
 
 

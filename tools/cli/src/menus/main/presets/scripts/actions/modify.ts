@@ -1,10 +1,11 @@
-import { fetchNpmPackage, instructions, searchSelect, sleep, theme, withDefaults } from "#helpers";
+import { fetchNpmPackage, instructions, searchSelect, sleep, theme } from "#helpers";
 import { ScriptPreset } from "#program";
 import { packageJsonHasDeps } from "#shared/presets/scripts/deps.js";
+import { prompts } from "#shared/prompts.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
 import { createSpinner } from "#utils/spinner.js";
-import { checkbox, input, select, Separator } from "@inquirer/prompts";
+import { Separator } from "@inquirer/prompts";
 import { glob } from "tinyglobby";
 import { formatPresetFiles } from "./format.js";
 import { printPreview } from "./preview.js";
@@ -29,7 +30,7 @@ export async function modifyScriptPresetMenu(
         const hasFiles = preset.files.length > 0;
         const hasDeps = packageJsonHasDeps(preset.packageJson??{});
         const disabled = (!hasFiles && !hasDeps) ? " " : false;
-        const action = await select(withDefaults({
+        const action = await prompts.select({
             message: ck.reset.cyan.underline("❑ New script preset"),
             choices: [
                 existing ? {
@@ -72,23 +73,23 @@ export async function modifyScriptPresetMenu(
                 },
             ].filter(choice => !!choice),
             pageSize: 10,
-        }));
+        });
         console.log();
 
         switch (action) {
             case "name": {
-                preset.name = await input(withDefaults({
+                preset.name = await prompts.input({
                     message: "Preset name",
                     required: true,
-                }));
+                });
                 console.log();
                 continue;
             }
             case "alias": {
-                preset.alias = await input(withDefaults({
+                preset.alias = await prompts.input({
                     message: "Preset alias",
                     required: true,
-                }));
+                });
                 console.log();
                 continue;
             }
@@ -98,7 +99,7 @@ export async function modifyScriptPresetMenu(
                     "!**/node_modules/**"
                 ]);
 
-                const files = await searchSelect(withDefaults({
+                const files = await searchSelect({
                     message: "Select the files you want",
                     theme: theme.searchSelect,
                     async options(term) {
@@ -113,7 +114,7 @@ export async function modifyScriptPresetMenu(
                         ).map(format);
                     },
                     instructions: instructions.searchSelect,
-                }));
+                }); // TODO
 
                 const filtered = files.filter(filepath =>
                     !preset.files.some(p => p.path === filepath)
@@ -125,10 +126,10 @@ export async function modifyScriptPresetMenu(
                 continue;
             }
             case "rm": {
-                const files = await searchSelect(withDefaults({
+                const files = await searchSelect({
                     message: "Select the files you want delete",
                     options: queryFiles
-                }))
+                }); // TODO
                 console.log();
 
                 preset.files = preset.files.filter(
@@ -137,10 +138,10 @@ export async function modifyScriptPresetMenu(
                 continue;
             }
             case "deps": {
-                const name = await input(withDefaults({
+                const name = await prompts.input({
                     message: "Enter the dependency name:",
                     required: true,
-                }));
+                });
 
                 const loading = createSpinner()
                     .start("Fetching package");
@@ -162,7 +163,7 @@ export async function modifyScriptPresetMenu(
                 console.log();
 
 
-                const type = await select<"dependencies" | "devDependencies">(withDefaults({
+                const type = await prompts.select({
                     message: "Select the type of dependency",
                     choices: [
                         {
@@ -174,7 +175,7 @@ export async function modifyScriptPresetMenu(
                             value: "devDependencies"
                         },
                     ]
-                }));
+                });
                 console.log();
 
 
@@ -206,7 +207,7 @@ export async function modifyScriptPresetMenu(
                     ))
                 };
 
-                const deps = await checkbox({
+                const deps = await prompts.checkbox({
                     message: `Select the dependencies you want to remove`,
                     choices,
                 });
@@ -239,7 +240,7 @@ export async function modifyScriptPresetMenu(
                 }
                 printPreview(preset);
                 console.log();
-                const action = await select(withDefaults({
+                const action = await prompts.select({
                     message: ck.reset.cyan.underline("❑ Save script preset"),
                     choices: [
                         {
@@ -255,7 +256,7 @@ export async function modifyScriptPresetMenu(
                             value: "cancel"
                         },
                     ]
-                }));
+                });
                 console.log();
 
                 if (action === "cancel") {

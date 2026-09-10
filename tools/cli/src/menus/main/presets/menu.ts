@@ -1,11 +1,10 @@
 import { commonTexts } from "#helpers";
 import { menus } from "#menus";
+import { prompts } from "#shared/prompts.js";
 import { ck } from "#utils/ck.js";
-import { select } from "@inquirer/prompts";
-import { withDefaults } from "../../../helpers/prompts.js";
 
 export async function presetsMenu(){
-    const menu = await select(withDefaults({
+    const menu = await prompts.select({
         message: ck.reset.cyan.underline("❑ Presets"),
         choices: [
             { 
@@ -21,7 +20,7 @@ export async function presetsMenu(){
                 value: "back" 
             },
         ]
-    }));
+    });
     console.log();
     
     switch(menu){

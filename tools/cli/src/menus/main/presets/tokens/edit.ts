@@ -1,11 +1,10 @@
 import { commonTexts } from "#helpers";
 import { menus } from "#menus";
 import { program } from "#program";
+import { prompts } from "#shared/prompts.js";
 import { DiscordBotToken } from "#shared/token.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
-import { select } from "@inquirer/prompts";
-import { withDefaults } from "../../../../helpers/prompts.js";
 import { promptToken } from "./prompt.js";
 
 export async function presetsTokensEditMenu(tokens: DiscordBotToken[]) {
@@ -19,10 +18,10 @@ export async function presetsTokensEditMenu(tokens: DiscordBotToken[]) {
         value: "back",
     })
 
-    const selected = await select(withDefaults({
+    const selected = await prompts.select({
         message: "Select the token you want to edit",
         choices,
-    }));
+    });
     console.log();
 
 

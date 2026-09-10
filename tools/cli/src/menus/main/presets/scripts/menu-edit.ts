@@ -1,14 +1,14 @@
-import { copy, withDefaults } from "#helpers";
+import { copy } from "#helpers";
 import { menus } from "#menus";
 import { program, ScriptPreset } from "#program";
-import { search } from "@inquirer/prompts";
+import { prompts } from "#shared/prompts.js";
 import { rm } from "node:fs/promises";
 import path from "node:path";
 import { formatPresets } from "./actions/format.js";
 import { modifyScriptPresetMenu } from "./actions/modify.js";
 
 export async function presetsScriptsEditMenu(presets: ScriptPreset[]) {
-    const selected = await search(withDefaults({
+    const selected = await prompts.search({
         message: "Select the presets you want to edit",
         async source(term) {
             if (!term) return formatPresets(presets);
@@ -19,7 +19,7 @@ export async function presetsScriptsEditMenu(presets: ScriptPreset[]) {
                     name.includes(term.toLowerCase());
             }));
         },
-    }));
+    });
     console.log();
 
     if (selected === "back"){

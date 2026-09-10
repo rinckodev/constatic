@@ -1,13 +1,12 @@
 import { commonTexts } from "#helpers";
 import { menus } from "#menus";
 import { program } from "#program";
+import { prompts } from "#shared/prompts.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
-import { select } from "@inquirer/prompts";
-import { withDefaults } from "../../../../helpers/prompts.js";
 
 export async function presetsTokensMenu() {
-    const action = await select(withDefaults({
+    const action = await prompts.select({
         message: ck.reset.cyan.underline("❑ Manage tokens"),
         choices: [
             {
@@ -31,7 +30,7 @@ export async function presetsTokensMenu() {
                 value: "back"
             },
         ]
-    }));
+    });
     console.log();
 
     const tokens = program.config.get("discord.bot.tokens", []);

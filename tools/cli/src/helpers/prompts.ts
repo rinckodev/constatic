@@ -1,6 +1,5 @@
 import { ck } from "#utils/ck.js";
 import { select as searchSelectPro } from "inquirer-select-pro";
-import merge from "lodash.merge";
 
 export const baseTheme = {
     style: {
@@ -31,14 +30,14 @@ export const theme = {
     }
 };
 
-export function withDefaults<T>(config: T): T {
-    return {
-        mask: "*",
-        instructions: false,
-        ...config,
-        theme: merge(theme, (config as { theme: object })?.["theme"]),
-    };
-}
+// export function withDefaults<T>(config: T): T {
+//     return {
+//         mask: "*",
+//         instructions: false,
+//         ...config,
+//         theme: merge(theme, (config as { theme: object })?.["theme"]),
+//     };
+// }
 
 function wrapWithCustomError<TArgs extends any[], TResult>(
   fn: (...args: TArgs) => Promise<TResult>,

@@ -16,6 +16,4 @@ if (process.versions.node < REQ_VERSION){
     process.exit(1);
 }
 
-runMain(createMain(), { 
-    showUsage 
-});
+runMain(createMain(), { showUsage });

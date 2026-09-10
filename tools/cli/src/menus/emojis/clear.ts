@@ -1,9 +1,9 @@
 import { menus } from "#menus";
 import { api } from "#shared/api.js";
+import { prompts } from "#shared/prompts.js";
 import { DiscordBotToken } from "#shared/token.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
-import { confirm } from "@inquirer/prompts";
 
 export async function emojisClearMenu(token: DiscordBotToken) {
     const result = await api.emojis.fetch(token.id, token.token);
@@ -19,12 +19,19 @@ export async function emojisClearMenu(token: DiscordBotToken) {
         await menus.emojis.main(token);
         return;
     }
-
-    const procceed = await confirm({
+    
+    const procceed = await prompts.select({
         message: `All emojis in your application will be deleted!`,
-        // active: "Confirm and clear",
-        // inactive: "Cancel",
-        default: true
+        choices: [
+            {
+                name: ck.red("Confirm and delete"),
+                value: true,
+            },
+            {
+                name: ck.dim("Cancel"),
+                value: false,
+            },
+        ]
     });
     if (!procceed){
         await menus.emojis.main(token);

@@ -1,8 +1,8 @@
-import { copy, withDefaults } from "#helpers";
+import { copy } from "#helpers";
 import { menus } from "#menus";
-import { input } from "@inquirer/prompts";
 
 import { program, ScriptPreset } from "#program";
+import { prompts } from "#shared/prompts.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
 import { mkdir } from "node:fs/promises";
@@ -24,10 +24,10 @@ export async function presetsScriptsNewMenu() {
         return;
     }
 
-    preset.name = await input(withDefaults({
+    preset.name = await prompts.input({
         message: "Preset name:",
         required: true,
-    }));
+    });
     console.log();
     
     const presetpath = path.join(

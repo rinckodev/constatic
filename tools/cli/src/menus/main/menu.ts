@@ -1,11 +1,10 @@
 import { menus } from "#menus";
+import { prompts } from "#shared/prompts.js";
 import { quit } from "#utils/cancel.js";
 import { ck } from "#utils/ck.js";
-import { select } from "@inquirer/prompts";
-import { withDefaults } from "../../helpers/prompts.js";
 
 export async function mainMenu(){
-    const menu = await select(withDefaults({
+    const menu = await prompts.select({
         message: ck.reset.cyan.underline("❑ Main menu"),
         choices: [
             {
@@ -25,7 +24,7 @@ export async function mainMenu(){
                 value: "quit" 
             },
         ]
-    }));
+    });
     console.log();
     
     switch(menu){

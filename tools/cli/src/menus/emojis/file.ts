@@ -1,9 +1,9 @@
 import { actions } from "#actions";
 import { menus } from "#menus";
 import { api } from "#shared/api.js";
+import { prompts } from "#shared/prompts.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
-import { input, select } from "@inquirer/prompts";
 import type { DiscordBotToken } from "../../shared/token.js";
 
 export async function emojisFileMenu(token: DiscordBotToken) {
@@ -13,7 +13,7 @@ export async function emojisFileMenu(token: DiscordBotToken) {
         await menus.emojis.main(token);
         return;
     }
-    const dist = await input({
+    const dist = await prompts.input({
         message: "Emoji file path",
         default: "./emojis.json",
         // validate(value){
@@ -23,7 +23,7 @@ export async function emojisFileMenu(token: DiscordBotToken) {
         // }
     });
 
-    const type = await select<"id" | "url">({
+    const type = await prompts.select<"id" | "url">({
         message: "Emoji file type",
         default: "id",
         choices: [

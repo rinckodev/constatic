@@ -1,15 +1,15 @@
-import { commonTexts, withDefaults } from "#helpers";
+import { commonTexts } from "#helpers";
 import { menus } from "#menus";
 import { program } from "#program";
+import { prompts } from "#shared/prompts.js";
 import { ck } from "#utils/ck.js";
-import { select } from "@inquirer/prompts";
 
 export async function scriptPresetsMenu(){
     const presets = program.config.get("presets.scripts", []);
 
     const disabled = presets.length ? false : " ";
 
-    const action = await select(withDefaults({
+    const action = await prompts.select({
         message: ck.reset.cyan.underline("❑ Manage script presets"),
         choices: [
             { 
@@ -41,7 +41,7 @@ export async function scriptPresetsMenu(){
                 value: "back" 
             },
         ]
-    }));
+    });
     console.log();
 
     switch(action){

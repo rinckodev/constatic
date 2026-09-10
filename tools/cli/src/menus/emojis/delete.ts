@@ -1,10 +1,9 @@
 import { menus } from "#menus";
 import { api } from "#shared/api.js";
+import { prompts } from "#shared/prompts.js";
 import { DiscordBotToken } from "#shared/token.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
-import { confirm } from "@inquirer/prompts";
-import multifilter from "inquirerjs-checkbox-search";
 
 export async function emojisDeleteMenu(token: DiscordBotToken) {
     const result = await api.emojis.fetch(token.id, token.token);
@@ -14,7 +13,7 @@ export async function emojisDeleteMenu(token: DiscordBotToken) {
         return;
     }
 
-    const selected = await multifilter({
+    const selected = await prompts.multifilter({
         message: "Select the emojis you want to delete",
         choices: result.data.map(emoji => ({
             name: [
@@ -27,7 +26,7 @@ export async function emojisDeleteMenu(token: DiscordBotToken) {
             ].join(" "),
             value: emoji.id
         })),
-        pageSize: 12,
+        pageSize: 8,
     });
     console.log();
 
@@ -37,15 +36,18 @@ export async function emojisDeleteMenu(token: DiscordBotToken) {
         return;
     }
 
-    const procceed = await confirm({
+    const procceed = await prompts.select({
         message: `Number of emojis that will be deleted: ${selected.length}`,
-        theme: {
-            keywords: {
-                yes: "Confirm and delete",
-                no: "Cancel",
-            }
-        },
-        default: true
+        choices: [
+            {
+                name: ck.red("Confirm and delete"),
+                value: true,
+            },
+            {
+                name: ck.dim("Cancel"),
+                value: false,
+            },
+        ]
     });
     if (!procceed) {
         await menus.emojis.main(token);
