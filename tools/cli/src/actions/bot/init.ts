@@ -1,7 +1,8 @@
 import { actions } from "#actions/index.js";
-import { getCdPath, json, modifyObjArg, toNpmName } from "#helpers";
+import { json, modifyObjArg } from "#helpers";
 import { KeyValueFile } from "#lib/kvf.js";
 import { EnvVarData, program } from "#program";
+import { getCdPath, toNpmName } from "#shared/npm.js";
 import { applyScriptPresets } from "#shared/presets/scripts/apply.js";
 import { quit } from "#utils/cancel.js";
 import { ck } from "#utils/ck.js";

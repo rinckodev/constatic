@@ -1,5 +1,6 @@
-import { fetchNpmPackage, instructions, searchSelect, sleep, theme } from "#helpers";
+import { instructions, searchSelect, sleep, theme } from "#helpers";
 import { ScriptPreset } from "#program";
+import { fetchNpmPackage } from "#shared/npm.js";
 import { packageJsonHasDeps } from "#shared/presets/scripts/deps.js";
 import { prompts } from "#shared/prompts.js";
 import { ck } from "#utils/ck.js";

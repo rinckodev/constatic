@@ -10,10 +10,10 @@ export interface NpmPackage {
     time: Record<(string&{}) | "created" | "modified", string>
 }
 
-export async function fetchNpmPackage(lib: string) {
-    const regex = /^(?<name>@?[^@\/]+(?:\/[^@]+)?)(?:@(?<version>.+))?$/;
+const npmPkgRegex = /^(?<name>@?[^@\/]+(?:\/[^@]+)?)(?:@(?<version>.+))?$/;
 
-    const match = lib.match(regex);
+export async function fetchNpmPackage(lib: string) {
+    const match = lib.match(npmPkgRegex);
     const name = match?.groups?.name;
     const version = match?.groups?.version ?? "latest";
 
@@ -21,7 +21,7 @@ export async function fetchNpmPackage(lib: string) {
 
     const data = await response.json() as NpmPackage;
 
-    if (response.status !== 200) {
+    if (!response.ok) {
         return Result.fail("Package not found");
     }
 

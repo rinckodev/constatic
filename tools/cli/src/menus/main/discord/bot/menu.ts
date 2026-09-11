@@ -1,6 +1,7 @@
 import { initBotAction } from "#actions/bot/init.js";
-import { instructions, json, searchSelect, theme, toNpmName } from "#helpers";
+import { instructions, json, searchSelect, theme } from "#helpers";
 import { type BotTemplateProperties, program } from "#program";
+import { toNpmName } from "#shared/npm.js";
 import { prompts } from "#shared/prompts.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";

@@ -30,15 +30,6 @@ export const theme = {
     }
 };
 
-// export function withDefaults<T>(config: T): T {
-//     return {
-//         mask: "*",
-//         instructions: false,
-//         ...config,
-//         theme: merge(theme, (config as { theme: object })?.["theme"]),
-//     };
-// }
-
 function wrapWithCustomError<TArgs extends any[], TResult>(
   fn: (...args: TArgs) => Promise<TResult>,
   createError: (originalError: unknown, args: TArgs) => Error

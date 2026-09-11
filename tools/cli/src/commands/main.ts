@@ -3,6 +3,7 @@ import { defineCommand } from "citty";
 // import bot from "./bot/index.js"; SOON
 import { ck } from "#utils/ck.js";
 import { pkg } from "#utils/pkg.js";
+import emojis from "./emojis/index.js";
 
 export default function () {
     return defineCommand({
@@ -11,10 +12,9 @@ export default function () {
             description: pkg.description,
             version: pkg.version,
         },
-        // SOON
-        // subCommands: {
-        //     bot: bot(cli),
-        // },
+        subCommands: {
+            emojis: emojis()
+        },
         setup() {
             console.log(
                 ck.blue("💎 Constatic CLI"), "📦",
