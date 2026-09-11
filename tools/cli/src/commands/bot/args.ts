@@ -1,32 +1,35 @@
+import type { ArgsDef } from "citty";
+
 export const commandFlags = {
     database: {
         type: "string",
+        default: "none",
         alias: "db",
         description: "Database preset"
     },
     server: {
         type: "string",
-        alias: "sv",
-        description: "API server preset"
+        description: "API server preset",
+        default: "none",
     },
     token: {
         type: "string",
-        alias: "tk",
         description: "Saved token"
     },
     install: {
         type: "boolean",
         alias: "i",
-        description: "Install dependencies?"
+        description: "Install dependencies?",
+        default: false,
     },
     tsup: {
         type: "boolean",
-        alias: "t",
-        description: "Add tsup?"
+        description: "Add tsup?",
+        default: false,
     },
     discloud: {
         type: "boolean",
-        alias: "d",
-        description: "Add discloud files?"
+        description: "Add discloud files?",
+        default: true
     },
-} as const
+} satisfies ArgsDef

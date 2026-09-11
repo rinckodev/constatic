@@ -1,16 +1,14 @@
 import { defineCommand } from "citty";
-import add from "./add.js";
-import init from "./init.js";
+import { addCommand } from "./add.js";
+import { initCommand } from "./init.js";
 
-export default function () {
-    return defineCommand({
-        meta: {
-            name: "bot",
-            description: "Init and manage discord bot projects",
-        },
-        subCommands: {
-            init: init(),
-            add: add(),
-        }
-    })
-}
+export const botCommand = defineCommand({
+    meta: {
+        name: "bot",
+        description: "Init or manage discord bot projects",
+    },
+    subCommands: {
+        init: initCommand,
+        add: addCommand,
+    }
+});

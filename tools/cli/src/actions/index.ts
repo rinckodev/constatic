@@ -3,6 +3,7 @@ import { addBotDiscloudAction } from "./bot/add/discloud.js";
 import { addBotServerAction } from "./bot/add/server.js";
 import { addBotTsupAction } from "./bot/add/tsup.js";
 import { initBotAction } from "./bot/init.js";
+import { emojisDeleteAction } from "./emojis/delete.js";
 import { emojisFileAction } from "./emojis/file.js";
 import { emojisListAction } from "./emojis/list.js";
 import { emojisScanAction } from "./emojis/scan.js";
@@ -22,6 +23,7 @@ export const actions = {
         list: emojisListAction,
         file: emojisFileAction,
         upload: emojisUploadAction,
-        scan: emojisScanAction
+        scan: emojisScanAction,
+        delete: emojisDeleteAction,
     }
 }

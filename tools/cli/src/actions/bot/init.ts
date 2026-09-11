@@ -11,7 +11,7 @@ import { pkg } from "#utils/pkg.js";
 import { createSpinner } from "#utils/spinner.js";
 import { copy } from "fs-extra";
 import merge from "lodash.merge";
-import { cp, readFile, writeFile } from "node:fs/promises";
+import { cp } from "node:fs/promises";
 import path from "node:path";
 import { readPackageJSON } from "pkg-types";
 import { Project, SourceFile } from "ts-morph";
@@ -122,13 +122,6 @@ export async function initBotAction(data: InitBotActionData) {
             pkg: templatePkg, distdir: distJoin()
         });
     }
-
-    const baseVersionPath = distJoin("src/discord/base/base.version.ts");
-
-    await readFile(baseVersionPath, "utf-8")
-        .then(content => content.replace("{{baseVersion}}", pkg.version))
-        .then(content => writeFile(baseVersionPath, content, "utf-8"))
-        .catch(() => null);
 
     templatePkg.baseVersion = pkg.version;
 

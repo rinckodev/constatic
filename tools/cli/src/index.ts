@@ -4,11 +4,11 @@ import { registerCancelHandler } from "#utils/cancel.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
 import { runMain } from "citty";
-import createMain from "./commands/main.js";
+import { mainCommand } from "./commands/main.js";
 
 registerCancelHandler();
 
-const REQ_VERSION = "20.12";
+const REQ_VERSION = "22.0";
 
 if (process.versions.node < REQ_VERSION){
     log.error(`Required node version: ${ck.gray(`${REQ_VERSION} or higher`)}`);
@@ -16,4 +16,4 @@ if (process.versions.node < REQ_VERSION){
     process.exit(1);
 }
 
-runMain(createMain(), { showUsage });
+runMain(mainCommand, { showUsage });
