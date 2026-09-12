@@ -1,5 +1,4 @@
 import { program } from "#program";
-import { copy } from "fs-extra";
 import merge from "lodash.merge";
 import { join } from "node:path";
 import { readPackageJSON, type PackageJson } from "pkg-types";
@@ -18,7 +17,7 @@ export async function addBotTsupAction(props: Props) {
 
     merge(pkg, tsupPackageJson);
 
-    await copy(join(
+    await program.fs.copy(join(
         program.templates.path,
         "extras/tsup/tsup.config.ts"
     ), join(distdir, "tsup.config.ts"));

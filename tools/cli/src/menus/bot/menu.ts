@@ -1,5 +1,5 @@
 import { initBotAction } from "#actions/bot/init.js";
-import { instructions, json, searchSelect, theme } from "#helpers";
+import { json } from "#helpers";
 import { type BotTemplateProperties, program } from "#program";
 import { toNpmName } from "#shared/npm.js";
 import { prompts } from "#shared/prompts.js";
@@ -106,15 +106,13 @@ export async function discordBotMenu() {
     console.log();
 
     const scripts = program.config.get("presets.scripts", []);
-    const selectedScripts = scripts.length < 1 ? [] : await searchSelect({
+    const selectedScripts = scripts.length < 1 ? [] : await prompts.multifilter({
         message: "🗐 Script presets",
-        options: scripts.map(script => ({
+        choices: scripts.map(script => ({
             name: script.name,
             value: script.name,
         })),
-        theme: theme.searchSelect,
-        instructions: instructions.searchSelect,
-    }); // TODO
+    });
     if (scripts.length >= 1) console.log();
 
     const managerSuffix = ck.bgWhite(` ${program.runtime.agent()} `);

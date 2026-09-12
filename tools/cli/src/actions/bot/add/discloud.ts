@@ -1,5 +1,4 @@
 // import { CLI } from "../../../cli/index.txt";
-import { copy } from "#helpers";
 import { program } from "#program";
 import path, { join } from "node:path";
 
@@ -16,16 +15,17 @@ export async function addBotDiscloudAction(props: Props) {
             ? "bun" 
             : "discloud"
     );
-    await copy(
+
+    await program.fs.copy(
         path.join(dir, "discloud.ignore.txt"),
         join(dist, ".discloudignore")
     );
-    await copy(
+    await program.fs.copy(
         path.join(dir, "discloud.config.txt"),
         join(dist, "discloud.config")
     );
     if (program.runtime.isBun()) {
-        await copy(
+        await program.fs.copy(
             path.join(dir, "Dockerfile"),
             join(dist, "Dockerfile")
         );

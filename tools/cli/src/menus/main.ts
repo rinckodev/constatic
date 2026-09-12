@@ -9,7 +9,7 @@ export async function mainMenu(){
         choices: [
             {
                 name: ck.green("◈ Init discord bot project"),
-                value: "bot" 
+                value: "bot/init" 
             },
             { 
                 name: ck.green("◈ Manage discord emojis"),
@@ -28,8 +28,8 @@ export async function mainMenu(){
     console.log();
     
     switch(menu){
-        case "bot":{
-            menus.discord.bot();
+        case "bot/init":{
+            menus.bot.init();
             return;
         }
         case "emojis":{

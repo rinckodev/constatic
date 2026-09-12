@@ -1,5 +1,5 @@
-import { instructions, searchSelect, sleep, theme } from "#helpers";
-import { ScriptPreset } from "#program";
+import { sleep } from "#helpers";
+import { program, ScriptPreset } from "#program";
 import { fetchNpmPackage } from "#shared/npm.js";
 import { packageJsonHasDeps } from "#shared/presets/scripts/deps.js";
 import { prompts } from "#shared/prompts.js";
@@ -7,8 +7,6 @@ import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
 import { createSpinner } from "#utils/spinner.js";
 import { Separator } from "@inquirer/prompts";
-import { glob } from "tinyglobby";
-import { formatPresetFiles } from "./format.js";
 import { printPreview } from "./preview.js";
 
 export async function modifyScriptPresetMenu(
@@ -16,16 +14,6 @@ export async function modifyScriptPresetMenu(
     existing: boolean = false,
 ) {
     let status: "progress" | "save" | "cancel" = "progress";
-
-    const queryFiles = async (term?: string | undefined) => {
-        if (!term) return formatPresetFiles(preset.files);
-
-        return formatPresetFiles(preset.files.filter(
-            ({ path, dist = path }) => dist.startsWith(term) ||
-                dist.endsWith(term) ||
-                dist.includes(term)
-        ));
-    }
 
     while (status === "progress") {
         const hasFiles = preset.files.length > 0;
@@ -95,27 +83,23 @@ export async function modifyScriptPresetMenu(
                 continue;
             }
             case "select": {
-                const filepaths = await glob([
-                    "./**",
-                    "!**/node_modules/**"
-                ]);
+                const filepaths = await program.fs.glob(
+                    "./**", { exclude: ["**/node_modules/**"] }
+                );
 
-                const files = await searchSelect({
+                const files = await prompts.multifilter({
                     message: "Select the files you want",
-                    theme: theme.searchSelect,
-                    async options(term) {
-                        const format = (value: string) => ({
-                            name: value, value
-                        });
-                        if (!term) return filepaths.map(format);
-                        return filepaths.filter(
-                            filepath => filepath.startsWith(term) ||
-                                filepath.endsWith(term) ||
-                                filepath.includes(term)
-                        ).map(format);
-                    },
-                    instructions: instructions.searchSelect,
-                }); // TODO
+                    choices: filepaths.map(p => ({
+                        name: p, value: p,
+                    })),
+                    filter(items, term){
+                        return items.filter(({ value }) => 
+                            value.startsWith(term) ||
+                            value.endsWith(term) ||
+                            value.includes(term)
+                        )
+                    }
+                });
 
                 const filtered = files.filter(filepath =>
                     !preset.files.some(p => p.path === filepath)
@@ -127,10 +111,20 @@ export async function modifyScriptPresetMenu(
                 continue;
             }
             case "rm": {
-                const files = await searchSelect({
+
+                const files = await prompts.multifilter({
                     message: "Select the files you want delete",
-                    options: queryFiles
-                }); // TODO
+                    choices: preset.files.map(f => ({
+                        name: f.path, value: f.dist??=f.path
+                    })),
+                    filter(items, term){
+                        return items.filter(({ value }) => 
+                            value.startsWith(term) ||
+                            value.endsWith(term) ||
+                            value.includes(term)
+                        )
+                    }
+                });
                 console.log();
 
                 preset.files = preset.files.filter(

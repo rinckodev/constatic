@@ -12,12 +12,13 @@ import { formatPresets } from "./actions/format.js";
 import { noSelect } from "./actions/noselect.js";
 
 export async function presetsScriptsApplyMenu(presets: ScriptPreset[]) {
-    const selected = await prompts.checkbox({
+    const selected = await prompts.multifilter({
         message: "Select the presets you want to apply",
-        // instructions: instructions.checkbox, TODO
         choices: formatPresets(presets, true),
         required: false,
+        instructions: true,
     });
+
     console.log();
 
     if (selected.length < 1) {

@@ -1,12 +1,14 @@
 import { execSync } from "node:child_process";
-import { access, constants, glob as nodeGlob } from "node:fs/promises";
-import { join, resolve } from "node:path";
+import { CopyOptions, Dirent } from "node:fs";
+import { access, constants, cp, glob as nodeGlob } from "node:fs/promises";
+import { join, relative, resolve } from "node:path";
 import { PackageJson, readPackageJSON, writePackageJSON } from "pkg-types";
-import { programRuntime } from "./runtime.js";
 
 interface GlobOptions {
     cwd?: string;
     absolute?: boolean;
+    exclude?: string[] | ((fileName: Dirent) => boolean)
+    includeDirs?: boolean;
 }
 export const programFs = Object.freeze({
     async exists(path: string){
@@ -14,15 +16,27 @@ export const programFs = Object.freeze({
             .then(() => true)
             .catch(() => false);
     },
-    async glob(pattern: string, options: GlobOptions = {}){
-        const paths = await Array.fromAsync(
-            programRuntime.isBun()
-                ? new Bun.Glob(pattern).scan(options)
-                : nodeGlob(pattern, options)
+    async glob(pattern: string | string[], options: GlobOptions = {}){
+        const { cwd, absolute=false, exclude, includeDirs=false } = options;
+        const base = cwd ?? process.cwd();
+
+        const entries = await Array.fromAsync(
+            nodeGlob(pattern, { cwd, exclude, withFileTypes: true })
         );
-        return (!programRuntime.isBun() && options.absolute)
-            ? paths.map(p => resolve(p))
-            : paths; 
+        const filtered = includeDirs 
+            ? entries
+            : entries.filter(e => e.isFile());
+
+        const paths = filtered.map(e => {
+            const full = e.parentPath
+                ? join(e.parentPath, e.name)
+                : e.name;
+            return relative(base, full);
+        });
+
+        return absolute 
+            ? paths.map(p => resolve(base, p)) 
+            : paths;
     },
     isRepoDirty(cwd?: string) {
         try {
@@ -52,6 +66,12 @@ export const programFs = Object.freeze({
     async writePkgJson(path: string, pkg: PackageJson) {
         const resolved = resolvePkgPath(path);
         await writePackageJSON(resolved, pkg);
+    },
+    async copy(source: string, dist: string, options: CopyOptions = {}){
+        return cp(source, dist, {
+            recursive: true,
+            ...options,
+        });
     }
 });
 

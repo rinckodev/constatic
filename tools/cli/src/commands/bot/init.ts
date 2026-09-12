@@ -31,7 +31,7 @@ export const initCommand = defineCommand({
         const args = context.args;
 
         if (context.rawArgs.length < 1) {
-            await menus.discord.bot();
+            menus.bot.init();
             return;
         }
         const extras: string[] = [];

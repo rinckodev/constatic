@@ -4,14 +4,17 @@ import { prompts } from "#shared/prompts.js";
 import { DiscordBotToken } from "#shared/token.js";
 import { ck } from "#utils/ck.js";
 import { log } from "#utils/log.js";
+import { createSpinner } from "#utils/spinner.js";
 
 export async function emojisDeleteMenu(token: DiscordBotToken) {
+    const fetching = createSpinner("Fetching application emojis");
     const result = await api.emojis.fetch(token.id, token.token);
     if (!result.success) {
-        log.error(result.error);
+        fetching.fail(result.error);
         await menus.emojis.main(token);
         return;
     }
+    fetching.stop();
 
     const selected = await prompts.multifilter({
         message: "Select the emojis you want to delete",

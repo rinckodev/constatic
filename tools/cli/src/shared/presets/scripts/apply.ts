@@ -1,4 +1,3 @@
-import { copy } from "#helpers";
 import { program, ScriptPreset } from "#program";
 import merge from "lodash.merge";
 import path from "node:path";
@@ -16,7 +15,7 @@ export async function applyScriptPresets(props: ApplyScriptPresetsProps) {
         if (pkg && script.packageJson) {
             merge(pkg, script.packageJson);
         }
-        promises.push(...script.files.map(file => copy(
+        promises.push(...script.files.map(file => program.fs.copy(
             path.join(program.config.dirname(), "presets/scripts", script.id, file.path),
             path.join(dist, file.dist ?? file.path),
         )))

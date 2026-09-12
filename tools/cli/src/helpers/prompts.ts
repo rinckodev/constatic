@@ -1,5 +1,4 @@
 import { ck } from "#utils/ck.js";
-import { select as searchSelectPro } from "inquirer-select-pro";
 
 export const baseTheme = {
     style: {
@@ -29,27 +28,3 @@ export const theme = {
         }
     }
 };
-
-function wrapWithCustomError<TArgs extends any[], TResult>(
-  fn: (...args: TArgs) => Promise<TResult>,
-  createError: (originalError: unknown, args: TArgs) => Error
-): (...args: TArgs) => Promise<TResult> {
-  return async (...args: TArgs): Promise<TResult> => {
-    try {
-      return await fn(...args);
-    } catch (err) {
-      throw createError(err, args);
-    }
-  };
-}
-
-class ExitPromptError extends Error {
-    constructor() {
-        super();
-        this.name = "ExitPromptError";
-    }
-}
-
-export const searchSelect = wrapWithCustomError(
-    searchSelectPro, () => new ExitPromptError()
-);

@@ -1,6 +1,4 @@
-import { copy } from "#helpers";
 import { menus } from "#menus";
-
 import { program, ScriptPreset } from "#program";
 import { prompts } from "#shared/prompts.js";
 import { ck } from "#utils/ck.js";
@@ -29,20 +27,22 @@ export async function presetsScriptsNewMenu() {
         required: true,
     });
     console.log();
-    
+
     const presetpath = path.join(
-        program.config.dirname(), 
-        "presets/scripts", 
+        program.config.dirname(),
+        "presets/scripts",
         preset.id
     );
     await mkdir(presetpath, { recursive: true });
 
     await Promise.all(preset.files.map(
-        ({ path: filepath, dist=filepath }) => 
-            copy(path.join(process.cwd(), filepath), path.join(presetpath!, dist))
-        .catch(() => null)
+        ({ path: filepath, dist = filepath }) => program.fs.copy(
+            path.join(process.cwd(), filepath),
+            path.join(presetpath!, dist)
+        )
+            .catch(() => null)
     ));
-    
+
     presets.push(preset);
     program.config.set("presets.scripts", presets);
 

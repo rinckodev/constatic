@@ -1,6 +1,5 @@
 import { KeyValueFile } from "#lib/kvf.js";
 import { type BotDatabasePreset, program } from "#program";
-import { copy } from "fs-extra";
 import merge from "lodash.merge";
 import { join } from "node:path";
 import type { PackageJson } from "pkg-types";
@@ -27,7 +26,7 @@ export async function addBotDatabaseAction(props: Props) {
         );
     }
     if (database.path) {
-        await copy(join(
+        await program.fs.copy(join(
             program.templates.path,
             "databases", database.path,
         ), props.dist);

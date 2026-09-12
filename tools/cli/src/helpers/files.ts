@@ -1,6 +1,4 @@
-import { CopyOptions, copy as fsCopy } from "fs-extra";
 import fs from "node:fs/promises";
-import { log } from "../utils/log.js";
 
 export const json = {
     async read<T = any>(path: string): Promise<T> {
@@ -13,17 +11,17 @@ export const json = {
     }
 }
 
-export async function copy(src: string, dest: string, options?: CopyOptions){
-  return fsCopy(src, dest, options)
-    .catch((err) => {
-      const message = [
-        `src: ${src}`,
-        `dest: ${dest}`,
-        `${err}`
-      ];
-      log.fail([
-        "An error occurred while trying to copy",
-        ...message
-      ].join("\n"))
-  });
-}
+// export async function copy(src: string, dest: string, options?: CopyOptions){
+//   return fsCopy(src, dest, options)
+//     .catch((err) => {
+//       const message = [
+//         `src: ${src}`,
+//         `dest: ${dest}`,
+//         `${err}`
+//       ];
+//       log.fail([
+//         "An error occurred while trying to copy",
+//         ...message
+//       ].join("\n"))
+//   });
+// }

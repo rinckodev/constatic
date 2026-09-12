@@ -1,4 +1,3 @@
-import { copy } from "#helpers";
 import { menus } from "#menus";
 import { program, ScriptPreset } from "#program";
 import { prompts } from "#shared/prompts.js";
@@ -22,7 +21,7 @@ export async function presetsScriptsEditMenu(presets: ScriptPreset[]) {
     });
     console.log();
 
-    if (selected === "back"){
+    if (selected === "back") {
         menus.presets.scripts.main();
         return;
     }
@@ -47,8 +46,8 @@ export async function presetsScriptsEditMenu(presets: ScriptPreset[]) {
     );
 
     const presetPath = path.join(
-        program.config.dirname(), 
-        "presets/scripts", 
+        program.config.dirname(),
+        "presets/scripts",
         preset.id
     );
 
@@ -58,9 +57,10 @@ export async function presetsScriptsEditMenu(presets: ScriptPreset[]) {
     ));
 
     await Promise.all(preset.files.map(
-        ({ path: filepath, dist = filepath }) =>
-            copy(path.join(process.cwd(), filepath), path.join(presetPath, dist))
-                .catch(() => null)
+        ({ path: filepath, dist = filepath }) => program.fs.copy(
+            path.join(process.cwd(), filepath),
+            path.join(presetPath, dist)
+        ).catch(() => null)
     ));
 
     presets[index] = preset;

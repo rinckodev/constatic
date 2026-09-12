@@ -1,6 +1,5 @@
 import { KeyValueFile } from "#lib/kvf.js";
 import { type BotServerPreset, program } from "#program";
-import { copy } from "fs-extra";
 import merge from "lodash.merge";
 import { join } from "node:path";
 import type { PackageJson } from "pkg-types";
@@ -28,7 +27,7 @@ export async function addBotServerAction(props: Props) {
         );
     }
     if (server.path) {
-        await copy(join(
+        await program.fs.copy(join(
             program.templates.path,
             "servers", server.path,
         ), props.dist);

@@ -16,11 +16,12 @@ export async function emojisFileMenu(token: DiscordBotToken) {
     const dist = await prompts.input({
         message: "Emoji file path",
         default: "./emojis.json",
-        // validate(value){
-        //     if (!value.endsWith(".json")){
-        //         throw new Error("The file extension must be .json");
-        //     }
-        // }
+        validate(value){
+            if (!value.endsWith(".json")){
+                return "The file extension must be .json";
+            }
+            return true;
+        }
     });
 
     const type = await prompts.select<"id" | "url">({
