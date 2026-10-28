@@ -111,7 +111,6 @@ export async function modifyScriptPresetMenu(
                 continue;
             }
             case "rm": {
-
                 const files = await prompts.multifilter({
                     message: "Select the files you want delete",
                     choices: preset.files.map(f => ({
@@ -142,21 +141,20 @@ export async function modifyScriptPresetMenu(
                     .start("Fetching package");
 
                 const result = await fetchNpmPackage(name);
-                loading.stop();
-                console.log();
-
+                
                 if (!result.success) {
-                    log.error(result.error);
-                    await sleep(300);
+                    loading.fail(result.error);
+                    console.log();
                     continue;
                 }
+                loading.stop();
+                console.log();
 
                 const packageName = result.data.name;
                 const version = result.data.selectedVersion;
 
                 log.success(`Package ${packageName} / version: ${version}`);
                 console.log();
-
 
                 const type = await prompts.select({
                     message: "Select the type of dependency",
@@ -202,7 +200,7 @@ export async function modifyScriptPresetMenu(
                     ))
                 };
 
-                const deps = await prompts.checkbox({
+                const deps = await prompts.multifilter({
                     message: `Select the dependencies you want to remove`,
                     choices,
                 });

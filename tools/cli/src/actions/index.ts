@@ -8,6 +8,7 @@ import { emojisFileAction } from "./emojis/file.js";
 import { emojisListAction } from "./emojis/list.js";
 import { emojisScanAction } from "./emojis/scan.js";
 import { emojisUploadAction } from "./emojis/upload.js";
+import { scriptsListAction } from "./scripts/list.js";
 
 export const actions = {
     bot: {
@@ -25,5 +26,8 @@ export const actions = {
         upload: emojisUploadAction,
         scan: emojisScanAction,
         delete: emojisDeleteAction,
+    },
+    scripts: {
+        list: scriptsListAction
     }
 }

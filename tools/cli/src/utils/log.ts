@@ -11,13 +11,13 @@ export const log = {
         console.log(`${ck.green(log.icon.success)}`, ...data)
     },
     fail<T>(...data: T[]){
-        console.log(`${ck.red(log.icon.fail)}`, ...data)
+        console.error(`${ck.red(log.icon.fail)}`, ...data)
     },
     error<T>(...data: T[]){
-        console.log(`${ck.red(log.icon.error)}`, ...data)
+        console.error(`${ck.red(log.icon.error)}`, ...(data.map(d => ck.red(`${d}`))))
     },
     warn<T>(...data: T[]){
-        console.log(`${ck.yellow(log.icon.warn)}`, ...data)
+        console.warn(`${ck.yellow(log.icon.warn)}`, ...data)
     },
     custom<T>(prefix: string, ...data: T[]){
         console.log(prefix, ...data)

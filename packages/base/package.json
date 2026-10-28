@@ -47,13 +47,13 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": "./build/index.js",
+      "types": "./build/index.d.ts"
     },
     "./tsconfig": "./tsconfig/base.json"
   },
   "files": [
-    "dist",
+    "build",
     "tsconfig"
   ],
   "homepage": "https://constatic-docs.vercel.app",
@@ -73,7 +73,6 @@
     "discord.js": ">=14.25.0"
   },
   "dependencies": {
-    "rou3": "^0.8.1",
-    "tinyglobby": "^0.2.16"
+    "rou3": "^0.8.1"
   }
 }

@@ -3,7 +3,7 @@ import pkg from "./package.json" with { type: "json" };
 
 await build();
 
-const versionFile = Bun.file("./dist/version.js");
+const versionFile = Bun.file("./build/version.js");
 
 const content = await versionFile.text();
 

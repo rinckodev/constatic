@@ -9,7 +9,6 @@ import { log } from "#utils/log.js";
 import path from "node:path";
 import { PackageJson } from "pkg-types";
 import { formatPresets } from "./actions/format.js";
-import { noSelect } from "./actions/noselect.js";
 
 export async function presetsScriptsApplyMenu(presets: ScriptPreset[]) {
     const selected = await prompts.multifilter({
@@ -18,11 +17,12 @@ export async function presetsScriptsApplyMenu(presets: ScriptPreset[]) {
         required: false,
         instructions: true,
     });
-
     console.log();
 
     if (selected.length < 1) {
-        await noSelect();
+        log.warn("No preset selected, back to scripts presets menu")
+        console.log();
+        menus.presets.scripts.main();
         return;
     }
 

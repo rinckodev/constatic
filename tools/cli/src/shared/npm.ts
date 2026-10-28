@@ -17,12 +17,18 @@ export async function fetchNpmPackage(lib: string) {
     const name = match?.groups?.name;
     const version = match?.groups?.version ?? "latest";
 
-    const response = await fetch(`${baseURL}/${name}`);
-
-    const data = await response.json() as NpmPackage;
-
+    const response = await fetch(`${baseURL}/${name}`, {
+        headers: {
+            Accept: "application/vnd.npm.install-v1+json"
+        }
+    });
     if (!response.ok) {
         return Result.fail("Package not found");
+    }
+    const data = await response.json() as NpmPackage;
+
+    if (!("dist-tags" in data) || !("latest" in data["dist-tags"])){
+        return Result.fail("Invalid package");
     }
 
     const versionKey = version === "latest"

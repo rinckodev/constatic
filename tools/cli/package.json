@@ -11,8 +11,7 @@
     "build": "bun run ./build.ts",
     "link": "npm unlink constatic && npm link",
     "predev": "bun run build && rm -rf playground && mkdir ./playground",
-    "dev": "cd ./playground && bun run ../build/index.js",
-    "check": "tsc --noEmit"
+    "dev": "cd ./playground && bun run ../build/index.js"
   },
   "keywords": [
     "discord",

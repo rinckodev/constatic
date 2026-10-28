@@ -1,9 +1,8 @@
-import { $, Glob, type BuildConfig } from "bun";
+import { $, Glob } from "bun";
 import { styleText } from "node:util";
 
 interface BuildOptions {
     disableTypes?: boolean;
-    outdir?: string
 }
 export async function build(options: BuildOptions = {}) {
     const entrypoints = await Array.fromAsync(
@@ -16,16 +15,15 @@ export async function build(options: BuildOptions = {}) {
     );
     console.log();
 
-    const preset = {
+    const result = await Bun.build({ 
         entrypoints,
         root: "./src",
-        outdir: options.outdir || "dist",
+        outdir: "./build",
         target: "node",
         splitting: false,
         external: ["*"],
-    } satisfies BuildConfig;
-
-    const result = await Bun.build({ ...preset, format: "esm" });
+        format: "esm" 
+    });
     
     console.log(result.outputs
         .map(({ path }) => {
@@ -38,7 +36,7 @@ export async function build(options: BuildOptions = {}) {
         .join("\n")
     )
     console.log();
-    console.log(styleText("green", "✔ The project was compiled successfully!"))
+    console.log(styleText("green", "✔ Project compiled"))
 
     if (!(options.disableTypes??false)){
         await $`bun run typegen`.quiet();

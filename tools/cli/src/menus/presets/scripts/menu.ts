@@ -46,23 +46,23 @@ export async function scriptPresetsMenu(){
 
     switch(action){
         case "new":{
-            await menus.presets.scripts.new();
+            menus.presets.scripts.new();
             return;
         }
         case "apply":{
-            await menus.presets.scripts.apply(presets);
+            menus.presets.scripts.apply(presets);
             return;
         }
         case "list":{
-            await menus.presets.scripts.list(presets);
+            menus.presets.scripts.list(presets);
             return;
         }
         case "edit":{
-            await menus.presets.scripts.edit(presets);
+            menus.presets.scripts.edit(presets);
             return;
         }
         case "delete":{
-            await menus.presets.scripts.delete(presets);
+            menus.presets.scripts.delete(presets);
             return;
         }
         case "back":{

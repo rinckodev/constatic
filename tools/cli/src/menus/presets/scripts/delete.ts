@@ -6,7 +6,6 @@ import { log } from "#utils/log.js";
 import { rm } from "node:fs/promises";
 import path from "node:path";
 import { formatPresets } from "./actions/format.js";
-import { noSelect } from "./actions/noselect.js";
 
 export async function presetsScriptsDeleteMenu(presets: ScriptPreset[]) {
     const selected = await prompts.checkbox({
@@ -19,7 +18,9 @@ export async function presetsScriptsDeleteMenu(presets: ScriptPreset[]) {
 
 
     if (selected.length < 1){
-        await noSelect();
+        log.warn("No preset selected, back to scripts presets menu")
+        console.log();
+        menus.presets.scripts.main();
         return;
     }
 
