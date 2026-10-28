@@ -3,9 +3,9 @@ import type { ArgsDef } from "citty";
 export const commandFlags = {
     database: {
         type: "string",
-        default: "none",
         alias: "db",
-        description: "Database preset"
+        description: "Database preset",
+        default: "none",
     },
     server: {
         type: "string",
@@ -30,6 +30,6 @@ export const commandFlags = {
     discloud: {
         type: "boolean",
         description: "Add discloud files?",
-        default: true
+        default: false
     },
 } satisfies ArgsDef

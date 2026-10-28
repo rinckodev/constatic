@@ -6,10 +6,14 @@ export {
 } from "./responders/responder.js";
 
 export { emitResponder } from "./responders/emit.js";
+export type {
+    GenericResponder,
+    GenericResponderInteraction
+} from "./responders/manager.js";
 
-export {
-    type Command,
-    type CommandData
+export type {
+    Command,
+    CommandData
 } from "./commands/command.js";
 
 export {
