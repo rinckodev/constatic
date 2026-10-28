@@ -39,24 +39,24 @@ type ResolveParams<Path extends string, Parsed> = Prettify<
 
 export interface ResponderData<
     Path extends string,
-    Types extends readonly ResponderType[],
+    Types extends ResponderType,
     out Parsed,
     Cache extends CacheType,
 > {
     customId: Path,
-    types: NotEmptyArray<UniqueArray<Types>>,
+    types: Types | NotEmptyArray<UniqueArray<Types[]>>,
     cache?: Cache;
     parse?(this: void, params: InferRouteParams<Path>): Parsed;
     run(
         this: void,
-        interaction: ResponderInteraction<Types[number], Cache>,
+        interaction: ResponderInteraction<Types extends readonly ResponderType[] ? Types[number] : Types, Cache>,
         params: ResolveParams<Path, Parsed>
     ): Promise<void>;
 }
 
 export class Responder<
     Path extends string,
-    Types extends readonly ResponderType[],
+    Types extends ResponderType,
     out Parsed,
     Cache extends CacheType,
 > {

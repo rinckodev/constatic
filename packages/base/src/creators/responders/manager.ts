@@ -5,7 +5,7 @@ import { BaseManager } from "../manager.js";
 import type { WithCustomId } from "./emit.js";
 import { Responder, ResponderType } from "./responder.js";
 
-export type GenericResponder = Responder<string, readonly ResponderType[], any, CacheType>;
+export type GenericResponder = Responder<string, ResponderType, any, CacheType>;
 
 export type GenericResponderInteraction = 
     | MessageComponentInteraction
@@ -21,7 +21,12 @@ export class ResponderManager extends BaseManager {
     private readonly router = new Router<GenericResponder>();
     public set(responder: GenericResponder) {
         const path = responder.data.customId;
-        for (const type of new Set(responder.data.types)) {
+
+        const responderTypes = Array.isArray(responder.data.types)
+            ? responder.data.types
+            : [responder.data.types];
+
+        for (const type of responderTypes) {
             this.router.add(type, path, responder);
             this.logs.push([
                 styleText("greenBright", `▸ ${type}`),

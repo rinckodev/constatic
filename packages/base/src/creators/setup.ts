@@ -72,7 +72,7 @@ export function setupCreators(options: SetupCreatorsOptions = {}) {
         },
         createResponder: function<
             Path extends string,
-            const Types extends readonly ResponderType[],
+            const Types extends ResponderType,
             Parsed,
             Cache extends CacheType = CacheType
         >(data: ResponderData<Path, Types, Parsed, Cache>) {
