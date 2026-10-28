@@ -1,8 +1,9 @@
 import { type Client } from "discord.js";
+import { join } from "node:path";
 import { ConstaticApp, type BaseErrorHandler } from "./app.js";
 import { createClient, type CustomClientOptions } from "./client.js";
 import { Errors } from "./error.js";
-import { loadModules } from "./modules.js";
+import { generateImportsFile, loadModules } from "./modules.js";
 
 export interface BootstrapOptions extends CustomClientOptions {
     /**
@@ -48,6 +49,14 @@ export interface BootstrapOptions extends CustomClientOptions {
      * values from `process.env`.
      */
     env?: Record<string, any>
+
+    /**
+     * Generates a file with only imports of the automatically loaded modules that are returned by the bootstrap function
+     * 
+     * - Define `true` to generate the imports.ts file
+     * - Define a `string` path to activate and customize the file output
+     */
+    generateImportsFile?: boolean | string;
 }
 
 /**
@@ -103,6 +112,15 @@ export async function bootstrap(options: BootstrapOptions) {
     app.events.register(client);
     
     client.login();
+
+    if (options.generateImportsFile){
+        const outputPath = join(options.meta.dirname,
+            typeof options.generateImportsFile === "string"
+                ? options.generateImportsFile
+                : "imports.ts"
+        );
+        await generateImportsFile(options.meta, outputPath, imports);
+    }
 
     return { client, imports };
 }

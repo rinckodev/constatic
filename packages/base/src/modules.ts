@@ -1,5 +1,5 @@
-import { glob } from "node:fs/promises";
-import { join } from "node:path";
+import { glob, mkdir, writeFile } from "node:fs/promises";
+import { dirname, extname, join, relative } from "node:path";
 
 export interface ModuleImported {
     module: any,
@@ -29,4 +29,30 @@ export async function loadModules(meta: ImportMeta, modules: string[] = []) {
             }));
     }
     return loadedModules;
+}
+
+export async function generateImportsFile(
+    meta: ImportMeta,
+    path: string,
+    imports: ModuleImported[]
+){
+    const dir = dirname(path);
+
+    const content = imports
+        .map(({ filepath }) => {
+            const modulePath = join(meta.dirname, filepath);
+            let relativePath = relative(dir, modulePath);
+
+            if (!relativePath.startsWith(".")){
+                relativePath = `./${relativePath}`;
+            }
+            relativePath = relativePath
+                .replaceAll("\\", "/")
+                .replace(new RegExp(`${extname(relativePath)}$`), ".js");
+            return `import "${relativePath}";`
+        })
+        .join("\n");
+
+    await mkdir(dir, { recursive: true });
+    await writeFile(path, content, "utf-8");
 }
