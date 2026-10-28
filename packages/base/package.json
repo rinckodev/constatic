@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@constatic/config": "*",
-    "typescript": "^5.8.2",
+    "typescript": "^7.0.2",
     "discord.js": "^14.26.3"
   },
   "exports": {
@@ -63,7 +63,6 @@
     ]
   },
   "scripts": {
-    "check": "tsc --noEmit",
     "typegen": "tsc",
     "build": "bun run ./build.ts",
     "prepublish": "bun run build",
@@ -73,6 +72,6 @@
     "discord.js": ">=14.25.0"
   },
   "dependencies": {
-    "rou3": "^0.8.1"
+    "rou3": "^1.0.0"
   }
 }

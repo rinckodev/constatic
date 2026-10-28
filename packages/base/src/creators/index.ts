@@ -5,7 +5,7 @@ export {
     type ResponderInteraction
 } from "./responders/responder.js";
 
-export { emitResponder } from "./responders/emit.js";
+export { emitResponder, type EmitResponderData } from "./responders/emit.js";
 export type {
     GenericResponder,
     GenericResponderInteraction

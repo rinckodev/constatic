@@ -5,7 +5,7 @@ export type WithCustomId<T> = T & { customId: string };
 
 type EmitResponderInteraction = Omit<GenericResponderInteraction, "customId">;
 
-interface EmitResponderData {
+export interface EmitResponderData {
     customId: string;
     interaction: EmitResponderInteraction
 }
