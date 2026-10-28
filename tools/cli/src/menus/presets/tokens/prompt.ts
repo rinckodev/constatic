@@ -6,6 +6,8 @@ import { Result } from "#utils/result.js";
 export async function promptToken(tokens: DiscordBotToken[]) {
     const token = await prompts.password({
         message: "Insert your discord bot token",
+        mask: "*",
+        toggleMask: true,
         validate(value) {
             const message = "You need to provide the token for your bot application.";
             return !value ? message : true;

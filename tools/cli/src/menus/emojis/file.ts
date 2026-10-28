@@ -2,17 +2,20 @@ import { actions } from "#actions";
 import { menus } from "#menus";
 import { api } from "#shared/api.js";
 import { prompts } from "#shared/prompts.js";
+import { DiscordBotToken } from "#shared/token.js";
 import { ck } from "#utils/ck.js";
-import { log } from "#utils/log.js";
-import type { DiscordBotToken } from "../../shared/token.js";
+import { createSpinner } from "#utils/spinner.js";
 
 export async function emojisFileMenu(token: DiscordBotToken) {
+    const fetching = createSpinner()
+        .start("Fetching application emojis");
     const result = await api.emojis.fetch(token.id, token.token);
     if (!result.success){
-        log.error(result.error);
+        fetching.fail(result.error);
         await menus.emojis.main(token);
         return;
     }
+    fetching.stop();
     const dist = await prompts.input({
         message: "Emoji file path",
         default: "./emojis.json",

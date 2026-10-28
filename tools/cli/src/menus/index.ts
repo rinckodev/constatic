@@ -1,4 +1,5 @@
 import { discordBotMenu } from "./bot/menu.js";
+import { emojisClearMenu } from "./emojis/clear.js";
 import { emojisDeleteMenu } from "./emojis/delete.js";
 import { emojisFileMenu } from "./emojis/file.js";
 import { emojisListMenu } from "./emojis/list.js";
@@ -26,6 +27,7 @@ export const menus = Object.freeze({
         file: emojisFileMenu,
         upload: emojisUploadMenu,
         delete: emojisDeleteMenu,
+        clear: emojisClearMenu,
     },
     bot: {
         init: discordBotMenu

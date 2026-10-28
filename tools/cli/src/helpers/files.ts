@@ -1,27 +1,12 @@
 import fs from "node:fs/promises";
 
 export const json = {
-    async read<T = any>(path: string): Promise<T> {
+    async read<T = unknown>(path: string): Promise<T> {
         const stringfiedJson = await fs.readFile(path, "utf-8");
         return JSON.parse(stringfiedJson);
     },
-    async write<T = any>(path: string, data: T){
+    async write<T = unknown>(path: string, data: T){
         const stringfiedJson = JSON.stringify(data, null, 2);
         fs.writeFile(path, stringfiedJson, "utf-8");
     }
 }
-
-// export async function copy(src: string, dest: string, options?: CopyOptions){
-//   return fsCopy(src, dest, options)
-//     .catch((err) => {
-//       const message = [
-//         `src: ${src}`,
-//         `dest: ${dest}`,
-//         `${err}`
-//       ];
-//       log.fail([
-//         "An error occurred while trying to copy",
-//         ...message
-//       ].join("\n"))
-//   });
-// }

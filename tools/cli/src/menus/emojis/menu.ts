@@ -56,13 +56,14 @@ export async function emojisMenu(token?: DiscordBotToken){
         case "file":
         case "upload":
         case "delete":
-        case "list":{
+        case "list":
+        case "clear":{
             const showMenu = menus.emojis[menu];
-            await showMenu(token);
+            showMenu(token);
             return;
         }
         case "swap":{
-            await emojisMenu();
+            emojisMenu();
             return;
         }
         default:{
