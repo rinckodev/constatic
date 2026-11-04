@@ -24,7 +24,7 @@ Neste tópico você vai conferir algumas opções interessantes dessa função.
 Essa opção deve receber o import.meta do arquivo atual, ao executar o projeto em desenvolvimento, o diretório de import.meta será `src`, mas quando o projeto for buildado ele será `build`.
 Essa opção é importante para que os arquivos da pasta discord possam ser importados antes do bot iniciar.
 
-### Modules
+### Modules [#modules]
 
 Você pode passar um array de [padrões glob](https://en.wikipedia.org/wiki/Glob_(programming)) relativos à pasta atual. Todos os arquivos arquivos e diretórios encontrados neste padrão, serão importados antes do bot iniciar.
 
@@ -73,4 +73,51 @@ await bootstrap({
     },
 });
 ```
+---
+
+### Gerar arquivo de importações (generateImportsFile) [#generate-imports-file]
+
+Essa opção gera um arquivo dentro de `src` com todas as importações dos arquivos da pasta `discord` e padrões de caminhos passado para a opção [modules](/pt/docs/discord/bootstrap#modules) de forma relativa.
+
+```ts title="src/index.ts"
+await bootstrap({ 
+    meta: import.meta,
+    generateImportsFile: true
+});
+```
+
+O resultado é algo parecido com isso:
+
+```ts title="src/imports.ts"
+import "./discord/commands/public/ping.ts";
+import "./discord/commands/public/counter.ts";
+import "./discord/responders/buttons/reminder.ts";
+```
+
+É possível customizar o local do arquivo definindo o caminho dele ao invés de `true`. Mas é recomendado sempre gerar dentro do diretório `src`:
+
+```ts title="src/helpers/imports.ts"
+await bootstrap({ 
+    meta: import.meta,
+    generateImportsFile: "./helpers/imports.ts"
+});
+```
+
+<Callout type="info">
+    Esse recurso pode ser útil caso você queira compilar o seu projeto de bot em um arquivo executável com bun. Nesse caso o projeto precisa saber previamente quais arquivos devem ser importados antes deles serem compilados em um único arquivo. O funcionamento padrão da @constatic/base é carregar os arquivos em tempo de execução toda vez que o projeto inicia, através de uma função glob que obtem todos os arquivos válidos, o que não é possível ser feito depois do projeto ser compilado em um único arquivo.
+
+    Então você pode simplesmente adicionar essa importação no index.ts:
+    ```ts title="src/index.ts"
+    import { bootstrap } from "@constatic/base";
+    import { env } from "#env"
+    import "./imports.js"; // [!code ++]
+
+    await bootstrap({ 
+        meta: import.meta, env,
+        generateImportsFile: true
+    });
+    ```
+    Dessa forma o bun consegue saber todos os arquivos que ele precisa incluir no executável final
+</Callout>
+
 ---

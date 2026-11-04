@@ -34,7 +34,7 @@ import { bootstrap } from "@constatic/base";
 await bootstrap({ meta: import.meta, env });
 ```
 
-However, if you want to set only specific intents, as in the case of a public bot where you do not want to enable the <CodeSpan.String magic content="MessageContent" /> intent, simply use the <CodeSpan.Prop identifier="intents" />. property of the <CodeSpan.Method identifier="bootstrap"/> function, it is the same as the <CodeSpan.Class identifier="Client" /> options:
+However, if you want to set only specific intents, as in the case of a public bot where you do not want to enable the <CodeSpan.String magic content="MessageContent" /> intent, simply use the <CodeSpan.Prop identifier="intents" /> property of the <CodeSpan.Method identifier="bootstrap"/> function, it is the same as the <CodeSpan.Class identifier="Client" /> options:
 
 ```ts title="src/index.ts"
 import { env } from "#env";
