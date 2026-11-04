@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, AutocompleteInteraction, ChatInputCommandInteraction, InteractionContextType, MessageContextMenuCommandInteraction, UserContextMenuCommandInteraction, type ApplicationCommandOptionAllowedChannelTypes, type ApplicationCommandOptionChoiceData, type BaseApplicationCommandData, type CacheType, type LocalizationMap } from "discord.js";
+import { ApplicationCommandOptionType, ApplicationCommandType, AutocompleteInteraction, ChatInputCommandInteraction, InteractionContextType, MessageContextMenuCommandInteraction, UserContextMenuCommandInteraction, type ApplicationCommandOptionAllowedChannelTypes, type ApplicationCommandOptionChoiceData, type BaseApplicationCommandData, type CacheType, type FileUploadType, type LocalizationMap } from "discord.js";
 import type { NotEmptyArray, UniqueArray } from "../../utils/types.js";
 
 export type CommandType = 
@@ -53,9 +53,14 @@ interface ChannelOptionData extends BaseOptionData {
     type: ApplicationCommandOptionType.Channel
     channelTypes?: readonly ApplicationCommandOptionAllowedChannelTypes[]
 }
+
+interface AttachmentOptionData extends BaseOptionData {
+    type: ApplicationCommandOptionType.Attachment,
+    fileTypes?: readonly FileUploadType[]
+}
+
 interface CommonOptionData extends BaseOptionData {
     type:
-    | ApplicationCommandOptionType.Attachment
     | ApplicationCommandOptionType.Boolean
     | ApplicationCommandOptionType.Mentionable
     | ApplicationCommandOptionType.Role
@@ -65,6 +70,7 @@ interface CommonOptionData extends BaseOptionData {
 export type SlashCommandPrimitiveOptionData<Contexts> =
     | StringOptionData<Contexts>
     | NumberOptionData<Contexts>
+    | AttachmentOptionData
     | CommonOptionData
     | ChannelOptionData;
 
@@ -93,15 +99,13 @@ interface CommandRunThis {
     block(): never;
 }
 
-type ResolveCommandModuleData<Return> = Return extends void ? undefined : Return;
-
 export type SubCommandModuleData<Contexts, Return> =
     Omit<BaseOptionData, "required"> & {
         group?: string;
         run(
             this: CommandRunThis,
             interaction: ChatInputCommandInteraction<CacheMode<Contexts>>,
-            data: ResolveCommandModuleData<Return>
+            data: Return extends void ? undefined : Return
         ): Promise<void>;
         options?: SlashCommandPrimitiveOptionData<Contexts>[]
     };
@@ -112,7 +116,7 @@ export type SubCommandGroupModuleData<Contexts, Return, T> =
         run?(
             this: CommandRunThis,
             interaction: ChatInputCommandInteraction<CacheMode<Contexts>>,
-            data: ResolveCommandModuleData<Return>
+            data: Return extends void ? undefined : Return
         ): Promise<T>;
     };
 

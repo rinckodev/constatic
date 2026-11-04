@@ -1,5 +1,6 @@
 /node_modules
 /playground
+/demo
 /src
 /tests
 /build.ts
