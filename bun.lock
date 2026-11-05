@@ -51,7 +51,7 @@
       "name": "@constatic/base",
       "version": "0.1.2",
       "dependencies": {
-        "rou3": "^1.0.0",
+        "rou3": "0.12.1",
       },
       "devDependencies": {
         "@constatic/config": "*",
@@ -938,7 +938,7 @@
 
     "reusify": ["reusify@1.1.0", "", {}, "sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw=="],
 
-    "rou3": ["rou3@1.0.0", "", {}, "sha512-ySeaQkSrua+ut9g+65I7FHqOFBaY8tV0FmccXItoq0q21se32Q3u4YiW7/RqXSosWgYJaaKwRHXy3BST9PeCNQ=="],
+    "rou3": ["rou3@0.12.1", "", {}, "sha512-uv7TWJWh0lB6TyXnK1xDn9+OyzOb6Foeh+9bh+wV5hJ0v0ASpMiaGdatrlc9MPc4EBGWBMo8j0lkNxkNBel5Sg=="],
 
     "run-parallel": ["run-parallel@1.2.0", "", { "dependencies": { "queue-microtask": "^1.2.2" } }, "sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA=="],
 

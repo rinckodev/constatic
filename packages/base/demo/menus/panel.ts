@@ -94,11 +94,25 @@ export function demoPanelMenu<R>(): R {
         }),
     );
 
+    const row5 = new ActionRowBuilder<ButtonBuilder>().addComponents(
+        new ButtonBuilder({
+            customId: customId(`multi/${Date.now()}/static/${Math.random()}`),
+            label: "1",
+            style: ButtonStyle.Secondary,
+        }),
+        new ButtonBuilder({
+            customId: customId(`multi/${Date.now()}/${Math.random()*2}/${Math.random()}`),
+            label: "2",
+            style: ButtonStyle.Secondary,
+        }),
+    );
+
     const container = new ContainerBuilder()
         .addActionRowComponents(row)
         .addActionRowComponents(row2)
         .addActionRowComponents(row3)
-        .addActionRowComponents(row4);
+        .addActionRowComponents(row4)
+        .addActionRowComponents(row5);
 
     return ({
         flags: ["Ephemeral", "IsComponentsV2"],
