@@ -19,7 +19,7 @@ Neste tópico você vai conferir algumas opções interessantes dessa função.
 
 ---
 
-### Meta
+### Meta [#meta]
 
 Essa opção deve receber o import.meta do arquivo atual, ao executar o projeto em desenvolvimento, o diretório de import.meta será `src`, mas quando o projeto for buildado ele será `build`.
 Essa opção é importante para que os arquivos da pasta discord possam ser importados antes do bot iniciar.
@@ -47,7 +47,7 @@ Com isso você pode criar `comandos`, `eventos` e `responders` dentro desses dir
 
 ---
 
-### Logs de carregamento (loadLogs)
+### Logs de carregamento (loadLogs) [#load-logs]
 
 É possível desabilitar as logs de carregamento das estruturas dessa base definindo `falso` na opção <CodeSpan.Prop identifier="loadLogs" /> da função <CodeSpan.Method identifier="bootstrap"/>.
 
@@ -60,7 +60,7 @@ await bootstrap({
 
 ---
 
-### Antes de carregar (beforeLoad)
+### Antes de carregar (beforeLoad) [#before-load]
 
 Você você pode executar um código antes dos diretórios serem carregados e recebe o <CodeSpan.Class identifier="Client" /> antes de ficar online (ready).
 

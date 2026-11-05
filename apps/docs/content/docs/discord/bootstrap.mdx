@@ -18,12 +18,12 @@ In this topic you will see some interesting options for this function.
 
 ---
 
-### Meta
+### Meta [#meta]
 
 This option should receive the import.meta of the current file. When running the project in development, the import.meta directory will be `src`, but when the project is built it will be `build`.
 This option is important so that the files in the discord folder can be imported before the bot starts.
 
-### Modules
+### Modules [#modules]
 
 You can pass an array of [glob patterns](https://en.wikipedia.org/wiki/Glob_(programming)) relative to the current folder. All files and directories found in this pattern will be imported before the bot starts.
 
@@ -46,7 +46,7 @@ You can also load files with _side effects_, allowing you to register global var
 
 ---
 
-### Load logs (loadLogs)
+### Load logs [#load-logs]
 
 It is possible to disable the load logs of structures in this base by setting false in the <CodeSpan.Prop identifier="loadLogs" /> option of the `bootstrapApp` function.
 
@@ -59,7 +59,7 @@ await bootstrap({
 
 ---
 
-### Before load
+### Before load [#before-load]
 
 You can run code before the directories are loaded. Receive the <CodeSpan.Class identifier="Client" /> not ready yet.
 
@@ -72,5 +72,50 @@ await bootstrap({
     },
 });
 ```
+
+### Generate imports file (generateImportsFile) [#generate-imports-file]
+
+This option generates a file within `src` containing all imports from files in the `discord` folder—as well as those from paths provided to the [modules](/pt/docs/discord/bootstrap#modules) option—using relative paths.
+
+```ts title="src/index.ts"
+await bootstrap({ 
+    meta: import.meta,
+    generateImportsFile: true
+});
+```
+
+The result is something like this:
+
+```ts title="src/imports.ts"
+import "./discord/commands/public/ping.ts";
+import "./discord/commands/public/counter.ts";
+import "./discord/responders/buttons/reminder.ts";
+```
+
+It is possible to customize the file location by specifying its path instead of using `true`. However, it is recommended to always generate it within the `src` directory:
+
+```ts title="src/helpers/imports.ts"
+await bootstrap({ 
+    meta: import.meta,
+    generateImportsFile: "./helpers/imports.ts"
+});
+```
+
+<Callout type="info">
+    This feature can be useful if you want to compile your bot project into an executable file using Bun. In this scenario, the project must know in advance which files need to be imported before they are bundled into a single file. By default, `@constatic/base` loads files at runtime whenever the project starts, using a `glob` function to retrieve all valid files—a process that is no longer possible once the project has been compiled into a single executable file.
+
+    Então você pode simplesmente adicionar essa importação no index.ts:
+    ```ts title="src/index.ts"
+    import { bootstrap } from "@constatic/base";
+    import { env } from "#env"
+    import "./imports.js"; // [!code ++]
+
+    await bootstrap({ 
+        meta: import.meta, env,
+        generateImportsFile: true
+    });
+    ```
+    This way, Bun is able to determine all the files it needs to include in the final executable.
+</Callout>
 
 ---
