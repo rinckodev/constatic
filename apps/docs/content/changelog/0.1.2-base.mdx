@@ -1,0 +1,59 @@
+---
+version: 0.1.2
+title: Atualização 0.1.2 da @constatic/base
+description: Pequenas atualizações de tipos e novo recurso para facilitar compilação
+date: 2026-11-04
+scope: base
+---
+
+## Tipos de arquivos
+
+A atualização [14.28 do discord.js](https://github.com/discordjs/discord.js/releases/tag/14.28.0) adicionou uma tipagem que permite definir o tipo de arquivo que você espera que o usuário envie no attachment. No caso da @constatic/base, temos uma tipagem própria para fornecer uma boa experiência com a inferência de tipos. Apenas adicionamos a tipagem:
+
+```ts
+createCommand({
+    name: "postar",
+    description: "Poste uma imagem",
+    type: ApplicationCommandType.ChatInput,
+    options: [
+        {
+            name: "imagem",
+            description: "Envie a imagem que deseja postar",
+            type: ApplicationCommandOptionType.Attachment,
+            fileTypes: ["image"], // [!code ++]
+        },
+    ],
+    async run(interaction) {
+        // ....
+    }
+});
+```
+
+## Atualizada a versão do rou3
+
+Usamos o [rou3](https://github.com/h3js/rou3) como tecnologia dos [Responders com parâmetros](/docs/discord/responders/params) para que seja possível transportar informações entre os customIds dos componentes para maior praticidade. É recomendado ler a [página do rou3 no github](https://github.com/h3js/rou3) para entender tudo o que é possível fazer com os customIds já que eles seguem a [URL pattern API](https://developer.mozilla.org/en-US/docs/Web/API/URL_Pattern_API)
+
+## Geração de importações
+
+Foi adicionada uma nova opção para a função <CodeSpan.Method identifier="bootstrap" /> que gera um arquivo com importações relativas de todos os módulos encontrados pela função glob interna:
+
+```ts title="src/import.ts"
+await bootstrap({ 
+    meta: import.meta,
+    generateImportsFile: true // [!code ++]
+});
+```
+
+Tomando como exemplo apenas os arquivos de demonstração que vem quando o projeto é gerado usando a CLI, termos o seguinte resultado:
+
+```ts title="src/import.ts"
+import "./discord/commands/public/ping.ts";
+import "./discord/commands/public/counter.ts";
+import "./discord/responders/buttons/reminder.ts";
+```
+
+Isso pode facilitar o processo de compilação com bun uma vez que isso exige que todos os arquivos do projeto precisam ser conhecidos em tempo de build. [Confira mais detalhes na documentação](/docs/discord/bootstrap#generate-imports-file)
+
+---
+
+Novidades, atualizações, alterações, dicas e muito mais será postado neste blog! Se você quiser ser notificado sempre que uma nova postagem for publicada, entre no discord [Zunder Community](http://discord.gg/tTu8dGN) ou Siga [@rinckodev no twitter/x](https://x.com/rinckodev)
